@@ -470,17 +470,14 @@ import {
 } from "../../../../constants/bodyRenderingConstants";
 
 /**
- * Calculate muscle scale factor based on muscle mass with non-linear amplification.
+ * Calculate muscle scale factor based on muscle mass with proportional scaling.
  *
- * Uses exponential curve to create dramatic visual differences:
- * - 28kg (Hacker) → 0.64 scale (skinny, visible ribs)
- * - 30kg (Amsalja) → 0.78 scale (lean athlete)
- * - 32kg (Jeongbo) → 0.90 scale (fit operative)
+ * Linear scaling for realistic visual differences:
+ * - 28kg (Hacker) → 0.84 scale (lean, defined)
+ * - 30kg (Amsalja) → 0.89 scale (lean athlete)
+ * - 32kg (Jeongbo) → 0.93 scale (fit operative)
  * - 35kg (Musa) → 1.0 scale (reference baseline)
- * - 48kg (Jojik) → 1.91 scale (massive, intimidating)
- *
- * Formula: 1.0 + sign(deviation) * |deviation|^exponent * amplificationBase
- * where deviation = (muscleMass / referenceMass) - 1.0
+ * - 48kg (Jojik) → 1.30 scale (massive, powerful)
  *
  * @param muscleMass - Muscle mass in kilograms (archetype range: 28-48kg)
  * @returns Scale factor for muscle geometry
@@ -670,11 +667,14 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
         />
         <meshPhysicalMaterial
           color={muscleColor}
-          metalness={0.3}
-          roughness={0.7}
-          clearcoat={0.5}
-          clearcoatRoughness={0.2}
-          envMapIntensity={0.8}
+          metalness={0.02}
+          roughness={0.85}
+          clearcoat={0.08}
+          clearcoatRoughness={0.6}
+          envMapIntensity={0.3}
+          sheen={0.15}
+          sheenRoughness={0.8}
+          sheenColor={muscleColor}
         />
       </mesh>
 

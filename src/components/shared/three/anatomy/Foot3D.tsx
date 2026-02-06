@@ -146,51 +146,82 @@ export const Foot3D: React.FC<Foot3DProps> = ({
 
   return (
     <group name={`foot-3d-${side}`}>
-      {/* Main heel/midfoot body - positioned below ankle (Y=0 at ankle) */}
+      {/* Ankle connector - larger sphere that bridges shin body surface to foot */}
+      <mesh
+        position={[0, 0, 0]}
+        castShadow
+        receiveShadow
+        name={`foot-ankle-bridge-${side}`}
+      >
+        <sphereGeometry args={[footDimensions.footHeight * 0.6, 10, 10]} />
+        <primitive object={skinMaterial} attach="material" />
+      </mesh>
+
+      {/* Ankle-to-heel transition cylinder */}
+      <mesh
+        position={[
+          0,
+          -footDimensions.footHeight * 0.2,
+          footDimensions.heelLength * 0.1,
+        ]}
+        castShadow
+        receiveShadow
+        name={`foot-ankle-transition-${side}`}
+      >
+        <cylinderGeometry
+          args={[
+            footDimensions.footHeight * 0.5, // Top radius matches ankle sphere
+            footDimensions.footWidth * 0.45, // Bottom matches heel width
+            footDimensions.footHeight * 0.4,
+            8,
+          ]}
+        />
+        <primitive object={skinMaterial} attach="material" />
+      </mesh>
+
+      {/* Main heel/midfoot body - capsule for smooth organic shape */}
       <mesh
         position={[
           0,
           -footDimensions.footHeight * 0.4,
           footDimensions.heelLength * 0.2,
         ]}
+        rotation={[Math.PI / 2, 0, 0]}
         castShadow
         receiveShadow
         name={`foot-heel-${side}`}
       >
-        <boxGeometry
+        <capsuleGeometry
           args={[
-            footDimensions.footWidth,
-            footDimensions.footHeight,
-            footDimensions.heelLength,
+            footDimensions.footWidth * 0.45, // Radius
+            footDimensions.heelLength * 0.5, // Length (shorter than full heel - caps add length)
+            4,
+            8,
           ]}
         />
         <primitive object={skinMaterial} attach="material" />
       </mesh>
 
-      {/* Toe area (slightly raised and forward) */}
+      {/* Toe area - capsule for rounded toe shape */}
       <mesh
         position={[
           0,
           -footDimensions.footHeight * 0.35 + footDimensions.toeHeight * 0.2,
           footDimensions.heelLength * 0.7 + footDimensions.toeLength / 2,
         ]}
+        rotation={[Math.PI / 2, 0, 0]}
         castShadow
         receiveShadow
         name={`foot-toes-${side}`}
       >
-        <boxGeometry
+        <capsuleGeometry
           args={[
-            footDimensions.toeWidth,
-            footDimensions.toeHeight,
-            footDimensions.toeLength,
+            footDimensions.toeWidth * 0.35, // Narrower radius for tapered toes
+            footDimensions.toeLength * 0.4, // Shorter length
+            4,
+            8,
           ]}
         />
-        <primitive object={skinMaterial} attach="material" />
-      </mesh>
-
-      {/* Ankle connection point indicator (small sphere for visual continuity) */}
-      <mesh position={[0, 0, 0]} castShadow name={`foot-ankle-${side}`}>
-        <sphereGeometry args={[footDimensions.footHeight * 0.5, 8, 8]} />
         <primitive object={skinMaterial} attach="material" />
       </mesh>
     </group>

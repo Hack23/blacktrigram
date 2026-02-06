@@ -110,10 +110,13 @@ const calculateBodyThickness = (
   // Average (35kg muscle, 12kg fat): 0.85 + 0 + 0 = 0.85
   // Heavy (48kg muscle, 20kg fat): 0.85 + 0.056 + 0.133 ≈ 1.039
   const muscleContribution = (muscleRatio - 1.0) * 0.15;
-  const fatContribution = (fatRatio - 1.0) * 0.20;
+  const fatContribution = (fatRatio - 1.0) * 0.2;
 
   // Cap at 1.20x maximum to prevent "michelin man" effect
-  return Math.max(0.75, Math.min(1.20, 0.85 + muscleContribution + fatContribution));
+  return Math.max(
+    0.75,
+    Math.min(1.2, 0.85 + muscleContribution + fatContribution),
+  );
 };
 
 /**
@@ -177,24 +180,91 @@ const getBodySurfaceForBone = (
       // Neck cylinder - smooth connection between head and torso with LOD
       const neckRadius = 0.06 * bodyThickness;
       const neckLength = 0.11 * bodyThickness;
+      // Main neck cylinder
       segments.push({
         geometry: new THREE.CylinderGeometry(
-          neckRadius,
-          neckRadius * 1.1, // Slightly wider at base
+          neckRadius * 0.9, // Slightly narrower at top (under jaw)
+          neckRadius * 1.2, // Wider at base (base of neck)
           neckLength,
           segmentCount, // LOD-based segment count
         ),
         localOffset: new THREE.Vector3(0, -neckLength * 0.4, 0),
         localRotation: new THREE.Euler(0, 0, 0),
       });
+      // Neck base flare - smooth transition to shoulders/torso
+      segments.push({
+        geometry: new THREE.CylinderGeometry(
+          neckRadius * 1.2, // Match neck bottom
+          neckRadius * 1.6, // Flare out to trapezius area
+          neckLength * 0.3,
+          segmentCount,
+        ),
+        localOffset: new THREE.Vector3(0, -neckLength * 0.75, 0),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      break;
+    }
+
+    case "head": {
+      // Head / skull sphere - Face3D renders features on top of this base
+      // Slightly elongated sphere for realistic cranium shape
+      const headRadius = 0.095 * bodyThickness; // ~19cm head width
+      const headHeight = headRadius * 1.15; // Slightly taller than wide
+
+      // Main cranium sphere
+      segments.push({
+        geometry: new THREE.SphereGeometry(
+          headRadius,
+          segmentCount,
+          segmentCount,
+        ),
+        localOffset: new THREE.Vector3(0, headHeight * 0.15, 0), // Slightly above bone origin
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      // Jaw/chin area - smaller sphere below to fill out the jaw line
+      segments.push({
+        geometry: new THREE.SphereGeometry(
+          headRadius * 0.7,
+          Math.floor(segmentCount * 0.75),
+          Math.floor(segmentCount * 0.75),
+        ),
+        localOffset: new THREE.Vector3(
+          0,
+          -headHeight * 0.25,
+          headRadius * 0.15,
+        ),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      break;
+    }
+
+    case "spine_upper": {
+      // Upper torso / chest area - wider for shoulders
+      const width =
+        (physicalAttributes.shoulderWidth / 100) * bodyThickness * 0.9;
+      const height = (physicalAttributes.torsoLength / 100) * torsoScale * 0.3;
+      const depth = PECTORALS_RADIUS * 2 * bodyThickness * 0.95;
+
+      segments.push({
+        geometry: new THREE.BoxGeometry(
+          width,
+          height,
+          depth,
+          Math.max(2, Math.round(segmentCount * 0.2)),
+          Math.max(2, Math.round(segmentCount * 0.2)),
+          Math.max(2, Math.round(segmentCount * 0.2)),
+        ),
+        localOffset: new THREE.Vector3(0, 0, 0),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
       break;
     }
 
     case "spine_middle": {
-      // Main torso - box covering chest, abs, and back with rounded edges
+      // Main torso - box covering chest and abs
       const width = (physicalAttributes.shoulderWidth / 100) * bodyThickness;
-      const height = (physicalAttributes.torsoLength / 100) * torsoScale;
-      const depth = (PECTORALS_RADIUS * 2) * bodyThickness; // Front to back depth
+      const height = (physicalAttributes.torsoLength / 100) * torsoScale * 0.35;
+      const depth = PECTORALS_RADIUS * 2 * bodyThickness; // Front to back depth
 
       // Use LOD-aware segment counts (slightly higher than other regions) to keep torso shading smooth:
       // - Torso is frequently closest to the camera and used for breathing / impact motion.
@@ -211,7 +281,29 @@ const getBodySurfaceForBone = (
           depth,
           torsoSegmentsX,
           torsoSegmentsY,
-          torsoSegmentsZ
+          torsoSegmentsZ,
+        ),
+        localOffset: new THREE.Vector3(0, 0, 0),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      break;
+    }
+
+    case "spine_lower": {
+      // Lower torso / lumbar area - tapers from chest to pelvis
+      const widthTop =
+        (physicalAttributes.shoulderWidth / 100) * bodyThickness * 0.95;
+      const widthBottom =
+        (physicalAttributes.shoulderWidth / 100) * bodyThickness * 0.85;
+      const height = (physicalAttributes.torsoLength / 100) * torsoScale * 0.3;
+
+      // Use tapered cylinder for natural waist shape
+      segments.push({
+        geometry: new THREE.CylinderGeometry(
+          widthTop * 0.5,
+          widthBottom * 0.5,
+          height,
+          segmentCount,
         ),
         localOffset: new THREE.Vector3(0, 0, 0),
         localRotation: new THREE.Euler(0, 0, 0),
@@ -220,10 +312,11 @@ const getBodySurfaceForBone = (
     }
 
     case "pelvis": {
-      // Pelvis/hip area - box covering lower torso
-      const width = (physicalAttributes.shoulderWidth / 100) * 0.85 * bodyThickness;
+      // Pelvis/hip area - wider for hip bones, connecting to legs
+      const width =
+        (physicalAttributes.shoulderWidth / 100) * 0.85 * bodyThickness;
       const height = 0.15;
-      const depth = (CORE_RADIUS * 2) * bodyThickness;
+      const depth = CORE_RADIUS * 2 * bodyThickness;
 
       segments.push({
         geometry: new THREE.BoxGeometry(width, height, depth, 3, 2, 3),
@@ -235,13 +328,17 @@ const getBodySurfaceForBone = (
 
     case "shoulder_L":
     case "shoulder_R": {
-      // Shoulder joint - spherical cap for smooth shoulder transition with LOD
-      const shoulderRadius = BICEP_RADIUS * bodyThickness * 1.3;
+      // Shoulder joint - full sphere for smooth, rounded shoulder with LOD
+      const shoulderRadius = BICEP_RADIUS * bodyThickness * 1.4;
 
       segments.push({
-        geometry: new THREE.SphereGeometry(shoulderRadius, segmentCount, Math.floor(segmentCount * 0.75), 0, Math.PI * 2, 0, Math.PI / 2),
+        geometry: new THREE.SphereGeometry(
+          shoulderRadius,
+          segmentCount,
+          segmentCount,
+        ),
         localOffset: new THREE.Vector3(0, 0, 0),
-        localRotation: new THREE.Euler(Math.PI / 2, 0, 0),
+        localRotation: new THREE.Euler(0, 0, 0),
       });
       break;
     }
@@ -270,7 +367,7 @@ const getBodySurfaceForBone = (
     case "forearm_R": {
       // Forearm - tapered cylinder with LOD
       const radiusTop = FOREARM_RADIUS * bodyThickness * 1.0; // Wider at elbow
-      const radiusBottom = FOREARM_RADIUS * bodyThickness * 0.7; // Narrower at wrist
+      const radiusBottom = FOREARM_RADIUS * bodyThickness * 0.8; // Less narrow - connects to wrist smoothly
       const length = (physicalAttributes.armLength / 100) * armScale * 0.4;
 
       segments.push({
@@ -289,7 +386,7 @@ const getBodySurfaceForBone = (
     case "thigh_L":
     case "thigh_R": {
       // Thigh - tapered cylinder (quad area) with LOD
-      const radiusTop = QUAD_RADIUS * bodyThickness * 1.2; // Wider at hip
+      const radiusTop = QUAD_RADIUS * bodyThickness * 1.3; // Wider at hip for smooth connection
       const radiusBottom = QUAD_RADIUS * bodyThickness * 0.95; // Narrower at knee
       const length = (physicalAttributes.legLength / 100) * legScale * 0.45;
 
@@ -310,7 +407,7 @@ const getBodySurfaceForBone = (
     case "shin_R": {
       // Shin/calf - tapered cylinder with LOD
       const radiusTop = CALF_RADIUS * bodyThickness * 1.0; // Wider at knee
-      const radiusBottom = CALF_RADIUS * bodyThickness * 0.65; // Narrower at ankle
+      const radiusBottom = CALF_RADIUS * bodyThickness * 0.8; // Less taper - connects to ankle
       const length = (physicalAttributes.legLength / 100) * legScale * 0.42;
 
       segments.push({
@@ -326,8 +423,120 @@ const getBodySurfaceForBone = (
       break;
     }
 
-    // Shoulders already handled by upper_arm connection
-    // Hands and feet use specialized Hand3D and Foot3D components
+    case "elbow_L":
+    case "elbow_R": {
+      // Elbow joint sphere - bridges upper arm and forearm
+      const elbowRadius = BICEP_RADIUS * bodyThickness * 0.95;
+      segments.push({
+        geometry: new THREE.SphereGeometry(
+          elbowRadius,
+          segmentCount,
+          Math.floor(segmentCount * 0.75),
+        ),
+        localOffset: new THREE.Vector3(0, 0, 0),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      break;
+    }
+
+    case "wrist_L":
+    case "wrist_R": {
+      // Wrist joint - tapered cylinder connecting forearm to hand
+      // No rotation needed - cylinder Y axis already aligns with forearm direction
+      const wristRadiusTop = FOREARM_RADIUS * bodyThickness * 0.75;
+      const wristRadiusBottom = FOREARM_RADIUS * bodyThickness * 0.6;
+      const wristLength = 0.035 * bodyThickness;
+      segments.push({
+        geometry: new THREE.CylinderGeometry(
+          wristRadiusTop,
+          wristRadiusBottom,
+          wristLength,
+          segmentCount,
+        ),
+        localOffset: new THREE.Vector3(0, -wristLength * 0.3, 0),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      break;
+    }
+
+    case "hand_L":
+    case "hand_R": {
+      // Wrist-to-hand bridge sphere - fills gap between wrist skin and Hand3D component
+      const handBridgeRadius = FOREARM_RADIUS * bodyThickness * 0.55;
+      segments.push({
+        geometry: new THREE.SphereGeometry(
+          handBridgeRadius,
+          segmentCount,
+          Math.floor(segmentCount * 0.75),
+        ),
+        localOffset: new THREE.Vector3(0, 0, 0),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      break;
+    }
+
+    case "knee_L":
+    case "knee_R": {
+      // Knee joint sphere - bridges thigh and shin
+      const kneeRadius = QUAD_RADIUS * bodyThickness * 0.9;
+      segments.push({
+        geometry: new THREE.SphereGeometry(
+          kneeRadius,
+          segmentCount,
+          Math.floor(segmentCount * 0.75),
+        ),
+        localOffset: new THREE.Vector3(0, 0, 0),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      // Front kneecap bump
+      const kneecapRadius = kneeRadius * 0.5;
+      segments.push({
+        geometry: new THREE.SphereGeometry(
+          kneecapRadius,
+          Math.floor(segmentCount * 0.5),
+          Math.floor(segmentCount * 0.5),
+        ),
+        localOffset: new THREE.Vector3(0, 0, kneeRadius * 0.6),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      break;
+    }
+
+    case "hip_L":
+    case "hip_R": {
+      // Hip joint sphere - connects pelvis to thigh smoothly
+      const hipRadius = QUAD_RADIUS * bodyThickness * 1.1;
+      segments.push({
+        geometry: new THREE.SphereGeometry(
+          hipRadius,
+          segmentCount,
+          Math.floor(segmentCount * 0.75),
+        ),
+        localOffset: new THREE.Vector3(0, -hipRadius * 0.3, 0),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      break;
+    }
+
+    case "foot_L":
+    case "foot_R": {
+      // Ankle bridge sphere - connects shin body surface to Foot3D component
+      const ankleRadius = CALF_RADIUS * bodyThickness * 0.75;
+      segments.push({
+        geometry: new THREE.SphereGeometry(
+          ankleRadius,
+          segmentCount,
+          Math.floor(segmentCount * 0.75),
+        ),
+        localOffset: new THREE.Vector3(0, 0, 0),
+        localRotation: new THREE.Euler(0, 0, 0),
+      });
+      break;
+    }
+
+    // Shoulders already handled by shoulder_L/R cases
+    // Hand detail (fingers) uses specialized Hand3D component
+    // Foot detail (toes) uses specialized Foot3D component
     // Head uses Face3D component
   }
 
@@ -410,27 +619,27 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
       color: skinTone,
       roughness: 0.65, // Slightly rough for realistic skin
       metalness: 0.0, // Skin is not metallic
-      
+
       // Subsurface scattering for realistic skin translucency
       transmission: 0.08, // Small non-zero transmission for subtle skin translucency
       thickness: 0.5, // Moderate thickness for subsurface scattering
       ior: 1.4, // Index of refraction for human skin
-      
+
       // Clearcoat for natural skin sheen (subtle)
       clearcoat: 0.15,
       clearcoatRoughness: 0.8,
-      
+
       // Sheen for skin surface properties (consistent with Hand3D, Foot3D)
       sheen: 0.1,
       sheenRoughness: 0.8,
-      
+
       // Subtle emissive for alive appearance (consistent with other skin components)
       emissive: new THREE.Color(skinTone),
       emissiveIntensity: 0.02,
-      
+
       // Reflectivity for realistic appearance
       reflectivity: 0.1,
-      
+
       side: THREE.DoubleSide, // Render both sides for complete body coverage and gap prevention
       flatShading: false, // Smooth shading for organic look
     });

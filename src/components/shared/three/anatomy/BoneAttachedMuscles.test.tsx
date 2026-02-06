@@ -220,30 +220,30 @@ describe("calculateMuscleScaleFactor (non-linear)", () => {
     const hackerScale = calculateMuscleScaleFactor(28); // Hacker
     const musaScale = calculateMuscleScaleFactor(35); // Musa
 
-    // Hacker should be around 0.8 scale (clamped by MIN_MUSCLE_SCALE)
-    expect(hackerScale).toBeGreaterThanOrEqual(0.8);
-    expect(hackerScale).toBeLessThanOrEqual(0.82);
-    // Difference should be significant for visual distinction
-    expect(musaScale / hackerScale).toBeGreaterThan(1.2);
+    // Hacker should be around 0.84 scale (proportional, above MIN_MUSCLE_SCALE)
+    expect(hackerScale).toBeGreaterThanOrEqual(0.82);
+    expect(hackerScale).toBeLessThanOrEqual(0.86);
+    // Difference should be noticeable for visual distinction
+    expect(musaScale / hackerScale).toBeGreaterThan(1.15);
   });
 
-  it("should make Amsalja lean athlete (near 0.85 scale)", () => {
+  it("should make Amsalja lean athlete (near 0.89 scale)", () => {
     const amsaljaScale = calculateMuscleScaleFactor(30); // Amsalja
 
-    // Amsalja should be around 0.80-0.88 scale (lean but athletic, above MIN_MUSCLE_SCALE)
-    expect(amsaljaScale).toBeGreaterThanOrEqual(0.8);
-    expect(amsaljaScale).toBeLessThan(0.88);
+    // Amsalja should be around 0.86-0.92 scale (lean but athletic)
+    expect(amsaljaScale).toBeGreaterThanOrEqual(0.86);
+    expect(amsaljaScale).toBeLessThan(0.92);
   });
 
-  it("should make Jojik dramatically larger than Musa", () => {
+  it("should make Jojik noticeably larger than Musa", () => {
     const musaScale = calculateMuscleScaleFactor(35); // Musa
     const jojikScale = calculateMuscleScaleFactor(48); // Jojik
 
-    // Jojik should be around 1.9 scale (massive)
-    expect(jojikScale).toBeGreaterThan(1.85);
-    expect(jojikScale).toBeLessThan(2.0);
-    // Should be 90% larger than Musa
-    expect(jojikScale / musaScale).toBeGreaterThan(1.85);
+    // Jojik should be around 1.30 scale (powerful, realistic)
+    expect(jojikScale).toBeGreaterThan(1.25);
+    expect(jojikScale).toBeLessThan(1.35);
+    // Should be ~30% larger than Musa
+    expect(jojikScale / musaScale).toBeGreaterThan(1.25);
   });
 
   it("should create clear visual hierarchy across all archetypes", () => {
@@ -264,7 +264,7 @@ describe("calculateMuscleScaleFactor (non-linear)", () => {
     const musaScale = scales[3].scale;
     const jojikScale = scales[4].scale;
     const diff = (jojikScale - musaScale) / musaScale;
-    expect(diff).toBeGreaterThan(0.8); // Jojik should be 80%+ larger than Musa
+    expect(diff).toBeGreaterThan(0.25); // Jojik should be 25%+ larger than Musa
   });
 
   it("should return < 1.0 for low muscle mass (Jeongbo - 32kg)", () => {
@@ -277,9 +277,8 @@ describe("calculateMuscleScaleFactor (non-linear)", () => {
     const hackerFactor = calculateMuscleScaleFactor(28); // Hacker
     const jojikFactor = calculateMuscleScaleFactor(48); // Jojik
 
-    // Jojik should be about 2.3x larger than Hacker
-    // (Reduced from 2.4x due to MIN_MUSCLE_SCALE increase from 0.45 to 0.8)
-    expect(jojikFactor / hackerFactor).toBeGreaterThan(2.3);
+    // Jojik should be about 1.55x larger than Hacker (realistic proportions)
+    expect(jojikFactor / hackerFactor).toBeGreaterThan(1.5);
   });
 });
 

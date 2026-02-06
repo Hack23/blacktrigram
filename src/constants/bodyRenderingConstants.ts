@@ -112,30 +112,32 @@ export const MUSCLE_GEOMETRY_NORMALIZATION = 1.0;
  * Base muscle amplification factor for visual differences.
  *
  * Amplifies muscle size differences between archetypes.
+ * Previous: 4.0 (caused 0.64x-1.91x range, too extreme)
+ * Current: 0.8 (produces 0.84x-1.30x range, realistic)
  *
  * @korean 근육증폭기본계수
  */
-export const MUSCLE_AMPLIFICATION_BASE = 4.0;
+export const MUSCLE_AMPLIFICATION_BASE = 0.8;
 
 /**
  * Exponent for muscle scaling curve.
  *
- * Creates non-linear scaling for dramatic visual differences.
- * Higher = more extreme differences between low and high muscle mass.
+ * Previous: 1.5 (exponential, too extreme for lean archetypes)
+ * Current: 1.0 (linear, proportional differences)
  *
  * @korean 근육증폭지수
  */
-export const MUSCLE_AMPLIFICATION_EXPONENT = 1.5;
+export const MUSCLE_AMPLIFICATION_EXPONENT = 1.0;
 
 /**
  * Minimum muscle scale factor.
  *
- * With new 1.0 base scale system, this prevents muscles from becoming
- * too small on lean archetypes. Using 0.8 for lean athletic fighters.
+ * Floor to prevent muscles from vanishing on lean archetypes.
+ * 0.82 ensures Hacker (28kg) still has visible musculature.
  *
  * @korean 최소근육크기
  */
-export const MIN_MUSCLE_SCALE = 0.8;
+export const MIN_MUSCLE_SCALE = 0.82;
 
 /**
  * Muscle contraction intensity during combat.

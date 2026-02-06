@@ -123,10 +123,13 @@ const calculateBodyThickness = (
 
   // Base 0.85, muscle adds up to +0.15, fat adds up to +0.20
   const muscleContribution = (muscleRatio - 1.0) * 0.15;
-  const fatContribution = (fatRatio - 1.0) * 0.20;
+  const fatContribution = (fatRatio - 1.0) * 0.2;
 
   // Cap at 1.20x maximum to prevent "michelin man" effect
-  return Math.max(0.75, Math.min(1.20, 0.85 + muscleContribution + fatContribution));
+  return Math.max(
+    0.75,
+    Math.min(1.2, 0.85 + muscleContribution + fatContribution),
+  );
 };
 
 /**
@@ -226,21 +229,29 @@ const getAttachmentsForItem = (
 
   switch (item.type) {
     case "torso":
-      // Main torso on spine_middle
+      // Main torso on spine_middle - wraps fully around body
       if (boneName === "spine_middle") {
-        const width =
-          (physicalAttributes.shoulderWidth / 100) * fitScale * bodyThickness;
         const height = (59 / 100) * torsoScale * 1.2; // Using base torsoLength
-        const depth = 0.08 * fitScale * bodyThickness; // Thin clothing layer
-
-        // Clothing offset = body radius + small gap + clothing half-depth (places clothing OUTSIDE body)
-        // Small gap (0.015) prevents Z-fighting with body surface
-        // Uses centralized PECTORALS_RADIUS from bodyDimensions
-        const bodyRadius = PECTORALS_RADIUS * bodyThickness;
-        const clothingOffset = bodyRadius + 0.015 + depth * 0.5;
+        // Clothing wraps around the torso using CylinderGeometry (full 360°)
+        const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale;
+        // Torso radius: average of shoulder width and pectorals depth
+        const torsoRadius =
+          ((physicalAttributes.shoulderWidth / 100) * 0.5 * bodyThickness +
+            PECTORALS_RADIUS * bodyThickness) *
+          0.5;
+        const clothingRadius = calculateClothingRadius(
+          torsoRadius,
+          1.0, // bodyThickness already applied above
+          clothingThickness,
+        );
         attachments.push({
-          geometry: new THREE.BoxGeometry(width, height, depth),
-          localOffset: new THREE.Vector3(0, 0, clothingOffset),
+          geometry: new THREE.CylinderGeometry(
+            clothingRadius * 0.95, // Slightly narrower at top (chest taper)
+            clothingRadius * 1.05, // Slightly wider at bottom (waist)
+            height,
+            16, // Smooth cylinder
+          ),
+          localOffset: new THREE.Vector3(0, 0, 0), // Centered on bone
           localRotation: new THREE.Euler(0, 0, 0),
           color: item.colorPrimary,
           emissiveColor: item.colorEmissive,
@@ -373,17 +384,22 @@ const getAttachmentsForItem = (
 
     case "belt":
       if (boneName === "pelvis") {
-        const beltWidth =
-          (physicalAttributes.shoulderWidth / 100) * 0.85 * bodyThickness;
-        const beltDepth = 0.04 * bodyThickness; // Thin belt
-
-        // Belt offset = core radius + small gap + belt half-depth
-        // Small gap prevents Z-fighting with body surface
+        // Belt wraps fully around waist using CylinderGeometry
+        const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale;
         const waistRadius = CORE_RADIUS * bodyThickness;
-        const beltOffset = waistRadius + 0.015 + beltDepth * 0.5;
+        const beltRadius = calculateClothingRadius(
+          waistRadius,
+          1.0, // bodyThickness already applied
+          clothingThickness + 0.005, // Extra so belt sits outside clothing
+        );
         attachments.push({
-          geometry: new THREE.BoxGeometry(beltWidth, 0.06, beltDepth),
-          localOffset: new THREE.Vector3(0, 0, beltOffset),
+          geometry: new THREE.CylinderGeometry(
+            beltRadius,
+            beltRadius,
+            0.06, // Belt height
+            16, // Smooth cylinder
+          ),
+          localOffset: new THREE.Vector3(0, 0, 0), // Centered on bone
           localRotation: new THREE.Euler(0, 0, 0),
           color: item.colorPrimary,
           emissiveColor: item.colorEmissive,
@@ -397,21 +413,27 @@ const getAttachmentsForItem = (
 
     case "vest":
       if (boneName === "spine_middle") {
-        const width =
-          (physicalAttributes.shoulderWidth / 100) *
-          0.95 *
-          fitScale *
-          bodyThickness;
         const height = (59 / 100) * 0.75 * torsoScale;
-        const depth = 0.06 * fitScale * bodyThickness; // Thin vest layer
-
-        // Vest offset = pectorals radius + small gap + vest half-depth
-        // Slightly larger for layered look, with gap to prevent Z-fighting
-        const bodyRadius = (PECTORALS_RADIUS + 0.01) * bodyThickness;
-        const vestOffset = bodyRadius + 0.015 + depth * 0.5;
+        // Vest wraps fully around torso using CylinderGeometry
+        const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale;
+        // Vest sits slightly outside the torso clothing layer
+        const torsoRadius =
+          ((physicalAttributes.shoulderWidth / 100) * 0.5 * bodyThickness +
+            (PECTORALS_RADIUS + 0.01) * bodyThickness) *
+          0.5;
+        const vestRadius = calculateClothingRadius(
+          torsoRadius,
+          1.0, // bodyThickness already applied
+          clothingThickness + 0.008, // Extra gap for layering over shirt
+        );
         attachments.push({
-          geometry: new THREE.BoxGeometry(width, height, depth),
-          localOffset: new THREE.Vector3(0, 0, vestOffset),
+          geometry: new THREE.CylinderGeometry(
+            vestRadius * 0.97, // Slightly narrower at top
+            vestRadius * 1.03, // Slightly wider at bottom
+            height,
+            16, // Smooth cylinder
+          ),
+          localOffset: new THREE.Vector3(0, 0, 0), // Centered on bone
           localRotation: new THREE.Euler(0, 0, 0),
           color: item.colorPrimary,
           emissiveColor: item.colorEmissive,
