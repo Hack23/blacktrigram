@@ -23,28 +23,28 @@ describe("getMuscleActivationForTechnique", () => {
     it("should activate right arm muscles for jab", () => {
       const activations = getMuscleActivationForTechnique("jab");
 
-      expect(activations.get("SHOULDER_R")).toBe(0.7);
-      expect(activations.get("BICEP_R")).toBe(1.0); // Maximum flex
-      expect(activations.get("TRICEP_R")).toBe(0.8);
+      expect(activations.get("SHOULDER_R")).toBe(0.8);
+      expect(activations.get("TRICEP_R")).toBe(1.0); // Primary mover for arm extension
+      expect(activations.get("BICEP_R")).toBe(0.3); // Antagonist - stabilization only
       expect(activations.get("CORE")).toBe(0.5);
-      expect(activations.get("PECTORALS")).toBe(0.4);
+      expect(activations.get("PECTORALS")).toBe(0.5);
     });
 
     it("should activate left arm and core for cross", () => {
       const activations = getMuscleActivationForTechnique("cross");
 
-      expect(activations.get("SHOULDER_L")).toBe(0.8);
-      expect(activations.get("BICEP_L")).toBe(1.0);
-      expect(activations.get("TRICEP_L")).toBe(0.9);
+      expect(activations.get("SHOULDER_L")).toBe(0.9);
+      expect(activations.get("TRICEP_L")).toBe(1.0); // Primary mover for arm extension
+      expect(activations.get("BICEP_L")).toBe(0.3); // Antagonist - stabilization only
       expect(activations.get("CORE")).toBe(0.8); // More core rotation
-      expect(activations.get("OBLIQUES")).toBe(0.7);
+      expect(activations.get("OBLIQUES")).toBe(0.8);
     });
 
     it("should support Korean terminology for jab (정권)", () => {
       const activations = getMuscleActivationForTechnique("정권");
 
-      expect(activations.get("BICEP_R")).toBe(1.0);
-      expect(activations.get("SHOULDER_R")).toBe(0.7);
+      expect(activations.get("TRICEP_R")).toBe(1.0); // Primary mover
+      expect(activations.get("SHOULDER_R")).toBe(0.8);
     });
   });
 
@@ -142,7 +142,7 @@ describe("getMuscleActivationForTechnique", () => {
     it("should handle uppercase technique names", () => {
       const activations = getMuscleActivationForTechnique("JAB");
 
-      expect(activations.get("BICEP_R")).toBe(1.0);
+      expect(activations.get("TRICEP_R")).toBe(1.0); // Primary mover
     });
 
     it("should handle mixed case technique names", () => {
@@ -195,8 +195,8 @@ describe("MuscleActivationManager", () => {
         manager.update("jab", 100, 0.016);
       }
 
-      const rightBicepTension = manager.getTension("BICEP_R");
-      expect(rightBicepTension).toBeGreaterThan(0.5); // Should be flexing
+      const rightTricepTension = manager.getTension("TRICEP_R");
+      expect(rightTricepTension).toBeGreaterThan(0.5); // Should be extending (tricep is primary mover)
     });
 
     it("should reduce tension when stamina is low", () => {
@@ -506,18 +506,18 @@ describe("MuscleActivationManager", () => {
 
   describe("Multiple techniques in sequence", () => {
     it("should transition smoothly between techniques", () => {
-      // Jab (right arm)
+      // Jab (right arm - tricep is primary mover)
       for (let i = 0; i < 10; i++) {
         manager.update("jab", 100, 0.016);
       }
-      const jabRightArm = manager.getTension("BICEP_R");
+      const jabRightArm = manager.getTension("TRICEP_R");
 
-      // Cross (left arm)
+      // Cross (left arm - tricep is primary mover)
       for (let i = 0; i < 10; i++) {
         manager.update("cross", 100, 0.016);
       }
-      const crossLeftArm = manager.getTension("BICEP_L");
-      const crossRightArm = manager.getTension("BICEP_R");
+      const crossLeftArm = manager.getTension("TRICEP_L");
+      const crossRightArm = manager.getTension("TRICEP_R");
 
       // Right arm should have relaxed
       expect(crossRightArm).toBeLessThan(jabRightArm);

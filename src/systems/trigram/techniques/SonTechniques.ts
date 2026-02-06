@@ -275,13 +275,13 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "son_spinning_elbow",
     name: {
-      korean: "돌개팔꿈치",
+      korean: "돌려팔꿈치",
       english: "Spinning Elbow",
-      romanized: "dolgae-palkkumchi",
+      romanized: "dollyeo-palkkumchi",
     },
-    koreanName: "돌개팔꿈치",
+    koreanName: "돌려팔꿈치",
     englishName: "Spinning Elbow",
-    romanized: "dolgae-palkkumchi",
+    romanized: "dollyeo-palkkumchi",
     description: {
       korean: "회전하며 연속적으로 가하는 팔꿈치 공격",
       english: "Continuous spinning elbow strikes",
@@ -328,7 +328,9 @@ export const SON_TECHNIQUE_COUNT = SON_TECHNIQUES.length;
 /**
  * Get SON technique by ID
  */
-export function getSonTechniqueById(id: string): TrigramStanceTechnique | undefined {
+export function getSonTechniqueById(
+  id: string,
+): TrigramStanceTechnique | undefined {
   return SON_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -336,7 +338,7 @@ export function getSonTechniqueById(id: string): TrigramStanceTechnique | undefi
  * Get all SON techniques by attack type
  */
 export function getSonTechniquesByType(
-  type: CombatAttackType
+  type: CombatAttackType,
 ): readonly TrigramStanceTechnique[] {
   return SON_TECHNIQUES.filter((t) => t.type === type);
 }

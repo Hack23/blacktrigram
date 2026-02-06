@@ -87,6 +87,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Silent choking motion
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.65,
+    animationCategory: "grapple", // Type: shared category
+    animationId: "darkops_silent_carotid", // ID: unique 1-1 mapping
   },
   {
     id: "darkops_nerve_paralysis",
@@ -123,19 +125,21 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Precision nerve strike
     animationType: AnimationType.JAB,
     animationSpeed: 0.75,
+    animationCategory: "strike", // Type: shared category
+    animationId: "darkops_nerve_paralysis", // ID: unique 1-1 mapping
   },
 
   // ===== 암흑특공대 (Shadow Commando Brigade) - Demolition Tactics =====
   {
     id: "darkops_liver_disruption",
     name: {
-      korean: "간장타격",
+      korean: "간 타격",
       english: "Liver Disruption Strike",
-      romanized: "Ganjang Tagyeok",
+      romanized: "Gan Tagyeok",
     },
-    koreanName: "간장타격",
+    koreanName: "간 타격",
     englishName: "Liver Disruption Strike",
-    romanized: "Ganjang Tagyeok",
+    romanized: "Gan Tagyeok",
     description: {
       korean:
         "간을 강타하여 내부 출혈과 급격한 체력 소진 유발. 암흑특공대 폭파 전술.",
@@ -162,6 +166,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Powerful body hook
     animationType: AnimationType.HOOK,
     animationSpeed: 0.75,
+    animationCategory: "strike", // Type: shared category
+    animationId: "darkops_liver_disruption", // ID: unique 1-1 mapping
   },
   {
     id: "darkops_kidney_strike",
@@ -199,6 +205,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Short hook to kidney
     animationType: AnimationType.HOOK,
     animationSpeed: 0.75,
+    animationCategory: "strike", // Type: shared category
+    animationId: "darkops_kidney_strike", // ID: unique 1-1 mapping
   },
 
   // ===== 심야작전부대 (Nightfall Squadron) - Night Operations =====
@@ -238,6 +246,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Throat strike
     animationType: AnimationType.JAB,
     animationSpeed: 0.75,
+    animationCategory: "strike", // Type: shared category
+    animationId: "darkops_throat_strike", // ID: unique 1-1 mapping
   },
   {
     id: "darkops_solar_plexus_paralyze",
@@ -275,6 +285,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Precision thrust
     animationType: AnimationType.JAB,
     animationSpeed: 0.75,
+    animationCategory: "strike", // Type: shared category
+    animationId: "darkops_solar_plexus_paralyze", // ID: unique 1-1 mapping
   },
 
   // ===== 블랙옵스부대 (Black Ops Task Force) - Cyber-Enhanced Combat =====
@@ -314,6 +326,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Arm strike
     animationType: AnimationType.JAB,
     animationSpeed: 0.75,
+    animationCategory: "strike", // Type: shared category
+    animationId: "darkops_brachial_plexus_strike", // ID: unique 1-1 mapping
   },
   {
     id: "darkops_femoral_nerve_strike",
@@ -350,6 +364,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Low kick to thigh
     animationType: AnimationType.LOW_KICK,
     animationSpeed: 0.75,
+    animationCategory: "kick", // Type: shared category
+    animationId: "darkops_femoral_nerve_strike", // ID: unique 1-1 mapping
   },
 
   // ===== 심해침투부대 (Deep Sea Unit) - Amphibious Combat =====
@@ -389,6 +405,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Rear choke hold
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.7,
+    animationCategory: "grapple", // Type: shared category
+    animationId: "darkops_rear_choke", // ID: unique 1-1 mapping
   },
   {
     id: "darkops_spinal_strike",
@@ -426,6 +444,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Powerful back strike
     animationType: AnimationType.CROSS,
     animationSpeed: 0.75,
+    animationCategory: "strike", // Type: shared category
+    animationId: "darkops_spinal_strike", // ID: unique 1-1 mapping
   },
 
   // ===== Additional Dark Ops Techniques - Mixed Units =====
@@ -461,9 +481,11 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.24,
     critMultiplier: 2.0,
     effects: [],
-    // Animation: Jaw manipulation
-    animationType: AnimationType.WRIST_LOCK,
+    // Animation: Jaw manipulation (grapple-based dislocation)
+    animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.7,
+    animationCategory: "grapple", // Type: shared category
+    animationId: "darkops_jaw_dislocation", // ID: unique 1-1 mapping
   },
   {
     id: "darkops_temple_strike",
@@ -500,6 +522,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Temple strike
     animationType: AnimationType.HOOK,
     animationSpeed: 0.75,
+    animationCategory: "strike", // Type: shared category
+    animationId: "darkops_temple_strike", // ID: unique 1-1 mapping
   },
   {
     id: "darkops_achilles_sever",
@@ -518,7 +542,7 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.GON,
     type: CombatAttackType.KICK,
-    damageType: DamageType.SLASHING,
+    damageType: DamageType.CRUSHING,
     damage: 32,
     kiCost: 26,
     staminaCost: 28,
@@ -536,6 +560,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Low cutting kick
     animationType: AnimationType.LOW_KICK,
     animationSpeed: 0.75,
+    animationCategory: "kick", // Type: shared category
+    animationId: "darkops_achilles_sever", // ID: unique 1-1 mapping
   },
   {
     id: "darkops_ear_strike",
@@ -573,6 +599,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Double palm strike
     animationType: AnimationType.PALM_STRIKE,
     animationSpeed: 0.75,
+    animationCategory: "strike", // Type: shared category
+    animationId: "darkops_ear_strike", // ID: unique 1-1 mapping
   },
   {
     id: "darkops_eye_gouge",
@@ -610,6 +638,8 @@ export const DARK_OPS_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Precision finger thrust
     animationType: AnimationType.JAB,
     animationSpeed: 0.75,
+    animationCategory: "strike", // Type: shared category
+    animationId: "darkops_eye_gouge", // ID: unique 1-1 mapping
   },
 ] as const;
 
@@ -705,7 +735,7 @@ export const DARK_OPS_TECHNIQUE_COUNT = DARK_OPS_TECHNIQUES.length;
  * Get Dark Ops technique by ID
  */
 export function getDarkOpsTechniqueById(
-  id: string
+  id: string,
 ): KoreanTechnique | undefined {
   return DARK_OPS_TECHNIQUES.find((t) => t.id === id);
 }
@@ -714,7 +744,7 @@ export function getDarkOpsTechniqueById(
  * Get all Dark Ops techniques for a specific unit
  */
 export function getDarkOpsTechniquesByUnit(
-  unitType: keyof typeof DARK_OPS_UNITS
+  unitType: keyof typeof DARK_OPS_UNITS,
 ): readonly KoreanTechnique[] {
   // Map technique IDs to units based on prefix patterns
   const unitPrefixMap: Record<string, string[]> = {

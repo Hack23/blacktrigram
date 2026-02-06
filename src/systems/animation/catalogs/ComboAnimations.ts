@@ -436,16 +436,16 @@ export const COMBO_TEUKGONG_COUNTER_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gungdo Geupso - 궁도급소 (Clinch Vital Points)
+ * Geunjeop Geupso - 근접급소 (Clinch Vital Points)
  *
  * Close-range vital point combo from clinch.
  * Short-range strikes targeting pressure points.
  * Based on Korean traditional medicine meridians.
  *
- * @korean 궁도급소콤보애니메이션
+ * @korean 근접급소콤보애니메이션
  */
 export const COMBO_CLINCH_GEUPSO_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("combo_clinch_geupso", "궁도급소")
+  MartialArtsAnimationBuilder.create("combo_clinch_geupso", "근접급소")
     .asAttack(0.55)
     .withClinch()
     .clinchGrab(0.1)

@@ -216,11 +216,11 @@ describe("LateralityTransform", () => {
         const firstKeyframe = result.keyframes[0];
 
         // Original left hand: (0.3, 0.5, 0)
-        // Mirrored to right:  (0.3, -0.5, 0) - Y negated
+        // Mirrored to right:  (-0.3, 0.5, 0) - X negated (lateral axis)
         const mirroredRightHand = firstKeyframe.bonePositions.get("hand_R");
         expect(mirroredRightHand).toBeDefined();
-        expect(mirroredRightHand?.x).toBeCloseTo(0.3); // X preserved
-        expect(mirroredRightHand?.y).toBeCloseTo(-0.5); // Y negated
+        expect(mirroredRightHand?.x).toBeCloseTo(-0.3); // X negated (lateral mirror)
+        expect(mirroredRightHand?.y).toBeCloseTo(0.5); // Y preserved
         expect(mirroredRightHand?.z).toBeCloseTo(0); // Z preserved
       });
 

@@ -49,11 +49,11 @@ export const GON_TECHNIQUES: readonly ExtendedGonTechnique[] = [
     name: {
       korean: "대지포옹",
       english: "Earth Embrace",
-      romanized: "daeji_pooong",
+      romanized: "daeji_poong",
     },
     koreanName: "대지포옹",
     englishName: "Earth Embrace",
-    romanized: "daeji_pooong",
+    romanized: "daeji_poong",
     description: {
       korean: "대지의 힘으로 상대를 제압하는 기술",
       english: "Grappling technique using earth's power",
@@ -458,7 +458,9 @@ export const GON_TECHNIQUE_COUNT = GON_TECHNIQUES.length;
 /**
  * Get GON technique by ID
  */
-export function getGonTechniqueById(id: string): ExtendedGonTechnique | undefined {
+export function getGonTechniqueById(
+  id: string,
+): ExtendedGonTechnique | undefined {
   return GON_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -466,7 +468,7 @@ export function getGonTechniqueById(id: string): ExtendedGonTechnique | undefine
  * Get all GON techniques by attack type
  */
 export function getGonTechniquesByType(
-  type: CombatAttackType
+  type: CombatAttackType,
 ): readonly ExtendedGonTechnique[] {
   return GON_TECHNIQUES.filter((t) => t.type === type);
 }
