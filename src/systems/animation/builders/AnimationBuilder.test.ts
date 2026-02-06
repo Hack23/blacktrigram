@@ -35,14 +35,14 @@ describe("AnimationBuilder", () => {
         .withDuration(0.3)
         .withType("attack")
         .keyframe(0.0, "linear")
-          .rotate(BoneName.SHOULDER_R, 0, 0, -0.2)
-          .rotate(BoneName.ELBOW_R, 0, 0, 1.5)
-          .build()
+        .rotate(BoneName.SHOULDER_R, 0, 0, -0.2)
+        .rotate(BoneName.ELBOW_R, 0, 0, 1.5)
+        .build()
         .keyframe(0.15, "ease-out")
-          .rotate(BoneName.SHOULDER_R, 0, 0, 0.5)
-          .rotate(BoneName.ELBOW_R, 0, 0, 0)
-          .position(BoneName.HAND_R, 0, 0, 0.8)
-          .build()
+        .rotate(BoneName.SHOULDER_R, 0, 0, 0.5)
+        .rotate(BoneName.ELBOW_R, 0, 0, 0)
+        .position(BoneName.HAND_R, 0, 0, 0.8)
+        .build()
         .build();
 
       expect(animation.keyframes).toHaveLength(2);
@@ -55,7 +55,7 @@ describe("AnimationBuilder", () => {
 
     it("should allow adding pre-built keyframes", () => {
       const guardKeyframe = KeyframeFactories.guardReturn(0.3);
-      
+
       const animation = AnimationBuilder.create("combo")
         .withDuration(0.5)
         .addKeyframe(guardKeyframe)
@@ -80,7 +80,7 @@ describe("AnimationBuilder", () => {
   describe("method chaining", () => {
     it("should support method chaining", () => {
       const builder = AnimationBuilder.create("test");
-      
+
       const result1 = builder.withDuration(1.0);
       const result2 = result1.withLoop(true);
       const result3 = result2.withType("movement");
@@ -204,13 +204,14 @@ describe("BoneRotationHelpers", () => {
   });
 
   describe("kneeBend", () => {
-    it("should create knee rotation", () => {
+    it("should create knee rotation on X axis (flexion)", () => {
       const bend = Math.PI / 3;
       const rotation = BoneRotationHelpers.kneeBend("R", bend);
 
-      expect(rotation.x).toBe(0);
+      // Knee flexion is on X axis (negative = bend), Y and Z should be 0
+      expect(rotation.x).toBe(-bend);
       expect(rotation.y).toBe(0);
-      expect(rotation.z).toBe(bend);
+      expect(rotation.z).toBe(0);
     });
 
     it("should be same for both legs (symmetric)", () => {
@@ -218,7 +219,7 @@ describe("BoneRotationHelpers", () => {
       const leftKnee = BoneRotationHelpers.kneeBend("L", bend);
       const rightKnee = BoneRotationHelpers.kneeBend("R", bend);
 
-      expect(leftKnee.z).toBe(rightKnee.z);
+      expect(leftKnee.x).toBe(rightKnee.x);
     });
   });
 });
@@ -230,34 +231,34 @@ describe("Integration", () => {
       .withDuration(0.3)
       .withType("attack")
       .keyframe(0.0, "linear")
-        .rotate(
-          BoneName.SHOULDER_R,
-          ...BoneRotationHelpers.shoulderExtension("R", -0.2).toArray()
-        )
-        .rotate(
-          BoneName.ELBOW_R,
-          ...BoneRotationHelpers.elbowBend("R", 1.5).toArray()
-        )
-        .build()
+      .rotate(
+        BoneName.SHOULDER_R,
+        ...BoneRotationHelpers.shoulderExtension("R", -0.2).toArray(),
+      )
+      .rotate(
+        BoneName.ELBOW_R,
+        ...BoneRotationHelpers.elbowBend("R", 1.5).toArray(),
+      )
+      .build()
       .addKeyframe(KeyframeFactories.rotateTorso(0.1, 0.3, "ease-out"))
       .keyframe(0.15, "linear")
-        .rotate(
-          BoneName.SHOULDER_R,
-          ...BoneRotationHelpers.shoulderExtension("R", 0.5).toArray()
-        )
-        .rotate(
-          BoneName.ELBOW_R,
-          ...BoneRotationHelpers.elbowBend("R", 0).toArray()
-        )
-        .position(BoneName.HAND_R, 0, 0, 0.8)
-        .build()
+      .rotate(
+        BoneName.SHOULDER_R,
+        ...BoneRotationHelpers.shoulderExtension("R", 0.5).toArray(),
+      )
+      .rotate(
+        BoneName.ELBOW_R,
+        ...BoneRotationHelpers.elbowBend("R", 0).toArray(),
+      )
+      .position(BoneName.HAND_R, 0, 0, 0.8)
+      .build()
       .addKeyframe(KeyframeFactories.guardReturn(0.3))
       .build();
 
     expect(animation.name).toBe("enhanced_jab");
     expect(animation.keyframes).toHaveLength(4);
     expect(animation.duration).toBe(0.3);
-    
+
     // Verify structure
     expect(animation.keyframes[0].time).toBe(0.0);
     expect(animation.keyframes[1].time).toBe(0.1);

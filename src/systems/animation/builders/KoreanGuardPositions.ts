@@ -122,13 +122,13 @@ export const HIGH_GUARD: GuardPosition = {
       "High guard protecting head and face. Fists at temple level with elbows bent tight.",
   },
   left: {
-    shoulder: [toRadians(-15), toRadians(0), toRadians(10)] as const,
-    elbow: [toRadians(0), toRadians(0), toRadians(-110)] as const,
+    shoulder: [toRadians(-30), toRadians(-25), toRadians(10)] as const,
+    elbow: [toRadians(0), toRadians(0), toRadians(-120)] as const,
     wrist: [toRadians(0), toRadians(0), toRadians(0)] as const,
   },
   right: {
-    shoulder: [toRadians(-15), toRadians(0), toRadians(-10)] as const,
-    elbow: [toRadians(0), toRadians(0), toRadians(110)] as const,
+    shoulder: [toRadians(-30), toRadians(25), toRadians(-10)] as const,
+    elbow: [toRadians(0), toRadians(0), toRadians(120)] as const,
     wrist: [toRadians(0), toRadians(0), toRadians(0)] as const,
   },
   height: "temple_level",
@@ -173,13 +173,13 @@ export const MIDDLE_GUARD: GuardPosition = {
       "Middle guard protecting chest and solar plexus. Elbows bent at 90° protecting torso.",
   },
   left: {
-    shoulder: [toRadians(-10), toRadians(0), toRadians(8)] as const,
-    elbow: [toRadians(0), toRadians(0), toRadians(-90)] as const,
+    shoulder: [toRadians(-20), toRadians(-20), toRadians(8)] as const,
+    elbow: [toRadians(0), toRadians(0), toRadians(-100)] as const,
     wrist: [toRadians(0), toRadians(0), toRadians(0)] as const,
   },
   right: {
-    shoulder: [toRadians(-10), toRadians(0), toRadians(-8)] as const,
-    elbow: [toRadians(0), toRadians(0), toRadians(90)] as const,
+    shoulder: [toRadians(-20), toRadians(20), toRadians(-8)] as const,
+    elbow: [toRadians(0), toRadians(0), toRadians(100)] as const,
     wrist: [toRadians(0), toRadians(0), toRadians(0)] as const,
   },
   height: "chest_level",
@@ -231,13 +231,13 @@ export const LOW_GUARD: GuardPosition = {
       "Low guard protecting lower body and groin. Hands at abdomen level ready for low attacks.",
   },
   left: {
-    shoulder: [toRadians(20), toRadians(0), toRadians(10)] as const,
-    elbow: [toRadians(0), toRadians(0), toRadians(-70)] as const,
+    shoulder: [toRadians(15), toRadians(-10), toRadians(12)] as const,
+    elbow: [toRadians(0), toRadians(0), toRadians(-75)] as const,
     wrist: [toRadians(0), toRadians(0), toRadians(0)] as const,
   },
   right: {
-    shoulder: [toRadians(20), toRadians(0), toRadians(-10)] as const,
-    elbow: [toRadians(0), toRadians(0), toRadians(70)] as const,
+    shoulder: [toRadians(15), toRadians(10), toRadians(-12)] as const,
+    elbow: [toRadians(0), toRadians(0), toRadians(75)] as const,
     wrist: [toRadians(0), toRadians(0), toRadians(0)] as const,
   },
   height: "abdomen_level",
@@ -283,7 +283,7 @@ export const getGuardPosition = (type: GuardPositionType): GuardPosition => {
  * @korean 자세높이에맞는방어자세
  */
 export const getGuardForStanceHeight = (
-  stanceType: "high" | "middle" | "low"
+  stanceType: "high" | "middle" | "low",
 ): GuardPosition => {
   switch (stanceType) {
     case "high":
@@ -317,7 +317,7 @@ export const getGuardForStanceHeight = (
 export const applyGuardPositionToConfig = (
   config: GuardRotatable,
   guardPosition: GuardPosition,
-  hand: "left" | "right" | "both" = "both"
+  hand: "left" | "right" | "both" = "both",
 ): void => {
   // Apply left hand guard
   if (hand === "left" || hand === "both") {
@@ -325,19 +325,19 @@ export const applyGuardPositionToConfig = (
       BoneName.SHOULDER_L,
       guardPosition.left.shoulder[0],
       guardPosition.left.shoulder[1],
-      guardPosition.left.shoulder[2]
+      guardPosition.left.shoulder[2],
     );
     config.rotate(
       BoneName.ELBOW_L,
       guardPosition.left.elbow[0],
       guardPosition.left.elbow[1],
-      guardPosition.left.elbow[2]
+      guardPosition.left.elbow[2],
     );
     config.rotate(
       BoneName.WRIST_L,
       guardPosition.left.wrist[0],
       guardPosition.left.wrist[1],
-      guardPosition.left.wrist[2]
+      guardPosition.left.wrist[2],
     );
   }
 
@@ -347,19 +347,19 @@ export const applyGuardPositionToConfig = (
       BoneName.SHOULDER_R,
       guardPosition.right.shoulder[0],
       guardPosition.right.shoulder[1],
-      guardPosition.right.shoulder[2]
+      guardPosition.right.shoulder[2],
     );
     config.rotate(
       BoneName.ELBOW_R,
       guardPosition.right.elbow[0],
       guardPosition.right.elbow[1],
-      guardPosition.right.elbow[2]
+      guardPosition.right.elbow[2],
     );
     config.rotate(
       BoneName.WRIST_R,
       guardPosition.right.wrist[0],
       guardPosition.right.wrist[1],
-      guardPosition.right.wrist[2]
+      guardPosition.right.wrist[2],
     );
   }
 };

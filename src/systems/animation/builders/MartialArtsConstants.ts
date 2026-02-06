@@ -371,7 +371,7 @@ export const KICK_PHASES = {
    */
   EXTENSION: {
     hip: [1.7, 0, 0] as const,
-    knee: [0.1, 0, 0] as const, // Full extension
+    knee: [-0.05, 0, 0] as const, // Nearly full extension (slight bend prevents hyperextension)
     ankle: [0.5, 0, 0] as const, // Dorsiflexion
     supportKnee: [-0.35, 0, 0] as const,
     pelvis: [0.15, 0, 0] as const, // X-axis tilt
@@ -490,8 +490,9 @@ export const PUNCH_PHASES = {
     wrist: [0, 0, 0.2] as const, // Fist pronated (palm-down rotation)
 
     // Opposite arm hikite - pulls back for power
+    // RIGHT-arm convention: positive Z = flexion for right elbow
     oppositeShoulder: [-0.2, 0, -0.3] as const, // Pulled back to hip
-    oppositeElbow: [0, 0, -1.1] as const, // Elbow bent, fist at hip
+    oppositeElbow: [0, 0, 1.1] as const, // Elbow bent, fist at hip (hikite)
 
     // Body rotation - hip and shoulder drive
     spineY: 0.4, // Shoulder rotation into punch
@@ -511,9 +512,10 @@ export const PUNCH_PHASES = {
     elbow: [0, 0, -0.05] as const, // Even closer to straight (~177° = 180° - 3°)
     wrist: [0, 0, 0.2] as const, // Fully pronated
 
-    // Opposite arm fully retracted
+    // Opposite arm fully retracted (hikite)
+    // RIGHT-arm convention: positive Z = flexion for right elbow
     oppositeShoulder: [-0.2, 0, -0.3] as const,
-    oppositeElbow: [0, 0, -1.1] as const,
+    oppositeElbow: [0, 0, 1.1] as const, // Elbow bent, fist at hip (hikite)
 
     // Maximum body rotation
     spineY: 0.45,
@@ -1041,82 +1043,82 @@ export enum AnimationType {
   GROUND_SWEEP_STRIKE = "ground_sweep_strike", // gon_ground_sweep_strike - Low attack
   ROOTING_TAKEDOWN = "rooting_takedown", // gon_rooting_takedown - Grounding takedown
   TAKEDOWN_COUNTER = "takedown_counter", // gon_takedown_counter - Takedown defense
-  
+
   // ═══ TECHNIQUE-SPECIFIC UNIQUE ANIMATIONS (기법별 고유 애니메이션) ═══
   // Ensures 1-1 mapping between technique ID and animation type
-  
+
   // Heavenly Fist - distinct from regular jab
   GEON_HEAVENLY_FIST = "geon_heavenly_fist", // geon_heavenly_fist - Taekwondo power punch
-  
+
   // Frontal Kick - distinct from regular front kick
   GEON_FRONTAL_KICK = "geon_frontal_kick", // geon_frontal_kick - Direct power kick
-  
+
   // Palm Strike - Geon variant
   GEON_PALM_STRIKE = "geon_palm_strike", // geon_palm_strike - Heavenly palm
-  
+
   // Gan Rock Defense - distinct from generic block
   GAN_ROCK_DEFENSE_BLOCK = "gan_rock_defense_block", // gan_rock_defense - Mountain guard
-  
-  // Gan Immovable Stance - distinct from generic block  
+
+  // Gan Immovable Stance - distinct from generic block
   GAN_IMMOVABLE_STANCE = "gan_immovable_stance", // gan_immovable_stance - Unmoving defense
-  
+
   // Gan Counter Strike - distinct from generic counter
   GAN_COUNTER_STRIKE = "gan_counter_strike", // gan_counter_strike - Mountain counter
-  
+
   // Gan Reversal - distinct from generic counter
   GAN_REVERSAL_TECHNIQUE = "gan_reversal_technique", // gan_reversal_technique - Defensive reversal
-  
+
   // Gan Mountain Lock - distinct from generic grapple
   GAN_MOUNTAIN_STANCE_LOCK = "gan_mountain_stance_lock", // gan_mountain_stance_lock - Immobilizing hold
-  
+
   // Gam Circular Parry - distinct from generic counter
   GAM_CIRCULAR_PARRY = "gam_circular_parry", // gam_circular_parry - Circular deflection
-  
+
   // Gam Redirect Throw - distinct from generic throw
   GAM_REDIRECT_THROW = "gam_redirect_throw", // gam_redirect_throw - Momentum redirection
-  
+
   // Gam Hip Throw - distinct from generic throw
   GAM_HIP_THROW = "gam_hip_throw", // gam_hip_throw - Water hip wheel
-  
+
   // Gon Earth Embrace - distinct from generic grapple
   GON_EARTH_EMBRACE = "gon_earth_embrace", // gon_earth_embrace - Ground control hold
-  
+
   // Gon Ankle Pick - distinct from generic grapple
   GON_ANKLE_PICK = "gon_ankle_pick", // gon_ankle_pick - Single leg takedown
-  
+
   // Gon Body Lock - distinct from generic grapple
   GON_BODY_LOCK_TAKEDOWN = "gon_body_lock_takedown", // gon_body_lock_takedown - Bear hug slam
-  
+
   // Gon Ssireum Throw - distinct from generic throw
   GON_SSIREUM_THROW = "gon_ssireum_throw", // gon_ssireum_throw - Korean wrestling throw
-  
+
   // Gon Sacrifice Throw - distinct from generic throw
   GON_SACRIFICE_THROW = "gon_sacrifice_throw", // gon_sacrifice_throw - Tomoe nage style
-  
+
   // Son Rhythmic Strikes - distinct from generic jab
   SON_RHYTHMIC_STRIKES = "son_rhythmic_strikes", // son_rhythmic_strikes - Wind rhythm combo
-  
+
   // Son Flowing Push - distinct from generic palm strike
   SON_FLOWING_PUSH = "son_flowing_push", // son_flowing_push - Wind wave palm
-  
+
   // Son Rapid Footwork - distinct from generic front kick
   SON_RAPID_FOOTWORK = "son_rapid_footwork", // son_rapid_footwork - Wind step kick
-  
+
   // Jin Jumping Front Kick - distinct from generic jumping kick
   JIN_JUMPING_FRONT_KICK = "jin_jumping_front_kick", // jin_jumping_front_kick - Thunder leap
-  
-  // Jin Flying Sidekick - distinct from generic jumping kick  
+
+  // Jin Flying Sidekick - distinct from generic jumping kick
   JIN_FLYING_SIDEKICK = "jin_flying_sidekick", // jin_flying_sidekick - Explosive aerial kick
-  
+
   // Tae Wrist Lock - distinct from generic wrist lock
   TAE_WRIST_LOCK = "tae_wrist_lock", // tae_wrist_lock - Flowing joint manipulation
-  
+
   // Gam Wrist Twist - distinct from generic wrist lock
   GAM_WRIST_TWIST_COUNTER = "gam_wrist_twist_counter", // gam_wrist_twist_counter - Water redirection lock
-  
+
   // Son Sweeping Low Kick - distinct from generic low kick
   SON_SWEEPING_LOW_KICK = "son_sweeping_low_kick", // son_sweeping_low_kick - Wind sweep
-  
+
   // Gon Leg Sweep - distinct from generic low kick
   GON_LEG_SWEEP = "gon_leg_sweep", // gon_leg_sweep - Earth grounding sweep
 

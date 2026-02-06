@@ -77,14 +77,14 @@ describe("Korean Guard Positions (막기자세)", () => {
 
     it("should have symmetric arm positions", () => {
       const toRadians = (deg: number) => (deg * Math.PI) / 180;
-      
-      // Shoulders should be raised (~15°)
-      expect(HIGH_GUARD.left.shoulder[0]).toBeCloseTo(toRadians(-15), 2);
-      expect(HIGH_GUARD.right.shoulder[0]).toBeCloseTo(toRadians(-15), 2);
-      
-      // Elbows should be bent tight (~110°)
-      expect(HIGH_GUARD.left.elbow[2]).toBeCloseTo(toRadians(-110), 2);
-      expect(HIGH_GUARD.right.elbow[2]).toBeCloseTo(toRadians(110), 2);
+
+      // Shoulders should be raised (~30° elevation with internal rotation)
+      expect(HIGH_GUARD.left.shoulder[0]).toBeCloseTo(toRadians(-30), 2);
+      expect(HIGH_GUARD.right.shoulder[0]).toBeCloseTo(toRadians(-30), 2);
+
+      // Elbows should be bent tight (~120°)
+      expect(HIGH_GUARD.left.elbow[2]).toBeCloseTo(toRadians(-120), 2);
+      expect(HIGH_GUARD.right.elbow[2]).toBeCloseTo(toRadians(120), 2);
     });
 
     it("should have left and right arms with opposite signs", () => {
@@ -114,10 +114,10 @@ describe("Korean Guard Positions (막기자세)", () => {
 
     it("should have elbows at 90 degrees", () => {
       const toRadians = (deg: number) => (deg * Math.PI) / 180;
-      
-      // Elbows should be at classic 90° guard position
-      expect(MIDDLE_GUARD.left.elbow[2]).toBeCloseTo(toRadians(-90), 2);
-      expect(MIDDLE_GUARD.right.elbow[2]).toBeCloseTo(toRadians(90), 2);
+
+      // Elbows should be at ~100° guard position (tighter than basic 90°)
+      expect(MIDDLE_GUARD.left.elbow[2]).toBeCloseTo(toRadians(-100), 2);
+      expect(MIDDLE_GUARD.right.elbow[2]).toBeCloseTo(toRadians(100), 2);
     });
 
     it("should be the most versatile guard position", () => {
@@ -145,14 +145,14 @@ describe("Korean Guard Positions (막기자세)", () => {
 
     it("should have shoulders more forward", () => {
       const toRadians = (deg: number) => (deg * Math.PI) / 180;
-      
-      // Shoulders should be forward (~20°) for low guard
-      expect(LOW_GUARD.left.shoulder[0]).toBeCloseTo(toRadians(20), 2);
-      expect(LOW_GUARD.right.shoulder[0]).toBeCloseTo(toRadians(20), 2);
-      
-      // Elbows should be bent wider (~70°)
-      expect(LOW_GUARD.left.elbow[2]).toBeCloseTo(toRadians(-70), 2);
-      expect(LOW_GUARD.right.elbow[2]).toBeCloseTo(toRadians(70), 2);
+
+      // Shoulders should be forward (~15°) for low guard
+      expect(LOW_GUARD.left.shoulder[0]).toBeCloseTo(toRadians(15), 2);
+      expect(LOW_GUARD.right.shoulder[0]).toBeCloseTo(toRadians(15), 2);
+
+      // Elbows should be bent wider (~75°)
+      expect(LOW_GUARD.left.elbow[2]).toBeCloseTo(toRadians(-75), 2);
+      expect(LOW_GUARD.right.elbow[2]).toBeCloseTo(toRadians(75), 2);
     });
   });
 
@@ -161,11 +161,11 @@ describe("Korean Guard Positions (막기자세)", () => {
       const highGuard = getGuardPosition("HIGH_GUARD");
       expect(highGuard).toBe(HIGH_GUARD);
       expect(highGuard.korean).toBe("상단막기");
-      
+
       const middleGuard = getGuardPosition("MIDDLE_GUARD");
       expect(middleGuard).toBe(MIDDLE_GUARD);
       expect(middleGuard.korean).toBe("중단막기");
-      
+
       const lowGuard = getGuardPosition("LOW_GUARD");
       expect(lowGuard).toBe(LOW_GUARD);
       expect(lowGuard.korean).toBe("하단막기");
@@ -174,10 +174,10 @@ describe("Korean Guard Positions (막기자세)", () => {
     it("should get appropriate guard for stance height", () => {
       const highStanceGuard = getGuardForStanceHeight("high");
       expect(highStanceGuard).toBe(HIGH_GUARD);
-      
+
       const middleStanceGuard = getGuardForStanceHeight("middle");
       expect(middleStanceGuard).toBe(MIDDLE_GUARD);
-      
+
       const lowStanceGuard = getGuardForStanceHeight("low");
       expect(lowStanceGuard).toBe(LOW_GUARD);
     });
@@ -191,17 +191,25 @@ describe("Korean Guard Positions (막기자세)", () => {
         expect(guard.left.shoulder.length).toBe(3);
         expect(guard.left.elbow.length).toBe(3);
         expect(guard.left.wrist.length).toBe(3);
-        
+
         // Right arm rotations
         expect(guard.right.shoulder.length).toBe(3);
         expect(guard.right.elbow.length).toBe(3);
         expect(guard.right.wrist.length).toBe(3);
-        
+
         // Rotation values should be in reasonable range (radians)
-        for (const value of [...guard.left.shoulder, ...guard.left.elbow, ...guard.left.wrist]) {
+        for (const value of [
+          ...guard.left.shoulder,
+          ...guard.left.elbow,
+          ...guard.left.wrist,
+        ]) {
           expect(Math.abs(value)).toBeLessThanOrEqual(Math.PI);
         }
-        for (const value of [...guard.right.shoulder, ...guard.right.elbow, ...guard.right.wrist]) {
+        for (const value of [
+          ...guard.right.shoulder,
+          ...guard.right.elbow,
+          ...guard.right.wrist,
+        ]) {
           expect(Math.abs(value)).toBeLessThanOrEqual(Math.PI);
         }
       }
@@ -211,10 +219,14 @@ describe("Korean Guard Positions (막기자세)", () => {
       // For all guards, left and right arms should be mirrored on Z-axis
       for (const guard of Object.values(KOREAN_GUARD_POSITIONS)) {
         // Shoulder Z rotations should be opposite signs
-        expect(Math.sign(guard.left.shoulder[2])).toBe(-Math.sign(guard.right.shoulder[2]));
-        
+        expect(Math.sign(guard.left.shoulder[2])).toBe(
+          -Math.sign(guard.right.shoulder[2]),
+        );
+
         // Elbow Z rotations should be opposite signs
-        expect(Math.sign(guard.left.elbow[2])).toBe(-Math.sign(guard.right.elbow[2]));
+        expect(Math.sign(guard.left.elbow[2])).toBe(
+          -Math.sign(guard.right.elbow[2]),
+        );
       }
     });
   });
@@ -223,26 +235,26 @@ describe("Korean Guard Positions (막기자세)", () => {
     it("should follow traditional Taekwondo guard principles", () => {
       // High guard (상단막기) - used for overhead blocks
       expect(HIGH_GUARD.height).toBe("temple_level");
-      
+
       // Middle guard (중단막기) - most common fighting stance
       expect(MIDDLE_GUARD.height).toBe("chest_level");
-      
+
       // Low guard (하단막기) - used for low blocks and sweeps
       expect(LOW_GUARD.height).toBe("abdomen_level");
     });
 
     it("should protect vital points according to Korean martial arts", () => {
       // Should protect all three major regions
-      const hasHeadProtection = HIGH_GUARD.protects.some(area => 
-        ["head", "temple", "jaw"].includes(area)
+      const hasHeadProtection = HIGH_GUARD.protects.some((area) =>
+        ["head", "temple", "jaw"].includes(area),
       );
-      const hasTorsoProtection = MIDDLE_GUARD.protects.some(area => 
-        ["chest", "solar_plexus", "ribs", "liver"].includes(area)
+      const hasTorsoProtection = MIDDLE_GUARD.protects.some((area) =>
+        ["chest", "solar_plexus", "ribs", "liver"].includes(area),
       );
-      const hasLowerProtection = LOW_GUARD.protects.some(area => 
-        ["abdomen", "groin"].includes(area)
+      const hasLowerProtection = LOW_GUARD.protects.some((area) =>
+        ["abdomen", "groin"].includes(area),
       );
-      
+
       expect(hasHeadProtection).toBe(true);
       expect(hasTorsoProtection).toBe(true);
       expect(hasLowerProtection).toBe(true);
