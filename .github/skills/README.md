@@ -207,23 +207,28 @@ Black Trigram includes **11 comprehensive skills** organized by domain:
 ---
 
 #### 9. [korean-martial-arts-authenticity](./korean-martial-arts-authenticity/SKILL.md)
-**Purpose**: Enforce authentic Korean martial arts systems and cultural respect
+**Purpose**: Enforce authentic Korean martial arts systems (11 arts) with Dark Ops combat applications
 
 **Key Rules:**
+- All 11 Korean martial arts with proper terminology (Hapkido, Taekwondo, Taekyon, Kuk Sool Won, Tang Soo Do, Hwa Rang Do, Gumdo, Ssireum, Subak, Yudo, Gongkwon Yusul)
 - Accurate Eight Trigram system (팔괘) with correct symbols and philosophy
 - 70 vital points (급소) with anatomical precision
 - Proper Korean terminology (Revised Romanization standard)
 - Cultural context and educational tooltips
-- Respectful portrayal of traditional martial arts
+- 5 Korean special forces units with tactical integration
+- Dark Ops combat applications (silent_kill, suppression, interrogation, mobility_denial)
+- Equipment-enhanced combat (night vision +15%, cyber +25%)
 
 **Triggers:**
 - Implementing Eight Trigram stance system
 - Adding vital point targeting
-- Creating combat techniques or special moves
+- Creating combat techniques from any Korean martial art
 - Writing Korean martial arts terminology
-- Implementing damage calculations based on anatomy
+- Implementing Dark Ops special forces techniques
+- Adding tactical combat applications
+- Integrating equipment-enhanced martial arts
 
-**Standards:** Anatomical accuracy, cultural respect, I Ching authenticity
+**Standards:** Anatomical accuracy, cultural respect, I Ching authenticity, tactical realism, 11 martial arts coverage
 
 ---
 
