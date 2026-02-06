@@ -1,8 +1,8 @@
 /**
  * Unit tests for Fall Animation System
- * 
+ *
  * Tests fall direction determination, keyframe data, and impact frame logic.
- * 
+ *
  * @module systems/animation/FallAnimations.test
  * @category Animation
  * @korean 낙법애니메이션테스트
@@ -17,6 +17,7 @@ import {
   FALL_FORWARD_KEYFRAMES,
   FALL_BACKWARD_KEYFRAMES,
   FALL_SIDE_KEYFRAMES,
+  FALL_SIDE_RIGHT_KEYFRAMES,
   FALL_IMPACT_FRAMES,
 } from "./FallAnimations";
 import { TrigramStance } from "@/types/common";
@@ -47,7 +48,7 @@ describe("FallAnimations", () => {
       // Low attacks (sweeps) always cause side falls
       const fallFromFront = determineFallDirection(0, 0, "low");
       const fallFromBack = determineFallDirection(Math.PI, 0, "low");
-      
+
       expect(["side_left", "side_right"]).toContain(fallFromFront);
       expect(["side_left", "side_right"]).toContain(fallFromBack);
     });
@@ -68,7 +69,7 @@ describe("FallAnimations", () => {
       // Test angle wrapping
       const fallType1 = determineFallDirection(3 * Math.PI, 0, "mid");
       const fallType2 = determineFallDirection(-Math.PI, 0, "mid");
-      
+
       // Both should be rear attacks (normalized to π and -π)
       expect([fallType1, fallType2]).toContain("forward");
     });
@@ -117,15 +118,15 @@ describe("FallAnimations", () => {
     it("should return side keyframes for both left and right", () => {
       const leftKeyframes = getFallKeyframes("side_left");
       const rightKeyframes = getFallKeyframes("side_right");
-      
+
       expect(leftKeyframes).toBe(FALL_SIDE_KEYFRAMES);
-      expect(rightKeyframes).toBe(FALL_SIDE_KEYFRAMES);
-      expect(leftKeyframes).toBe(rightKeyframes); // Same keyframes, mirrored in rendering
+      expect(rightKeyframes).toBe(FALL_SIDE_RIGHT_KEYFRAMES);
+      expect(leftKeyframes.length).toBe(rightKeyframes.length); // Same number of keyframes
     });
 
     it("should have bilingual descriptions for all keyframes", () => {
       const keyframes = getFallKeyframes("forward");
-      
+
       for (const keyframe of keyframes) {
         expect(keyframe.description.korean).toBeTruthy();
         expect(keyframe.description.english).toBeTruthy();
@@ -136,16 +137,16 @@ describe("FallAnimations", () => {
 
     it("should have progressive center of mass height decrease", () => {
       const keyframes = getFallKeyframes("forward");
-      
+
       // Center of mass should generally decrease over time
       for (let i = 1; i < keyframes.length; i++) {
         const prevHeight = keyframes[i - 1].centerOfMassHeight;
         const currHeight = keyframes[i].centerOfMassHeight;
-        
+
         // Current height should be <= previous height (falling down)
         expect(currHeight).toBeLessThanOrEqual(prevHeight);
       }
-      
+
       // Final keyframe should be near ground
       const finalKeyframe = keyframes[keyframes.length - 1];
       expect(finalKeyframe.centerOfMassHeight).toBeLessThanOrEqual(0.1);
@@ -168,25 +169,22 @@ describe("FallAnimations", () => {
     it("should return impact frame for side falls", () => {
       const impactFrameLeft = getImpactFrame("side_left");
       const impactFrameRight = getImpactFrame("side_right");
-      
+
       expect(impactFrameLeft).toBe(20);
       expect(impactFrameRight).toBe(20);
       expect(impactFrameLeft).toBe(impactFrameRight); // Same impact timing
     });
 
     it("should have impact frame before final frame", () => {
-      const fallTypes: Array<"forward" | "backward" | "side_left" | "side_right"> = [
-        "forward",
-        "backward",
-        "side_left",
-        "side_right",
-      ];
-      
+      const fallTypes: Array<
+        "forward" | "backward" | "side_left" | "side_right"
+      > = ["forward", "backward", "side_left", "side_right"];
+
       for (const fallType of fallTypes) {
         const impactFrame = getImpactFrame(fallType);
         const keyframes = getFallKeyframes(fallType);
         const finalFrame = keyframes[keyframes.length - 1].frame;
-        
+
         // Impact should occur before final settling
         expect(impactFrame).toBeLessThan(finalFrame);
       }
@@ -204,7 +202,8 @@ describe("FallAnimations", () => {
     });
 
     it("should end at ground level", () => {
-      const lastKeyframe = FALL_FORWARD_KEYFRAMES[FALL_FORWARD_KEYFRAMES.length - 1];
+      const lastKeyframe =
+        FALL_FORWARD_KEYFRAMES[FALL_FORWARD_KEYFRAMES.length - 1];
       expect(lastKeyframe.centerOfMassHeight).toBeLessThanOrEqual(0.1);
     });
 
@@ -212,7 +211,7 @@ describe("FallAnimations", () => {
       for (let i = 1; i < FALL_FORWARD_KEYFRAMES.length; i++) {
         const prevRotation = FALL_FORWARD_KEYFRAMES[i - 1].torsoRotation.x;
         const currRotation = FALL_FORWARD_KEYFRAMES[i].torsoRotation.x;
-        
+
         // Forward fall = positive X rotation increase
         expect(currRotation).toBeGreaterThanOrEqual(prevRotation);
       }
@@ -220,10 +219,10 @@ describe("FallAnimations", () => {
 
     it("should include impact frame description", () => {
       const impactFrameIndex = FALL_FORWARD_KEYFRAMES.findIndex(
-        (kf) => kf.frame === 18
+        (kf) => kf.frame === 18,
       );
       expect(impactFrameIndex).toBeGreaterThan(-1);
-      
+
       const impactKeyframe = FALL_FORWARD_KEYFRAMES[impactFrameIndex];
       expect(impactKeyframe.description.korean).toContain("충격");
     });
@@ -244,15 +243,18 @@ describe("FallAnimations", () => {
     it("should have sitting phase before ground", () => {
       // Find keyframe around middle with intermediate height
       const sittingPhase = FALL_BACKWARD_KEYFRAMES.find(
-        (kf) => kf.centerOfMassHeight > 0.3 && kf.centerOfMassHeight < 0.6
+        (kf) => kf.centerOfMassHeight > 0.3 && kf.centerOfMassHeight < 0.6,
       );
       expect(sittingPhase).toBeDefined();
       expect(sittingPhase?.description.korean).toContain("앉");
     });
 
     it("should end face-up (supine)", () => {
-      const lastKeyframe = FALL_BACKWARD_KEYFRAMES[FALL_BACKWARD_KEYFRAMES.length - 1];
-      expect(lastKeyframe.description.english.toLowerCase()).toContain("supine");
+      const lastKeyframe =
+        FALL_BACKWARD_KEYFRAMES[FALL_BACKWARD_KEYFRAMES.length - 1];
+      expect(lastKeyframe.description.english.toLowerCase()).toContain(
+        "supine",
+      );
     });
   });
 
@@ -263,15 +265,15 @@ describe("FallAnimations", () => {
 
     it("should have rotation on Y and Z axes (side roll)", () => {
       const lastKeyframe = FALL_SIDE_KEYFRAMES[FALL_SIDE_KEYFRAMES.length - 1];
-      
+
       // Side fall should have significant Y and Z rotation
       expect(Math.abs(lastKeyframe.torsoRotation.y)).toBeGreaterThan(1.0);
       expect(Math.abs(lastKeyframe.torsoRotation.z)).toBeGreaterThan(1.0);
     });
 
     it("should include shoulder roll phase", () => {
-      const shoulderRollPhase = FALL_SIDE_KEYFRAMES.find(
-        (kf) => kf.description.english.toLowerCase().includes("shoulder")
+      const shoulderRollPhase = FALL_SIDE_KEYFRAMES.find((kf) =>
+        kf.description.english.toLowerCase().includes("shoulder"),
       );
       expect(shoulderRollPhase).toBeDefined();
     });
@@ -286,7 +288,7 @@ describe("FallAnimations", () => {
     it("should have sequential frame numbers in forward fall", () => {
       for (let i = 1; i < FALL_FORWARD_KEYFRAMES.length; i++) {
         expect(FALL_FORWARD_KEYFRAMES[i].frame).toBeGreaterThan(
-          FALL_FORWARD_KEYFRAMES[i - 1].frame
+          FALL_FORWARD_KEYFRAMES[i - 1].frame,
         );
       }
     });
@@ -299,13 +301,15 @@ describe("FallAnimations", () => {
 
     it("should have final frame within animation duration", () => {
       // Forward: 24 frames total
-      const finalForward = FALL_FORWARD_KEYFRAMES[FALL_FORWARD_KEYFRAMES.length - 1];
+      const finalForward =
+        FALL_FORWARD_KEYFRAMES[FALL_FORWARD_KEYFRAMES.length - 1];
       expect(finalForward.frame).toBeLessThan(24);
-      
+
       // Backward: 30 frames total
-      const finalBackward = FALL_BACKWARD_KEYFRAMES[FALL_BACKWARD_KEYFRAMES.length - 1];
+      const finalBackward =
+        FALL_BACKWARD_KEYFRAMES[FALL_BACKWARD_KEYFRAMES.length - 1];
       expect(finalBackward.frame).toBeLessThan(30);
-      
+
       // Side: 27 frames total
       const finalSide = FALL_SIDE_KEYFRAMES[FALL_SIDE_KEYFRAMES.length - 1];
       expect(finalSide.frame).toBeLessThan(27);
