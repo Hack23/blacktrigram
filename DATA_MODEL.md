@@ -121,13 +121,14 @@ export interface KoreanText {
 }
 ```
 
-#### `Position` - 2D Spatial Coordinates
+#### `Position` - 3D Spatial Coordinates
 
 ```typescript
 // src/types/common.ts
 export interface Position {
   x: number;
   y: number;
+  z?: number; // Z-axis for 3D positioning
 }
 ```
 

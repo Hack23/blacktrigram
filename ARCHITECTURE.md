@@ -319,7 +319,7 @@ C4Component
 
 ### 📦 Asset Loader Icons
 
-- **🖼️ PixiLoader** - Framed picture for textures
+- **🖼️ TextureLoader** - Framed picture for textures
 - **🎧 AudioLoader** - Headphones for audio assets
 - **📋 TrigramDataLoader** - Clipboard for data
 - **🧬 VitalPointsDataLoader** - DNA for anatomical data
@@ -332,7 +332,7 @@ C4Component
 
 ### 🎨 Rendering Engine Icons
 
-- **🎭 PixiStage** - Theater masks for stage
+- **🎭 ThreeScene** - Theater masks for 3D scene
 - **👤 PlayerVisuals** - Bust silhouette for player
 - **👺 EnemyVisuals** - Goblin for enemy
 - **✨ ParticlesLayer** - Sparkles for effects
@@ -342,7 +342,7 @@ C4Component
 
 ## 🎮 Three.js 3D Rendering Architecture
 
-Black Trigram has **completed** its migration from PixiJS (2D rendering) to Three.js (3D rendering), achieving enhanced visual capabilities with authentic Korean martial arts theming and maintaining 60fps performance targets as of Q1 2026.
+Black Trigram uses Three.js for 3D rendering, achieving enhanced visual capabilities with authentic Korean martial arts theming and maintaining 60fps performance targets.
 
 ### 📦 Three.js Dependencies
 
@@ -365,7 +365,6 @@ graph TD
     
     subgraph "Rendering Layer"
         D[@react-three/fiber Canvas]
-        E[PixiJS 2D Renderer]
     end
     
     subgraph "Three.js 3D Scene"
@@ -1467,10 +1466,6 @@ Status: ⚠️ Below 55fps target - needs optimization
 
    - If Audio CDN fails (e.g., offline), fall back to simple beep-thump procedural sounds via `DefaultSoundGenerator.ts`.
 
-4. **🖼️ Canvas2D Fallback**
-
-   - If WebGL unavailable (older browsers), switch to Canvas 2D renderer for core gameplay (no advanced particles, simplified effects).
-
 ---
 
 ## 📊 SWOT Analysis
@@ -1830,10 +1825,10 @@ mindmap
         id1.1.1[Screens]
         id1.1.2[HUD Elements]
         id1.1.3[Controls]
-      id1.2[PixiJS Rendering]
-        id1.2.1[Sprites]
+      id1.2[Three.js 3D Rendering]
+        id1.2.1[3D Models]
         id1.2.2[Particles]
-        id1.2.3[Animations]
+        id1.2.3[Skeletal Animations]
       id1.3[UI/UX Design]
         id1.3.1[Korean Typography]
         id1.3.2[Cyberpunk Theme]
@@ -1866,9 +1861,9 @@ mindmap
         id3.3.2[Settings]
 
     id4[📦 Asset Management]
-      id4.1[PixiJS Loader]
+      id4.1[Three.js Loaders]
         id4.1.1[Texture Loading]
-        id4.1.2[Sprite Sheets]
+        id4.1.2[3D Model Loading]
       id4.2[Audio System]
         id4.2.1[Howler.js]
         id4.2.2[Web Audio API]
@@ -2301,7 +2296,7 @@ graph TD
 - ❌ No persistence
 - ❌ Limited multiplayer options
 
-### ADR-002: React + PixiJS Integration
+### ADR-002: React + Three.js Integration
 
 **Status**: Accepted  
 **Date**: 2024-01-01  
@@ -2408,7 +2403,6 @@ The Q1 2026 architecture successfully demonstrates the feasibility of authentic 
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: Standard](https://img.shields.io/badge/A-Standard-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
-**📅 Effective Date:** 2026-01-01 (Q1 2026 Baseline - Three.js Migration Complete)  
-**📝 Previous Version:** 2025-01-15 (PixiJS Architecture)  
-**⏰ Next Review:** 2026-04-12 (Q2 2026 Combat Realism Completion Review)  
+**📅 Effective Date:** 2026-01-01  
+**⏰ Next Review:** 2026-04-12  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)

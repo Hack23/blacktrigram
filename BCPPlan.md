@@ -151,7 +151,7 @@ graph TB
 
     subgraph "Technical Components"
         B -.-> B1[GitHub Pages Hosting]
-        B -.-> B2[PixiJS Rendering]
+        B -.-> B2[Three.js 3D Rendering]
         C -.-> C1[Trigram State Machine]
         C -.-> C2[Combat Physics Engine]
         D -.-> D1[Anatomical Data]
@@ -186,7 +186,7 @@ graph TB
 
 | Business Process       | Dependent Processes                    | Technical System Components          | Criticality |
 | ---------------------- | -------------------------------------- | ------------------------------------ | ----------- |
-| Combat Training        | Trigram System, Vital Point Education  | GitHub Pages, PixiJS Engine          | Critical    |
+| Combat Training        | Trigram System, Vital Point Education  | CloudFront/S3, Three.js Engine       | Critical    |
 | Eight Trigram System   | Combat Training, Physics Engine        | TypeScript State Machine, Audio CDN  | Critical    |
 | Vital Point Education  | Combat Training, Anatomical Data       | GitHub Repository, JSON Data         | High        |
 | Korean Cultural Content| Bilingual System, Audio Assets         | CDN Delivery, Font Resources         | High        |
