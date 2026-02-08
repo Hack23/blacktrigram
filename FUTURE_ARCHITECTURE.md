@@ -4,6 +4,8 @@
 
 This document outlines the evolutionary architecture roadmap for Black Trigram, transforming it from the current foundation into a comprehensive Korean martial arts combat simulator with authentic vital point targeting, realistic physics, and cultural depth.
 
+**🚨 Deployment Status Note**: As of Q1 2026, Black Trigram is deployed on AWS CloudFront + S3 multi-region with GitHub Pages disaster recovery. The AWS infrastructure previously described as "future" is now the current production deployment. This document focuses on future backend services (AWS Cognito, Lambda, DynamoDB, API Gateway) not yet implemented.
+
 ## 📚 Architecture Evolution Map
 
 <div class="documentation-map">
