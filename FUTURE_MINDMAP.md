@@ -428,7 +428,7 @@ mindmap
     Frontend Enhancements
       Framework Upgrades
         React 19+
-        PixiJS 8+
+        Three.js (Current)
         TypeScript 5+
         Vite 6+
       State Management

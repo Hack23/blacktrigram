@@ -2,6 +2,8 @@
 
 This document outlines the comprehensive security architecture for Black Trigram's evolution into a full-stack Korean martial arts combat simulator with AWS cloud infrastructure, user accounts, and advanced security services.
 
+**🚨 Deployment Status Note**: As of Q1 2026, Black Trigram uses AWS CloudFront + S3 + Route53 for frontend delivery with DDoS protection, encryption, and multi-region redundancy. This document focuses on future backend security services (AWS Cognito authentication, API Gateway, Lambda, DynamoDB, VPC architecture, GuardDuty, Security Hub) not yet implemented.
+
 ## 📑 Table of Contents
 
 - [🔐 Security Documentation Map](#-security-documentation-map)

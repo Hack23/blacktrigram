@@ -1,97 +1,170 @@
-# 🔄 Business Continuity Planning for Black Trigram (흑괘)
-
 <p align="center">
   <img src="https://hack23.com/icon-192.png" alt="Hack23 Logo" width="192" height="192">
 </p>
 
-<h1 align="center">🆘 Black Trigram (흑괘) Business Continuity Plan</h1>
+<h1 align="center">🔄 Black Trigram (흑괘) — Business Continuity Plan</h1>
 
 <p align="center">
-  <strong>⚡ Ensuring Continuous Availability of Educational Korean Martial Arts Platform</strong><br>
-  <em>🔄 Resilience • Recovery • Continuity • Frontend-Only Architecture</em>
+  <strong>🛡️ Classification-Driven Business Resilience for Korean Martial Arts Education</strong><br>
+  <em>🎯 Systematic Recovery Planning Through Enterprise-Grade Business Continuity</em>
 </p>
 
 <p align="center">
-  <a><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
-  <a><img src="https://img.shields.io/badge/Version-1.1-555?style=for-the-badge" alt="Version"/></a>
-  <a><img src="https://img.shields.io/badge/RTO-4_Hours-green?style=for-the-badge" alt="RTO"/></a>
-  <a><img src="https://img.shields.io/badge/RPO-Daily-blue?style=for-the-badge" alt="RPO"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.3-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2026--02--08-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Review-Semi_Annual-orange?style=for-the-badge" alt="Review Cycle"/></a>
 </p>
 
-**📋 Document Owner:** CEO | **📄 Version:** 1.1 | **📅 Last Updated:** 2025-11-14 (UTC)  
-**🔄 Review Cycle:** Quarterly | **⏰ Next Review:** 2026-02-14  
-**🏷️ Classification:** Public (Open Source Educational Gaming Platform)
+**📋 Document Owner:** CEO | **📄 Version:** 1.3 | **📅 Last Updated:** 2026-02-08 (UTC)  
+**🔄 Review Cycle:** Semi-Annual | **⏰ Next Review:** 2026-08-08
 
 ---
 
-## 📋 Executive Summary
+## 🎯 **Purpose Statement**
 
-This Business Continuity Plan (BCP) outlines strategies to ensure the Black Trigram Korean martial arts educational platform remains available during disruptions while maintaining the integrity and accessibility of authentic Korean martial arts education. The plan is tailored specifically for our GitHub-based frontend-only infrastructure and provides comprehensive analysis of business impacts, recovery objectives, and resilience strategies.
+**Black Trigram's** business continuity framework demonstrates how **systematic recovery planning directly enables both educational resilience and cultural preservation excellence.** Our classification-driven continuity approach serves as both operational necessity and demonstration of enterprise-grade security practices for an open-source educational gaming platform.
+
+This plan ensures Korean martial arts education can continue during and after disruptive events, based on the [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) impact analysis and recovery requirements. Our transparent continuity planning showcases how methodical preparation creates educational value through reduced downtime and enhanced service reliability for authentic Korean martial arts training.
+
+*— James Pether Sörling, CEO/Founder*
+
+---
+
+## 📊 **Business Impact-Driven Recovery Framework**
+
+### 🎯 Business Impact Analysis Integration
+
+Our business continuity planning is directly driven by the [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) business impact analysis matrix, ensuring systematic recovery prioritization for educational services:
 
 ```mermaid
 %%{
   init: {
     'theme': 'base',
     'themeVariables': {
-      'primaryColor': '#e3f2fd',
+      'primaryColor': '#1565C0',
       'primaryTextColor': '#0d47a1',
-      'lineColor': '#2979FF',
-      'secondaryColor': '#c8e6c9',
-      'tertiaryColor': '#fff3e0'
+      'lineColor': '#1565C0',
+      'secondaryColor': '#4CAF50',
+      'tertiaryColor': '#FF9800'
     }
   }
 }%%
-mindmap
-  root((🔁 Business<br>Continuity<br>Plan))
-    🔍 Business Impact Analysis
-      🎓 Educational Impact
-        📚 Learning Disruption
-        🥋 Training Access Loss
-        🌏 Cultural Preservation
-      🏢 Operational Impact
-        ⏱️ Platform Downtime
-        📉 User Experience
-        🚧 Development Disruption
-      🌐 Reputational Impact
-        🤝 Community Trust
-        🏆 Korean Cultural Authenticity
-        📱 Open Source Reputation
-      📜 Regulatory Impact
-        📝 GDPR Compliance
-        🔍 Security Standards
-        ⚠️ Educational Guidelines
-    🎯 Recovery Objectives
-      ⏱️ RTO - Recovery Time
-        🚨 Critical CDN Services
-        🔔 Build Pipeline
-        📊 Source Repository
-      📊 RPO - Recovery Point
-        💾 Source Code
-        ⚙️ Configuration
-        🎨 Static Assets
-      🔄 MTTR - Mean Time To Recover
-      ⬆️ Uptime Requirements
-    🛡️ GitHub Infrastructure
-      📂 GitHub Pages Hosting
-        🌐 Primary Deployment
-        🔄 Backup CDN Strategy
-      🗄️ GitHub Repository Storage
-        🔐 Main Repository
-        📚 Contributor Forks
-      🔄 GitHub Actions Workflows
-        ⚙️ CI/CD Pipelines
-        🧪 Automated Testing
-        🔍 Security Scanning
-    🚀 Recovery Strategies
-      💾 Code Backup & Recovery
-      📱 Platform Restoration
-      🧩 Asset Recovery
-      🔄 Service Continuity
+graph TB
+    subgraph BIA["📊 Business Impact Analysis"]
+        EDUCATIONAL[🎓 Educational Impact<br/>Learning Disruption]
+        OPERATIONAL[⚙️ Operational Impact<br/>Platform Availability]
+        REPUTATIONAL[🤝 Reputational Impact<br/>Cultural Trust]
+        TECHNICAL[💻 Technical Impact<br/>Service Degradation]
+    end
+    
+    subgraph RECOVERY["🔄 Recovery Prioritization"]
+        CRITICAL[🔴 Critical Recovery<br/>RTO < 15 minutes]
+        HIGH[🟠 High Priority<br/>RTO 15min-4 hours]
+        MEDIUM[🟡 Medium Priority<br/>RTO 4-24 hours]
+        STANDARD[🟢 Standard Recovery<br/>RTO > 24 hours]
+    end
+    
+    subgraph BUSINESS["🏢 Educational Functions"]
+        CORE[🏗️ Core Education<br/>Combat Training]
+        SUPPORT[🛠️ Support Functions<br/>Asset Delivery]
+        CONTENT[📋 Content Management<br/>Repository Updates]
+        MARKETING[📢 Community<br/>Social & Growth]
+    end
+    
+    EDUCATIONAL --> CRITICAL
+    OPERATIONAL --> HIGH
+    REPUTATIONAL --> MEDIUM
+    TECHNICAL --> HIGH
+    
+    CRITICAL --> CORE
+    HIGH --> CORE
+    HIGH --> SUPPORT
+    MEDIUM --> SUPPORT
+    STANDARD --> CONTENT
+    STANDARD --> MARKETING
+    
+    style BIA fill:#1565C0,color:#fff
+    style RECOVERY fill:#FF9800,color:#fff
+    style BUSINESS fill:#4CAF50,color:#fff
 ```
+
+### 📈 Business Impact Thresholds
+
+Based on [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) impact levels:
+
+| Business Function | 🎓 Educational Impact | ⚙️ Operational Impact | 🤝 Reputational Impact | 💻 Technical Impact | 🎯 Recovery Priority |
+|-------------------|-------------------|----------------------|----------------------|--------------------|--------------------|
+| **🥋 Combat Training Platform** | [![High](https://img.shields.io/badge/High-Complete_unavailability-orange?style=flat-square&logo=exclamation-triangle&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Critical](https://img.shields.io/badge/Critical-Complete_outage-red?style=flat-square&logo=exclamation-triangle&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![High](https://img.shields.io/badge/High-Community_concern-orange?style=flat-square&logo=newspaper&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![Critical](https://img.shields.io/badge/Critical-Complete_failure-red?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | 🔴 Critical (RTO: 15 min) |
+| **📚 Educational Content** | [![Very High](https://img.shields.io/badge/Very_High-Learning_disruption-darkred?style=flat-square&logo=book&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![High](https://img.shields.io/badge/High-Major_degradation-orange?style=flat-square&logo=trending-down&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![High](https://img.shields.io/badge/High-Cultural_authenticity-orange?style=flat-square&logo=newspaper&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![High](https://img.shields.io/badge/High-Service_degradation-orange?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | 🔴 Critical (RTO: 15 min) |
+| **🔧 Development Pipeline** | [![Moderate](https://img.shields.io/badge/Moderate-Update_delays-yellow?style=flat-square&logo=clock&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Moderate](https://img.shields.io/badge/Moderate-Partial_impact-yellow?style=flat-square&logo=trending-down&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Low](https://img.shields.io/badge/Low-Limited_visibility-lightgreen?style=flat-square&logo=newspaper&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![Moderate](https://img.shields.io/badge/Moderate-Build_delays-yellow?style=flat-square&logo=server&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | 🟡 Medium (RTO: 4-24 hrs) |
+| **📢 Community Engagement** | [![Low](https://img.shields.io/badge/Low-Minor_inconvenience-lightgreen?style=flat-square&logo=users&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Low](https://img.shields.io/badge/Low-Minor_inconvenience-lightgreen?style=flat-square&logo=trending-down&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Moderate](https://img.shields.io/badge/Moderate-Community_attention-yellow?style=flat-square&logo=newspaper&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![Low](https://img.shields.io/badge/Low-Communication_delay-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | 🟢 Standard (RTO: > 24 hrs) |
+
+---
+
+## 📊 Business Impact-Driven Decision Matrix
+
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FF9800',
+      'primaryTextColor': '#F57C00',
+      'lineColor': '#ff9800',
+      'secondaryColor': '#4CAF50',
+      'tertiaryColor': '#1565C0'
+    }
+  }
+}%%
+flowchart TD
+    INCIDENT[🚨 Service Disruption<br/>Event Detected] --> ASSESS[📊 Business Impact<br/>Assessment]
+    
+    ASSESS --> EDUCATIONAL{🎓 Educational<br/>Impact Level?}
+    ASSESS --> OPERATIONAL{⚙️ Operational<br/>Impact Level?}
+    ASSESS --> REPUTATION{🤝 Reputational<br/>Impact Level?}
+    ASSESS --> TECHNICAL{💻 Technical<br/>Impact Level?}
+    
+    EDUCATIONAL -->|Critical/Very High| IMMEDIATE[⚡ Immediate Response<br/>< 15 minutes]
+    OPERATIONAL -->|Critical| IMMEDIATE
+    TECHNICAL -->|Critical| IMMEDIATE
+    
+    EDUCATIONAL -->|High/Moderate| URGENT[🔄 Urgent Response<br/>< 1 hour]
+    OPERATIONAL -->|High| URGENT
+    REPUTATION -->|High/Moderate| URGENT
+    TECHNICAL -->|High| URGENT
+    
+    EDUCATIONAL -->|Low| STANDARD[📅 Standard Response<br/>< 24 hours]
+    OPERATIONAL -->|Moderate/Low| STANDARD
+    REPUTATION -->|Low| STANDARD
+    TECHNICAL -->|Low/Negligible| STANDARD
+    
+    IMMEDIATE --> CRITICAL_RECOVERY[🔴 Critical Recovery<br/>Full Resources<br/>AWS + GitHub Failover]
+    URGENT --> HIGH_RECOVERY[🟠 High Priority Recovery<br/>Escalated Resources<br/>Multi-region Activation]
+    STANDARD --> NORMAL_RECOVERY[🟢 Normal Recovery<br/>Standard Resources<br/>Scheduled Maintenance]
+    
+    classDef incident fill:#D32F2F,stroke:#B71C1C,stroke-width:3px,color:#ffffff
+    classDef assessment fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:#ffffff
+    classDef decision fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#ffffff
+    classDef immediate fill:#D32F2F,stroke:#B71C1C,stroke-width:2px,color:#ffffff
+    classDef urgent fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:#ffffff
+    classDef standard fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#ffffff
+    classDef recovery fill:#7B1FA2,stroke:#7B1FA2,stroke-width:2px,color:#ffffff
+    
+    class INCIDENT incident
+    class ASSESS assessment
+    class EDUCATIONAL,OPERATIONAL,REPUTATION,TECHNICAL decision
+    class IMMEDIATE immediate
+    class URGENT urgent
+    class STANDARD standard
+    class CRITICAL_RECOVERY,HIGH_RECOVERY,NORMAL_RECOVERY recovery
+```
+
+---
 
 ## 🎯 Purpose & Scope
 
-This Business Continuity Plan (BCP) establishes procedures to maintain and rapidly restore the Black Trigram Korean martial arts combat simulator during disruptions. As a frontend-only educational gaming platform with no backend infrastructure or persistent user data, our continuity strategy focuses on CDN availability, source code protection, and build pipeline resilience.
+This Business Continuity Plan (BCP) establishes procedures to maintain and rapidly restore the Black Trigram Korean martial arts combat simulator during disruptions. As a frontend-only educational gaming platform with no backend infrastructure or persistent user data, our continuity strategy focuses on multi-region AWS CloudFront + S3 availability, GitHub Pages disaster recovery, source code protection, and build pipeline resilience.
 
 ### **📚 Related Documentation**
 
@@ -106,11 +179,13 @@ This Business Continuity Plan (BCP) establishes procedures to maintain and rapid
 ### **🔍 Scope Definition**
 
 **Included Systems:**
-- 🌐 Static web application hosting (CDN)
+- 🌐 Multi-region AWS deployment (CloudFront + S3)
+- 🔄 GitHub Pages disaster recovery hosting
 - 📦 Source code repository (GitHub)
 - 🔧 CI/CD pipeline (GitHub Actions)
-- 🎵 Audio/visual asset delivery
+- 🎵 Audio/visual asset delivery (S3 + CloudFront CDN)
 - 🔐 Security scanning infrastructure
+- 📡 Route53 DNS with health checks
 
 **Out of Scope:**
 - Backend services (none exist - frontend-only)
@@ -149,7 +224,7 @@ graph TB
 
     subgraph "Technical Components"
         B -.-> B1[GitHub Pages Hosting]
-        B -.-> B2[PixiJS Rendering]
+        B -.-> B2[Three.js 3D Rendering]
         C -.-> C1[Trigram State Machine]
         C -.-> C2[Combat Physics Engine]
         D -.-> D1[Anatomical Data]
@@ -184,7 +259,7 @@ graph TB
 
 | Business Process       | Dependent Processes                    | Technical System Components          | Criticality |
 | ---------------------- | -------------------------------------- | ------------------------------------ | ----------- |
-| Combat Training        | Trigram System, Vital Point Education  | GitHub Pages, PixiJS Engine          | Critical    |
+| Combat Training        | Trigram System, Vital Point Education  | CloudFront/S3, Three.js Engine       | Critical    |
 | Eight Trigram System   | Combat Training, Physics Engine        | TypeScript State Machine, Audio CDN  | Critical    |
 | Vital Point Education  | Combat Training, Anatomical Data       | GitHub Repository, JSON Data         | High        |
 | Korean Cultural Content| Bilingual System, Audio Assets         | CDN Delivery, Font Resources         | High        |
@@ -206,16 +281,25 @@ graph TB
 }%%
 flowchart TB
     subgraph "GitHub Infrastructure"
-        GHP["📄 GitHub Pages\n(Frontend Hosting)"]
+        GHP["📄 GitHub Pages\n(Disaster Recovery)"]
         GHR["🗃️ GitHub Repository\n(Source Code)"]
         GHA["⚙️ GitHub Actions\n(CI/CD Pipeline)"]
-        GHCDN["🌐 GitHub CDN\n(Asset Delivery)"]
+    end
+
+    subgraph "AWS Primary Infrastructure"
+        CF["⚡ CloudFront CDN\n(Global Distribution)"]
+        S3US["💾 S3 us-east-1\n(Primary Storage)"]
+        R53["📡 Route53\n(DNS + Health Checks)"]
+    end
+
+    subgraph "AWS Backup Region"
+        S3EU["💾 S3 Backup Region\n(Redundancy)"]
     end
 
     subgraph "Browser Environment"
-        FE["🖥️ Frontend Application\n(React + PixiJS)"]
+        FE["🖥️ Frontend Application\n(React + Three.js)"]
         SS["💾 Session Storage\n(Temporary State)"]
-        AE["🎨 Audio/Visual Engine\n(Howler.js + PixiJS)"]
+        AE["🎨 Audio/Visual Engine\n(Howler.js + Three.js)"]
     end
 
     subgraph "External Dependencies"
@@ -224,19 +308,26 @@ flowchart TB
     end
 
     GHR --> GHA
+    GHA --> S3US
     GHA --> GHP
-    GHP --> FE
-    GHCDN --> FE
+    S3US --> CF
+    S3US -.backup.-> S3EU
+    R53 --> CF
+    R53 -.failover.-> GHP
+    CF --> FE
+    GHP -.DR.-> FE
     FE --> SS
     FE --> AE
     CDN --> FE
     FONT --> FE
 
     classDef github fill:#f5f5f5,stroke:#2979FF,stroke-width:2px;
+    classDef aws fill:#FF9900,stroke:#232F3E,stroke-width:2px;
     classDef browser fill:#e1f5fe,stroke:#2979FF,stroke-width:2px;
     classDef external fill:#fff3e0,stroke:#FF9800,stroke-width:2px;
 
-    class GHP,GHR,GHA,GHCDN github;
+    class GHP,GHR,GHA github;
+    class CF,S3US,S3EU,R53 aws;
     class FE,SS,AE browser;
     class CDN,FONT external;
 ```
@@ -284,13 +375,15 @@ quadrantChart
 
 #### 🏭 Operational Impact
 
-| Component              | Downtime Impact                  | Mitigation Strategy      | Recovery Time |
-| ---------------------- | -------------------------------- | ------------------------ | ------------- |
-| **CDN Hosting**        | Complete platform unavailability | Backup CDN provider      | 1 hour        |
-| **Build Pipeline**     | Delayed updates and fixes        | Manual build deployment  | 4 hours       |
-| **Source Repository**  | Development halted               | Repository restore       | 2 hours       |
-| **Asset Delivery**     | Audio/visual degradation         | Local fallback assets    | 30 minutes    |
-| **Security Scanning**  | Vulnerability detection delayed  | Manual security review   | Low priority  |
+| Component                   | Downtime Impact                  | Mitigation Strategy               | Recovery Time |
+| --------------------------- | -------------------------------- | --------------------------------- | ------------- |
+| **CloudFront CDN**          | Complete platform unavailability | GitHub Pages DR + Route53 failover| 15 minutes    |
+| **S3 Primary Storage**      | Asset delivery failure           | S3 backup region + CloudFront     | 30 minutes    |
+| **Route53 DNS**             | DNS resolution failure           | Alternative DNS providers         | 1 hour        |
+| **Build Pipeline**          | Delayed updates and fixes        | Manual build deployment           | 4 hours       |
+| **Source Repository**       | Development halted               | Repository restore                | 2 hours       |
+| **GitHub Pages (DR)**       | Secondary DR unavailable         | CloudFront still primary          | Low priority  |
+| **Security Scanning**       | Vulnerability detection delayed  | Manual security review            | Low priority  |
 
 #### 🌐 Reputational Impact
 
@@ -316,49 +409,67 @@ quadrantChart
 
 ### **⚖️ Service Level Classifications**
 
-| System Component         | Classification | Justification                                   | Recovery Priority |
-| ------------------------ | -------------- | ----------------------------------------------- | ----------------- |
-| **🌐 Web Application**   | Standard       | Educational platform, not business-critical     | High              |
-| **📦 Source Repository** | Critical       | IP protection, development continuity           | Critical          |
-| **🔧 CI/CD Pipeline**    | Standard       | Can rebuild manually if needed                  | Medium            |
-| **🎵 Static Assets**     | Standard       | Cached locally, tolerates temporary unavailable | Medium            |
-| **🔐 Security Scanning** | Standard       | Important but not blocking for recovery         | Low               |
+| System Component              | Classification | Justification                                   | Recovery Priority |
+| ----------------------------- | -------------- | ----------------------------------------------- | ----------------- |
+| **⚡ CloudFront CDN**         | Critical       | Primary content delivery, global availability   | Critical          |
+| **💾 S3 Storage (Primary)**   | Critical       | Primary asset storage, application hosting      | Critical          |
+| **📡 Route53 DNS**            | Critical       | DNS resolution, health checks, failover         | Critical          |
+| **📄 GitHub Pages (DR)**      | High           | Disaster recovery hosting                       | High              |
+| **📦 Source Repository**      | Critical       | IP protection, development continuity           | Critical          |
+| **🔧 CI/CD Pipeline**         | Standard       | Can rebuild manually if needed                  | Medium            |
+| **💾 S3 Backup Region**       | High           | Redundancy for primary storage                  | High              |
+| **🔐 Security Scanning**      | Standard       | Important but not blocking for recovery         | Low               |
 
 ### **⏱️ Recovery Time Objectives (RTO)**
 
-| Incident Severity | Target RTO | Maximum Acceptable Downtime | Justification                            |
-| ----------------- | ---------- | --------------------------- | ---------------------------------------- |
-| **Critical**      | 1 hour     | 2 hours                     | Complete CDN outage, repository loss     |
-| **High**          | 4 hours    | 8 hours                     | Build pipeline failure, asset corruption |
-| **Medium**        | 24 hours   | 48 hours                    | CI/CD issues, dependency problems        |
-| **Low**           | 1 week     | 2 weeks                     | Documentation updates, minor issues      |
+| Incident Severity | Target RTO  | Maximum Acceptable Downtime | Justification                                       |
+| ----------------- | ----------- | --------------------------- | --------------------------------------------------- |
+| **Critical**      | 15 minutes  | 1 hour                      | CloudFront/S3 outage (Route53 auto-failover to DR) |
+| **High**          | 1 hour      | 4 hours                     | DNS issues, S3 region failure                       |
+| **Medium**        | 4 hours     | 24 hours                    | Build pipeline failure, CI/CD issues                |
+| **Low**           | 1 week      | 2 weeks                     | Documentation updates, minor issues                 |
 
 ### **💾 Recovery Point Objectives (RPO)**
 
-| Data Category           | Target RPO | Backup Strategy                     | Maximum Data Loss Acceptable |
-| ----------------------- | ---------- | ----------------------------------- | ---------------------------- |
-| **Source Code**         | 0 minutes  | Git commits + GitHub backup         | Last commit only             |
-| **Build Artifacts**     | 1 day      | GitHub Actions artifacts (90 days)  | Daily builds acceptable      |
-| **Static Assets**       | 1 day      | CDN cache + repository storage      | Daily versions acceptable    |
-| **User Session Data**   | N/A        | No persistence (session-only)       | No recovery needed           |
-| **Configuration Files** | 0 minutes  | Version controlled in repository    | Last commit only             |
+| Data Category           | Target RPO | Backup Strategy                       | Maximum Data Loss Acceptable |
+| ----------------------- | ---------- | ------------------------------------- | ---------------------------- |
+| **Source Code**         | 0 minutes  | Git commits + GitHub backup           | Last commit only             |
+| **Build Artifacts**     | 1 hour     | S3 versioning + GitHub Actions cache  | Last build only              |
+| **Static Assets**       | 0 minutes  | S3 versioning + multi-region backup   | No loss acceptable           |
+| **CloudFront Config**   | 0 minutes  | Infrastructure as Code (CloudFormation)| Last deployment only         |
+| **User Session Data**   | N/A        | No persistence (session-only)         | No recovery needed           |
+| **Configuration Files** | 0 minutes  | Version controlled in repository      | Last commit only             |
 
 ---
 
 ## 🚨 Incident Response Procedures
 
-### **1. CDN Outage**
-**Detection:** Automated monitoring alerts or user reports.
+### **1. CloudFront/S3 Outage**
+**Detection:** Route53 health checks, CloudWatch alarms, or user reports.
 
 **Immediate Actions:**
-- Confirm outage via CDN status page and monitoring tools
-- Notify the Response Team (see Roles & Responsibilities)
-- Switch DNS to backup CDN provider if available
+- Confirm outage via AWS Service Health Dashboard
+- Verify Route53 health check status
+- Automatic failover to GitHub Pages DR (if Route53 configured)
+- Manual DNS update to GitHub Pages if automatic failover fails
 - Communicate status to users via status page and social media
+- Check S3 backup region availability
 
-**Escalation:** If outage exceeds 30 minutes, escalate to CTO and initiate Recovery Strategies.
+**Escalation:** If outage exceeds 15 minutes without automatic failover, escalate to CTO and manually switch DNS.
 
-### **2. Repository Compromise or Loss**
+### **2. Route53 DNS Failure**
+**Detection:** DNS resolution failures, health check alerts.
+
+**Immediate Actions:**
+- Verify AWS account status and billing
+- Check Route53 service status
+- Notify Response Team immediately
+- Prepare manual DNS updates at domain registrar
+- Communicate with AWS Support (Enterprise Support)
+
+**Escalation:** Critical incident - immediate CEO and CTO notification required.
+
+### **3. Repository Compromise or Loss**
 **Detection:** Security alert, unauthorized commit, or repository inaccessible.
 
 **Immediate Actions:**
@@ -369,7 +480,7 @@ quadrantChart
 
 **Escalation:** If data loss is confirmed, follow Recovery Strategies and notify all stakeholders.
 
-### **3. Build Pipeline Failure**
+### **4. Build Pipeline Failure**
 **Detection:** Build failures, deployment errors, or CI/CD alerts.
 
 **Immediate Actions:**
@@ -459,11 +570,27 @@ quadrantChart
 
 ## 🔧 Recovery Strategies
 
-### **CDN/Static Asset Recovery**
-- Use backup CDN provider or direct hosting from GitHub Pages
-- Restore static assets from latest repository version
-- Update DNS records as needed
-- Target recovery time: < 1 hour
+### **CloudFront + S3 Primary Recovery**
+- Verify S3 bucket accessibility and CloudFront distribution status
+- Check CloudFormation stack health and outputs
+- Invalidate CloudFront cache if stale content served
+- Restore from S3 backup region if primary region fails
+- Update Route53 health checks and DNS records
+- Target recovery time: < 15 minutes (with auto-failover)
+
+### **GitHub Pages Disaster Recovery Activation**
+- Automatic: Route53 health checks trigger DNS failover
+- Manual: Update DNS A/CNAME records to point to GitHub Pages
+- Verify GitHub Pages deployment is current
+- Communicate DR activation to users
+- Target recovery time: < 15 minutes (automatic) or < 1 hour (manual)
+
+### **S3 Multi-Region Recovery**
+- Sync missing/corrupted objects from backup region
+- Verify S3 versioning and restore previous versions if needed
+- Update CloudFront origin if switching regions
+- Test content delivery after recovery
+- Target recovery time: < 30 minutes
 
 ### **Repository Recovery**
 - Restore from GitHub backup or local clones
@@ -475,27 +602,31 @@ quadrantChart
 ### **Build Pipeline Recovery**
 - Re-run failed builds after addressing root cause
 - Use manual build and deployment scripts if CI/CD is unavailable
+- Deploy directly to S3 if GitHub Actions unavailable
 - Document incident and update pipeline configuration as needed
 - Target recovery time: < 4 hours
 
 ---
 
-## 🛡️ GitHub-Specific Resilience Strategy
+## 🛡️ Multi-Region AWS + GitHub Resilience Strategy
 
 ### 📊 Supplier Dependency Matrix
 
-| Supplier/Service       | Service Type          | Criticality | Backup Strategy             | Recovery Time |
-| ---------------------- | --------------------- | ----------- | --------------------------- | ------------- |
-| **GitHub Pages**       | Static Hosting        | Critical    | Alternative CDN (Cloudflare)| 1 hour        |
-| **GitHub Repository**  | Source Code Storage   | Critical    | Local clones, contributor forks | 30 minutes |
-| **GitHub Actions**     | CI/CD Pipeline        | High        | Manual build scripts        | 4 hours       |
-| **npm CDN**            | Dependency Delivery   | High        | Local bundling, alternative CDN | 2 hours   |
+| Supplier/Service            | Service Type          | Criticality | Backup Strategy                    | Recovery Time |
+| --------------------------- | --------------------- | ----------- | ---------------------------------- | ------------- |
+| **AWS CloudFront**          | CDN Distribution      | Critical    | GitHub Pages DR + Route53 failover | 15 minutes    |
+| **AWS S3 (us-east-1)**      | Primary Storage       | Critical    | S3 backup region sync              | 30 minutes    |
+| **AWS Route53**             | DNS + Health Checks   | Critical    | Manual DNS at registrar            | 1 hour        |
+| **GitHub Pages**            | DR Hosting            | High        | Primary AWS infrastructure         | N/A (DR only) |
+| **GitHub Repository**       | Source Code Storage   | Critical    | Local clones, contributor forks    | 30 minutes    |
+| **GitHub Actions**          | CI/CD Pipeline        | High        | Manual build scripts               | 4 hours       |
+| **npm CDN**                 | Dependency Delivery   | High        | Local bundling, alternative CDN    | 2 hours       |
 | **Font CDN (Google)**  | Korean Font Delivery  | Medium      | Self-hosted fallback fonts  | 1 hour        |
 | **Audio CDN**          | Sound Asset Delivery  | Medium      | Local audio file fallbacks  | 2 hours       |
 
 ### 🔄 Multi-Region Strategy
 
-As a frontend-only platform, our multi-region strategy focuses on CDN distribution and repository redundancy:
+Our multi-region strategy leverages AWS global infrastructure with GitHub Pages as disaster recovery:
 
 ```mermaid
 %%{
@@ -509,54 +640,70 @@ As a frontend-only platform, our multi-region strategy focuses on CDN distributi
   }
 }%%
 graph LR
-    subgraph "Primary Infrastructure"
-        GHP[GitHub Pages Primary]
-        GHCDN[GitHub CDN]
+    subgraph "AWS Primary (us-east-1)"
+        CF[CloudFront CDN<br/>Global Edge Locations]
+        S3US[S3 Primary<br/>us-east-1]
+        R53[Route53<br/>Health Checks]
     end
     
-    subgraph "Backup Infrastructure"
-        ALT[Alternative CDN<br/>Cloudflare]
-        FORK[Repository Forks<br/>Contributors]
+    subgraph "AWS Backup Region"
+        S3BACKUP[S3 Backup<br/>Multi-Region Sync]
+    end
+    
+    subgraph "GitHub DR Infrastructure"
+        GHP[GitHub Pages<br/>Disaster Recovery]
+        GHR[GitHub Repository<br/>Source Backup]
     end
     
     subgraph "Global Users"
-        US[North America Users]
-        EU[European Users]
-        AS[Asian Users]
+        US[North America]
+        EU[Europe]
+        AS[Asia Pacific]
     end
     
-    GHP --> US
-    GHP --> EU
-    GHP --> AS
+    R53 --> CF
+    CF --> S3US
+    S3US -.backup sync.-> S3BACKUP
+    R53 -.health check failover.-> GHP
+    GHR -.fork backup.-> GHP
     
-    ALT -.Backup.-> US
-    ALT -.Backup.-> EU
-    ALT -.Backup.-> AS
+    CF --> US
+    CF --> EU
+    CF --> AS
     
-    FORK -.Repository Backup.-> GHP
+    GHP -.DR failover.-> US
+    GHP -.DR failover.-> EU
+    GHP -.DR failover.-> AS
     
-    classDef primary fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:white;
-    classDef backup fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:white;
+    classDef aws fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white;
+    classDef github fill:#f5f5f5,stroke:#2979FF,stroke-width:2px;
     classDef users fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:white;
     
-    class GHP,GHCDN primary;
-    class ALT,FORK backup;
+    class CF,S3US,S3BACKUP,R53 aws;
+    class GHP,GHR github;
     class US,EU,AS users;
 ```
 
-### 💾 Data Backup Strategy for Frontend-Only Architecture
+### 💾 Data Backup Strategy
 
 **Source Code Backup:**
 - GitHub repository with full commit history
 - 50+ contributor forks provide distributed backup
 - Local development clones on team workstations
-- Automated daily repository mirrors (optional)
+- AWS CodeCommit mirror (optional for compliance)
 
 **Asset Backup:**
-- Static assets stored in repository (version controlled)
-- Audio files backed up in CDN and repository
-- Font files self-hosted with CDN fallback
+- S3 versioning enabled for all objects
+- Multi-region replication to backup S3 bucket
+- CloudFormation templates in version control
+- GitHub Pages maintains independent copy
 - No dynamic data to backup (session-only design)
+
+**Infrastructure as Code:**
+- CloudFormation stacks version controlled
+- Route53 DNS records documented in repository
+- CloudFront distributions configuration as code
+- Deployment scripts in GitHub repository
 
 ### 📈 Maturity Roadmap for Platform Resilience
 
@@ -641,3 +788,60 @@ gantt
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram with Resilience_
 
 The Black Trigram Business Continuity Plan ensures that educational access to authentic Korean martial arts training remains available even during disruptions, maintaining our commitment to preserving and teaching traditional combat techniques through modern technology.
+
+---
+
+## 📚 Related Documents
+
+This Business Continuity Plan integrates with and references the complete ISMS documentation suite:
+
+### 🏛️ Primary ISMS Framework
+
+- [📈 Information Security Strategy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Strategy.md) - Strategic direction and AI-first operations
+- [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Business impact and classification methodology
+- [🏗️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Technical security implementation patterns for Black Trigram
+- [📊 Security Metrics](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Security_Metrics.md) - Performance measurement framework
+
+### 🚨 **Operational Plans and Procedures**
+
+- [🔑 Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) - Zero-trust identity and access management
+- [🌐 Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) - Cloud-native network protection and segmentation
+- [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC practices
+- [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source business strategy and IP governance
+
+### 🚨 Operational Plans and Procedures
+
+- [🚨 Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) - Comprehensive security incident management
+- [🆘 Disaster Recovery Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Disaster_Recovery_Plan.md) - Technical system recovery and restoration
+- [💾 Backup Recovery Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) - Data protection and recovery procedures
+- [📝 Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) - Risk-controlled change processes
+- [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Systematic security testing and remediation
+
+### 📊 Asset and Risk Management
+
+- [💻 Asset Register](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Asset_Register.md) - Comprehensive information asset inventory and management
+- [📉 Risk Register](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Register.md) - Enterprise risk identification, assessment, and treatment
+- [📊 Risk Assessment Methodology](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Assessment_Methodology.md) - Quantified risk analysis framework
+
+### 🤝 Third Party & Supply Chain
+
+- [🤝 Third Party Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Third_Party_Management.md) - Systematic supplier risk management and governance
+- [🔗 Supplier Security Posture](https://github.com/Hack23/ISMS-PUBLIC/blob/main/SUPPLIER.md) - Detailed third-party security assessments and monitoring
+
+### 🏗️ Project-Specific Documentation
+
+- [🏛️ Architecture](./ARCHITECTURE.md) - Black Trigram system architecture and design
+- [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Security controls and infrastructure
+- [🔧 Workflows](./WORKFLOWS.md) - Automated build and deployment pipelines
+- [📅 End-of-Life Strategy](./End-of-Life-Strategy.md) - Long-term support and security patching
+- [🔧 Development Guide](./development.md) - Build procedures and development environment
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: High](https://img.shields.io/badge/A-High-orange?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
+**📅 Effective Date:** 2026-02-08  
+**⏰ Next Review:** 2026-08-08  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)

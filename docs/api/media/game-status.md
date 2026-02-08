@@ -1254,9 +1254,9 @@ graph LR
 
 ## 🏗️ Technical Architecture – **8.5/10**
 
-### Three.js Migration: ✅ **Complete**
+### Three.js 3D Architecture: ✅ **Complete**
 
-All screens migrated from PixiJS to Three.js:
+All screens implemented with Three.js:
 - ✅ IntroScreen → IntroScreen3D.tsx
 - ✅ CombatScreen → CombatScreen3D.tsx
 - ✅ TrainingScreen → TrainingScreen3D.tsx
