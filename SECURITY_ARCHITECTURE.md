@@ -225,39 +225,74 @@ Black Trigram security monitoring:
 
 ## 🌐 Network Security
 
-**Current Status**: ✅ HTTPS Only - Static Content Delivery with DNS Security
+**Current Status**: ✅ AWS CloudFront + Route53 - Multi-Region with GitHub Pages DR
 
 ```mermaid
 graph TD
-    subgraph "DNS & Network Security Infrastructure"
-        A[🌐 Internet] -->|"DNS Query"| B[🛡️ Route53 DNSSEC]
-        B -->|"Verified DNS"| C[⚖️ CDN/Load Balancer]
-        C -->|"HTTPS Only"| D[📦 Asset Delivery]
+    subgraph "AWS Network Security Infrastructure"
+        A[🌐 Internet] -->|"DNS Query"| B[🛡️ Route53 DNSSEC + Health Checks]
+        B -->|"Primary"| C[⚖️ CloudFront CDN]
+        B -.failover.-> D[📄 GitHub Pages DR]
+        
+        C -->|"Origin Fetch"| E[💾 S3 us-east-1 Primary]
+        E -.replication.-> F[💾 S3 Backup Region]
+        
+        C -->|"HTTPS Only"| G[📦 Asset Delivery]
+        D -.DR.-> G
 
-        E[🔒 TLS 1.3] --> C
-        F[🛡️ HTTPS Redirect] --> C
-        G[📄 Static Assets] --> D
-        H[🔐 CAA Records] --> B
-        I[🔑 DNSSEC Validation] --> B
+        H[🔒 TLS 1.3] --> C
+        I[🛡️ WAF Protection] --> C
+        J[🔐 CAA Records] --> B
+        K[🔑 DNSSEC Validation] --> B
+        L[💚 Health Checks] --> B
     end
 
     style A fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
     style B fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
-    style C fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
-    style D fill:#FFD600,stroke:#FF8F00,stroke-width:2px,color:black,font-weight:bold
-    style E,F,G,H,I fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+    style C fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white,font-weight:bold
+    style D fill:#f5f5f5,stroke:#2979FF,stroke-width:2px,font-weight:bold
+    style E,F fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white,font-weight:bold
+    style G fill:#FFD600,stroke:#FF8F00,stroke-width:2px,color:black,font-weight:bold
+    style H,I,J,K,L fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
 ```
 
 ### Current Implementation
 
-Black Trigram network security includes comprehensive DNS protection:
+Black Trigram network security includes AWS CloudFront + S3 multi-region deployment with GitHub Pages disaster recovery:
+
+#### ⚡ AWS CloudFront CDN
+
+- **✅ Global Edge Network**: 400+ Points of Presence worldwide
+- **✅ DDoS Protection**: AWS Shield Standard included (Layer 3/4 protection)
+- **✅ Origin Shield**: Additional caching layer for S3 protection
+- **✅ Cache Behavior**: Aggressive caching for static assets (1 year TTL)
+- **✅ Geo-Restriction**: Optional geographic access controls
+- **✅ Custom SSL/TLS**: ACM certificates with automatic renewal
+
+#### 💾 AWS S3 Multi-Region Storage
+
+- **✅ Primary Region**: us-east-1 for low-latency delivery
+- **✅ Backup Region**: Multi-region replication for redundancy
+- **✅ Versioning**: S3 object versioning enabled
+- **✅ Encryption**: Server-side encryption (SSE-S3)
+- **✅ Access Control**: IAM policies and bucket policies
+- **✅ Block Public Access**: Configured via CloudFront only
 
 #### 🛡️ DNS Security (Route53 + DNSSEC)
 
 - **✅ DNSSEC Enabled**: Domain Name System Security Extensions for DNS integrity
 - **✅ Route53 Hosting**: AWS Route53 provides authoritative DNS with DNSSEC support
+- **✅ Health Checks**: Active monitoring with automatic failover to GitHub Pages
 - **✅ DNS Query Validation**: Cryptographic verification of DNS responses
 - **✅ Cache Poisoning Protection**: DNSSEC prevents DNS spoofing attacks
+
+#### 📄 GitHub Pages Disaster Recovery
+
+- **✅ Automatic Failover**: Route53 health checks trigger DNS failover
+- **✅ Independent Infrastructure**: Separate from AWS for resilience
+- **✅ Parallel Deployment**: CI/CD deploys to both AWS and GitHub Pages
+- **✅ TLS Encryption**: GitHub-managed TLS certificates
+- **✅ No Configuration Required**: Automatic during AWS outages
 
 #### 🔐 Certificate Authority Authorization (CAA)
 
@@ -266,34 +301,14 @@ Black Trigram network security includes comprehensive DNS protection:
 - **✅ Certificate Misuse Prevention**: Prevents unauthorized certificate issuance
 - **✅ Compliance**: Follows CAB Forum baseline requirements
 
-#### 🌐 Transport Security
-
-- **✅ HTTPS Only**: All traffic encrypted with TLS
-- **✅ Static Content**: No dynamic server-side processing
-- **✅ CDN Delivery**: Distributed content delivery for performance
-- **✅ No Backend**: No server infrastructure to secure
-
-### DNS Security Configuration
-
-```dns
-; Example DNSSEC and CAA configuration for blacktrigram.com
-blacktrigram.com.    IN    CAA    0 issue "letsencrypt.org"
-blacktrigram.com.    IN    CAA    0 issuewild "letsencrypt.org"
-blacktrigram.com.    IN    CAA    0 iodef "mailto:security@blacktrigram.com"
-
-; DNSSEC records automatically managed by Route53
-blacktrigram.com.    IN    DNSKEY    256 3 8 (base64-encoded-key)
-blacktrigram.com.    IN    DS        12345 8 2 (sha256-hash)
-blacktrigram.com.    IN    RRSIG     DNSKEY 8 2 86400 (signature-data)
-```
-
 ### Security Benefits
 
-- **🔒 Encrypted Traffic**: All communications protected by TLS
-- **🛡️ DNS Integrity**: DNSSEC prevents DNS manipulation attacks
+- **🔒 Encrypted Traffic**: All communications protected by TLS 1.3
+- **🛡️ DDoS Protection**: AWS Shield Standard included with CloudFront
 - **📜 Certificate Control**: CAA records prevent unauthorized certificate issuance
-- **📦 Static Assets**: No dynamic content vulnerabilities
-- **🌍 Global CDN**: Distributed delivery reduces single points of failure
+- **💾 Multi-Region**: S3 replication provides geographic redundancy
+- **🌍 Global CDN**: CloudFront edge locations worldwide
+- **📡 Health Checks**: Automatic failover to GitHub Pages DR
 - **⚡ Minimal Attack Surface**: No server-side code to exploit
 
 ### DNS Security Features
@@ -364,85 +379,172 @@ Black Trigram does not use VPC infrastructure:
 
 ## 🏗️ High Availability Design
 
-**Current Status**: ❌ Not Applicable - Static Content Only
+**Current Status**: ✅ Multi-Region AWS + GitHub Pages DR
 
 ```mermaid
 graph TD
-    subgraph "Static Content Availability"
-        A[⚖️ CDN Distribution] --> B[🌐 Global Edge Locations]
-        B --> C[📦 Static Assets<br/>Cached Globally]
-
-        D[🔄 No Database<br/>Failover]
-        E[🔄 No Application<br/>Servers]
+    subgraph "AWS Multi-Region High Availability"
+        A[📡 Route53 Health Checks] --> B{Primary Healthy?}
+        B -->|Yes| C[⚖️ CloudFront CDN]
+        B -->|No| D[📄 GitHub Pages DR]
+        
+        C --> E[💾 S3 us-east-1]
+        E -.replication.-> F[💾 S3 Backup Region]
+        
+        C --> G[🌐 Global Edge Locations]
+        D --> G
+        
+        H[🔄 Automatic Failover]
+        I[💚 Active Monitoring]
     end
 
-    style A,B,C fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
-    style D,E fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
+    style A fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
+    style B fill:#f39c12,stroke:#e67e22,stroke-width:2px,color:black,font-weight:bold
+    style C fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white,font-weight:bold
+    style D fill:#f5f5f5,stroke:#2979FF,stroke-width:2px,font-weight:bold
+    style E,F fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white,font-weight:bold
+    style G fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+    style H,I fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
 ```
 
 ### Current Implementation
 
-Black Trigram availability:
+Black Trigram availability strategy:
 
-- **✅ CDN Distribution**: Global content delivery network
-- **✅ Edge Caching**: Assets cached at multiple locations
-- **🚫 No Database**: No database availability concerns
-- **🚫 No Servers**: No application servers to manage
+- **✅ CloudFront CDN**: 400+ global edge locations for low-latency delivery
+- **✅ Multi-Region S3**: Primary (us-east-1) with backup region replication
+- **✅ GitHub Pages DR**: Independent disaster recovery infrastructure
+- **✅ Route53 Health Checks**: Active monitoring with automatic failover
+- **✅ Edge Caching**: Assets cached at multiple locations worldwide
+- **✅ Zero RPO**: Real-time replication and version control
+
+### Availability Targets
+
+- **RTO (Recovery Time Objective)**: 15 minutes (automatic failover)
+- **RPO (Recovery Point Objective)**: 0 minutes (real-time replication)
+- **Uptime Target**: 99.9% (CloudFront SLA)
+- **DR Activation**: Automatic via Route53 health checks
 
 ### Availability Benefits
 
-- **🌍 Global Distribution**: Content available worldwide
-- **⚡ Edge Caching**: Fast content delivery from nearby locations
-- **🔄 Redundancy**: Multiple CDN edge locations provide redundancy
+- **🌍 Global Distribution**: Content available from nearest edge location
+- **⚡ Automatic Failover**: Route53 health checks trigger DR activation
+- **🔄 Multi-Region**: S3 replication across AWS regions
+- **📄 Independent DR**: GitHub Pages as separate infrastructure
+- **💚 Active Monitoring**: Continuous health check validation
 
 ## 💾 Data Protection
 
-**Current Status**: ✅ TLS Encryption - No Persistent Data
+**Current Status**: ✅ TLS Encryption + S3 Server-Side Encryption
 
 ```mermaid
 flowchart TD
     subgraph "Data Protection Strategy"
-        A[👤 Player] <-->|"🔒 TLS 1.3"| B[⚖️ CDN]
-        B <-->|"📦 Static Assets"| C[🖥️ Browser]
-
-        D[🔐 No Encryption<br/>At Rest Needed]
-        E[🗝️ No Secrets<br/>Management]
-        F[🔄 No Data<br/>Rotation]
+        A[👤 Player] <-->|"🔒 TLS 1.3"| B[⚖️ CloudFront CDN]
+        B <-->|"🔐 HTTPS"| C[💾 S3 with SSE]
+        C -.replication.-> D[💾 S3 Backup]
+        
+        E[🔐 Encryption at Rest<br/>SSE-S3]
+        F[🔐 Encryption in Transit<br/>TLS 1.3]
+        G[🗝️ ACM Certificates<br/>Auto-Renewal]
     end
 
     style A fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
-    style B,C fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
-    style D,E,F fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
+    style B fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white,font-weight:bold
+    style C,D fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white,font-weight:bold
+    style E,F,G fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
 ```
 
 ### Current Implementation
 
 Black Trigram data protection:
 
-- **✅ TLS Encryption**: All communications encrypted in transit
-- **✅ No Persistent Data**: No data at rest to protect
-- **✅ No Secrets**: No credentials or API keys to manage
-- **✅ Browser Security**: Data protected by browser security model
+- **✅ TLS 1.3 Encryption**: All communications encrypted in transit
+- **✅ S3 Server-Side Encryption**: SSE-S3 for assets at rest
+- **✅ S3 Versioning**: Object versioning for data recovery
+- **✅ Multi-Region Replication**: Backup region for disaster recovery
+- **✅ ACM Certificates**: AWS Certificate Manager with auto-renewal
+- **✅ No Secrets**: No credentials or API keys stored in application
 
 ### Protection Benefits
 
-- **🔒 Transit Security**: All network traffic encrypted
-- **💾 No Data Leaks**: No persistent data to compromise
-- **🔑 No Credential Theft**: No stored credentials to steal
-- **🛡️ Browser Isolation**: Each player's data isolated by browser
+- **🔒 Transit Security**: All network traffic encrypted with TLS 1.3
+- **💾 At-Rest Security**: S3 assets encrypted with SSE-S3
+- **🔑 Certificate Management**: Automated certificate renewal
+- **🛡️ Browser Isolation**: Each player's session data isolated by browser
+- **🔄 Data Recovery**: S3 versioning enables point-in-time recovery
 
 ## ☁️ AWS Security Infrastructure
 
-**Current Status**: ❌ Not Applicable - No AWS Infrastructure
+**Current Status**: ✅ Implemented - CloudFront + S3 + Route53
 
 ```mermaid
 graph TD
-    subgraph "No AWS Infrastructure"
-        A[🚫 No AWS Services]
-        B[🚫 No IAM]
-        C[🚫 No VPC]
-        D[🚫 No Security Groups]
+    subgraph "AWS Security Services"
+        A[⚖️ CloudFront CDN] --> B[🛡️ AWS Shield Standard]
+        A --> C[🔐 ACM Certificates]
+        
+        D[💾 S3 Storage] --> E[🔒 SSE-S3 Encryption]
+        D --> F[📋 IAM Policies]
+        D --> G[🔐 Block Public Access]
+        
+        H[📡 Route53 DNS] --> I[🛡️ DNSSEC]
+        H --> J[💚 Health Checks]
+        
+        K[🔑 IAM Roles] --> L[🎭 OIDC Authentication]
+        L --> M[🔧 GitHub Actions]
     end
+
+    style A,D,H fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white,font-weight:bold
+    style B,C,E,F,G,I,J,K,L,M fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+```
+
+### Current Implementation
+
+Black Trigram AWS security infrastructure:
+
+#### ⚖️ CloudFront Security
+
+- **✅ AWS Shield Standard**: DDoS protection (Layer 3/4) included
+- **✅ TLS 1.3**: Modern encryption protocol enforced
+- **✅ ACM Certificates**: Managed SSL/TLS certificates with auto-renewal
+- **✅ Origin Access Control**: S3 access only via CloudFront
+- **✅ Cache Security**: Secure caching with signed URLs support
+- **✅ Geo-Restrictions**: Optional geographic access controls
+
+#### 💾 S3 Security
+
+- **✅ Server-Side Encryption (SSE-S3)**: All objects encrypted at rest
+- **✅ Versioning Enabled**: Point-in-time recovery capability
+- **✅ Block Public Access**: All public access blocked (CloudFront-only)
+- **✅ IAM Policies**: Least-privilege access control
+- **✅ Bucket Policies**: Origin access control for CloudFront
+- **✅ Multi-Region Replication**: Encrypted replication to backup region
+
+#### 📡 Route53 Security
+
+- **✅ DNSSEC**: DNS Security Extensions enabled
+- **✅ Health Checks**: Active monitoring for failover
+- **✅ CAA Records**: Certificate Authority Authorization
+- **✅ Access Logging**: Query logging for audit trail
+- **✅ Failover Routing**: Automatic DR activation
+
+#### 🔑 IAM & Authentication
+
+- **✅ OIDC Integration**: GitHub Actions authentication without long-lived credentials
+- **✅ Role-Based Access**: `GithubWorkFlowRole` with minimal permissions
+- **✅ Least Privilege**: Scoped permissions for S3 and CloudFront operations
+- **✅ No Access Keys**: No static credentials in repository
+- **✅ Audit Trail**: CloudTrail logging for all API calls
+
+### Security Benefits
+
+- **🛡️ DDoS Protection**: AWS Shield Standard included
+- **🔐 End-to-End Encryption**: TLS 1.3 + SSE-S3
+- **🔑 No Static Credentials**: OIDC-based authentication
+- **💚 Automated Monitoring**: Health checks and alarms
+- **📜 Audit Trail**: CloudTrail for compliance
+- **🌍 Multi-Region**: Geographic redundancy
 
     style A,B,C,D fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
 ```
