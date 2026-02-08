@@ -788,3 +788,60 @@ gantt
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram with Resilience_
 
 The Black Trigram Business Continuity Plan ensures that educational access to authentic Korean martial arts training remains available even during disruptions, maintaining our commitment to preserving and teaching traditional combat techniques through modern technology.
+
+---
+
+## 📚 Related Documents
+
+This Business Continuity Plan integrates with and references the complete ISMS documentation suite:
+
+### 🏛️ Primary ISMS Framework
+
+- [📈 Information Security Strategy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Strategy.md) - Strategic direction and AI-first operations
+- [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Business impact and classification methodology
+- [🏗️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Technical security implementation patterns for Black Trigram
+- [�� Security Metrics](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Security_Metrics.md) - Performance measurement framework
+
+### 🔐 **Core Security Policies**
+
+- [🔑 Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) - Zero-trust identity and access management
+- [🌐 Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) - Cloud-native network protection and segmentation
+- [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC practices
+- [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source business strategy and IP governance
+
+### �� Operational Plans and Procedures
+
+- [🚨 Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) - Comprehensive security incident management
+- [🆘 Disaster Recovery Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Disaster_Recovery_Plan.md) - Technical system recovery and restoration
+- [💾 Backup Recovery Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) - Data protection and recovery procedures
+- [📝 Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) - Risk-controlled change processes
+- [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Systematic security testing and remediation
+
+### 📊 Asset and Risk Management
+
+- [💻 Asset Register](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Asset_Register.md) - Comprehensive information asset inventory and management
+- [📉 Risk Register](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Register.md) - Enterprise risk identification, assessment, and treatment
+- [📊 Risk Assessment Methodology](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Assessment_Methodology.md) - Quantified risk analysis framework
+
+### 🤝 Third Party & Supply Chain
+
+- [🤝 Third Party Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Third_Party_Management.md) - Systematic supplier risk management and governance
+- [🔗 Supplier Security Posture](https://github.com/Hack23/ISMS-PUBLIC/blob/main/SUPPLIER.md) - Detailed third-party security assessments and monitoring
+
+### 🏗️ Project-Specific Documentation
+
+- [🏛️ Architecture](./ARCHITECTURE.md) - Black Trigram system architecture and design
+- [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Security controls and infrastructure
+- [🔧 Workflows](./WORKFLOWS.md) - Automated build and deployment pipelines
+- [📅 End-of-Life Strategy](./End-of-Life-Strategy.md) - Long-term support and security patching
+- [🔧 Development Guide](./development.md) - Build procedures and development environment
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: High](https://img.shields.io/badge/A-High-orange?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
+**📅 Effective Date:** 2026-02-08  
+**⏰ Next Review:** 2026-08-08  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
