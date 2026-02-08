@@ -18,8 +18,8 @@
   <a><img src="https://img.shields.io/badge/RPO-Daily-blue?style=for-the-badge" alt="RPO"/></a>
 </p>
 
-**📋 Document Owner:** CEO | **📄 Version:** 1.1 | **📅 Last Updated:** 2025-11-14 (UTC)  
-**🔄 Review Cycle:** Quarterly | **⏰ Next Review:** 2026-02-14  
+**📋 Document Owner:** CEO | **📄 Version:** 1.2 | **📅 Last Updated:** 2026-02-08 (UTC)  
+**🔄 Review Cycle:** Quarterly | **⏰ Next Review:** 2026-05-08  
 **🏷️ Classification:** Public (Open Source Educational Gaming Platform)
 
 ---
@@ -91,7 +91,7 @@ mindmap
 
 ## 🎯 Purpose & Scope
 
-This Business Continuity Plan (BCP) establishes procedures to maintain and rapidly restore the Black Trigram Korean martial arts combat simulator during disruptions. As a frontend-only educational gaming platform with no backend infrastructure or persistent user data, our continuity strategy focuses on CDN availability, source code protection, and build pipeline resilience.
+This Business Continuity Plan (BCP) establishes procedures to maintain and rapidly restore the Black Trigram Korean martial arts combat simulator during disruptions. As a frontend-only educational gaming platform with no backend infrastructure or persistent user data, our continuity strategy focuses on multi-region AWS CloudFront + S3 availability, GitHub Pages disaster recovery, source code protection, and build pipeline resilience.
 
 ### **📚 Related Documentation**
 
@@ -106,11 +106,13 @@ This Business Continuity Plan (BCP) establishes procedures to maintain and rapid
 ### **🔍 Scope Definition**
 
 **Included Systems:**
-- 🌐 Static web application hosting (CDN)
+- 🌐 Multi-region AWS deployment (CloudFront + S3)
+- 🔄 GitHub Pages disaster recovery hosting
 - 📦 Source code repository (GitHub)
 - 🔧 CI/CD pipeline (GitHub Actions)
-- 🎵 Audio/visual asset delivery
+- 🎵 Audio/visual asset delivery (S3 + CloudFront CDN)
 - 🔐 Security scanning infrastructure
+- 📡 Route53 DNS with health checks
 
 **Out of Scope:**
 - Backend services (none exist - frontend-only)
@@ -206,16 +208,25 @@ graph TB
 }%%
 flowchart TB
     subgraph "GitHub Infrastructure"
-        GHP["📄 GitHub Pages\n(Frontend Hosting)"]
+        GHP["📄 GitHub Pages\n(Disaster Recovery)"]
         GHR["🗃️ GitHub Repository\n(Source Code)"]
         GHA["⚙️ GitHub Actions\n(CI/CD Pipeline)"]
-        GHCDN["🌐 GitHub CDN\n(Asset Delivery)"]
+    end
+
+    subgraph "AWS Primary Infrastructure"
+        CF["⚡ CloudFront CDN\n(Global Distribution)"]
+        S3US["💾 S3 us-east-1\n(Primary Storage)"]
+        R53["📡 Route53\n(DNS + Health Checks)"]
+    end
+
+    subgraph "AWS Backup Region"
+        S3EU["💾 S3 Backup Region\n(Redundancy)"]
     end
 
     subgraph "Browser Environment"
-        FE["🖥️ Frontend Application\n(React + PixiJS)"]
+        FE["🖥️ Frontend Application\n(React + Three.js)"]
         SS["💾 Session Storage\n(Temporary State)"]
-        AE["🎨 Audio/Visual Engine\n(Howler.js + PixiJS)"]
+        AE["🎨 Audio/Visual Engine\n(Howler.js + Three.js)"]
     end
 
     subgraph "External Dependencies"
@@ -224,19 +235,26 @@ flowchart TB
     end
 
     GHR --> GHA
+    GHA --> S3US
     GHA --> GHP
-    GHP --> FE
-    GHCDN --> FE
+    S3US --> CF
+    S3US -.backup.-> S3EU
+    R53 --> CF
+    R53 -.failover.-> GHP
+    CF --> FE
+    GHP -.DR.-> FE
     FE --> SS
     FE --> AE
     CDN --> FE
     FONT --> FE
 
     classDef github fill:#f5f5f5,stroke:#2979FF,stroke-width:2px;
+    classDef aws fill:#FF9900,stroke:#232F3E,stroke-width:2px;
     classDef browser fill:#e1f5fe,stroke:#2979FF,stroke-width:2px;
     classDef external fill:#fff3e0,stroke:#FF9800,stroke-width:2px;
 
-    class GHP,GHR,GHA,GHCDN github;
+    class GHP,GHR,GHA github;
+    class CF,S3US,S3EU,R53 aws;
     class FE,SS,AE browser;
     class CDN,FONT external;
 ```
@@ -284,13 +302,15 @@ quadrantChart
 
 #### 🏭 Operational Impact
 
-| Component              | Downtime Impact                  | Mitigation Strategy      | Recovery Time |
-| ---------------------- | -------------------------------- | ------------------------ | ------------- |
-| **CDN Hosting**        | Complete platform unavailability | Backup CDN provider      | 1 hour        |
-| **Build Pipeline**     | Delayed updates and fixes        | Manual build deployment  | 4 hours       |
-| **Source Repository**  | Development halted               | Repository restore       | 2 hours       |
-| **Asset Delivery**     | Audio/visual degradation         | Local fallback assets    | 30 minutes    |
-| **Security Scanning**  | Vulnerability detection delayed  | Manual security review   | Low priority  |
+| Component                   | Downtime Impact                  | Mitigation Strategy               | Recovery Time |
+| --------------------------- | -------------------------------- | --------------------------------- | ------------- |
+| **CloudFront CDN**          | Complete platform unavailability | GitHub Pages DR + Route53 failover| 15 minutes    |
+| **S3 Primary Storage**      | Asset delivery failure           | S3 backup region + CloudFront     | 30 minutes    |
+| **Route53 DNS**             | DNS resolution failure           | Alternative DNS providers         | 1 hour        |
+| **Build Pipeline**          | Delayed updates and fixes        | Manual build deployment           | 4 hours       |
+| **Source Repository**       | Development halted               | Repository restore                | 2 hours       |
+| **GitHub Pages (DR)**       | Secondary DR unavailable         | CloudFront still primary          | Low priority  |
+| **Security Scanning**       | Vulnerability detection delayed  | Manual security review            | Low priority  |
 
 #### 🌐 Reputational Impact
 
@@ -316,49 +336,67 @@ quadrantChart
 
 ### **⚖️ Service Level Classifications**
 
-| System Component         | Classification | Justification                                   | Recovery Priority |
-| ------------------------ | -------------- | ----------------------------------------------- | ----------------- |
-| **🌐 Web Application**   | Standard       | Educational platform, not business-critical     | High              |
-| **📦 Source Repository** | Critical       | IP protection, development continuity           | Critical          |
-| **🔧 CI/CD Pipeline**    | Standard       | Can rebuild manually if needed                  | Medium            |
-| **🎵 Static Assets**     | Standard       | Cached locally, tolerates temporary unavailable | Medium            |
-| **🔐 Security Scanning** | Standard       | Important but not blocking for recovery         | Low               |
+| System Component              | Classification | Justification                                   | Recovery Priority |
+| ----------------------------- | -------------- | ----------------------------------------------- | ----------------- |
+| **⚡ CloudFront CDN**         | Critical       | Primary content delivery, global availability   | Critical          |
+| **💾 S3 Storage (Primary)**   | Critical       | Primary asset storage, application hosting      | Critical          |
+| **📡 Route53 DNS**            | Critical       | DNS resolution, health checks, failover         | Critical          |
+| **📄 GitHub Pages (DR)**      | High           | Disaster recovery hosting                       | High              |
+| **📦 Source Repository**      | Critical       | IP protection, development continuity           | Critical          |
+| **🔧 CI/CD Pipeline**         | Standard       | Can rebuild manually if needed                  | Medium            |
+| **💾 S3 Backup Region**       | High           | Redundancy for primary storage                  | High              |
+| **🔐 Security Scanning**      | Standard       | Important but not blocking for recovery         | Low               |
 
 ### **⏱️ Recovery Time Objectives (RTO)**
 
-| Incident Severity | Target RTO | Maximum Acceptable Downtime | Justification                            |
-| ----------------- | ---------- | --------------------------- | ---------------------------------------- |
-| **Critical**      | 1 hour     | 2 hours                     | Complete CDN outage, repository loss     |
-| **High**          | 4 hours    | 8 hours                     | Build pipeline failure, asset corruption |
-| **Medium**        | 24 hours   | 48 hours                    | CI/CD issues, dependency problems        |
-| **Low**           | 1 week     | 2 weeks                     | Documentation updates, minor issues      |
+| Incident Severity | Target RTO  | Maximum Acceptable Downtime | Justification                                       |
+| ----------------- | ----------- | --------------------------- | --------------------------------------------------- |
+| **Critical**      | 15 minutes  | 1 hour                      | CloudFront/S3 outage (Route53 auto-failover to DR) |
+| **High**          | 1 hour      | 4 hours                     | DNS issues, S3 region failure                       |
+| **Medium**        | 4 hours     | 24 hours                    | Build pipeline failure, CI/CD issues                |
+| **Low**           | 1 week      | 2 weeks                     | Documentation updates, minor issues                 |
 
 ### **💾 Recovery Point Objectives (RPO)**
 
-| Data Category           | Target RPO | Backup Strategy                     | Maximum Data Loss Acceptable |
-| ----------------------- | ---------- | ----------------------------------- | ---------------------------- |
-| **Source Code**         | 0 minutes  | Git commits + GitHub backup         | Last commit only             |
-| **Build Artifacts**     | 1 day      | GitHub Actions artifacts (90 days)  | Daily builds acceptable      |
-| **Static Assets**       | 1 day      | CDN cache + repository storage      | Daily versions acceptable    |
-| **User Session Data**   | N/A        | No persistence (session-only)       | No recovery needed           |
-| **Configuration Files** | 0 minutes  | Version controlled in repository    | Last commit only             |
+| Data Category           | Target RPO | Backup Strategy                       | Maximum Data Loss Acceptable |
+| ----------------------- | ---------- | ------------------------------------- | ---------------------------- |
+| **Source Code**         | 0 minutes  | Git commits + GitHub backup           | Last commit only             |
+| **Build Artifacts**     | 1 hour     | S3 versioning + GitHub Actions cache  | Last build only              |
+| **Static Assets**       | 0 minutes  | S3 versioning + multi-region backup   | No loss acceptable           |
+| **CloudFront Config**   | 0 minutes  | Infrastructure as Code (CloudFormation)| Last deployment only         |
+| **User Session Data**   | N/A        | No persistence (session-only)         | No recovery needed           |
+| **Configuration Files** | 0 minutes  | Version controlled in repository      | Last commit only             |
 
 ---
 
 ## 🚨 Incident Response Procedures
 
-### **1. CDN Outage**
-**Detection:** Automated monitoring alerts or user reports.
+### **1. CloudFront/S3 Outage**
+**Detection:** Route53 health checks, CloudWatch alarms, or user reports.
 
 **Immediate Actions:**
-- Confirm outage via CDN status page and monitoring tools
-- Notify the Response Team (see Roles & Responsibilities)
-- Switch DNS to backup CDN provider if available
+- Confirm outage via AWS Service Health Dashboard
+- Verify Route53 health check status
+- Automatic failover to GitHub Pages DR (if Route53 configured)
+- Manual DNS update to GitHub Pages if automatic failover fails
 - Communicate status to users via status page and social media
+- Check S3 backup region availability
 
-**Escalation:** If outage exceeds 30 minutes, escalate to CTO and initiate Recovery Strategies.
+**Escalation:** If outage exceeds 15 minutes without automatic failover, escalate to CTO and manually switch DNS.
 
-### **2. Repository Compromise or Loss**
+### **2. Route53 DNS Failure**
+**Detection:** DNS resolution failures, health check alerts.
+
+**Immediate Actions:**
+- Verify AWS account status and billing
+- Check Route53 service status
+- Notify Response Team immediately
+- Prepare manual DNS updates at domain registrar
+- Communicate with AWS Support (Enterprise Support)
+
+**Escalation:** Critical incident - immediate CEO and CTO notification required.
+
+### **3. Repository Compromise or Loss**
 **Detection:** Security alert, unauthorized commit, or repository inaccessible.
 
 **Immediate Actions:**
@@ -369,7 +407,7 @@ quadrantChart
 
 **Escalation:** If data loss is confirmed, follow Recovery Strategies and notify all stakeholders.
 
-### **3. Build Pipeline Failure**
+### **4. Build Pipeline Failure**
 **Detection:** Build failures, deployment errors, or CI/CD alerts.
 
 **Immediate Actions:**
@@ -459,11 +497,27 @@ quadrantChart
 
 ## 🔧 Recovery Strategies
 
-### **CDN/Static Asset Recovery**
-- Use backup CDN provider or direct hosting from GitHub Pages
-- Restore static assets from latest repository version
-- Update DNS records as needed
-- Target recovery time: < 1 hour
+### **CloudFront + S3 Primary Recovery**
+- Verify S3 bucket accessibility and CloudFront distribution status
+- Check CloudFormation stack health and outputs
+- Invalidate CloudFront cache if stale content served
+- Restore from S3 backup region if primary region fails
+- Update Route53 health checks and DNS records
+- Target recovery time: < 15 minutes (with auto-failover)
+
+### **GitHub Pages Disaster Recovery Activation**
+- Automatic: Route53 health checks trigger DNS failover
+- Manual: Update DNS A/CNAME records to point to GitHub Pages
+- Verify GitHub Pages deployment is current
+- Communicate DR activation to users
+- Target recovery time: < 15 minutes (automatic) or < 1 hour (manual)
+
+### **S3 Multi-Region Recovery**
+- Sync missing/corrupted objects from backup region
+- Verify S3 versioning and restore previous versions if needed
+- Update CloudFront origin if switching regions
+- Test content delivery after recovery
+- Target recovery time: < 30 minutes
 
 ### **Repository Recovery**
 - Restore from GitHub backup or local clones
@@ -475,27 +529,31 @@ quadrantChart
 ### **Build Pipeline Recovery**
 - Re-run failed builds after addressing root cause
 - Use manual build and deployment scripts if CI/CD is unavailable
+- Deploy directly to S3 if GitHub Actions unavailable
 - Document incident and update pipeline configuration as needed
 - Target recovery time: < 4 hours
 
 ---
 
-## 🛡️ GitHub-Specific Resilience Strategy
+## 🛡️ Multi-Region AWS + GitHub Resilience Strategy
 
 ### 📊 Supplier Dependency Matrix
 
-| Supplier/Service       | Service Type          | Criticality | Backup Strategy             | Recovery Time |
-| ---------------------- | --------------------- | ----------- | --------------------------- | ------------- |
-| **GitHub Pages**       | Static Hosting        | Critical    | Alternative CDN (Cloudflare)| 1 hour        |
-| **GitHub Repository**  | Source Code Storage   | Critical    | Local clones, contributor forks | 30 minutes |
-| **GitHub Actions**     | CI/CD Pipeline        | High        | Manual build scripts        | 4 hours       |
-| **npm CDN**            | Dependency Delivery   | High        | Local bundling, alternative CDN | 2 hours   |
+| Supplier/Service            | Service Type          | Criticality | Backup Strategy                    | Recovery Time |
+| --------------------------- | --------------------- | ----------- | ---------------------------------- | ------------- |
+| **AWS CloudFront**          | CDN Distribution      | Critical    | GitHub Pages DR + Route53 failover | 15 minutes    |
+| **AWS S3 (us-east-1)**      | Primary Storage       | Critical    | S3 backup region sync              | 30 minutes    |
+| **AWS Route53**             | DNS + Health Checks   | Critical    | Manual DNS at registrar            | 1 hour        |
+| **GitHub Pages**            | DR Hosting            | High        | Primary AWS infrastructure         | N/A (DR only) |
+| **GitHub Repository**       | Source Code Storage   | Critical    | Local clones, contributor forks    | 30 minutes    |
+| **GitHub Actions**          | CI/CD Pipeline        | High        | Manual build scripts               | 4 hours       |
+| **npm CDN**                 | Dependency Delivery   | High        | Local bundling, alternative CDN    | 2 hours       |
 | **Font CDN (Google)**  | Korean Font Delivery  | Medium      | Self-hosted fallback fonts  | 1 hour        |
 | **Audio CDN**          | Sound Asset Delivery  | Medium      | Local audio file fallbacks  | 2 hours       |
 
 ### 🔄 Multi-Region Strategy
 
-As a frontend-only platform, our multi-region strategy focuses on CDN distribution and repository redundancy:
+Our multi-region strategy leverages AWS global infrastructure with GitHub Pages as disaster recovery:
 
 ```mermaid
 %%{
@@ -509,54 +567,70 @@ As a frontend-only platform, our multi-region strategy focuses on CDN distributi
   }
 }%%
 graph LR
-    subgraph "Primary Infrastructure"
-        GHP[GitHub Pages Primary]
-        GHCDN[GitHub CDN]
+    subgraph "AWS Primary (us-east-1)"
+        CF[CloudFront CDN<br/>Global Edge Locations]
+        S3US[S3 Primary<br/>us-east-1]
+        R53[Route53<br/>Health Checks]
     end
     
-    subgraph "Backup Infrastructure"
-        ALT[Alternative CDN<br/>Cloudflare]
-        FORK[Repository Forks<br/>Contributors]
+    subgraph "AWS Backup Region"
+        S3BACKUP[S3 Backup<br/>Multi-Region Sync]
+    end
+    
+    subgraph "GitHub DR Infrastructure"
+        GHP[GitHub Pages<br/>Disaster Recovery]
+        GHR[GitHub Repository<br/>Source Backup]
     end
     
     subgraph "Global Users"
-        US[North America Users]
-        EU[European Users]
-        AS[Asian Users]
+        US[North America]
+        EU[Europe]
+        AS[Asia Pacific]
     end
     
-    GHP --> US
-    GHP --> EU
-    GHP --> AS
+    R53 --> CF
+    CF --> S3US
+    S3US -.backup sync.-> S3BACKUP
+    R53 -.health check failover.-> GHP
+    GHR -.fork backup.-> GHP
     
-    ALT -.Backup.-> US
-    ALT -.Backup.-> EU
-    ALT -.Backup.-> AS
+    CF --> US
+    CF --> EU
+    CF --> AS
     
-    FORK -.Repository Backup.-> GHP
+    GHP -.DR failover.-> US
+    GHP -.DR failover.-> EU
+    GHP -.DR failover.-> AS
     
-    classDef primary fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:white;
-    classDef backup fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:white;
+    classDef aws fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white;
+    classDef github fill:#f5f5f5,stroke:#2979FF,stroke-width:2px;
     classDef users fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:white;
     
-    class GHP,GHCDN primary;
-    class ALT,FORK backup;
+    class CF,S3US,S3BACKUP,R53 aws;
+    class GHP,GHR github;
     class US,EU,AS users;
 ```
 
-### 💾 Data Backup Strategy for Frontend-Only Architecture
+### 💾 Data Backup Strategy
 
 **Source Code Backup:**
 - GitHub repository with full commit history
 - 50+ contributor forks provide distributed backup
 - Local development clones on team workstations
-- Automated daily repository mirrors (optional)
+- AWS CodeCommit mirror (optional for compliance)
 
 **Asset Backup:**
-- Static assets stored in repository (version controlled)
-- Audio files backed up in CDN and repository
-- Font files self-hosted with CDN fallback
+- S3 versioning enabled for all objects
+- Multi-region replication to backup S3 bucket
+- CloudFormation templates in version control
+- GitHub Pages maintains independent copy
 - No dynamic data to backup (session-only design)
+
+**Infrastructure as Code:**
+- CloudFormation stacks version controlled
+- Route53 DNS records documented in repository
+- CloudFront distributions configuration as code
+- Deployment scripts in GitHub repository
 
 ### 📈 Maturity Roadmap for Platform Resilience
 
