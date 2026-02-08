@@ -47,8 +47,8 @@ C4Context
     Rel(player, route53, "Resolves DNS", "DNS/DNSSEC")
     Rel(route53, cloudfront, "Primary route", "DNS")
     Rel(route53, ghPages, "DR failover", "DNS")
-    Rel(player, cloudfront, "Practices combat techniques", "HTTPS/TLS 1.3")
-    Rel(instructor, cloudfront, "Demonstrates vital points", "HTTPS/TLS 1.3")
+    Rel(player, blackTrigram, "Practices combat techniques", "HTTPS/TLS 1.3 via CloudFront CDN")
+    Rel(instructor, blackTrigram, "Demonstrates vital points", "HTTPS/TLS 1.3 via CloudFront CDN")
     
     Rel(cloudfront, blackTrigram, "Delivers application", "HTTPS")
     Rel(cloudfront, s3Storage, "Fetches assets", "HTTPS")

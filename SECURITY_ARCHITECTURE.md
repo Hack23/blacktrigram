@@ -288,11 +288,11 @@ Black Trigram network security includes AWS CloudFront + S3 multi-region deploym
 
 #### 📄 GitHub Pages Disaster Recovery
 
-- **✅ Automatic Failover**: Route53 health checks trigger DNS failover
+- **✅ Automatic Failover**: Route53 health checks trigger DNS failover during AWS outages
 - **✅ Independent Infrastructure**: Separate from AWS for resilience
-- **✅ Parallel Deployment**: CI/CD deploys to both AWS and GitHub Pages
+- **✅ Release-based Deployment**: GitHub Pages deployed on tagged releases (via `release.yml`), periodically updated for DR readiness
 - **✅ TLS Encryption**: GitHub-managed TLS certificates
-- **✅ No Configuration Required**: Automatic during AWS outages
+- **✅ Preconfigured Failover**: Once Route53 health checks and DNS records are set up, failover is automatic
 
 #### 🔐 Certificate Authority Authorization (CAA)
 

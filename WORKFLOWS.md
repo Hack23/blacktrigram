@@ -183,34 +183,30 @@ The AWS deployment workflow handles automatic deployment to CloudFront + S3 mult
 ```mermaid
 flowchart TD
     Trigger[📝 Push to Main] --> Prepare[🔧 Environment Setup]
-    Prepare --> Build[🏗️ Build Application]
-    Build --> S3Deploy[💾 Deploy to S3 us-east-1]
+    Prepare --> S3Deploy[💾 Sync docs/ to S3 us-east-1]
     
     S3Deploy --> CacheHeaders[⚡ Set Cache Headers]
     CacheHeaders --> CFInvalidate[🔄 Invalidate CloudFront]
     
-    S3Deploy -.backup.-> S3Backup[💾 Sync to Backup Region]
-    CFInvalidate --> GHPages[📄 Deploy to GitHub Pages DR]
-    
-    GHPages --> Complete[✅ Deployment Complete]
+    CFInvalidate --> Complete[✅ Deployment Complete]
     
     classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
     classDef process fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
     classDef aws fill:#FF9900,stroke:#232F3E,stroke-width:1.5px,color:white
-    classDef github fill:#f5f5f5,stroke:#2979FF,stroke-width:1.5px
     classDef complete fill:#27ae60,stroke:#1e8449,stroke-width:2px,color:white
     
     class Trigger trigger
-    class Prepare,Build process
-    class S3Deploy,CacheHeaders,CFInvalidate,S3Backup aws
-    class GHPages github
+    class Prepare process
+    class S3Deploy,CacheHeaders,CFInvalidate aws
     class Complete complete
 ```
+
+**Note**: GitHub Pages disaster recovery is deployed separately via `release.yml` on tagged releases, not as part of the main AWS deployment workflow.
 
 ### AWS Deployment Features
 
 - **☁️ CloudFront CDN**: Global content delivery with edge caching
-- **💾 S3 Multi-Region**: Primary (us-east-1) with backup region sync
+- **💾 S3 Storage**: Primary deployment to us-east-1 (multi-region replication configured via S3, if enabled)
 - **⚡ Cache Optimization**: Aggressive caching for static assets (1 year)
   - CSS/JS: `max-age=31536000, immutable`
   - Images: `max-age=31536000, immutable`
@@ -219,7 +215,7 @@ flowchart TD
 - **🔄 CloudFront Invalidation**: Automatic cache invalidation on deployment
 - **📡 Route53 Integration**: DNS management with health checks
 - **🔐 AWS IAM**: OIDC authentication with role-based access
-- **📄 GitHub Pages DR**: Parallel deployment for disaster recovery
+- **📄 GitHub Pages DR**: Deployed separately on tagged releases (via `release.yml`) for disaster recovery
 - **🛡️ Security**: StepSecurity harden-runner with egress policy
 
 ### Deployment Architecture
@@ -227,7 +223,7 @@ flowchart TD
 The workflow deploys to a multi-tier infrastructure:
 
 1. **Primary**: CloudFront → S3 (us-east-1)
-2. **Backup**: S3 backup region (replication)
+2. **Disaster Recovery**: GitHub Pages (updated on releases)
 3. **DR**: GitHub Pages (Route53 failover)
 
 ### AWS Credentials

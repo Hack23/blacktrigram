@@ -93,7 +93,7 @@ graph TB
 
 Based on [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) impact levels:
 
-| Business Function | 🎓 Educational Impact | ⚙️ Operational Impact | �� Reputational Impact | 💻 Technical Impact | 🎯 Recovery Priority |
+| Business Function | 🎓 Educational Impact | ⚙️ Operational Impact | 🤝 Reputational Impact | 💻 Technical Impact | 🎯 Recovery Priority |
 |-------------------|-------------------|----------------------|----------------------|--------------------|--------------------|
 | **🥋 Combat Training Platform** | [![High](https://img.shields.io/badge/High-Complete_unavailability-orange?style=flat-square&logo=exclamation-triangle&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Critical](https://img.shields.io/badge/Critical-Complete_outage-red?style=flat-square&logo=exclamation-triangle&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![High](https://img.shields.io/badge/High-Community_concern-orange?style=flat-square&logo=newspaper&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![Critical](https://img.shields.io/badge/Critical-Complete_failure-red?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | 🔴 Critical (RTO: 15 min) |
 | **📚 Educational Content** | [![Very High](https://img.shields.io/badge/Very_High-Learning_disruption-darkred?style=flat-square&logo=book&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![High](https://img.shields.io/badge/High-Major_degradation-orange?style=flat-square&logo=trending-down&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![High](https://img.shields.io/badge/High-Cultural_authenticity-orange?style=flat-square&logo=newspaper&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![High](https://img.shields.io/badge/High-Service_degradation-orange?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | 🔴 Critical (RTO: 15 min) |
@@ -800,7 +800,7 @@ This Business Continuity Plan integrates with and references the complete ISMS d
 - [📈 Information Security Strategy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Strategy.md) - Strategic direction and AI-first operations
 - [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Business impact and classification methodology
 - [🏗️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Technical security implementation patterns for Black Trigram
-- [�� Security Metrics](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Security_Metrics.md) - Performance measurement framework
+- [📊 Security Metrics](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Security_Metrics.md) - Performance measurement framework
 
 ### 🔐 **Core Security Policies**
 
@@ -809,7 +809,7 @@ This Business Continuity Plan integrates with and references the complete ISMS d
 - [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC practices
 - [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source business strategy and IP governance
 
-### �� Operational Plans and Procedures
+### 🚨 Operational Plans and Procedures
 
 - [🚨 Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) - Comprehensive security incident management
 - [🆘 Disaster Recovery Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Disaster_Recovery_Plan.md) - Technical system recovery and restoration
