@@ -4,7 +4,7 @@
 
 ## 1. Overview
 
-This document outlines the comprehensive unit testing strategy for the **Black Trigram (흑괘)** project - a realistic 2D precision combat game inspired by Korean martial arts philosophy and the I Ching. The application is built using React 19 with TypeScript and Three.js (@react-three/fiber), with unit tests implemented using Vitest 4.
+This document outlines the comprehensive unit testing strategy for the **Black Trigram (흑괘)** project - a realistic 3D precision combat game inspired by Korean martial arts philosophy and the I Ching. The application is built using React 19 with TypeScript and Three.js (@react-three/fiber), with unit tests implemented using Vitest 4.
 
 ### ISMS Compliance Requirements
 
@@ -108,7 +108,7 @@ src/
 │   ├── ui/
 │   │   ├── KoreanHeader.test.tsx     # Korean text rendering
 │   │   └── base/
-│   │       └── (PixiJS components archived - migrated to Three.js)
+│   │       └── (Three.js 3D components)
 │   ├── game/
 │   │   ├── DojangBackground.test.tsx # Korean dojo aesthetics
 │   │   └── GameAudio.test.tsx
