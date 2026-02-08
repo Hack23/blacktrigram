@@ -4,12 +4,14 @@ on:
     types: [published]
   workflow_dispatch:
     inputs:
-      force_reupload:
-        description: 'Force re-upload all files to update metadata/headers (ignores size/timestamp checks)'
+      force_metadata_update:
+        description: 'Force metadata update for all files (bypasses size-only check)'
         required: false
-        type: boolean
         default: false
-permissions: write-all
+        type: boolean
+permissions:
+  contents: read
+  id-token: write
 
 env:
   AWS_REGION : "us-east-1"
@@ -75,69 +77,79 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Cache apt packages
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/.github/workflows/main.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+
+      - name: Cache npm dependencies
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-minify-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-minify-
+            ${{ runner.os }}-npm-
+
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
         with:
           role-to-assume: arn:aws:iam::172017021075:role/GithubWorkFlowRole
           role-session-name: githubworkflowrolesessiont2
           aws-region: ${{ env.AWS_REGION }}
-      
       - name: Deploy to S3 with proper cache headers
         run: |
-          echo "📦 Starting optimized S3 deployment with cache headers..."
-          
-          # Define common variables to avoid duplication
-          SRC="docs/."
-          DEST="s3://${{ env.S3_BUCKET_NAME }}/"
-          COMMON_EXCLUDES='--exclude ".git/*" --exclude "screenshots/*"'
-          IMMUTABLE_CACHE="--cache-control 'public, max-age=31536000, immutable'"
-          
-          # Determine sync strategy based on force_reupload input
-          if [ "${{ github.event.inputs.force_reupload }}" = "true" ]; then
-            echo "🔄 Force re-upload enabled: All files will be re-uploaded to update metadata"
-            SYNC_STRATEGY=""
+          # Determine sync mode for versioned/hashed assets (can use --size-only safely)
+          if [ "${{ github.event.inputs.force_metadata_update }}" = "true" ]; then
+            HASHED_SYNC_MODE="--metadata-directive REPLACE"
+            DOCUMENT_SYNC_MODE="--metadata-directive REPLACE"
+            echo "🚀 Starting deployment with forced metadata update mode"
           else
-            echo "ℹ️  Using default sync strategy (size + timestamp comparison)"
-            SYNC_STRATEGY=""
+            HASHED_SYNC_MODE="--size-only"
+            DOCUMENT_SYNC_MODE=""  # Use normal sync (size+mtime) for documents
+            echo "🚀 Starting deployment with efficient sync mode (size-only for hashed assets, size+mtime for documents)"
           fi
-          echo ""
           
-          # Sync JavaScript files with immutable cache headers
-          echo "⚡ Syncing JavaScript files..."
-          aws s3 sync "$SRC" "$DEST" \
+          # Deploy JS and CSS files with 1-year cache (versioned, immutable assets)
+          echo "⚡ Deploying JS and CSS files with immutable cache headers..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
             --exclude "*" \
             --include "*.js" \
-            $COMMON_EXCLUDES \
-            $IMMUTABLE_CACHE \
-            --content-type "application/javascript" \
-            $SYNC_STRATEGY
-          
-          # Sync CSS files with immutable cache headers
-          echo "🎨 Syncing CSS files..."
-          aws s3 sync "$SRC" "$DEST" \
-            --exclude "*" \
             --include "*.css" \
-            $COMMON_EXCLUDES \
-            $IMMUTABLE_CACHE \
-            --content-type "text/css" \
-            $SYNC_STRATEGY
+            --cache-control "public, max-age=31536000, immutable" \
+            $HASHED_SYNC_MODE \
+            --exclude ".git/*"
           
-          # Sync font files with immutable cache headers
-          echo "🔤 Syncing font files..."
-          aws s3 sync "$SRC" "$DEST" \
+          # Deploy source map files with 1-year cache (versioned, immutable assets)
+          echo "🗺️  Deploying source map files with immutable cache headers..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+            --exclude "*" \
+            --include "*.js.map" \
+            --include "*.css.map" \
+            --cache-control "public, max-age=31536000, immutable" \
+            --content-type "application/json" \
+            $HASHED_SYNC_MODE \
+            --exclude ".git/*"
+          
+          # Deploy font files with 1-year cache (static, immutable assets)
+          echo "🔤 Deploying font files with immutable cache headers..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
             --exclude "*" \
             --include "*.woff" \
             --include "*.woff2" \
             --include "*.ttf" \
             --include "*.eot" \
             --include "*.otf" \
-            $COMMON_EXCLUDES \
-            $IMMUTABLE_CACHE \
-            $SYNC_STRATEGY
+            --cache-control "public, max-age=31536000, immutable" \
+            $HASHED_SYNC_MODE \
+            --exclude ".git/*"
           
-          # Sync image files with immutable cache headers
-          echo "🖼️  Syncing image files..."
-          aws s3 sync "$SRC" "$DEST" \
+          # Deploy image files with 1-year cache (static, immutable assets, excluding screenshots)
+          echo "🖼️  Deploying image files with immutable cache headers..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
             --exclude "*" \
             --include "*.webp" \
             --include "*.png" \
@@ -146,36 +158,52 @@ jobs:
             --include "*.gif" \
             --include "*.svg" \
             --include "*.ico" \
-            $COMMON_EXCLUDES \
-            $IMMUTABLE_CACHE \
-            $SYNC_STRATEGY
+            --cache-control "public, max-age=31536000, immutable" \
+            $HASHED_SYNC_MODE \
+            --exclude ".git/*" \
+            --exclude "screenshots/*"
           
-          # Sync HTML files with short cache and must-revalidate
-          echo "📄 Syncing HTML files..."
-          aws s3 sync "$SRC" "$DEST" \
+          # Deploy HTML files with short cache (1 hour, must revalidate)
+          # Use normal sync (size+mtime) for correctness - HTML is not content-hashed
+          echo "📄 Deploying HTML files with revalidation cache headers..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
             --exclude "*" \
             --include "*.html" \
-            $COMMON_EXCLUDES \
-            --cache-control 'public, max-age=3600, must-revalidate' \
+            --cache-control "public, max-age=3600, must-revalidate" \
             --content-type "text/html; charset=utf-8" \
-            $SYNC_STRATEGY
+            $DOCUMENT_SYNC_MODE \
+            --exclude ".git/*"
           
-          # Sync metadata files with medium cache
-          echo "📋 Syncing metadata files..."
-          aws s3 sync "$SRC" "$DEST" \
+          # Deploy metadata files with medium cache (1 day)
+          # Use normal sync (size+mtime) for correctness - metadata files are not content-hashed
+          echo "📋 Deploying metadata files with 1-day cache headers..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
             --exclude "*" \
             --include "*.xml" \
             --include "*.json" \
             --include "*.txt" \
-            $COMMON_EXCLUDES \
-            --cache-control 'public, max-age=86400' \
-            $SYNC_STRATEGY
+            --cache-control "public, max-age=86400" \
+            $DOCUMENT_SYNC_MODE \
+            --exclude ".git/*"
           
-          # Sync remaining files (catch-all)
-          echo "📦 Syncing remaining files..."
-          aws s3 sync "$SRC" "$DEST" \
+          # Deploy screenshots with default cache (if directory exists)
+          if [ -d "docs/screenshots" ]; then
+            echo "📸 Deploying screenshots with default cache headers..."
+            aws s3 sync docs/screenshots/. s3://${{ env.S3_BUCKET_NAME }}/screenshots/ \
+              $HASHED_SYNC_MODE
+          else
+            echo "ℹ️  No screenshots directory found, skipping..."
+          fi
+          
+          # Deploy all remaining files not already handled (catch-all)
+          echo "📦 Deploying remaining files..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+            --exclude ".git/*" \
+            --exclude "screenshots/*" \
             --exclude "*.js" \
             --exclude "*.css" \
+            --exclude "*.js.map" \
+            --exclude "*.css.map" \
             --exclude "*.woff" \
             --exclude "*.woff2" \
             --exclude "*.ttf" \
@@ -192,16 +220,9 @@ jobs:
             --exclude "*.xml" \
             --exclude "*.json" \
             --exclude "*.txt" \
-            $COMMON_EXCLUDES \
-            $SYNC_STRATEGY
+            $HASHED_SYNC_MODE
           
-          echo ""
-          echo "✅ S3 deployment completed with optimized cache headers"
-          if [ "${{ github.event.inputs.force_reupload }}" = "true" ]; then
-            echo "ℹ️  All files were re-uploaded to update metadata (force_reupload=true)"
-          else
-            echo "ℹ️  Only changed files were uploaded (default size+timestamp comparison)"
-          fi
+          echo "✅ Deployment completed with optimized cache headers"
 
       # Invalidate CloudFront cache to ensure latest content is served
       - name: Invalidate CloudFront
