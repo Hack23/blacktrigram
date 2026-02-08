@@ -545,8 +545,6 @@ Black Trigram AWS security infrastructure:
 - **💚 Automated Monitoring**: Health checks and alarms
 - **📜 Audit Trail**: CloudTrail for compliance
 - **🌍 Multi-Region**: Geographic redundancy
-
-    style A,B,C,D fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
 ```
 
 ### Current Status

@@ -802,7 +802,7 @@ This Business Continuity Plan integrates with and references the complete ISMS d
 - [🏗️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Technical security implementation patterns for Black Trigram
 - [📊 Security Metrics](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Security_Metrics.md) - Performance measurement framework
 
-### 🔐 **Core Security Policies**
+### 🚨 **Operational Plans and Procedures**
 
 - [🔑 Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) - Zero-trust identity and access management
 - [🌐 Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) - Cloud-native network protection and segmentation

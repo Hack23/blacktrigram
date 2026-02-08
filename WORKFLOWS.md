@@ -206,7 +206,7 @@ flowchart TD
 ### AWS Deployment Features
 
 - **☁️ CloudFront CDN**: Global content delivery with edge caching
-- **💾 S3 Storage**: Primary deployment to us-east-1 (multi-region replication configured via S3, if enabled)
+- **💾 S3 Storage**: Primary deployment to us-east-1 with S3 replication (if configured at infrastructure level)
 - **⚡ Cache Optimization**: Aggressive caching for static assets (1 year)
   - CSS/JS: `max-age=31536000, immutable`
   - Images: `max-age=31536000, immutable`
@@ -223,8 +223,7 @@ flowchart TD
 The workflow deploys to a multi-tier infrastructure:
 
 1. **Primary**: CloudFront → S3 (us-east-1)
-2. **Disaster Recovery**: GitHub Pages (updated on releases)
-3. **DR**: GitHub Pages (Route53 failover)
+2. **Disaster Recovery**: GitHub Pages (release-based), activated via Route53 failover
 
 ### AWS Credentials
 
@@ -639,13 +638,12 @@ flowchart TB
 
     subgraph "🚀 Continuous Deployment"
         Release[🏷️ Release Trigger] --> Build[🏗️ Build & Attest]
-        Main[🌟 Main Branch] --> AWSDeployTrigger[☁️ AWS Deploy Trigger]
-        
-        AWSDeployTrigger --> AWSBuild[🏗️ Build for AWS]
-        AWSBuild --> S3Deploy[💾 Deploy to S3 + CloudFront]
-        AWSBuild --> GHPagesDeploy[📄 Deploy to GitHub Pages DR]
-        
         Build --> ReleaseDeploy[📦 Release Artifacts]
+        Build --> GHPagesDeploy[📄 Deploy to GitHub Pages DR]
+        
+        Main[🌟 Main Branch] --> AWSDeployTrigger[☁️ AWS Deploy Trigger]
+        AWSDeployTrigger --> S3Deploy[💾 Deploy to S3 + CloudFront]
+        
         S3Deploy --> Lighthouse[🔆 Lighthouse Audit]
         S3Deploy --> ZAPScan[🕷️ ZAP Security Scan]
     end

@@ -49,10 +49,6 @@ C4Context
     Rel(route53, ghPages, "DR failover", "DNS")
     Rel(player, blackTrigram, "Practices combat techniques", "HTTPS/TLS 1.3 via CloudFront CDN")
     Rel(instructor, blackTrigram, "Demonstrates vital points", "HTTPS/TLS 1.3 via CloudFront CDN")
-    
-    Rel(cloudfront, blackTrigram, "Delivers application", "HTTPS")
-    Rel(cloudfront, s3Storage, "Fetches assets", "HTTPS")
-    Rel(ghPages, blackTrigram, "DR delivery", "HTTPS")
     Rel(blackTrigram, culturalDB, "References authentic terminology", "HTTPS/JSON")
 
     UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
