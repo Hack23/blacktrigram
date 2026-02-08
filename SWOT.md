@@ -426,7 +426,7 @@ Black Trigram has established several key strengths that provide a solid foundat
 
 11. **🎨 Rich Audio-Visual Experience**: The combination of traditional Korean instruments with cyberpunk aesthetics (84.29% audio coverage), spectacular ki energy particles, responsive combat audio, and visual feedback system (damage numbers, hit effects, combo counter) creates an immersive gaming experience.
 
-12. **⚙️ Modular Architecture**: Clean separation between Combat, Trigram, VitalPoint, and Audio systems with reusable React 19 + PixiJS 8 components and isolated Zustand state management enables rapid feature iteration.
+12. **⚙️ Modular Architecture**: Clean separation between Combat, Trigram, VitalPoint, and Audio systems with reusable React 19 + Three.js 3D components and isolated Zustand state management enables rapid feature iteration.
 
 13. **🔑 Comprehensive Testing Framework**: Unit tests for combat and trigram logic, integration tests for complete combat flows, performance testing with Stats.js, and 73.17% measured coverage ensure quality and reliability.
 
@@ -1061,7 +1061,7 @@ mindmap
 - **WebGL Performance**: Mobile browsers have lower GPU performance, inconsistent WebGL support
 - **Web Audio API**: Varying support across browsers, iOS Safari limitations
 - **Touch Controls**: Mobile touch controls less precise than keyboard/mouse
-- **Browser Updates**: Future browser changes could break PixiJS or Web Audio API
+- **Browser Updates**: Future browser changes could break Three.js or Web Audio API
 
 **Mitigation Strategy**:
 1. **Progressive Enhancement**: Graceful degradation for older/limited browsers

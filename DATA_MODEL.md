@@ -126,10 +126,15 @@ export interface KoreanText {
 ```typescript
 // src/types/common.ts
 export interface Position {
-  x: number;
-  y: number;
+  readonly x: number;
+  readonly y: number;
 }
 ```
+
+**Note**: The `Position` type represents 2D coordinates. For 3D rendering with Three.js, the combat system maps 2D positions to 3D space:
+- `x` (horizontal) → Three.js `x` axis
+- `y` (depth) → Three.js `z` axis  
+- Three.js `y` axis represents height/elevation (handled separately in rendering layer)
 
 #### Enum Types - Game Constants
 

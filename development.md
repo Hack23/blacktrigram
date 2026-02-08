@@ -95,7 +95,7 @@ graph LR
     D -->|Includes| H[ESLint Integration]
     D -->|Includes| I[Debug Tools]
 
-    E -->|Installs| J[PixiJS 8.x]
+    E -->|Installs| J[Three.js]
     E -->|Installs| K[React 19]
     E -->|Installs| L[TypeScript]
 

@@ -119,7 +119,7 @@ quadrantChart
 | **Authentic Korean Martial Arts (100% Complete)**    | High   | Unique positioning: Only game with 70 authentic vital points (백회혈, 인영, 명문), 8 trigrams (팔괘), 5 archetypes (무사, 암살자, 해커, 정보요원, 조직폭력배) - cultural authenticity + educational value   |
 | **AWS Serverless Backend (v2.0 2028)**          | High   | Supports complex multiplayer, cloud saves, payments with superior scalability (~$350/mo @ 10K users, 98.2% gross margin), auto-scaling eliminates capacity planning         |
 | **Security-First Design (ISMS-Aligned)**            | High   | ISMS compliance built-in (ISO 27001, NIST CSF 2.0, CIS Controls v8.1), easier to add authentication + payments, AWS security services (WAF, GuardDuty, Security Hub)         |
-| **High Performance Engine (60fps Desktop)**          | High   | 60fps desktop proven Q1 2026, supports complex multiplayer without major refactoring (PixiJS 8, Three.js, 28-bone skeletal animation)         |
+| **High Performance Engine (60fps Desktop)**          | High   | 60fps desktop proven Q1 2026, supports complex multiplayer without major refactoring (Three.js 3D, 28-bone skeletal animation)         |
 | **Comprehensive Documentation (Q1 2026)**      | Medium | Onboarding efficiency, knowledge transfer, maintainability - 73.17% test coverage proven quality     |
 | **Open Source Community (Transparency)**            | Medium | Community contributions, transparency, trust building - grassroots marketing advantage         |
 | **Strong TypeScript Foundation (Strict Mode)**     | High   | Type safety for complex backend integration (AWS SDK, API contracts), fewer bugs, safer refactoring        |
@@ -132,7 +132,7 @@ quadrantChart
 
 1. **Educational + Entertainment Hybrid**: Not just entertainment - teaches real Korean martial arts with anatomical precision targeting $17B educational market (growing 15% annually) + $2.7B fighting game market
 2. **Cultural Authenticity + AWS Scale**: Deep Korean cultural integration (70 vital points, 8 trigrams, 5 archetypes) + AWS serverless backend for global reach and multiplayer
-3. **Technical Excellence + Cost Efficiency**: React 19 + PixiJS 8 + Three.js cutting-edge stack + AWS serverless (~$350/mo @ 10K users, 98.2% gross margin)
+3. **Technical Excellence + Cost Efficiency**: React 19 + Three.js cutting-edge 3D stack + AWS serverless (~$350/mo @ 10K users, 98.2% gross margin)
 4. **Security Compliance + Cloud Security**: ISMS-aligned from day one + AWS security services (WAF, GuardDuty, Security Hub, CloudTrail) for enterprise-grade security
 5. **Open Development + Community Trust**: Transparent roadmap, community involvement, open source frontend builds trust vs. closed AAA competitors
 

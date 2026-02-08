@@ -2,6 +2,8 @@
 
 This document outlines the planned evolution of Black Trigram's CI/CD workflows, detailing future improvements, advanced automation strategies, and next-generation security controls aligned with Hack23 AB's [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) and strategic roadmap.
 
+**🚨 Deployment Status Note**: As of Q1 2026, Black Trigram uses automated AWS S3 deployment via GitHub Actions (`deploy-s3.yml`) that syncs `docs/` to a primary S3 bucket with CloudFront cache invalidation; any cross-region availability is handled via S3 replication and infrastructure configuration, if enabled. GitHub Pages–based disaster recovery for the site is provided separately by `release.yml` on tagged releases. This document focuses on future workflow enhancements (AI-powered code review, progressive deployment, advanced E2E optimization) not yet implemented.
+
 ## 🎯 Vision Statement
 
 > **"어둠 속에서 완벽한 자동화를 추구하라"**  

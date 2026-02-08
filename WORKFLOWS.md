@@ -36,17 +36,18 @@ The Black Trigram project uses GitHub Actions for automation with the following 
 
 1. **🧪 Test and Report** - Comprehensive testing with unit tests and E2E tests
 2. **🚀 Build, Attest and Release** - Secure releases with SLSA attestations
-3. **🔍 CodeQL Analysis** - Security scanning for JavaScript/TypeScript vulnerabilities
-4. **📦 Dependency Review** - Vulnerability scanning for dependencies
-5. **⭐ Scorecard Analysis** - OSSF security scorecard for supply chain security
-6. **🏷️ PR Labeler** - Automated labeling for pull requests
-7. **🔒 Setup Labels** - Repository label management
-8. **🔆 Lighthouse Performance** - Performance auditing using budget.json
-9. **🕷️ ZAP Security Scan** - Dynamic security testing of deployed application
-10. **🤖 Copilot Setup Steps** - GitHub Copilot environment preparation with MCP servers
-11. **♿ Accessibility Test** - WCAG 2.1 Level AA compliance validation
-12. **📦 Audit Assets** - Asset reference validation and integrity checking
-13. **📸 Screenshot Analysis** - Automated UI/UX screenshot capture and analysis
+3. **☁️ AWS S3 Deployment** - Automated deployment to CloudFront + S3 multi-region
+4. **🔍 CodeQL Analysis** - Security scanning for JavaScript/TypeScript vulnerabilities
+5. **📦 Dependency Review** - Vulnerability scanning for dependencies
+6. **⭐ Scorecard Analysis** - OSSF security scorecard for supply chain security
+7. **🏷️ PR Labeler** - Automated labeling for pull requests
+8. **🔒 Setup Labels** - Repository label management
+9. **🔆 Lighthouse Performance** - Performance auditing using budget.json
+10. **🕷️ ZAP Security Scan** - Dynamic security testing of deployed application
+11. **🤖 Copilot Setup Steps** - GitHub Copilot environment preparation with MCP servers
+12. **♿ Accessibility Test** - WCAG 2.1 Level AA compliance validation
+13. **📦 Audit Assets** - Asset reference validation and integrity checking
+14. **📸 Screenshot Analysis** - Automated UI/UX screenshot capture and analysis
 
 ## 🔐 Security Hardening Practices
 
@@ -173,7 +174,65 @@ flowchart TD
 - **🔒 Security Attestations**: SLSA Level 3 build provenance
 - **📄 SBOM Generation**: Software Bill of Materials in SPDX format
 - **📦 Artifact Management**: Built application with security attestations
-- **🌐 GitHub Pages**: Automated deployment to GitHub Pages
+- **🌐 GitHub Pages**: Automated deployment to GitHub Pages (DR)
+
+## ☁️ AWS S3 Deployment Workflow
+
+The AWS deployment workflow handles automatic deployment to CloudFront + S3 multi-region infrastructure with disaster recovery failover to GitHub Pages.
+
+```mermaid
+flowchart TD
+    Trigger[📝 Push to Main] --> Prepare[🔧 Environment Setup]
+    Prepare --> S3Deploy[💾 Sync docs/ to S3 us-east-1]
+    
+    S3Deploy --> CacheHeaders[⚡ Set Cache Headers]
+    CacheHeaders --> CFInvalidate[🔄 Invalidate CloudFront]
+    
+    CFInvalidate --> Complete[✅ Deployment Complete]
+    
+    classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
+    classDef process fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
+    classDef aws fill:#FF9900,stroke:#232F3E,stroke-width:1.5px,color:white
+    classDef complete fill:#27ae60,stroke:#1e8449,stroke-width:2px,color:white
+    
+    class Trigger trigger
+    class Prepare process
+    class S3Deploy,CacheHeaders,CFInvalidate aws
+    class Complete complete
+```
+
+**Note**: GitHub Pages disaster recovery is deployed separately via `release.yml` on tagged releases, not as part of the main AWS deployment workflow.
+
+### AWS Deployment Features
+
+- **☁️ CloudFront CDN**: Global content delivery with edge caching
+- **💾 S3 Storage**: Primary deployment to us-east-1 with S3 replication (if configured at infrastructure level)
+- **⚡ Cache Optimization**: Aggressive caching for static assets (1 year)
+  - CSS/JS: `max-age=31536000, immutable`
+  - Images: `max-age=31536000, immutable`
+  - HTML: `max-age=3600, must-revalidate`
+  - Fonts: `max-age=31536000, immutable`
+- **🔄 CloudFront Invalidation**: Automatic cache invalidation on deployment
+- **📡 Route53 Integration**: DNS management with health checks
+- **🔐 AWS IAM**: OIDC authentication with role-based access
+- **📄 GitHub Pages DR**: Deployed separately on tagged releases (via `release.yml`) for disaster recovery
+- **🛡️ Security**: StepSecurity harden-runner with egress policy
+
+### Deployment Architecture
+
+The workflow deploys to a multi-tier infrastructure:
+
+1. **Primary**: CloudFront → S3 (us-east-1)
+2. **Disaster Recovery**: GitHub Pages (release-based), activated via Route53 failover
+
+### AWS Credentials
+
+The workflow uses AWS OIDC (OpenID Connect) for secure authentication:
+
+- **Role**: `GithubWorkFlowRole` in AWS IAM
+- **Region**: `us-east-1` (primary)
+- **S3 Bucket**: `blacktrigram-frontend-us-east-1-172017021075`
+- **CloudFormation Stack**: `blacktrigram-frontend`
 
 ## 🔍 Security Analysis Workflows
 
@@ -579,9 +638,14 @@ flowchart TB
 
     subgraph "🚀 Continuous Deployment"
         Release[🏷️ Release Trigger] --> Build[🏗️ Build & Attest]
-        Build --> Deploy[🌐 Deploy to Pages]
-        Deploy --> Lighthouse[🔆 Lighthouse Audit]
-        Deploy --> ZAPScan[🕷️ ZAP Security Scan]
+        Build --> ReleaseDeploy[📦 Release Artifacts]
+        Build --> GHPagesDeploy[📄 Deploy to GitHub Pages DR]
+        
+        Main[🌟 Main Branch] --> AWSDeployTrigger[☁️ AWS Deploy Trigger]
+        AWSDeployTrigger --> S3Deploy[💾 Deploy to S3 + CloudFront]
+        
+        S3Deploy --> Lighthouse[🔆 Lighthouse Audit]
+        S3Deploy --> ZAPScan[🕷️ ZAP Security Scan]
     end
 
     subgraph "📊 Continuous Monitoring"
@@ -599,19 +663,21 @@ flowchart TB
         LabelsReady -.->|enables| Labeler
     end
 
-    PR -.->|"approved & merged"| Main[🌟 Main Branch]
+    PR -.->|"approved & merged"| Main
     Main --> CodeQL
     Main -.->|"tag created"| Release
 
     classDef integration fill:#a0c8e0,stroke:#2980b9,stroke-width:1.5px,color:black
     classDef deployment fill:#86b5d9,stroke:#27ae60,stroke-width:1.5px,color:black
+    classDef aws fill:#FF9900,stroke:#232F3E,stroke-width:1.5px,color:white
     classDef monitoring fill:#d1c4e9,stroke:#8e44ad,stroke-width:1.5px,color:black
     classDef trigger fill:#bbdefb,stroke:#e67e22,stroke-width:1.5px,color:black
     classDef devex fill:#ffccbc,stroke:#ff5722,stroke-width:1.5px,color:black
     classDef repo fill:#c5e1a5,stroke:#689f38,stroke-width:1.5px,color:black
 
     class PR,TestReport,DepReview,Labeler,CodeQL,A11yTest,AssetAudit,Screenshots integration
-    class Release,Build,Deploy,Lighthouse,ZAPScan deployment
+    class Release,Build,ReleaseDeploy,Lighthouse,ZAPScan deployment
+    class AWSDeployTrigger,AWSBuild,S3Deploy,GHPagesDeploy aws
     class Schedule,Scorecard,CodeQLScheduled monitoring
     class Main trigger
     class CopilotTrigger,CopilotEnv,AgentReady devex
