@@ -38,15 +38,21 @@ C4Context
     
     System(blackTrigram, "🌐 Black Trigram (흑괘)", "Korean martial arts combat simulator with 70 vital points, 8 trigram stances, 28-bone skeletal animation, 60fps performance")
     
-    System_Ext(audioCDN, "🎵 Audio CDN", "Korean traditional music + cyberpunk SFX + bone impact sounds")
-    System_Ext(artCDN, "🖼️ Visual Assets CDN", "3D models, textures, particle effects, UI assets, Korean fonts")
+    System_Ext(cloudfront, "⚖️ AWS CloudFront CDN", "Global content delivery with 400+ edge locations, DDoS protection")
+    System_Ext(s3Storage, "💾 AWS S3 Multi-Region", "Primary (us-east-1) + backup region storage with versioning")
+    System_Ext(route53, "📡 AWS Route53", "DNS with DNSSEC, health checks, automatic DR failover")
+    System_Ext(ghPages, "📄 GitHub Pages DR", "Disaster recovery hosting with independent infrastructure")
     System_Ext(culturalDB, "🏛️ Korean Cultural Database", "Authentic martial arts terminology, I Ching philosophy, TCM meridians")
 
-    Rel(player, blackTrigram, "Practices combat techniques", "HTTPS/WebGL (2.0 where available)")
-    Rel(instructor, blackTrigram, "Demonstrates vital points & anatomy", "HTTPS/WebGL (2.0 where available)")
+    Rel(player, route53, "Resolves DNS", "DNS/DNSSEC")
+    Rel(route53, cloudfront, "Primary route", "DNS")
+    Rel(route53, ghPages, "DR failover", "DNS")
+    Rel(player, cloudfront, "Practices combat techniques", "HTTPS/TLS 1.3")
+    Rel(instructor, cloudfront, "Demonstrates vital points", "HTTPS/TLS 1.3")
     
-    Rel(blackTrigram, audioCDN, "Streams traditional Korean audio", "HTTPS")
-    Rel(blackTrigram, artCDN, "Loads 3D visual assets", "HTTPS")
+    Rel(cloudfront, blackTrigram, "Delivers application", "HTTPS")
+    Rel(cloudfront, s3Storage, "Fetches assets", "HTTPS")
+    Rel(ghPages, blackTrigram, "DR delivery", "HTTPS")
     Rel(blackTrigram, culturalDB, "References authentic terminology", "HTTPS/JSON")
 
     UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
@@ -56,8 +62,10 @@ C4Context
 >
 > - 🧑‍🤝‍🧑 **Player**: End-user interacting with Black Trigram through desktop (60fps) or mobile (30-45fps) browser.
 > - 🌐 **Black Trigram Web App**: Entirely front-end, built with React 19 + Three.js (TypeScript). All game logic, state, skeletal animation, & 3D rendering occur in-browser—no backend.
-> - 🎵 **Audio CDN**: Serves SFX (bone cracks, impacts, ambient sounds), traditional Korean background music, cyberpunk audio, and damage-based audio scaling.
-> - 🖼️ **Art CDN**: Serves 3D models (skeletal meshes), textures, particle effects, UI assets, fonts (including Korean Noto Sans KR), and visual assets.
+> - ⚖️ **CloudFront CDN**: AWS global CDN with 400+ edge locations, DDoS protection (AWS Shield Standard), TLS 1.3 encryption, and aggressive caching.
+> - 💾 **S3 Multi-Region**: Primary storage in us-east-1 with server-side encryption (SSE-S3), versioning, and multi-region replication for redundancy.
+> - 📡 **Route53**: AWS DNS service with DNSSEC, active health checks monitoring CloudFront, automatic failover to GitHub Pages DR.
+> - 📄 **GitHub Pages DR**: Independent disaster recovery infrastructure, activated automatically via Route53 health checks when AWS unavailable.
 > - 🥋 **Key Capabilities**: 70 vital points with Korean names (100% complete), 8 trigram stances, 28-bone skeletal animation system, 7 hand poses, muscle tension visualization, 8 body part health tracking, 60fps desktop performance.
 
 ---
@@ -1543,7 +1551,7 @@ mindmap
       id2.3[Hot reloading in dev mode]
     id3(💸 Reduced Operational Costs)
       id3.1[No server infrastructure costs]
-      id3.2[Leverage static CDNs - Cloudflare/AWS S3]
+      id3.2[AWS CloudFront + S3 multi-region with GitHub Pages DR]
       id3.3[Minimal DevOps overhead]
     id4(🚀 Immediate CDN Updates)
       id4.1[Push new animations & sounds instantly]
