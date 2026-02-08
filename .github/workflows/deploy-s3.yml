@@ -3,6 +3,12 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      force_reupload:
+        description: 'Force re-upload all files to update metadata/headers (ignores size/timestamp checks)'
+        required: false
+        type: boolean
+        default: false
 permissions: write-all
 
 env:
@@ -96,48 +102,59 @@ jobs:
       - name: Deploy to S3 with proper cache headers
         run: |
           echo "📦 Starting optimized S3 deployment with cache headers..."
-          echo "ℹ️  Using --size-only flag to skip unchanged files"
+          
+          # Define common variables to avoid duplication
+          SRC="docs/."
+          DEST="s3://${{ env.S3_BUCKET_NAME }}/"
+          COMMON_EXCLUDES='--exclude ".git/*" --exclude "screenshots/*"'
+          IMMUTABLE_CACHE='--cache-control "public, max-age=31536000, immutable"'
+          
+          # Determine sync strategy based on force_reupload input
+          if [ "${{ github.event.inputs.force_reupload }}" = "true" ]; then
+            echo "🔄 Force re-upload enabled: All files will be re-uploaded to update metadata"
+            SYNC_STRATEGY=""
+          else
+            echo "ℹ️  Using default sync strategy (size + timestamp comparison)"
+            SYNC_STRATEGY=""
+          fi
           echo ""
           
           # Sync JavaScript files with immutable cache headers
           echo "⚡ Syncing JavaScript files..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+          aws s3 sync "$SRC" "$DEST" \
             --exclude "*" \
             --include "*.js" \
-            --exclude ".git/*" \
-            --exclude "screenshots/*" \
-            --cache-control "public, max-age=31536000, immutable" \
+            $COMMON_EXCLUDES \
+            $IMMUTABLE_CACHE \
             --content-type "application/javascript" \
-            --size-only
+            $SYNC_STRATEGY
           
           # Sync CSS files with immutable cache headers
           echo "🎨 Syncing CSS files..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+          aws s3 sync "$SRC" "$DEST" \
             --exclude "*" \
             --include "*.css" \
-            --exclude ".git/*" \
-            --exclude "screenshots/*" \
-            --cache-control "public, max-age=31536000, immutable" \
+            $COMMON_EXCLUDES \
+            $IMMUTABLE_CACHE \
             --content-type "text/css" \
-            --size-only
+            $SYNC_STRATEGY
           
           # Sync font files with immutable cache headers
           echo "🔤 Syncing font files..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+          aws s3 sync "$SRC" "$DEST" \
             --exclude "*" \
             --include "*.woff" \
             --include "*.woff2" \
             --include "*.ttf" \
             --include "*.eot" \
             --include "*.otf" \
-            --exclude ".git/*" \
-            --exclude "screenshots/*" \
-            --cache-control "public, max-age=31536000, immutable" \
-            --size-only
+            $COMMON_EXCLUDES \
+            $IMMUTABLE_CACHE \
+            $SYNC_STRATEGY
           
           # Sync image files with immutable cache headers
           echo "🖼️  Syncing image files..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+          aws s3 sync "$SRC" "$DEST" \
             --exclude "*" \
             --include "*.webp" \
             --include "*.png" \
@@ -146,37 +163,34 @@ jobs:
             --include "*.gif" \
             --include "*.svg" \
             --include "*.ico" \
-            --exclude ".git/*" \
-            --exclude "screenshots/*" \
-            --cache-control "public, max-age=31536000, immutable" \
-            --size-only
+            $COMMON_EXCLUDES \
+            $IMMUTABLE_CACHE \
+            $SYNC_STRATEGY
           
           # Sync HTML files with short cache and must-revalidate
           echo "📄 Syncing HTML files..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+          aws s3 sync "$SRC" "$DEST" \
             --exclude "*" \
             --include "*.html" \
-            --exclude ".git/*" \
-            --exclude "screenshots/*" \
+            $COMMON_EXCLUDES \
             --cache-control "public, max-age=3600, must-revalidate" \
             --content-type "text/html; charset=utf-8" \
-            --size-only
+            $SYNC_STRATEGY
           
           # Sync metadata files with medium cache
           echo "📋 Syncing metadata files..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+          aws s3 sync "$SRC" "$DEST" \
             --exclude "*" \
             --include "*.xml" \
             --include "*.json" \
             --include "*.txt" \
-            --exclude ".git/*" \
-            --exclude "screenshots/*" \
+            $COMMON_EXCLUDES \
             --cache-control "public, max-age=86400" \
-            --size-only
+            $SYNC_STRATEGY
           
           # Sync remaining files (catch-all)
           echo "📦 Syncing remaining files..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+          aws s3 sync "$SRC" "$DEST" \
             --exclude "*.js" \
             --exclude "*.css" \
             --exclude "*.woff" \
@@ -195,13 +209,16 @@ jobs:
             --exclude "*.xml" \
             --exclude "*.json" \
             --exclude "*.txt" \
-            --exclude ".git/*" \
-            --exclude "screenshots/*" \
-            --size-only
+            $COMMON_EXCLUDES \
+            $SYNC_STRATEGY
           
           echo ""
           echo "✅ S3 deployment completed with optimized cache headers"
-          echo "ℹ️  Only changed files were uploaded (using --size-only)"
+          if [ "${{ github.event.inputs.force_reupload }}" = "true" ]; then
+            echo "ℹ️  All files were re-uploaded to update metadata (force_reupload=true)"
+          else
+            echo "ℹ️  Only changed files were uploaded (default size+timestamp comparison)"
+          fi
 
       # Invalidate CloudFront cache to ensure latest content is served
       - name: Invalidate CloudFront
