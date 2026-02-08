@@ -90,7 +90,7 @@ jobs:
           SRC="docs/."
           DEST="s3://${{ env.S3_BUCKET_NAME }}/"
           COMMON_EXCLUDES='--exclude ".git/*" --exclude "screenshots/*"'
-          IMMUTABLE_CACHE='--cache-control "public, max-age=31536000, immutable"'
+          IMMUTABLE_CACHE="--cache-control 'public, max-age=31536000, immutable'"
           
           # Determine sync strategy based on force_reupload input
           if [ "${{ github.event.inputs.force_reupload }}" = "true" ]; then
@@ -156,7 +156,7 @@ jobs:
             --exclude "*" \
             --include "*.html" \
             $COMMON_EXCLUDES \
-            --cache-control "public, max-age=3600, must-revalidate" \
+            --cache-control 'public, max-age=3600, must-revalidate' \
             --content-type "text/html; charset=utf-8" \
             $SYNC_STRATEGY
           
@@ -168,7 +168,7 @@ jobs:
             --include "*.json" \
             --include "*.txt" \
             $COMMON_EXCLUDES \
-            --cache-control "public, max-age=86400" \
+            --cache-control 'public, max-age=86400' \
             $SYNC_STRATEGY
           
           # Sync remaining files (catch-all)
