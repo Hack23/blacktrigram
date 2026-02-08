@@ -21,146 +21,70 @@
 
 ---
 
-## 🎯 **Purpose Statement**
+## 📋 Executive Summary
 
-**Black Trigram's** business continuity framework demonstrates how **systematic recovery planning directly enables both educational resilience and cultural preservation excellence.** Our classification-driven continuity approach serves as both operational necessity and demonstration of enterprise-grade security practices for an open-source educational gaming platform.
-
-This plan ensures Korean martial arts education can continue during and after disruptive events, based on the [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) impact analysis and recovery requirements. Our transparent continuity planning showcases how methodical preparation creates educational value through reduced downtime and enhanced service reliability for authentic Korean martial arts training.
-
-*— James Pether Sörling, CEO/Founder*
-
----
-
-## 📊 **Business Impact-Driven Recovery Framework**
-
-### 🎯 Business Impact Analysis Integration
-
-Our business continuity planning is directly driven by the [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) business impact analysis matrix, ensuring systematic recovery prioritization for educational services:
+This Business Continuity Plan (BCP) outlines strategies to ensure the Black Trigram Korean martial arts educational platform remains available during disruptions while maintaining the integrity and accessibility of authentic Korean martial arts education. The plan is tailored specifically for our GitHub-based frontend-only infrastructure and provides comprehensive analysis of business impacts, recovery objectives, and resilience strategies.
 
 ```mermaid
 %%{
   init: {
     'theme': 'base',
     'themeVariables': {
-      'primaryColor': '#1565C0',
+      'primaryColor': '#e3f2fd',
       'primaryTextColor': '#0d47a1',
-      'lineColor': '#1565C0',
-      'secondaryColor': '#4CAF50',
-      'tertiaryColor': '#FF9800'
+      'lineColor': '#2979FF',
+      'secondaryColor': '#c8e6c9',
+      'tertiaryColor': '#fff3e0'
     }
   }
 }%%
-graph TB
-    subgraph BIA["📊 Business Impact Analysis"]
-        EDUCATIONAL[🎓 Educational Impact<br/>Learning Disruption]
-        OPERATIONAL[⚙️ Operational Impact<br/>Platform Availability]
-        REPUTATIONAL[🤝 Reputational Impact<br/>Cultural Trust]
-        TECHNICAL[💻 Technical Impact<br/>Service Degradation]
-    end
-    
-    subgraph RECOVERY["🔄 Recovery Prioritization"]
-        CRITICAL[🔴 Critical Recovery<br/>RTO < 15 minutes]
-        HIGH[🟠 High Priority<br/>RTO 15min-4 hours]
-        MEDIUM[🟡 Medium Priority<br/>RTO 4-24 hours]
-        STANDARD[🟢 Standard Recovery<br/>RTO > 24 hours]
-    end
-    
-    subgraph BUSINESS["🏢 Educational Functions"]
-        CORE[🏗️ Core Education<br/>Combat Training]
-        SUPPORT[🛠️ Support Functions<br/>Asset Delivery]
-        CONTENT[📋 Content Management<br/>Repository Updates]
-        MARKETING[📢 Community<br/>Social & Growth]
-    end
-    
-    EDUCATIONAL --> CRITICAL
-    OPERATIONAL --> HIGH
-    REPUTATIONAL --> MEDIUM
-    TECHNICAL --> HIGH
-    
-    CRITICAL --> CORE
-    HIGH --> CORE
-    HIGH --> SUPPORT
-    MEDIUM --> SUPPORT
-    STANDARD --> CONTENT
-    STANDARD --> MARKETING
-    
-    style BIA fill:#1565C0,color:#fff
-    style RECOVERY fill:#FF9800,color:#fff
-    style BUSINESS fill:#4CAF50,color:#fff
+mindmap
+  root((🔁 Business<br>Continuity<br>Plan))
+    🔍 Business Impact Analysis
+      🎓 Educational Impact
+        📚 Learning Disruption
+        🥋 Training Access Loss
+        🌏 Cultural Preservation
+      🏢 Operational Impact
+        ⏱️ Platform Downtime
+        📉 User Experience
+        🚧 Development Disruption
+      🌐 Reputational Impact
+        🤝 Community Trust
+        🏆 Korean Cultural Authenticity
+        📱 Open Source Reputation
+      📜 Regulatory Impact
+        📝 GDPR Compliance
+        🔍 Security Standards
+        ⚠️ Educational Guidelines
+    🎯 Recovery Objectives
+      ⏱️ RTO - Recovery Time
+        🚨 Critical CDN Services
+        🔔 Build Pipeline
+        📊 Source Repository
+      📊 RPO - Recovery Point
+        💾 Source Code
+        ⚙️ Configuration
+        🎨 Static Assets
+      🔄 MTTR - Mean Time To Recover
+      ⬆️ Uptime Requirements
+    🛡️ GitHub Infrastructure
+      📂 GitHub Pages Hosting
+        🌐 Primary Deployment
+        🔄 Backup CDN Strategy
+      🗄️ GitHub Repository Storage
+        🔐 Main Repository
+        📚 Contributor Forks
+      🔄 GitHub Actions Workflows
+        ⚙️ CI/CD Pipelines
+        🧪 Automated Testing
+        🔍 Security Scanning
+    🚀 Recovery Strategies
+      💾 Code Backup & Recovery
+      📱 Platform Restoration
+      🧩 Asset Recovery
+      🔄 Service Continuity
 ```
-
-### 📈 Business Impact Thresholds
-
-Based on [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) impact levels:
-
-| Business Function | 🎓 Educational Impact | ⚙️ Operational Impact | �� Reputational Impact | 💻 Technical Impact | 🎯 Recovery Priority |
-|-------------------|-------------------|----------------------|----------------------|--------------------|--------------------|
-| **🥋 Combat Training Platform** | [![High](https://img.shields.io/badge/High-Complete_unavailability-orange?style=flat-square&logo=exclamation-triangle&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Critical](https://img.shields.io/badge/Critical-Complete_outage-red?style=flat-square&logo=exclamation-triangle&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![High](https://img.shields.io/badge/High-Community_concern-orange?style=flat-square&logo=newspaper&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![Critical](https://img.shields.io/badge/Critical-Complete_failure-red?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | 🔴 Critical (RTO: 15 min) |
-| **📚 Educational Content** | [![Very High](https://img.shields.io/badge/Very_High-Learning_disruption-darkred?style=flat-square&logo=book&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![High](https://img.shields.io/badge/High-Major_degradation-orange?style=flat-square&logo=trending-down&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![High](https://img.shields.io/badge/High-Cultural_authenticity-orange?style=flat-square&logo=newspaper&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![High](https://img.shields.io/badge/High-Service_degradation-orange?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | 🔴 Critical (RTO: 15 min) |
-| **🔧 Development Pipeline** | [![Moderate](https://img.shields.io/badge/Moderate-Update_delays-yellow?style=flat-square&logo=clock&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Moderate](https://img.shields.io/badge/Moderate-Partial_impact-yellow?style=flat-square&logo=trending-down&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Low](https://img.shields.io/badge/Low-Limited_visibility-lightgreen?style=flat-square&logo=newspaper&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![Moderate](https://img.shields.io/badge/Moderate-Build_delays-yellow?style=flat-square&logo=server&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | 🟡 Medium (RTO: 4-24 hrs) |
-| **📢 Community Engagement** | [![Low](https://img.shields.io/badge/Low-Minor_inconvenience-lightgreen?style=flat-square&logo=users&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Low](https://img.shields.io/badge/Low-Minor_inconvenience-lightgreen?style=flat-square&logo=trending-down&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Moderate](https://img.shields.io/badge/Moderate-Community_attention-yellow?style=flat-square&logo=newspaper&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![Low](https://img.shields.io/badge/Low-Communication_delay-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | 🟢 Standard (RTO: > 24 hrs) |
-
----
-
-## 📊 Business Impact-Driven Decision Matrix
-
-```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#FF9800',
-      'primaryTextColor': '#F57C00',
-      'lineColor': '#ff9800',
-      'secondaryColor': '#4CAF50',
-      'tertiaryColor': '#1565C0'
-    }
-  }
-}%%
-flowchart TD
-    INCIDENT[🚨 Service Disruption<br/>Event Detected] --> ASSESS[📊 Business Impact<br/>Assessment]
-    
-    ASSESS --> EDUCATIONAL{🎓 Educational<br/>Impact Level?}
-    ASSESS --> OPERATIONAL{⚙️ Operational<br/>Impact Level?}
-    ASSESS --> REPUTATION{🤝 Reputational<br/>Impact Level?}
-    ASSESS --> TECHNICAL{💻 Technical<br/>Impact Level?}
-    
-    EDUCATIONAL -->|Critical/Very High| IMMEDIATE[⚡ Immediate Response<br/>< 15 minutes]
-    OPERATIONAL -->|Critical| IMMEDIATE
-    TECHNICAL -->|Critical| IMMEDIATE
-    
-    EDUCATIONAL -->|High/Moderate| URGENT[🔄 Urgent Response<br/>< 1 hour]
-    OPERATIONAL -->|High| URGENT
-    REPUTATION -->|High/Moderate| URGENT
-    TECHNICAL -->|High| URGENT
-    
-    EDUCATIONAL -->|Low| STANDARD[📅 Standard Response<br/>< 24 hours]
-    OPERATIONAL -->|Moderate/Low| STANDARD
-    REPUTATION -->|Low| STANDARD
-    TECHNICAL -->|Low/Negligible| STANDARD
-    
-    IMMEDIATE --> CRITICAL_RECOVERY[🔴 Critical Recovery<br/>Full Resources<br/>AWS + GitHub Failover]
-    URGENT --> HIGH_RECOVERY[🟠 High Priority Recovery<br/>Escalated Resources<br/>Multi-region Activation]
-    STANDARD --> NORMAL_RECOVERY[🟢 Normal Recovery<br/>Standard Resources<br/>Scheduled Maintenance]
-    
-    classDef incident fill:#D32F2F,stroke:#B71C1C,stroke-width:3px,color:#ffffff
-    classDef assessment fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:#ffffff
-    classDef decision fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#ffffff
-    classDef immediate fill:#D32F2F,stroke:#B71C1C,stroke-width:2px,color:#ffffff
-    classDef urgent fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:#ffffff
-    classDef standard fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#ffffff
-    classDef recovery fill:#7B1FA2,stroke:#7B1FA2,stroke-width:2px,color:#ffffff
-    
-    class INCIDENT incident
-    class ASSESS assessment
-    class EDUCATIONAL,OPERATIONAL,REPUTATION,TECHNICAL decision
-    class IMMEDIATE immediate
-    class URGENT urgent
-    class STANDARD standard
-    class CRITICAL_RECOVERY,HIGH_RECOVERY,NORMAL_RECOVERY recovery
-```
-
----
 
 ## 🎯 Purpose & Scope
 
