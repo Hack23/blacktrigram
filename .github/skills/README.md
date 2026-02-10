@@ -22,11 +22,46 @@
 
 ## 📚 Available Skills
 
-Black Trigram includes **13 comprehensive skills** organized by domain:
+Black Trigram includes **14 comprehensive skills** organized by domain:
 
 ### 🔐 Security & Compliance
 
-#### 1. [security-architecture-validation](./security-architecture-validation/SKILL.md)
+#### 1. [secure-development-lifecycle](./secure-development-lifecycle/SKILL.md)
+**Purpose**: Enforce comprehensive Secure Development Lifecycle (SDLC) practices for all phases from requirements to retirement
+
+**Key Rules:**
+- All 7 SDLC phases completed (Requirements, Design, Implementation, Testing, Deployment, Maintenance, Retirement)
+- Threat modeling (STRIDE) required for all new features
+- OWASP Top 10 2021 and CWE Top 25 prevention controls mandatory
+- Security test coverage ≥90% with security-specific test cases
+- CodeQL SAST, npm audit, OSSF Scorecard (≥7.0) must pass
+- DevSecOps automation: CI/CD security scanning, SBOM generation, signed commits
+- Supply chain security: OSSF Scorecard, SLSA Level 3, CycloneDX/SPDX SBOM
+- Security code review checklist required for all PRs
+- Input validation with Zod schemas mandatory
+- Secrets management (AWS Secrets Manager, no hardcoding)
+- Vulnerability management with SLA-based patching
+- Incident response integration with lessons learned
+
+**Triggers:**
+- Developing new features or components
+- Reviewing pull requests and code changes
+- Planning deployments or releases
+- Configuring CI/CD pipelines and automation
+- Writing or updating security documentation
+- Implementing authentication, authorization, or cryptography
+- Conducting security assessments or threat modeling
+- Managing dependencies or supply chain
+- Refactoring or maintaining existing code
+- Decommissioning features or systems
+
+**Compliance:** ISO 27001:2022 (A.14.1, A.14.2, A.12.6, A.8.24), NIST CSF 2.0 (ID.RA, PR.DS, PR.IP, DE.CM, RS.MA, GV.SC), CIS Controls v8.1 (2, 3, 4, 7, 16, 18)
+
+**Reference**: [Hack23 ISMS Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (95KB comprehensive policy)
+
+---
+
+#### 2. [security-architecture-validation](./security-architecture-validation/SKILL.md)
 **Purpose**: Enforce Hack23 ISMS security-by-design principles
 
 **Key Rules:**
@@ -46,7 +81,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ---
 
-#### 2. [isms-compliance-checking](./isms-compliance-checking/SKILL.md)
+#### 3. [isms-compliance-checking](./isms-compliance-checking/SKILL.md)
 **Purpose**: Validate all code against Hack23 ISMS framework
 
 **Key Rules:**
@@ -66,7 +101,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ---
 
-#### 3. [compliance-framework-alignment](./compliance-framework-alignment/SKILL.md)
+#### 4. [compliance-framework-alignment](./compliance-framework-alignment/SKILL.md)
 **Purpose**: Enforce unified compliance across ISO 27001:2022, NIST CSF 2.0, and CIS Controls v8.1
 
 **Key Rules:**
@@ -87,7 +122,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ---
 
-#### 4. [classification-framework-enforcement](./classification-framework-enforcement/SKILL.md)
+#### 5. [classification-framework-enforcement](./classification-framework-enforcement/SKILL.md)
 **Purpose**: Enforce comprehensive classification of assets across security, business impact, and recovery objectives
 
 **Key Rules:**
@@ -114,7 +149,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ### 🏗️ Architecture & Documentation
 
-#### 5. [c4-architecture-documentation](./c4-architecture-documentation/SKILL.md)
+#### 6. [c4-architecture-documentation](./c4-architecture-documentation/SKILL.md)
 **Purpose**: Enforce C4 Architecture Model standards
 
 **Key Rules:**
@@ -141,7 +176,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ### 🎨 Visual & Cultural Standards
 
-#### 6. [korean-theming-standards](./korean-theming-standards/SKILL.md)
+#### 7. [korean-theming-standards](./korean-theming-standards/SKILL.md)
 **Purpose**: Enforce Korean cyberpunk aesthetic and cultural authenticity
 
 **Key Rules:**
@@ -164,7 +199,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ### 🧪 Testing & Quality
 
-#### 7. [testing-strategy-enforcement](./testing-strategy-enforcement/SKILL.md)
+#### 8. [testing-strategy-enforcement](./testing-strategy-enforcement/SKILL.md)
 **Purpose**: Enforce comprehensive testing standards
 
 **Key Rules:**
@@ -187,7 +222,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ### ⚡ Performance & Optimization
 
-#### 8. [performance-optimization](./performance-optimization/SKILL.md)
+#### 9. [performance-optimization](./performance-optimization/SKILL.md)
 **Purpose**: Enforce 60fps rendering and optimal bundle size
 
 **Key Rules:**
@@ -209,7 +244,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ### 🌐 Three.js Best Practices
 
-#### 9. [threejs-best-practices](./threejs-best-practices/SKILL.md)
+#### 10. [threejs-best-practices](./threejs-best-practices/SKILL.md)
 **Purpose**: Enforce @react-three/fiber patterns and Three.js optimization
 
 **Key Rules:**
@@ -231,7 +266,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ### 🎮 Game Development & Combat
 
-#### 10. [game-development-patterns](./game-development-patterns/SKILL.md)
+#### 11. [game-development-patterns](./game-development-patterns/SKILL.md)
 **Purpose**: Enforce game development best practices for Black Trigram
 
 **Key Rules:**
@@ -252,7 +287,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ---
 
-#### 11. [korean-martial-arts-authenticity](./korean-martial-arts-authenticity/SKILL.md)
+#### 12. [korean-martial-arts-authenticity](./korean-martial-arts-authenticity/SKILL.md)
 **Purpose**: Enforce authentic Korean martial arts systems (11 arts) with Dark Ops combat applications
 
 **Key Rules:**
@@ -278,7 +313,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ---
 
-#### 12. [3d-combat-systems](./3d-combat-systems/SKILL.md)
+#### 13. [3d-combat-systems](./3d-combat-systems/SKILL.md)
 **Purpose**: Enforce 3D physics-based combat patterns for Black Trigram
 
 **Key Rules:**
@@ -299,7 +334,7 @@ Black Trigram includes **13 comprehensive skills** organized by domain:
 
 ---
 
-#### 13. [audio-game-integration](./audio-game-integration/SKILL.md)
+#### 14. [audio-game-integration](./audio-game-integration/SKILL.md)
 **Purpose**: Enforce audio best practices for immersive combat feedback
 
 **Key Rules:**
