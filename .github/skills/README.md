@@ -22,7 +22,7 @@
 
 ## 📚 Available Skills
 
-Black Trigram includes **14 comprehensive skills** organized by domain:
+Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ### 🔐 Security & Compliance
 
@@ -352,6 +352,40 @@ Black Trigram includes **14 comprehensive skills** organized by domain:
 - Optimizing audio performance
 
 **Standards:** Spatial audio, Korean themes, clear feedback
+
+---
+
+#### 15. [github-agentic-workflows](./github-agentic-workflows/SKILL.md)
+**Purpose**: Enforce comprehensive GitHub Agentic Workflows (gh-aw) best practices for AI-powered automation
+
+**Key Rules:**
+- Defense-in-depth security (5 layers: substrate, configuration, plan, runtime, output)
+- Safe outputs for all write operations (permission isolation)
+- Read-only agent permissions by default
+- Network isolation with explicit domain allowlists
+- MCP server sandboxing and tool filtering
+- Threat detection with AI-powered analysis
+- Workflow compilation and validation (strict mode)
+- Token management with GitHub App preferred
+- Operational pattern alignment (12 OpPatterns)
+- Memory management (cache-memory, repo-memory)
+- Natural language instructions over procedural logic
+- Frontmatter configuration standards
+
+**Triggers:**
+- Creating or modifying `.github/workflows/*.md` files
+- Configuring workflow frontmatter (YAML)
+- Implementing safe outputs (create-issue, add-comment, create-pull-request)
+- Setting up MCP servers or custom tools
+- Configuring network permissions and firewall
+- Using GitHub Copilot CLI, Claude, or Codex engines
+- Implementing operational patterns (IssueOps, ChatOps, DailyOps)
+- Managing workflow state and memory
+- Designing AI workflow security
+
+**Compliance:** ISO 27001 (A.5.15, A.8.2, A.8.3, A.8.22, A.8.25, A.8.28), NIST CSF 2.0 (GV.PO, ID.RA, PR.AC, PR.DS, PR.IP, DE.CM, RS.MA), CIS Controls v8.1 (2.3, 3.3, 4.1, 4.7, 12.2, 16.1, 18.3)
+
+**Reference**: [GitHub Agentic Workflows Documentation](https://github.github.com/gh-aw/)
 
 ---
 
