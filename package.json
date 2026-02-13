@@ -105,7 +105,7 @@
     "cypress-multi-reporters": "^2.0.5",
     "cypress-wait-until": "^3.0.2",
     "dependency-cruiser": "^17.3.8",
-    "dotenv": "^17.2.4",
+    "dotenv": "^17.3.1",
     "eslint": "^9.39.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react": "^7.37.5",
