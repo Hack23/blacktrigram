@@ -214,22 +214,22 @@ graph LR
 ---
 
 ### 🛠️ [Coding Agent](./coding-agent.md)
-**Primary Role:** Full-Stack TypeScript/React/Three.js Development
+**Primary Role:** Full-Stack TypeScript/React/PixiJS Development
 
 **When to Use:**
 - ✅ Implementing new game features
 - ✅ Creating UI components with Korean theming
-- ✅ Fixing bugs in React/Three.js code
+- ✅ Fixing bugs in React/PixiJS code
 - ✅ Refactoring existing code
-- ✅ Implementing 3D rendering with @react-three/fiber
+- ✅ Integrating @pixi/layout system
 - ✅ Implementing combat mechanics
 
 **Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `playwright-browser_*`
 
 **Expertise:**
-- React + Three.js integration patterns (@react-three/fiber)
+- React + PixiJS integration patterns
 - Korean theming and bilingual text
-- 3D scene graph with @react-three/drei
+- Layout system (@pixi/layout)
 - Combat system implementation
 - Type-safe development with strict TypeScript
 
@@ -258,7 +258,7 @@ graph LR
 ---
 
 ### 🎮 [Game Developer](./game-developer.md)
-**Primary Role:** Three.js 3D Game Systems Engineer
+**Primary Role:** PixiJS 8.x Game Systems Engineer
 
 **When to Use:**
 - ✅ Implementing game loops
@@ -271,7 +271,7 @@ graph LR
 **Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `playwright-browser_*`
 
 **Expertise:**
-- Three.js integration with @react-three/fiber
+- PixiJS v8 integration
 - Game loop architecture
 - Howler.js audio management
 - Performance optimization
