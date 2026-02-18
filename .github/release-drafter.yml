@@ -94,7 +94,7 @@ template: |
   [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/blacktrigram/attestations)
   [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Hack23/blacktrigram/badge)](https://scorecard.dev/viewer/?uri=github.com/Hack23/blacktrigram)
   [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/10777/badge)](https://bestpractices.coreinfrastructure.org/projects/10777)
-  [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHack23%2Fblacktrigramsvg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram?ref=badge_shield)
+  [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram?ref=badge_shield)
   [![CLA assistant](https://cla-assistant.io/readme/badge/Hack23/blacktrigram)](https://cla-assistant.io/Hack23/blacktrigram)
 
   **📦 Build Provenance & Attestations:**
@@ -118,9 +118,9 @@ template: |
   [![Scorecard supply-chain security](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml)
 
   **📈 Test Reports & Coverage (Transparency):**
-  - **Unit Test Coverage**: [View HTML Report](https://hack23.github.io/blacktrigram/test-results/coverage/index.html) | [JSON Report](https://hack23.github.io/blacktrigram/test-results/coverage/coverage-summary.json)
-  - **E2E Test Report**: [Mochawesome Report](https://hack23.github.io/blacktrigram/cypress/index.html) | [JUnit XML](https://hack23.github.io/blacktrigram/cypress/results/junit.xml)
-  - **API Documentation**: [TypeDoc Reference](https://hack23.github.io/blacktrigram/) | [Module Dependencies](https://hack23.github.io/blacktrigram/dependencies/module-dependencies.svg)
+  - **Unit Test Coverage**: [View HTML Report](https://hack23.github.io/blacktrigram/coverage/index.html) | [JSON Report](https://hack23.github.io/blacktrigram/coverage/coverage-summary.json)
+  - **E2E Test Report**: [Mochawesome Report](https://hack23.github.io/blacktrigram/cypress/mochawesome/index.html)
+  - **API Documentation**: [TypeDoc Reference](https://hack23.github.io/blacktrigram/api/) | [Module Dependencies](https://hack23.github.io/blacktrigram/dependencies/module-dependencies.svg)
   - **Performance**: [Lighthouse Report](https://hack23.github.io/blacktrigram/lighthouse/index.html) | [Budget Status](https://github.com/Hack23/blacktrigram/blob/main/budget.json)
 
   All test reports are generated automatically and published to GitHub Pages for full transparency.
