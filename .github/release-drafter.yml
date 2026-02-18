@@ -13,7 +13,7 @@ categories:
       - "game-logic"
       - "graphics"
       - "audio"
-      - "pixi-components"
+      - "three-components"
 
   - title: "🎨 UI/UX Improvements"
     labels:
@@ -82,25 +82,77 @@ template: |
   # Highlights
   $CHANGES
 
-  ## Security & Quality
+  ## 🎮 Black Trigram - Korean Martial Arts Combat System
+  This release continues to enhance the Black Trigram (흑괘) platform's capabilities for immersive Korean martial arts education through realistic 3D combat mechanics, providing improved insights into:
+  - **Eight Trigram System**: Authentic Korean martial arts stance mechanics (☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷)
+  - **Vital Point Targeting**: Anatomically precise 70-point targeting system (급소격)
+  - **Three.js Combat**: High-performance 3D rendering with @react-three/fiber
+  - **Combat Realism**: Physics-based combat with injury progression and balance systems
+  - **Korean Cultural Authenticity**: Bilingual interface with traditional martial arts philosophy
+
+  ## 🔐 Security Compliance & Supply Chain Transparency
+  [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/blacktrigram/attestations)
   [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Hack23/blacktrigram/badge)](https://scorecard.dev/viewer/?uri=github.com/Hack23/blacktrigram)
+  [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/10777/badge)](https://bestpractices.coreinfrastructure.org/projects/10777)
+  [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHack23%2Fblacktrigramsvg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram?ref=badge_shield)
+  [![CLA assistant](https://cla-assistant.io/readme/badge/Hack23/blacktrigram)](https://cla-assistant.io/Hack23/blacktrigram)
 
-  ## Security Compliance
-  [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/blacktrigram/attestations/)
+  **📦 Build Provenance & Attestations:**
+  - [View SLSA Build Attestations](https://github.com/Hack23/blacktrigram/attestations)
+  - [Download SBOM (SPDX)](https://github.com/Hack23/blacktrigram/releases/download/$RESOLVED_VERSION/game-$RESOLVED_VERSION.spdx.json)
+  - [Build Provenance Bundle](https://github.com/Hack23/blacktrigram/releases/download/$RESOLVED_VERSION/game-$RESOLVED_VERSION.zip.intoto.jsonl)
+  - [SBOM Attestation Bundle](https://github.com/Hack23/blacktrigram/releases/download/$RESOLVED_VERSION/game-$RESOLVED_VERSION.spdx.json.intoto.jsonl)
 
-  ## Game Development Stack
-  - ⚡ **Vite** - Fast build tool and dev server
-  - ⚛️ **React 19** - Modern React with hooks  
-  - 🔷 **TypeScript** - Strict typing with latest standards
-  - 🎮 **PixiJS 8.x** - High-performance WebGL renderer
-  - 🎵 **Howler.js** - Audio library for games
-  - 🧪 **Vitest** - Fast unit testing with coverage
-  - 🌲 **Cypress** - Reliable E2E testing
+  ## 🏛️ Hack23 ISMS Framework Alignment
+  [![Information Security Policy](https://img.shields.io/badge/ISMS-Information%20Security%20Policy-0066CC?style=flat-square&logo=shield&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
+  [![Secure Development Policy](https://img.shields.io/badge/ISMS-Secure%20Development%20Policy-00AA00?style=flat-square&logo=code&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+  [![Open Source Policy](https://img.shields.io/badge/ISMS-Open%20Source%20Policy-FFD700?style=flat-square&logo=open-source-initiative&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
+  [![Threat Modeling](https://img.shields.io/badge/ISMS-Threat%20Modeling-FF6B6B?style=flat-square&logo=target&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)
+  [![Vulnerability Management](https://img.shields.io/badge/ISMS-Vulnerability%20Management-FFA500?style=flat-square&logo=bug&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md)
+  [![Transparency Plan](https://img.shields.io/badge/ISMS-Transparency%20Plan-9370DB?style=flat-square&logo=eye&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/ISMS_Transparency_Plan.md)
 
-  ## Contributors
+  Black Trigram follows [Hack23 AB's comprehensive ISMS framework](https://github.com/Hack23/ISMS-PUBLIC) aligned with ISO 27001:2022, NIST CSF 2.0, and CIS Controls v8.1.
+
+  ## 📊 Quality Assurance & Test Coverage
+  [![Test & Report](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml)
+  [![Scorecard supply-chain security](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml)
+
+  **📈 Test Reports & Coverage (Transparency):**
+  - **Unit Test Coverage**: [View HTML Report](https://hack23.github.io/blacktrigram/test-results/coverage/index.html) | [JSON Report](https://hack23.github.io/blacktrigram/test-results/coverage/coverage-summary.json)
+  - **E2E Test Report**: [Mochawesome Report](https://hack23.github.io/blacktrigram/cypress/index.html) | [JUnit XML](https://hack23.github.io/blacktrigram/cypress/results/junit.xml)
+  - **API Documentation**: [TypeDoc Reference](https://hack23.github.io/blacktrigram/) | [Module Dependencies](https://hack23.github.io/blacktrigram/dependencies/module-dependencies.svg)
+  - **Performance**: [Lighthouse Report](https://hack23.github.io/blacktrigram/lighthouse/index.html) | [Budget Status](https://github.com/Hack23/blacktrigram/blob/main/budget.json)
+
+  All test reports are generated automatically and published to GitHub Pages for full transparency.
+
+  ## 🎮 Technology Stack (Node.js 24)
+  - ⚡ **Vite 7.x** - Lightning-fast build tool and dev server
+  - ⚛️ **React 19** - Modern React with concurrent features and hooks  
+  - 🔷 **TypeScript 5.9+** - Strict typing with latest ESNext standards
+  - 🎨 **Three.js 0.182** - High-performance 3D WebGL rendering engine
+  - 🔗 **@react-three/fiber 9.5** - React renderer for Three.js
+  - 🎁 **@react-three/drei 10.7** - Useful helpers for react-three-fiber
+  - 🎵 **Howler.js** - Robust audio library for spatial 3D sound
+  - 🧪 **Vitest 4.x** - Fast unit testing with coverage and benchmarking
+  - 🌲 **Cypress 15.x** - Reliable E2E testing for 3D combat mechanics
+  - 📦 **Node.js 24** - Latest Node.js LTS for development and CI/CD
+
+  ## 🔍 Code Quality & Security Analysis
+  [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
+  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
+  [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
+  [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
+  [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
+
+  ## 👥 Contributors
   Thanks to $CONTRIBUTORS for their contributions to this release!
 
   **Full Changelog**: https://github.com/Hack23/blacktrigram/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
+
+  ---
+
+  ### 흑괘의 길을 걸어라 | Walk the Path of the Black Trigram
+  _An immersive educational experience honoring Korean martial arts tradition through modern 3D technology._
 
 version-resolver:
   major:
@@ -248,13 +300,16 @@ autolabeler:
       - '/^audio(\([^)]+\))?:/i'
       - '/^sound(\([^)]+\))?:/i'
   
-  - label: "pixi-components"
+  - label: "three-components"
     title:
-      - '/^pixi(\([^)]+\))?:/i'
+      - '/^three(\([^)]+\))?:/i'
+      - '/^3d(\([^)]+\))?:/i'
     files:
-      - '**/pixi/**/*'
-      - '**/*pixi*.ts'
-      - '**/*pixi*.tsx'
+      - '**/three/**/*'
+      - '**/*three*.ts'
+      - '**/*three*.tsx'
+      - '**/*3d*.ts'
+      - '**/*3d*.tsx'
   
   # E2E Testing
   - label: "e2e"
