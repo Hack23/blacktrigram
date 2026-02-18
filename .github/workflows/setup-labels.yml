@@ -68,9 +68,9 @@ jobs:
 
           # 🎮 Game Development
           create_or_update_label "game-logic" "ff6b6b" "Game logic and mechanics"
-          create_or_update_label "graphics" "ffa726" "Graphics and rendering (PixiJS)"
+          create_or_update_label "graphics" "ffa726" "Graphics and rendering (Three.js)"
           create_or_update_label "audio" "ab47bc" "Audio and sound effects"
-          create_or_update_label "pixi-components" "ff8a65" "PixiJS component updates"
+          create_or_update_label "three-components" "ff8a65" "Three.js component updates"
 
           # 🎨 UI/UX
           create_or_update_label "ui" "e1bee7" "User interface improvements"

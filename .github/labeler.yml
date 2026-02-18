@@ -1,4 +1,4 @@
-# Label definitions aligned with PixiJS game development
+# Label definitions aligned with Three.js game development
 
 # 🚀 Features and Enhancements
 feature:
@@ -51,11 +51,12 @@ graphics:
       - changed-files:
           - any-glob-to-any-file:
               - "src/**/graphics/**"
-              - "src/**/pixi/**"
+              - "src/**/three/**"
               - "src/**/render/**"
-              - "src/**/*pixi*"
+              - "src/**/*three*"
       - title: "graphics:*"
-      - title: "pixi:*"
+      - title: "three:*"
+      - title: "3d:*"
       - title: "render:*"
       - body: "- [x] 🎨 Graphics & Rendering"
 
@@ -205,14 +206,16 @@ component-game:
 
 component-ui:
   - changed-files:
-      - any-glob-to-any-file: "src/components/UI/**"
+      - any-glob-to-any-file: "src/components/ui/**"
 
-# PixiJS-specific labels
-pixi-components:
+# Three.js-specific labels
+three-components:
   - changed-files:
       - any-glob-to-any-file:
-          - "src/**/*pixi*"
-          - "src/**/*Pixi*"
+          - "src/**/*three*"
+          - "src/**/*Three*"
+          - "src/**/*3d*"
+          - "src/**/*3D*"
 
 # Game assets
 assets:
