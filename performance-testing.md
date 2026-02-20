@@ -30,7 +30,7 @@ This document establishes the **comprehensive performance testing strategy, benc
 - ✅ Lighthouse scores meeting quality standards (90+ performance)
 - ✅ Continuous performance monitoring and regression prevention
 - ✅ Three.js scene optimization (instancing, LOD, culling)
-- ✅ **ISO 27001 (A.8.32)** compliance for capacity management
+- ✅ **ISO/IEC 27001:2022 (A.8.6)** compliance for capacity management
 - ✅ **NIST CSF (ID.AM-1)** compliance for asset performance characteristics
 
 ---
@@ -121,12 +121,15 @@ Performance budgets are defined in [`budget.json`](budget.json) and enforced via
       { "metric": "speed-index", "budget": 5000 }
     ],
     "resourceSizes": [
-      { "resourceType": "script", "budget": 500 },
+      { "resourceType": "script", "budget": 180 },
       { "resourceType": "image", "budget": 200 },
       { "resourceType": "stylesheet", "budget": 50 },
       { "resourceType": "document", "budget": 20 },
       { "resourceType": "font", "budget": 50 },
-      { "resourceType": "total", "budget": 1000 }
+      { "resourceType": "total", "budget": 500 }
+    ],
+    "resourceCounts": [
+      { "resourceType": "third-party", "budget": 59 }
     ]
   }
 ]
@@ -297,9 +300,9 @@ npx cypress run --spec "cypress/e2e/**/performance*"
 
 ## 📊 Compliance & Standards Alignment
 
-**ISO 27001:**
+**ISO/IEC 27001:2022:**
+- **A.8.6 (Capacity Management)**: Performance budgets and monitoring ensure adequate capacity for business requirements
 - **A.8.32 (Change Management)**: Performance monitoring ensures system stability during changes
-- **A.12.1.3 (Capacity Management)**: Performance budgets ensure adequate capacity
 
 **NIST Cybersecurity Framework:**
 - **ID.AM-1 (Asset Management)**: Performance characteristics documented as part of asset inventory
