@@ -15,6 +15,8 @@
   <a href="https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram"><img src="https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=alert_status" alt="Quality Gate Status"/></a>
 </p>
 
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) performance testing and monitoring requirements.
+
 **📋 Document Owner:** CEO | **📅 Last Updated:** February 2026  
 **🔄 Review Cycle:** Quarterly | **⏰ Next Review:** May 2026
 
@@ -302,7 +304,7 @@ npx cypress run --spec "cypress/e2e/**/performance*"
 
 **ISO/IEC 27001:2022:**
 - **A.8.6 (Capacity Management)**: Performance budgets and monitoring ensure adequate capacity for business requirements
-- **A.8.32 (Change Management)**: Performance monitoring ensures system stability during changes
+- **A.8.9 (Configuration Management)**: Performance monitoring ensures system stability during configuration and system changes
 
 **NIST Cybersecurity Framework:**
 - **ID.AM-1 (Asset Management)**: Performance characteristics documented as part of asset inventory
