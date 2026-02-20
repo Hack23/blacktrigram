@@ -22,7 +22,7 @@
 
 ## 📚 Available Skills
 
-Black Trigram includes **15 comprehensive skills** organized by domain:
+Black Trigram includes **27 comprehensive skills** organized by domain:
 
 ### 🔐 Security & Compliance
 
@@ -147,9 +147,149 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ---
 
+#### 6. [gdpr-compliance](./gdpr-compliance/SKILL.md)
+**Purpose**: Enforce GDPR and EU privacy requirements for data protection by design
+
+**Key Rules:**
+- Data minimization: collect only what's strictly necessary
+- Explicit consent required before data storage (localStorage, cookies)
+- Right to erasure: implement data deletion functionality
+- Privacy by design for all new features
+- NIS2 Directive and EU Cyber Resilience Act alignment
+
+**Triggers:**
+- Data collection or storage
+- User preferences handling
+- Analytics implementation
+- Privacy notice updates
+
+**Compliance:** GDPR Articles 5, 6, 13, 17, 25, 32; NIS2 Directive; EU CRA; ISO 27001 A.5.34
+
+---
+
+#### 7. [incident-response](./incident-response/SKILL.md)
+**Purpose**: Enforce security incident response procedures aligned with Hack23 ISMS
+
+**Key Rules:**
+- Severity classification (Critical/High/Medium/Low) with response SLAs
+- Critical vulnerabilities patched within 24 hours
+- Secret exposure: immediate revocation, rotation, audit
+- Lessons learned documented for all incidents
+- Automated detection via Dependabot, CodeQL, npm audit
+
+**Triggers:**
+- Security vulnerability detected
+- Secret exposure
+- Dependency vulnerability alert
+- CI/CD security failure
+
+**Compliance:** ISO 27001 A.5.24-A.5.28, NIST CSF DE.AE/RS.AN/RS.MA, CIS Controls 17
+
+---
+
+#### 8. [secrets-management](./secrets-management/SKILL.md)
+**Purpose**: Ensure API keys, tokens, and credentials are handled securely
+
+**Key Rules:**
+- No hardcoded secrets in source code
+- Environment variables (import.meta.env.VITE_*) for client-side config
+- GitHub Secrets for CI/CD credentials
+- .env files in .gitignore
+- Secret rotation every 90 days maximum
+
+**Triggers:**
+- Configuration with sensitive values
+- CI/CD workflow secrets
+- API key management
+- Credential rotation
+
+**Compliance:** ISO 27001 A.8.24, NIST CSF PR.DS-1, CIS Controls 3.11, OWASP A02:2021
+
+---
+
+#### 9. [vulnerability-management](./vulnerability-management/SKILL.md)
+**Purpose**: Continuously identify, assess, and remediate vulnerabilities
+
+**Key Rules:**
+- Dependency scanning with Dependabot and npm audit
+- Remediation SLAs: Critical 24h, High 72h, Medium 2 weeks, Low 30 days
+- OSSF Scorecard maintenance ≥ 8.0
+- SBOM generation on every release (CycloneDX format)
+- CodeQL analysis required on all PRs
+
+**Triggers:**
+- Dependency updates
+- Security scanning alerts
+- OSSF Scorecard monitoring
+- Release builds
+
+**Compliance:** ISO 27001 A.8.8, NIST CSF ID.RA/DE.CM, CIS Controls 7, OWASP A06:2021
+
+---
+
+#### 10. [input-validation](./input-validation/SKILL.md)
+**Purpose**: Enforce input validation at all system boundaries
+
+**Key Rules:**
+- Validate type, length, format, and range for all user input
+- Use Zod schemas or type guards at data boundaries
+- React auto-escaping for output encoding (no dangerouslySetInnerHTML)
+- Combat data validation against known ranges and enums
+- Schema validation for localStorage/URL data
+
+**Triggers:**
+- User input handling
+- Data boundary crossing
+- Combat data processing
+- localStorage/URL parsing
+
+**Compliance:** ISO 27001 A.8.26, NIST CSF PR.DS-1, CIS Controls 16.6, OWASP A03:2021
+
+---
+
+#### 11. [data-protection](./data-protection/SKILL.md)
+**Purpose**: Protect data at every stage of its lifecycle
+
+**Key Rules:**
+- Data classification: Public, Internal, Confidential, Restricted
+- HTTPS/TLS 1.2+ for all network communication
+- Content Security Policy (CSP) headers configured
+- Subresource Integrity (SRI) for external resources
+- Minimal data retention with automatic cleanup
+
+**Triggers:**
+- Data storage implementation
+- Network communication
+- Security header configuration
+- Asset loading
+
+**Compliance:** ISO 27001 A.8.10-A.8.12, NIST CSF PR.DS, CIS Controls 3, GDPR Art. 5/25/32
+
+---
+
+#### 12. [risk-assessment-frameworks](./risk-assessment-frameworks/SKILL.md)
+**Purpose**: Systematically identify, evaluate, and treat security risks
+
+**Key Rules:**
+- Risk assessment required for new dependencies and integrations
+- Risk treatment: Mitigate, Accept, Transfer, or Avoid (documented)
+- Supply chain risk assessment for npm dependencies
+- Risk register maintained and reviewed quarterly
+- Dependency checklist: audit, maintenance, license, OSSF score
+
+**Triggers:**
+- Adding dependencies
+- External integrations
+- Architecture changes
+- Quarterly risk review
+
+**Compliance:** ISO 27001 6.1/6.2, NIST CSF ID.RA, CIS Controls 7, ISO 31000
+
+---
+
 ### 🏗️ Architecture & Documentation
 
-#### 6. [c4-architecture-documentation](./c4-architecture-documentation/SKILL.md)
+#### 13. [c4-architecture-documentation](./c4-architecture-documentation/SKILL.md)
 **Purpose**: Enforce C4 Architecture Model standards
 
 **Key Rules:**
@@ -174,9 +314,29 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ---
 
+#### 14. [documentation-standards](./documentation-standards/SKILL.md)
+**Purpose**: Enforce consistent documentation standards with bilingual support
+
+**Key Rules:**
+- JSDoc/TSDoc for all exported functions, classes, and interfaces
+- Architecture documentation updated with code changes
+- Bilingual Korean-English documentation with romanization
+- Security documentation updated for security changes
+- TypeDoc generates without errors
+
+**Triggers:**
+- New public APIs
+- Architecture changes
+- Korean terminology additions
+- Security documentation updates
+
+**Compliance:** ISO 27001 A.5.37, NIST CSF GV.PO/ID.AM
+
+---
+
 ### 🎨 Visual & Cultural Standards
 
-#### 7. [korean-theming-standards](./korean-theming-standards/SKILL.md)
+#### 15. [korean-theming-standards](./korean-theming-standards/SKILL.md)
 **Purpose**: Enforce Korean cyberpunk aesthetic and cultural authenticity
 
 **Key Rules:**
@@ -199,7 +359,7 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ### 🧪 Testing & Quality
 
-#### 8. [testing-strategy-enforcement](./testing-strategy-enforcement/SKILL.md)
+#### 16. [testing-strategy-enforcement](./testing-strategy-enforcement/SKILL.md)
 **Purpose**: Enforce comprehensive testing standards
 
 **Key Rules:**
@@ -220,9 +380,69 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ---
 
+#### 17. [code-quality-excellence](./code-quality-excellence/SKILL.md)
+**Purpose**: Enforce code quality standards for maintainable, type-safe code
+
+**Key Rules:**
+- Search existing code before creating new implementations
+- No 'any' types, no type assertions without justification
+- Function complexity < 10, lines < 50
+- Organized imports: React → External → Internal → Types → Constants
+- Explicit error handling with try/catch or null coalescing
+
+**Triggers:**
+- New code creation
+- Code refactoring
+- Type safety issues
+- Complexity increases
+
+**Compliance:** ISO 27001 A.8.25, NIST CSF PR.DS, CIS Controls 16
+
+---
+
+#### 18. [accessibility-wcag-patterns](./accessibility-wcag-patterns/SKILL.md)
+**Purpose**: Enforce WCAG 2.1 Level AA accessibility for inclusive game design
+
+**Key Rules:**
+- Semantic HTML in Html overlays (nav, main, button, label)
+- ARIA attributes for custom interactive components
+- Keyboard navigation for all interactive elements
+- WCAG AA contrast ratio: 4.5:1 normal, 3:1 large text
+- Screen reader support via aria-live regions
+
+**Triggers:**
+- UI component creation
+- Interactive element implementation
+- Color usage with KOREAN_COLORS
+- Game state announcements
+
+**Compliance:** WCAG 2.1 Level AA, EN 301 549, ISO 27001 A.8.26
+
+---
+
+#### 19. [typescript-strict-patterns](./typescript-strict-patterns/SKILL.md)
+**Purpose**: Maximize TypeScript type safety for compile-time error detection
+
+**Key Rules:**
+- Strict mode compliance (strict: true, no suppressions)
+- No 'any' type (use 'unknown' with type guards)
+- Readonly by default for interfaces and parameters
+- Exhaustive pattern matching for union types
+- Explicit return types for exported functions
+
+**Triggers:**
+- TypeScript code writing
+- Type definition updates
+- Pattern matching on enums/unions
+- Interface design
+
+**Compliance:** ISO 27001 A.8.25, CWE-843 (Type Confusion)
+
+---
+
 ### ⚡ Performance & Optimization
 
-#### 9. [performance-optimization](./performance-optimization/SKILL.md)
+#### 20. [performance-optimization](./performance-optimization/SKILL.md)
 **Purpose**: Enforce 60fps rendering and optimal bundle size
 
 **Key Rules:**
@@ -244,7 +464,7 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ### 🌐 Three.js Best Practices
 
-#### 10. [threejs-best-practices](./threejs-best-practices/SKILL.md)
+#### 21. [threejs-best-practices](./threejs-best-practices/SKILL.md)
 **Purpose**: Enforce @react-three/fiber patterns and Three.js optimization
 
 **Key Rules:**
@@ -266,7 +486,7 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ### 🎮 Game Development & Combat
 
-#### 11. [game-development-patterns](./game-development-patterns/SKILL.md)
+#### 22. [game-development-patterns](./game-development-patterns/SKILL.md)
 **Purpose**: Enforce game development best practices for Black Trigram
 
 **Key Rules:**
@@ -287,7 +507,7 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ---
 
-#### 12. [korean-martial-arts-authenticity](./korean-martial-arts-authenticity/SKILL.md)
+#### 23. [korean-martial-arts-authenticity](./korean-martial-arts-authenticity/SKILL.md)
 **Purpose**: Enforce authentic Korean martial arts systems (11 arts) with Dark Ops combat applications
 
 **Key Rules:**
@@ -313,7 +533,7 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ---
 
-#### 13. [3d-combat-systems](./3d-combat-systems/SKILL.md)
+#### 24. [3d-combat-systems](./3d-combat-systems/SKILL.md)
 **Purpose**: Enforce 3D physics-based combat patterns for Black Trigram
 
 **Key Rules:**
@@ -334,7 +554,7 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ---
 
-#### 14. [audio-game-integration](./audio-game-integration/SKILL.md)
+#### 25. [audio-game-integration](./audio-game-integration/SKILL.md)
 **Purpose**: Enforce audio best practices for immersive combat feedback
 
 **Key Rules:**
@@ -355,7 +575,7 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 
 ---
 
-#### 15. [github-agentic-workflows](./github-agentic-workflows/SKILL.md)
+#### 26. [github-agentic-workflows](./github-agentic-workflows/SKILL.md)
 **Purpose**: Enforce comprehensive GitHub Agentic Workflows (gh-aw) best practices for AI-powered automation
 
 **Key Rules:**
@@ -386,6 +606,27 @@ Black Trigram includes **15 comprehensive skills** organized by domain:
 **Compliance:** ISO 27001 (A.5.15, A.8.2, A.8.3, A.8.22, A.8.25, A.8.28), NIST CSF 2.0 (GV.PO, ID.RA, PR.AC, PR.DS, PR.IP, DE.CM, RS.MA), CIS Controls v8.1 (2.3, 3.3, 4.1, 4.7, 12.2, 16.1, 18.3)
 
 **Reference**: [GitHub Agentic Workflows Documentation](https://github.github.com/gh-aw/)
+
+---
+
+#### 27. [ai-governance](./ai-governance/SKILL.md)
+**Purpose**: Enforce AI governance for transparent, accountable AI-assisted development
+
+**Key Rules:**
+- AI-generated code reviewed for security, license, and correctness
+- Agent governance via agents/*.md instructions and skills enforcement
+- No sensitive data (secrets, PII) sent to AI services
+- Mandatory human review for security-critical AI code
+- Agent files must be < 30,000 characters
+- AI contributions documented in PR descriptions
+
+**Triggers:**
+- AI-assisted code generation
+- Agent configuration updates
+- Security-critical code review
+- AI tool integration
+
+**Compliance:** EU AI Act, ISO 27001 A.5.1, NIST AI RMF
 
 ---
 
@@ -806,5 +1047,5 @@ Just as Korean martial arts teach precision, discipline, and adaptability, our s
 **Project**: Black Trigram (흑괘)  
 **Owner**: Hack23 AB  
 **License**: MIT  
-**Version**: 1.0  
-**Last Updated**: 2026-01-31
+**Version**: 2.0  
+**Last Updated**: 2026-02-20
