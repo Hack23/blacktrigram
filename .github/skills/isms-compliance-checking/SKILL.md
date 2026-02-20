@@ -143,26 +143,7 @@ interface ISMSPolicyReference {
 }
 
 // Example: Authentication implementation
-const AUTH_ISMS_COMPLIANCE: ISMSPolicyReference[] = [
-  {
-    policy: 'Access Control Policy',
-    url: 'https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md',
-    applicableControls: ['A.9.1', 'A.9.2', 'A.9.4'],
-    implementationStatus: 'Compliant',
-  },
-  {
-    policy: 'Secure Development Policy',
-    url: 'https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md',
-    applicableControls: ['A.14.2.1', 'A.14.2.5'],
-    implementationStatus: 'Compliant',
-  },
-  {
-    policy: 'Cryptography Policy',
-    url: 'https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md',
-    applicableControls: ['A.10.1.1', 'A.10.1.2'],
-    implementationStatus: 'Compliant',
-  },
-];
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ✅ **ISMS Policy Checklist for All Changes**
@@ -196,44 +177,7 @@ export const ISO27001_CONTROLS = {
   },
   
   // People Controls (A.6)
-  A_6: {
-    'A.6.1': 'Screening',
-    'A.6.2': 'Terms and conditions of employment',
-    'A.6.8': 'Information security event reporting',
-  },
-  
-  // Physical Controls (A.7)
-  A_7: {
-    'A.7.1': 'Physical security perimeters',
-    'A.7.4': 'Physical security monitoring',
-  },
-  
-  // Technological Controls (A.8)
-  A_8: {
-    'A.8.1': 'User endpoint devices',
-    'A.8.2': 'Privileged access rights',
-    'A.8.3': 'Information access restriction',
-    'A.8.9': 'Configuration management',
-    'A.8.10': 'Information deletion',
-    'A.8.23': 'Web filtering',
-    'A.8.24': 'Use of cryptography',
-  },
-} as const;
-
-// Example: Mapping authentication to ISO 27001
-interface ISO27001Mapping {
-  readonly feature: string;
-  readonly controls: string[];
-  readonly implementation: string;
-  readonly evidence: string;
-}
-
-const authMapping: ISO27001Mapping = {
-  feature: 'User Authentication System',
-  controls: ['A.8.2', 'A.8.3', 'A.8.5', 'A.9.4.1'],
-  implementation: 'JWT-based authentication with secure token storage',
-  evidence: 'src/auth/AuthProvider.tsx, SECURITY_ARCHITECTURE.md section 3.2',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ✅ **ISO 27001 Compliance Validation**
@@ -247,29 +191,7 @@ interface ControlImplementation {
   readonly gaps?: string;
 }
 
-const SECURITY_CONTROLS: ControlImplementation[] = [
-  {
-    control: 'A.8.24 - Use of cryptography',
-    status: 'Implemented',
-    location: 'src/utils/crypto.ts',
-    evidence: 'Uses Web Crypto API with AES-256-GCM',
-    gaps: undefined,
-  },
-  {
-    control: 'A.9.4.1 - Information access restriction',
-    status: 'Implemented',
-    location: 'src/auth/AccessControl.ts',
-    evidence: 'Role-based access control (RBAC) enforced',
-    gaps: undefined,
-  },
-  {
-    control: 'A.12.3.1 - Information backup',
-    status: 'Planned',
-    location: 'FUTURE_SECURITY_ARCHITECTURE.md',
-    evidence: 'Planned for Q2 2025',
-    gaps: 'No automated backup currently implemented',
-  },
-];
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 3. NIST Cybersecurity Framework 2.0 Alignment
@@ -287,51 +209,7 @@ export const NIST_CSF_2_0 = {
     'GV.SC': 'Cybersecurity Supply Chain Risk Management',
   },
   
-  IDENTIFY: {
-    'ID.AM': 'Asset Management',
-    'ID.RA': 'Risk Assessment',
-    'ID.IM': 'Improvement',
-  },
-  
-  PROTECT: {
-    'PR.AA': 'Identity Management, Authentication and Access Control',
-    'PR.AT': 'Awareness and Training',
-    'PR.DS': 'Data Security',
-    'PR.PS': 'Platform Security',
-  },
-  
-  DETECT: {
-    'DE.AE': 'Adverse Event Analysis',
-    'DE.CM': 'Security Continuous Monitoring',
-  },
-  
-  RESPOND: {
-    'RS.AN': 'Analysis',
-    'RS.MA': 'Incident Management',
-    'RS.MI': 'Incident Mitigation',
-  },
-  
-  RECOVER: {
-    'RC.RP': 'Recovery Planning',
-    'RC.IM': 'Improvements',
-    'RC.CO': 'Communications',
-  },
-} as const;
-
-// Example: Map feature to NIST CSF 2.0
-interface NISTMapping {
-  readonly feature: string;
-  readonly function: keyof typeof NIST_CSF_2_0;
-  readonly categories: string[];
-  readonly implementation: string;
-}
-
-const vitalPointSystemMapping: NISTMapping = {
-  feature: 'Vital Point Targeting System',
-  function: 'PROTECT',
-  categories: ['PR.DS-01', 'PR.DS-05', 'PR.DS-06'],
-  implementation: 'Data integrity checks, input validation, sanitization',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 4. CIS Controls v8.1 Alignment
@@ -349,41 +227,7 @@ export const CIS_CONTROLS_V8_1 = {
     { id: 4, name: 'Secure Configuration of Enterprise Assets and Software' },
     { id: 5, name: 'Account Management' },
     { id: 6, name: 'Access Control Management' },
-  ],
-  
-  // Foundational CIS Controls
-  FOUNDATIONAL: [
-    { id: 7, name: 'Continuous Vulnerability Management' },
-    { id: 8, name: 'Audit Log Management' },
-    { id: 9, name: 'Email and Web Browser Protections' },
-    { id: 10, name: 'Malware Defenses' },
-    { id: 11, name: 'Data Recovery' },
-    { id: 12, name: 'Network Infrastructure Management' },
-    { id: 13, name: 'Network Monitoring and Defense' },
-    { id: 14, name: 'Security Awareness and Skills Training' },
-    { id: 15, name: 'Service Provider Management' },
-    { id: 16, name: 'Application Software Security' },
-  ],
-  
-  // Organizational CIS Controls
-  ORGANIZATIONAL: [
-    { id: 17, name: 'Incident Response Management' },
-    { id: 18, name: 'Penetration Testing' },
-  ],
-} as const;
-
-// Example: Dependency management aligns with CIS Control 2
-interface CISControlMapping {
-  readonly control: number;
-  readonly implementation: string;
-  readonly evidence: string;
-}
-
-const dependencyControl: CISControlMapping = {
-  control: 2, // Inventory and Control of Software Assets
-  implementation: 'Automated SBOM generation, dependency scanning',
-  evidence: 'package.json, npm audit, Dependabot alerts',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 5. GDPR, NIS2, and EU Cyber Resilience Act Compliance
@@ -401,24 +245,7 @@ export const GDPR_PRINCIPLES = {
   STORAGE_LIMITATION: 'Storage limitation',
   INTEGRITY_CONFIDENTIALITY: 'Integrity and confidentiality',
   ACCOUNTABILITY: 'Accountability',
-} as const;
-
-// Example: User data handling
-interface GDPRCompliance {
-  readonly dataType: string;
-  readonly legalBasis: 'Consent' | 'Contract' | 'Legal Obligation' | 'Legitimate Interest';
-  readonly retentionPeriod: string;
-  readonly rightToErasure: boolean;
-  readonly rightToPortability: boolean;
-}
-
-const playerDataCompliance: GDPRCompliance = {
-  dataType: 'Player Profile (name, preferences, game progress)',
-  legalBasis: 'Consent',
-  retentionPeriod: '2 years after last login or until user requests deletion',
-  rightToErasure: true,
-  rightToPortability: true,
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ✅ **NIS2 Directive Requirements**
@@ -432,16 +259,7 @@ export const NIS2_REQUIREMENTS = {
   SECURITY_POLICIES: 'Security in network and information systems acquisition',
   ACCESS_CONTROL: 'Policies and procedures to assess access control',
   CRYPTOGRAPHY: 'Use of cryptography and encryption',
-} as const;
-
-// Black Trigram NIS2 implementation status
-const nis2Status = {
-  RISK_MANAGEMENT: 'Implemented - THREAT_MODEL.md',
-  INCIDENT_HANDLING: 'Implemented - SECURITY.md section 5',
-  BUSINESS_CONTINUITY: 'Planned - FUTURE_SECURITY_ARCHITECTURE.md',
-  SUPPLY_CHAIN_SECURITY: 'Implemented - OSSF Scorecard, SBOM generation',
-  CRYPTOGRAPHY: 'Implemented - Web Crypto API with strong algorithms',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ✅ **EU Cyber Resilience Act (CRA) Compliance**
@@ -455,15 +273,7 @@ export const EU_CRA_REQUIREMENTS = {
   CE_MARKING: 'Products must carry CE marking',
   DOCUMENTATION: 'Provide security documentation and instructions to users',
 } as const;
-
-// Black Trigram CRA compliance
-const craCompliance = {
-  SECURITY_BY_DESIGN: 'Implemented - secure coding standards enforced',
-  VULNERABILITY_HANDLING: 'Implemented - GitHub Security Advisories, CodeQL',
-  SECURITY_UPDATES: 'Implemented - automated dependency updates via Dependabot',
-  REPORTING_OBLIGATIONS: 'Documented - SECURITY.md section 4',
-  DOCUMENTATION: 'Implemented - SECURITY_ARCHITECTURE.md, THREAT_MODEL.md',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 6. Supply Chain Security (OSSF Scorecard, SLSA, SBOM)
@@ -481,33 +291,7 @@ on:
     - cron: '0 2 * * 0' # Weekly on Sunday
   push:
     branches: [main]
-
-permissions: read-all
-
-jobs:
-  analysis:
-    name: Scorecard analysis
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-      id-token: write
-      contents: read
-      actions: read
-    
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      
-      - uses: ossf/scorecard-action@v2.3.1
-        with:
-          results_file: results.sarif
-          results_format: sarif
-          publish_results: true
-      
-      - uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: results.sarif
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ✅ **Target OSSF Scorecard Score: 8.0+**
@@ -521,15 +305,7 @@ export const OSSF_SCORECARD_CHECKS = {
   'Dependency-Update-Tool': 10, // Dependabot enabled
   'Fuzzing': 0, // Not applicable (frontend game)
   'License': 10, // MIT license
-  'Maintained': 10, // Active development
-  'Pinned-Dependencies': 10, // Pin GitHub Actions
-  'SAST': 10, // CodeQL enabled
-  'Security-Policy': 10, // SECURITY.md present
-  'Signed-Releases': 0, // Future improvement
-  'Token-Permissions': 10, // Minimal token permissions
-  'Vulnerabilities': 10, // No known vulnerabilities
-  'Webhooks': 10, // Webhooks use secrets
-} as const;
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ✅ **SLSA Build Provenance**
@@ -543,19 +319,7 @@ on:
   push:
     tags:
       - 'v*'
-
-permissions: read-all
-
-jobs:
-  provenance:
-    permissions:
-      actions: read
-      id-token: write
-      contents: write
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.10.0
-    with:
-      base64-subjects: "${{ needs.build.outputs.hashes }}"
-      upload-assets: true
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ✅ **SBOM (Software Bill of Materials) Generation**
@@ -609,28 +373,7 @@ interface ArchitectureChange {
 }
 
 const exampleChange: ArchitectureChange = {
-  component: 'Authentication System',
-  changeType: 'Modified',
-  affectedDocuments: [
-    'ARCHITECTURE.md - Section 3.2',
-    'SECURITY_ARCHITECTURE.md - Section 4.1',
-    'DATA_MODEL.md - User entity schema',
-  ],
-  updateRequired: true,
-};
-
-// PR check: Fail if architecture docs not updated
-const validateDocumentation = (change: ArchitectureChange): boolean => {
-  if (change.updateRequired) {
-    const docsUpdated = checkDocumentationUpdates(change.affectedDocuments);
-    if (!docsUpdated) {
-      throw new Error(
-        `Architecture documentation must be updated: ${change.affectedDocuments.join(', ')}`
-      );
-    }
-  }
-  return true;
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 8. Compliance Traceability Matrix
@@ -648,28 +391,7 @@ interface ComplianceTraceability {
   readonly testCoverage: string;
   readonly status: 'Compliant' | 'Partial' | 'Planned' | 'Not Applicable';
 }
-
-// Example: Authentication system traceability
-const authTraceability: ComplianceTraceability[] = [
-  {
-    requirement: 'Secure user authentication',
-    framework: 'ISO 27001',
-    control: 'A.9.4.2 - Secure log-on procedures',
-    implementation: 'JWT-based authentication with secure token storage',
-    evidence: 'src/auth/AuthProvider.tsx, SECURITY_ARCHITECTURE.md#3.2',
-    testCoverage: 'src/auth/__tests__/AuthProvider.test.tsx',
-    status: 'Compliant',
-  },
-  {
-    requirement: 'Multi-factor authentication support',
-    framework: 'NIST CSF 2.0',
-    control: 'PR.AC-07 - Authenticate users and devices',
-    implementation: 'Planned for Q2 2025',
-    evidence: 'FUTURE_SECURITY_ARCHITECTURE.md#4.3',
-    testCoverage: 'N/A',
-    status: 'Planned',
-  },
-];
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 9. Common Compliance Anti-Patterns to REJECT
@@ -687,16 +409,7 @@ const authTraceability: ComplianceTraceability[] = [
 ## Changes
 - Added authentication system
 - Implemented user login
-
-## ISMS Compliance
-- **Access Control Policy**: A.9.4.2 - Secure log-on procedures
-- **Secure Development Policy**: A.14.2.5 - Secure system engineering principles
-- **Cryptography Policy**: A.10.1.1 - Policy on the use of cryptographic controls
-
-## Framework Alignment
-- ISO 27001:2022: A.9.4.2, A.10.1.1, A.14.2.5
-- NIST CSF 2.0: PR.AC-01, PR.DS-02
-- CIS Controls v8.1: Control 6 (Access Control Management)
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ❌ **Outdated Architecture Documentation**
@@ -737,17 +450,7 @@ export const sanitizeInput = (input: string): string => {
 export const sanitizeInput = (input: string): string => {
   return input.replace(/[<>]/g, '');
 };
-
-// src/__tests__/sanitize.test.ts
-describe('sanitizeInput', () => {
-  it('should remove XSS attack vectors', () => {
-    expect(sanitizeInput('<script>alert(1)</script>')).toBe('scriptalert(1)/script');
-  });
-  
-  it('should handle nested tags', () => {
-    expect(sanitizeInput('<<script>>alert(1)<</script>>')).toBe('scriptalert(1)/script');
-  });
-});
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ## Enforcement Rules
