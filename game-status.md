@@ -1,5 +1,7 @@
 # 🎮 Black Trigram (흑괘) – Comprehensive Game Status Report
 
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) quality assurance and reporting requirements.
+
 **Analysis Date**: January 29, 2026  
 **Previous Assessment**: January 27, 2026  
 **Assessment Scope**: Q1 2026 comprehensive status - AI integration complete, limb exposure system integrated, grappling animations complete, combat realism systems at 100%.
