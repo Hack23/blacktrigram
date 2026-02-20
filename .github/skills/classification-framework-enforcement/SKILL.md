@@ -47,155 +47,7 @@ This skill ensures Black Trigram maintains comprehensive classification of all a
  * @see {@link https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md}
  * @category Security
  * @korean 보안등급분류
- */
-interface SecurityClassification {
-  readonly asset: string;
-  readonly confidentiality: ConfidentialityLevel;
-  readonly integrity: IntegrityLevel;
-  readonly availability: AvailabilityLevel;
-  readonly privacy: PrivacyLevel;
-  readonly justification: string;
-  readonly controls: SecurityControl[];
-  readonly lastReviewed: string; // ISO 8601 date
-}
-
-/**
- * Confidentiality levels from Public to Extreme.
- * 
- * @see {@link https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels}
- */
-enum ConfidentialityLevel {
-  /** Public information, no confidentiality requirements */
-  PUBLIC = 'Public',
-  
-  /** Low protection, basic authentication, internal-only access */
-  LOW = 'Low',
-  
-  /** Moderate protection, standard encryption, role-based access */
-  MODERATE = 'Moderate',
-  
-  /** High protection, strong encryption, MFA, comprehensive monitoring */
-  HIGH = 'High',
-  
-  /** Very high protection, zero-trust architecture, advanced threat protection */
-  VERY_HIGH = 'Very High',
-  
-  /** Extreme protection, national security level, quantum encryption, air-gapped */
-  EXTREME = 'Extreme',
-}
-
-/**
- * Integrity levels from Minimal to Critical.
- * 
- * @see {@link https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels}
- */
-enum IntegrityLevel {
-  /** Minimal integrity requirements, best-effort basis only */
-  MINIMAL = 'Minimal',
-  
-  /** Low integrity, basic validation, manual verification acceptable */
-  LOW = 'Low',
-  
-  /** Moderate integrity, standard validation, checksums required */
-  MODERATE = 'Moderate',
-  
-  /** High integrity, automated validation, digital signatures */
-  HIGH = 'High',
-  
-  /** Critical integrity, real-time validation, immutable logs, blockchain */
-  CRITICAL = 'Critical',
-}
-
-/**
- * Availability levels from Best Effort to Mission Critical.
- * 
- * @see {@link https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels}
- */
-enum AvailabilityLevel {
-  /** Best effort, no uptime guarantees */
-  BEST_EFFORT = 'Best Effort',
-  
-  /** Standard availability, 99% uptime, basic redundancy */
-  STANDARD = 'Standard',
-  
-  /** Moderate availability, 99.5% uptime, manual failover */
-  MODERATE = 'Moderate',
-  
-  /** High availability, 99.9% uptime, automated failover */
-  HIGH = 'High',
-  
-  /** Mission critical, 99.99% uptime, instant failover, full redundancy */
-  MISSION_CRITICAL = 'Mission Critical',
-}
-
-/**
- * Privacy and PII protection levels per GDPR requirements.
- * 
- * @see {@link https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#privacy-levels}
- */
-enum PrivacyLevel {
-  /** Not applicable, no personal data */
-  NA = 'NA',
-  
-  /** Anonymized data, irreversibly de-identified, outside GDPR scope */
-  ANONYMIZED = 'Anonymized',
-  
-  /** Pseudonymized data, de-identified with key separation per GDPR Art. 4(5) */
-  PSEUDONYMIZED = 'Pseudonymized',
-  
-  /** Personal data: preferences, behavior, location per GDPR Art. 4(1) */
-  PERSONAL = 'Personal',
-  
-  /** Personal identifiers: name, SSN, email, IP, biometric data */
-  PERSONAL_IDENTIFIER = 'Personal Identifier',
-  
-  /** Special category data per GDPR Art. 9: health, biometric, genetic, racial, political */
-  SPECIAL_CATEGORY = 'Special Category',
-}
-
-// Example: Classify player combat state
-const playerStateClassification: SecurityClassification = {
-  asset: 'Player Combat State (Eight Trigram stance, health, Ki)',
-  confidentiality: ConfidentialityLevel.LOW,
-  integrity: IntegrityLevel.HIGH,
-  availability: AvailabilityLevel.HIGH,
-  privacy: PrivacyLevel.NA,
-  justification: `
-    Confidentiality: Low - Game state is client-side, visible to player, no sensitive data
-    Integrity: High - Combat calculations must be accurate and tamper-resistant for fair gameplay
-    Availability: High - 99.9% uptime required for smooth 60fps gameplay experience
-    Privacy: NA - No personal information stored, all data is game mechanics
-  `,
-  controls: [
-    'Input validation for all state changes',
-    'Deterministic physics calculations',
-    'Local state management with React hooks',
-    'Automated testing with 90%+ coverage',
-  ],
-  lastReviewed: '2026-02-10',
-};
-
-// Example: Classify Korean language assets
-const koreanTextClassification: SecurityClassification = {
-  asset: 'Korean Language Text Assets (UI labels, technique names)',
-  confidentiality: ConfidentialityLevel.PUBLIC,
-  integrity: IntegrityLevel.MODERATE,
-  availability: AvailabilityLevel.MODERATE,
-  privacy: PrivacyLevel.NA,
-  justification: `
-    Confidentiality: Public - UI text is visible to all players, open source
-    Integrity: Moderate - Correct translations important for user experience, not security-critical
-    Availability: Moderate - 99.5% uptime acceptable, cached client-side
-    Privacy: NA - Public educational content, no personal data
-  `,
-  controls: [
-    'Version control for text assets',
-    'Bilingual validation (Korean + English)',
-    'Static type checking for text keys',
-    'Automated i18n testing',
-  ],
-  lastReviewed: '2026-02-10',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 2. Business Impact Analysis (BIA)
@@ -213,120 +65,7 @@ const koreanTextClassification: SecurityClassification = {
  * @see {@link https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#business-impact-analysis-matrix}
  * @category Business Continuity
  * @korean 사업영향분석
- */
-interface BusinessImpactAnalysis {
-  readonly scenario: string;
-  readonly financial: FinancialImpact;
-  readonly operational: OperationalImpact;
-  readonly reputational: ReputationalImpact;
-  readonly regulatory: RegulatoryImpact;
-  readonly overallRiskLevel: 'Low' | 'Moderate' | 'High' | 'Very High' | 'Critical';
-  readonly mitigationStrategy: string;
-  readonly assessmentDate: string; // ISO 8601 date
-}
-
-/**
- * Financial impact levels with daily cost estimates.
- */
-interface FinancialImpact {
-  readonly level: 'Negligible' | 'Low' | 'Moderate' | 'High' | 'Very High' | 'Critical';
-  readonly estimatedCostPerDay: string; // e.g., "$500-1K"
-  readonly description: string;
-}
-
-/**
- * Operational impact levels on business continuity.
- */
-interface OperationalImpact {
-  readonly level: 'Negligible' | 'Low' | 'Moderate' | 'High' | 'Critical';
-  readonly serviceImpact: string;
-  readonly efficiencyLoss: string;
-}
-
-/**
- * Reputational impact levels on brand and trust.
- */
-interface ReputationalImpact {
-  readonly level: 'Negligible' | 'Low' | 'Moderate' | 'High' | 'Critical';
-  readonly mediaExposure: string;
-  readonly trustImpact: string;
-}
-
-/**
- * Regulatory impact levels for compliance violations.
- */
-interface RegulatoryImpact {
-  readonly level: 'Negligible' | 'Low' | 'Moderate' | 'High' | 'Very High' | 'Critical';
-  readonly potentialPenalties: string;
-  readonly complianceViolations: string[];
-}
-
-// Example: BIA for game availability outage
-const gameOutageBIA: BusinessImpactAnalysis = {
-  scenario: 'Black Trigram game website complete outage (hosting failure)',
-  financial: {
-    level: 'Low',
-    estimatedCostPerDay: '<$500',
-    description: 'Minimal financial impact - no revenue model yet, early development phase',
-  },
-  operational: {
-    level: 'Moderate',
-    serviceImpact: 'Complete service unavailable to users',
-    efficiencyLoss: 'Development/testing disrupted, user feedback halted',
-  },
-  reputational: {
-    level: 'Low',
-    mediaExposure: 'Limited visibility, small user base during development',
-    trustImpact: 'Minor trust erosion if outage prolonged, quick recovery expected',
-  },
-  regulatory: {
-    level: 'Negligible',
-    potentialPenalties: 'None - educational/entertainment project',
-    complianceViolations: [],
-  },
-  overallRiskLevel: 'Low',
-  mitigationStrategy: `
-    - Static site hosting on GitHub Pages with 99.9% uptime SLA
-    - CDN caching for resilience (Cloudflare)
-    - Automated deployment from main branch
-    - Monitoring with status page for transparency
-  `,
-  assessmentDate: '2026-02-10',
-};
-
-// Example: BIA for combat system integrity breach
-const combatIntegrityBIA: BusinessImpactAnalysis = {
-  scenario: 'Combat calculation logic compromised (cheating or manipulation)',
-  financial: {
-    level: 'Low',
-    estimatedCostPerDay: '<$500',
-    description: 'Development time to fix, minimal direct financial impact',
-  },
-  operational: {
-    level: 'High',
-    serviceImpact: 'Game balance destroyed, unfair gameplay',
-    efficiencyLoss: 'Emergency hotfix required, testing disrupted',
-  },
-  reputational: {
-    level: 'Moderate',
-    mediaExposure: 'Industry attention if exploited publicly',
-    trustImpact: 'Player trust significantly damaged, educational credibility at risk',
-  },
-  regulatory: {
-    level: 'Negligible',
-    potentialPenalties: 'None - single-player game',
-    complianceViolations: [],
-  },
-  overallRiskLevel: 'Moderate',
-  mitigationStrategy: `
-    - Comprehensive input validation on all combat parameters
-    - Deterministic physics calculations with unit tests (90%+ coverage)
-    - Code review for all combat logic changes
-    - Security testing in CI/CD pipeline (CodeQL)
-    - Immutable game state management patterns
-  `,
-  assessmentDate: '2026-02-10',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 3. Recovery Time Objectives (RTO/RPO)
@@ -344,107 +83,7 @@ const combatIntegrityBIA: BusinessImpactAnalysis = {
  * @see {@link https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#recovery-time-classifications}
  * @category Business Continuity
  * @korean 복구목표시간
- */
-interface RecoveryObjectives {
-  readonly system: string;
-  readonly rto: RTOClassification;
-  readonly rpo: RPOClassification;
-  readonly backupStrategy: string;
-  readonly testingFrequency: string;
-  readonly lastTested: string; // ISO 8601 date
-}
-
-/**
- * Recovery Time Objective (RTO) classifications.
- */
-enum RTOClassification {
-  /** Instant recovery: < 5 minutes */
-  INSTANT = 'Instant (<5min)',
-  
-  /** Critical recovery: 5-60 minutes */
-  CRITICAL = 'Critical (5-60min)',
-  
-  /** High priority recovery: 1-4 hours */
-  HIGH = 'High (1-4hrs)',
-  
-  /** Medium priority recovery: 4-24 hours */
-  MEDIUM = 'Medium (4-24hrs)',
-  
-  /** Low priority recovery: 24-72 hours */
-  LOW = 'Low (24-72hrs)',
-  
-  /** Standard recovery: > 72 hours */
-  STANDARD = 'Standard (>72hrs)',
-}
-
-/**
- * Recovery Point Objective (RPO) classifications.
- */
-enum RPOClassification {
-  /** Zero data loss: < 1 minute */
-  ZERO_LOSS = 'Zero Loss (<1min)',
-  
-  /** Near real-time: 1-15 minutes data loss acceptable */
-  NEAR_REALTIME = 'Near Real-time (1-15min)',
-  
-  /** Minimal data loss: 15-60 minutes */
-  MINIMAL = 'Minimal (15-60min)',
-  
-  /** Hourly backup: 1-4 hours data loss acceptable */
-  HOURLY = 'Hourly (1-4hrs)',
-  
-  /** Daily backup: 4-24 hours data loss acceptable */
-  DAILY = 'Daily (4-24hrs)',
-  
-  /** Extended backup: > 24 hours data loss acceptable */
-  EXTENDED = 'Extended (>24hrs)',
-}
-
-// Example: Recovery objectives for game source code
-const sourceCodeRecovery: RecoveryObjectives = {
-  system: 'Black Trigram Source Code Repository',
-  rto: RTOClassification.HIGH,
-  rpo: RPOClassification.ZERO_LOSS,
-  backupStrategy: `
-    - Primary: GitHub cloud repository (99.95% uptime SLA)
-    - Secondary: Local developer clones (distributed backup)
-    - Tertiary: Automated daily backup to external storage
-    - Git architecture ensures zero data loss (all commits preserved)
-  `,
-  testingFrequency: 'Quarterly recovery drills',
-  lastTested: '2026-02-01',
-};
-
-// Example: Recovery objectives for game website
-const websiteRecovery: RecoveryObjectives = {
-  system: 'Black Trigram Game Website (GitHub Pages)',
-  rto: RTOClassification.CRITICAL,
-  rpo: RPOClassification.MINIMAL,
-  backupStrategy: `
-    - Static site hosted on GitHub Pages CDN
-    - Automated deployment from main branch
-    - Source files in version control (full history)
-    - CDN caching provides resilience during GitHub outages
-    - Manual deployment to alternative hosting possible within 1 hour
-  `,
-  testingFrequency: 'Monthly deployment verification',
-  lastTested: '2026-02-10',
-};
-
-// Example: Recovery objectives for player settings (local storage)
-const playerSettingsRecovery: RecoveryObjectives = {
-  system: 'Player Settings and Preferences (Browser LocalStorage)',
-  rto: RTOClassification.STANDARD,
-  rpo: RPOClassification.EXTENDED,
-  backupStrategy: `
-    - Stored in browser LocalStorage (user-managed)
-    - No server-side backup (privacy-by-design)
-    - Export/import feature planned (FUTURE_ARCHITECTURE.md)
-    - Low priority: users can reconfigure settings if lost
-  `,
-  testingFrequency: 'Not applicable (client-side only)',
-  lastTested: 'N/A',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 4. Project Type Classification
@@ -462,79 +101,7 @@ const playerSettingsRecovery: RecoveryObjectives = {
  * @see {@link https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#project-type-classifications}
  * @category Organization
  * @korean 프로젝트분류
- */
-interface ProjectClassification {
-  readonly projectName: string;
-  readonly technicalType: TechnicalProjectType;
-  readonly businessProcess: BusinessProcessType;
-  readonly typicalSecurityLevel: string;
-  readonly primaryLanguage: string;
-  readonly frameworks: string[];
-  readonly deploymentTarget: string;
-  readonly lastClassified: string; // ISO 8601 date
-}
-
-/**
- * Technical project type classifications.
- */
-enum TechnicalProjectType {
-  CORE_INFRASTRUCTURE = 'Core Infrastructure',
-  SECURITY_TOOLS = 'Security Tools',
-  COMPLIANCE_PLATFORM = 'Compliance Platform',
-  DATA_ANALYTICS = 'Data Analytics',
-  API_SERVICES = 'API Services',
-  FRONTEND_APPS = 'Frontend Apps',
-  DEVELOPMENT_TOOLS = 'Development Tools',
-  DEVSECOPS = 'DevSecOps',
-  CONTENT_CREATION = 'Content Creation',
-  AI_ANALYTICS = 'AI Analytics',
-}
-
-/**
- * Business process type classifications.
- */
-enum BusinessProcessType {
-  SALES = 'Sales',
-  MARKETING = 'Marketing',
-  FINANCE = 'Finance',
-  HUMAN_RESOURCES = 'Human Resources',
-  LEGAL = 'Legal',
-  OPERATIONS = 'Operations',
-  EXECUTIVE = 'Executive',
-  INNOVATION = 'Innovation',
-  DEVELOPMENT = 'Development',
-}
-
-// Example: Black Trigram project classification
-const blackTrigramClassification: ProjectClassification = {
-  projectName: 'Black Trigram (흑괘) - Korean Martial Arts Combat Game',
-  technicalType: TechnicalProjectType.FRONTEND_APPS,
-  businessProcess: BusinessProcessType.INNOVATION,
-  typicalSecurityLevel: 'Low to Moderate (educational/entertainment)',
-  primaryLanguage: 'TypeScript',
-  frameworks: [
-    'React 19',
-    'Three.js / @react-three/fiber',
-    'Rapier Physics Engine',
-    'Vite',
-    'Vitest',
-    'Cypress',
-  ],
-  deploymentTarget: 'GitHub Pages (static site, CDN)',
-  lastClassified: '2026-02-10',
-};
-
-// Example: Hypothetical CIA Compliance Manager classification
-const ciaClassification: ProjectClassification = {
-  projectName: 'CIA Compliance Manager',
-  technicalType: TechnicalProjectType.COMPLIANCE_PLATFORM,
-  businessProcess: BusinessProcessType.OPERATIONS,
-  typicalSecurityLevel: 'High to Very High (compliance monitoring)',
-  primaryLanguage: 'Java',
-  frameworks: ['Spring Boot', 'Hibernate', 'PostgreSQL'],
-  deploymentTarget: 'AWS (EC2, RDS)',
-  lastClassified: '2026-02-10',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 5. Defense-in-Depth Classification
@@ -552,58 +119,7 @@ const ciaClassification: ProjectClassification = {
  * @category Security
  * @korean 심층방어
  */
-interface DefenseInDepthControls {
-  readonly classification: SecurityClassification;
-  readonly preventiveControls: string[];
-  readonly detectiveControls: string[];
-  readonly correctiveControls: string[];
-  readonly deterrentControls: string[];
-  readonly implementationStatus: Map<string, 'Implemented' | 'Planned' | 'Not Required'>;
-}
-
-// Example: Defense-in-depth for moderate confidentiality game data
-const gameDataDefense: DefenseInDepthControls = {
-  classification: {
-    asset: '70 Vital Points Anatomical Data',
-    confidentiality: ConfidentialityLevel.MODERATE,
-    integrity: IntegrityLevel.HIGH,
-    availability: AvailabilityLevel.MODERATE,
-    privacy: PrivacyLevel.NA,
-    justification: 'Educational content, publicly available but should be accurate',
-    controls: [],
-    lastReviewed: '2026-02-10',
-  },
-  preventiveControls: [
-    'TypeScript strict mode for type safety',
-    'Immutable data structures (readonly interfaces)',
-    'Input validation on all data access',
-    'Static code analysis (ESLint security rules)',
-    'Dependency vulnerability scanning (npm audit, Dependabot)',
-  ],
-  detectiveControls: [
-    'Comprehensive unit tests (90%+ coverage)',
-    'Integration tests for data integrity',
-    'CodeQL security scanning in CI/CD',
-    'Manual code review for all changes',
-  ],
-  correctiveControls: [
-    'Automated patching via Dependabot',
-    'Version control for rollback capability',
-    'Incident response plan documented',
-  ],
-  deterrentControls: [
-    'Open source transparency (discourages malicious changes)',
-    'Code review required for merge',
-    'Security policy published (SECURITY.md)',
-  ],
-  implementationStatus: new Map([
-    ['TypeScript strict mode', 'Implemented'],
-    ['Unit tests 90%+ coverage', 'Implemented'],
-    ['CodeQL scanning', 'Implemented'],
-    ['Automated patching', 'Implemented'],
-    ['Incident response plan', 'Planned'],
-  ]),
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ### 6. Korean Martial Arts Classification Context
@@ -621,151 +137,7 @@ const gameDataDefense: DefenseInDepthControls = {
  * @see {@link https://github.com/Hack23/blacktrigram/blob/main/game-design.md}
  * @category Korean Philosophy
  * @korean 팔괘보안원리
- */
-interface TrigramSecurityMapping {
-  readonly trigram: string;
-  readonly korean: string;
-  readonly element: string;
-  readonly securityPrinciple: string;
-  readonly classificationDomain: 'Confidentiality' | 'Integrity' | 'Availability' | 'Privacy';
-  readonly practicalExample: string;
-}
-
-/**
- * Eight Trigrams (팔괘) mapped to information security principles.
- * 
- * Demonstrates how traditional Korean martial arts philosophy aligns
- * with modern cybersecurity defense-in-depth strategy.
- */
-const TRIGRAM_SECURITY_MAPPINGS: TrigramSecurityMapping[] = [
-  {
-    trigram: '☰ 건 (Geon)',
-    korean: '건',
-    element: '天 (Heaven)',
-    securityPrinciple: 'Absolute Protection - Extreme Confidentiality',
-    classificationDomain: 'Confidentiality',
-    practicalExample: 'Cryptographic keys, authentication secrets',
-  },
-  {
-    trigram: '☷ 곤 (Gon)',
-    korean: '곤',
-    element: '地 (Earth)',
-    securityPrinciple: 'Foundation Security - High Integrity',
-    classificationDomain: 'Integrity',
-    practicalExample: 'Combat calculation logic, game balance data',
-  },
-  {
-    trigram: '☲ 리 (Li)',
-    korean: '리',
-    element: '火 (Fire)',
-    securityPrinciple: 'Rapid Response - Mission Critical Availability',
-    classificationDomain: 'Availability',
-    practicalExample: 'Real-time combat rendering, 60fps performance',
-  },
-  {
-    trigram: '☵ 감 (Gam)',
-    korean: '감',
-    element: '水 (Water)',
-    securityPrinciple: 'Adaptive Defense - Privacy Protection',
-    classificationDomain: 'Privacy',
-    practicalExample: 'User settings, local-only storage, no tracking',
-  },
-  {
-    trigram: '☳ 진 (Jin)',
-    korean: '진',
-    element: '雷 (Thunder)',
-    securityPrinciple: 'Decisive Action - Incident Response',
-    classificationDomain: 'Integrity',
-    practicalExample: 'Automated security patching, immediate threat mitigation',
-  },
-  {
-    trigram: '☴ 손 (Son)',
-    korean: '손',
-    element: '風 (Wind)',
-    securityPrinciple: 'Pervasive Monitoring - Detective Controls',
-    classificationDomain: 'Availability',
-    practicalExample: 'CodeQL scanning, continuous testing, monitoring',
-  },
-  {
-    trigram: '☶ 간 (Gan)',
-    korean: '간',
-    element: '山 (Mountain)',
-    securityPrinciple: 'Immutable Defense - Data Integrity',
-    classificationDomain: 'Integrity',
-    practicalExample: 'Immutable data structures, readonly types, version control',
-  },
-  {
-    trigram: '☱ 태 (Tae)',
-    korean: '태',
-    element: '澤 (Lake)',
-    securityPrinciple: 'Fluid Resilience - Availability Management',
-    classificationDomain: 'Availability',
-    practicalExample: 'CDN caching, graceful degradation, offline capability',
-  },
-];
-
-/**
- * Apply trigram-based security classification to game features.
- * 
- * @example
- * ```typescript
- * const vitalPointSecurity = classifyByTrigram('70 Vital Points System', '곤');
- * // Returns: Foundation Security with High Integrity classification
- * ```
- */
-function classifyByTrigram(
-  feature: string,
-  trigramKorean: string
-): SecurityClassification {
-  const mapping = TRIGRAM_SECURITY_MAPPINGS.find(
-    (m) => m.korean === trigramKorean
-  );
-  
-  if (!mapping) {
-    throw new Error(`Unknown trigram: ${trigramKorean}`);
-  }
-  
-  // Map trigram to security classification levels
-  const confidentiality =
-    mapping.classificationDomain === 'Confidentiality'
-      ? ConfidentialityLevel.EXTREME
-      : ConfidentialityLevel.MODERATE;
-      
-  const integrity =
-    mapping.classificationDomain === 'Integrity'
-      ? IntegrityLevel.CRITICAL
-      : IntegrityLevel.MODERATE;
-      
-  const availability =
-    mapping.classificationDomain === 'Availability'
-      ? AvailabilityLevel.MISSION_CRITICAL
-      : AvailabilityLevel.MODERATE;
-      
-  const privacy =
-    mapping.classificationDomain === 'Privacy'
-      ? PrivacyLevel.PERSONAL
-      : PrivacyLevel.NA;
-  
-  return {
-    asset: feature,
-    confidentiality,
-    integrity,
-    availability,
-    privacy,
-    justification: `
-      Classified using Eight Trigram (팔괘) principle: ${mapping.trigram}
-      Security Principle: ${mapping.securityPrinciple}
-      Domain: ${mapping.classificationDomain}
-      Cultural Context: ${mapping.element}
-    `,
-    controls: [
-      mapping.practicalExample,
-      'Aligned with Korean martial arts defense philosophy',
-      'Defense-in-depth through trigram principles',
-    ],
-    lastReviewed: new Date().toISOString().split('T')[0],
-  };
-}
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ## Enforcement Rules
@@ -842,14 +214,7 @@ const combatSystem = {
 // GOOD: Complete classification
 const combatSystem: SecurityClassification = {
   asset: '3D Physics-Based Combat System',
-  confidentiality: ConfidentialityLevel.LOW,
-  integrity: IntegrityLevel.HIGH,
-  availability: AvailabilityLevel.HIGH,
-  privacy: PrivacyLevel.NA,
-  justification: 'Client-side game logic, accurate calculations critical',
-  controls: ['Input validation', 'Deterministic physics', '90%+ test coverage'],
-  lastReviewed: '2026-02-10',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ❌ **Single Dimension Classification**
@@ -863,14 +228,7 @@ const userSettings = {
 // GOOD: All four dimensions classified
 const userSettings: SecurityClassification = {
   asset: 'User Settings and Preferences',
-  confidentiality: ConfidentialityLevel.LOW,
-  integrity: IntegrityLevel.LOW,
-  availability: AvailabilityLevel.MODERATE,
-  privacy: PrivacyLevel.PERSONAL,
-  justification: 'User preferences stored locally, privacy-by-design',
-  controls: ['LocalStorage', 'No server transmission', 'Export capability'],
-  lastReviewed: '2026-02-10',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ❌ **Missing Business Impact Analysis**
@@ -884,32 +242,7 @@ const apiService: SecurityClassification = {
   privacy: PrivacyLevel.PERSONAL,
   // Missing BIA for high-criticality system!
   justification: 'High availability required',
-  controls: [],
-  lastReviewed: '2026-02-10',
-};
-
-// GOOD: BIA conducted for critical system
-const apiService: SecurityClassification = {
-  asset: 'API Service',
-  confidentiality: ConfidentialityLevel.HIGH,
-  integrity: IntegrityLevel.HIGH,
-  availability: AvailabilityLevel.HIGH,
-  privacy: PrivacyLevel.PERSONAL,
-  justification: 'See BIA document: apiServiceBIA',
-  controls: ['See DefenseInDepthControls'],
-  lastReviewed: '2026-02-10',
-};
-
-const apiServiceBIA: BusinessImpactAnalysis = {
-  scenario: 'API service outage',
-  financial: { level: 'High', estimatedCostPerDay: '$1K-5K', description: '...' },
-  operational: { level: 'Critical', serviceImpact: 'Complete outage', efficiencyLoss: '...' },
-  reputational: { level: 'High', mediaExposure: '...', trustImpact: '...' },
-  regulatory: { level: 'High', potentialPenalties: '...', complianceViolations: ['...'] },
-  overallRiskLevel: 'High',
-  mitigationStrategy: 'Multi-region deployment, automated failover',
-  assessmentDate: '2026-02-10',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ❌ **Undefined Recovery Objectives**
@@ -923,12 +256,7 @@ const database = {
 // GOOD: Explicit recovery objectives
 const databaseRecovery: RecoveryObjectives = {
   system: 'Primary Database',
-  rto: RTOClassification.CRITICAL, // 5-60 min recovery
-  rpo: RPOClassification.MINIMAL, // 15-60 min data loss acceptable
-  backupStrategy: 'Continuous replication to standby, hourly snapshots',
-  testingFrequency: 'Monthly failover drills',
-  lastTested: '2026-02-01',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ❌ **Generic "Sensitive Data" Classification**
@@ -942,19 +270,7 @@ const userData = {
 // GOOD: Specific privacy classification
 const userEmailClassification: SecurityClassification = {
   asset: 'User Email Address',
-  confidentiality: ConfidentialityLevel.HIGH,
-  integrity: IntegrityLevel.HIGH,
-  availability: AvailabilityLevel.MODERATE,
-  privacy: PrivacyLevel.PERSONAL_IDENTIFIER,
-  justification: 'GDPR Art. 4(1) - direct identifier, requires explicit consent',
-  controls: [
-    'Encrypted at rest and in transit',
-    'Access control via RBAC',
-    'Data subject rights implemented (access, deletion, portability)',
-    'Breach notification process per GDPR Art. 33',
-  ],
-  lastReviewed: '2026-02-10',
-};
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ## Required Patterns
@@ -970,46 +286,7 @@ interface AssetRegistry {
   getAssetsRequiringReview(): SecurityClassification[];
 }
 
-class AssetClassificationRegistry implements AssetRegistry {
-  private readonly assets = new Map<string, SecurityClassification>();
-  
-  registerAsset(asset: SecurityClassification): void {
-    // Validate complete classification
-    if (!asset.confidentiality || !asset.integrity || !asset.availability || !asset.privacy) {
-      throw new Error(`Incomplete classification for asset: ${asset.asset}`);
-    }
-    
-    // Validate justification present
-    if (!asset.justification || asset.justification.trim().length === 0) {
-      throw new Error(`Missing justification for asset: ${asset.asset}`);
-    }
-    
-    // Validate last reviewed within 90 days
-    const lastReviewed = new Date(asset.lastReviewed);
-    const ninetyDaysAgo = new Date();
-    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-    
-    if (lastReviewed < ninetyDaysAgo) {
-      console.warn(`Asset classification outdated: ${asset.asset} (last reviewed: ${asset.lastReviewed})`);
-    }
-    
-    this.assets.set(asset.asset, asset);
-  }
-  
-  getAsset(assetName: string): SecurityClassification | undefined {
-    return this.assets.get(assetName);
-  }
-  
-  getAssetsRequiringReview(): SecurityClassification[] {
-    const ninetyDaysAgo = new Date();
-    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-    
-    return Array.from(this.assets.values()).filter((asset) => {
-      const lastReviewed = new Date(asset.lastReviewed);
-      return lastReviewed < ninetyDaysAgo;
-    });
-  }
-}
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ✅ **BIA-Driven Architecture Decisions**
@@ -1023,24 +300,7 @@ class AssetClassificationRegistry implements AssetRegistry {
 **Financial Impact**: Low (<$500/day)
 - No revenue loss (free educational project)
 - Minimal recovery costs (automated deployment)
-
-**Operational Impact**: Moderate (Partial service impact)
-- Website unavailable during outage
-- Development/testing continues (local development)
-- User feedback delayed
-
-**Reputational Impact**: Low (Limited visibility)
-- Small user base during early development
-- Quick recovery expected
-- Transparency via status page
-
-**Regulatory Impact**: Negligible
-- No compliance violations
-- Educational project, no SLAs
-
-**Decision**: Accept risk, implement CDN caching for resilience
-**RTO Target**: Critical (5-60 minutes via alternative hosting)
-**RPO Target**: Minimal (15-60 minutes, Git history preserved)
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ✅ **Classification-Based Access Control**
@@ -1054,59 +314,7 @@ class AssetClassificationRegistry implements AssetRegistry {
 interface ClassificationBasedAccessControl {
   readonly userRole: 'Developer' | 'User' | 'Anonymous';
   
-  canAccess(asset: SecurityClassification): boolean;
-}
-
-class CBAC implements ClassificationBasedAccessControl {
-  constructor(public readonly userRole: 'Developer' | 'User' | 'Anonymous') {}
-  
-  canAccess(asset: SecurityClassification): boolean {
-    // Public assets accessible to all
-    if (asset.confidentiality === ConfidentialityLevel.PUBLIC) {
-      return true;
-    }
-    
-    // Anonymous users only access public content
-    if (this.userRole === 'Anonymous') {
-      return asset.confidentiality === ConfidentialityLevel.PUBLIC;
-    }
-    
-    // Users can access public and low confidentiality
-    if (this.userRole === 'User') {
-      return (
-        asset.confidentiality === ConfidentialityLevel.PUBLIC ||
-        asset.confidentiality === ConfidentialityLevel.LOW
-      );
-    }
-    
-    // Developers have access to all assets
-    if (this.userRole === 'Developer') {
-      return true;
-    }
-    
-    return false;
-  }
-}
-
-// Example: Gate access to combat system internals
-const combatSystemCode: SecurityClassification = {
-  asset: 'Combat System Source Code',
-  confidentiality: ConfidentialityLevel.LOW,
-  integrity: IntegrityLevel.HIGH,
-  availability: AvailabilityLevel.HIGH,
-  privacy: PrivacyLevel.NA,
-  justification: 'Open source, but requires developer knowledge to modify safely',
-  controls: ['Code review required', 'Test coverage mandatory'],
-  lastReviewed: '2026-02-10',
-};
-
-const anonymousAccess = new CBAC('Anonymous');
-const userAccess = new CBAC('User');
-const devAccess = new CBAC('Developer');
-
-console.log(anonymousAccess.canAccess(combatSystemCode)); // false
-console.log(userAccess.canAccess(combatSystemCode)); // true (read-only)
-console.log(devAccess.canAccess(combatSystemCode)); // true (read-write)
+// ... (see full reference in Hack23 ISMS)
 ```
 
 ## Compliance Framework

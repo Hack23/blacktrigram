@@ -652,34 +652,7 @@ THEN load threejs-best-practices
 
 ### Enforcement Flow
 
-```mermaid
-graph TD
-    A[Developer writes code] --> B{Copilot detects context}
-    B -->|Security code| C[Load security-architecture-validation]
-    B -->|Korean UI| D[Load korean-theming-standards]
-    B -->|Tests| E[Load testing-strategy-enforcement]
-    B -->|Three.js| F[Load threejs-best-practices]
-    
-    C --> G[Apply rules and patterns]
-    D --> G
-    E --> G
-    F --> G
-    
-    G --> H{Code complies?}
-    H -->|Yes| I[Accept code]
-    H -->|No| J[Suggest corrections]
-    
-    J --> K[Show examples and anti-patterns]
-    K --> L[Developer fixes code]
-    L --> B
-    
-    style A fill:#E8F5E9,stroke:#2E7D32
-    style B fill:#FFF9C4,stroke:#F57F17
-    style G fill:#E1F5FE,stroke:#0277BD
-    style H fill:#FCE4EC,stroke:#C2185B
-    style I fill:#C8E6C9,stroke:#388E3C
-    style J fill:#FFCCBC,stroke:#D84315
-```
+Skills detect context → Load relevant skills → Apply rules → Accept/reject with suggestions → Developer fixes → Re-check
 
 ### Multiple Skills
 
@@ -802,51 +775,7 @@ Create a new skill when you have:
 
 ### Skill Creation Template
 
-```markdown
----
-name: my-new-skill
-description: Brief description (max 200 chars)
-license: MIT
----
-
-# My New Skill
-
-## Purpose
-What does this skill enforce?
-
-## When to Apply
-When is this skill activated?
-
-## Core Principles
-### 1. First Principle
-Strategic rule with explanation
-
-## Enforcement Rules
-### Rule 1: Clear Enforcement Logic
-```
-IF (condition)
-THEN (action required)
-ELSE (reject with reason)
-```
-
-## Anti-Patterns to REJECT
-❌ **Bad Pattern**: Why it's wrong
-```typescript
-// BAD example
-```
-
-## Required Patterns
-✅ **Good Pattern**: Why it's right
-```typescript
-// GOOD example
-```
-
-## Compliance Framework
-ISO/NIST/CIS alignment if applicable
-
-## Remember
-Key takeaways
-```
+Follow the structure used by existing skills: YAML frontmatter (name, description, license) → Purpose → When to Apply → Core Principles → Enforcement Rules (IF-THEN-ELSE) → Anti-Patterns → Required Patterns → Compliance Framework → Remember. See any existing skill in this directory for a complete example.
 
 ### Skill Naming Convention
 
@@ -858,40 +787,9 @@ Key takeaways
 
 ## 📊 Skill Quality Standards
 
-All skills must meet these standards:
+All skills must include: YAML frontmatter, clear purpose, activation triggers, IF-THEN-ELSE enforcement rules, anti-patterns with examples, required patterns with examples, compliance framework alignment, and Korean philosophy integration.
 
-### ✅ Content Requirements
-
-- [ ] YAML frontmatter with name, description, license
-- [ ] Clear purpose statement
-- [ ] Specific activation triggers
-- [ ] Strategic, high-level principles
-- [ ] Enforcement rules with IF-THEN-ELSE logic
-- [ ] Anti-patterns with examples
-- [ ] Required patterns with examples
-- [ ] Compliance framework alignment
-- [ ] Korean philosophy integration ("흑괘의 길을 걸어라")
-
-### ✅ Code Examples
-
-- [ ] TypeScript examples for all patterns
-- [ ] Both good and bad examples shown
-- [ ] Examples use actual project code style
-- [ ] Examples are self-contained and clear
-
-### ✅ Compliance Alignment
-
-- [ ] ISO 27001:2022 controls referenced
-- [ ] NIST CSF 2.0 functions aligned
-- [ ] CIS Controls v8.1 referenced
-- [ ] ISMS policy links included
-
-### ✅ Enforcement Rules
-
-- [ ] Rules are clear and unambiguous
-- [ ] Rules are automatically checkable
-- [ ] Rules have measurable criteria
-- [ ] Rules include rejection logic
+**Naming Convention:** Lowercase with hyphens, descriptive and specific, action-oriented (e.g., `testing-strategy-enforcement`).
 
 ---
 
@@ -906,30 +804,9 @@ Skills and agents work together:
 | Quality standards | Quality checks |
 | Anti-patterns to avoid | Pattern detection |
 
-**Example Workflow:**
+**Skills provide** strategic principles, enforcement rules, quality standards, and anti-patterns → **Agents use** them for tactical implementations, execution logic, quality checks, and pattern detection.
 
-```mermaid
-sequenceDiagram
-    participant Dev as Developer
-    participant Copilot as GitHub Copilot
-    participant Skill as Skills (Strategic)
-    participant Agent as Agent (Tactical)
-    
-    Dev->>Copilot: "Add JWT authentication"
-    Copilot->>Skill: Load security-architecture-validation
-    Copilot->>Agent: Invoke security-specialist agent
-    
-    Skill-->>Agent: "Use env vars, update SECURITY_ARCHITECTURE.md"
-    Agent->>Agent: Implement JWT with bcrypt
-    Agent->>Agent: Update SECURITY_ARCHITECTURE.md
-    Agent->>Agent: Add security tests
-    
-    Agent-->>Copilot: Implementation complete
-    Copilot->>Skill: Validate against rules
-    Skill-->>Copilot: All rules satisfied ✅
-    
-    Copilot-->>Dev: Code generated with security best practices
-```
+**Workflow:** Developer requests task → Copilot loads relevant skills → Agent implements with skill constraints → Skills validate output → Code generated with best practices.
 
 ---
 
@@ -956,20 +833,10 @@ Track skill effectiveness through:
 
 ## 🔄 Skill Maintenance
 
-### Regular Review Cycle
-
 - **Monthly**: Update examples with latest patterns
 - **Quarterly**: Review enforcement rules effectiveness
 - **Annually**: Major revisions for framework updates
-
-### Update Triggers
-
-Update skills when:
-- New ISMS policies published
-- Framework updates (ISO 27001, NIST CSF, CIS Controls)
-- New technology adoption (e.g., Three.js version upgrade)
-- Recurring violations indicate unclear rules
-- Developer feedback suggests improvements
+- Update when: new ISMS policies, framework updates, technology changes, recurring violations
 
 ---
 
