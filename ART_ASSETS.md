@@ -1,3 +1,7 @@
+# 🖼️ Black Trigram (흑괘) — Art Assets Specification
+
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) asset management requirements.
+
 Below is a focused breakdown of **exactly which art‐ and animation‐related assets** you’ll need for:
 
 1. **Backgrounds** (especially the Intro/Main Menu & Dojang/Training Hall),

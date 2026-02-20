@@ -1,4 +1,6 @@
-# Black Trigram: The Path of Shadows 🌑⚡🗡️
+# 🎬 Black Trigram (흑괘) — Video Assets: The Path of Shadows
+
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) asset management requirements.
 
 ---
 

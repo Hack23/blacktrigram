@@ -1,4 +1,6 @@
-# Audio Assets Specification (AudioManager Compatible)
+# 🎵 Black Trigram (흑괘) — Audio Assets Specification
+
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) asset management requirements.
 
 This document specifies the **exact audio asset requirements** for the Black Trigram AudioManager system. The assets must be in WebM format with Opus codec for optimal compatibility.
 

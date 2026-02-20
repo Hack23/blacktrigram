@@ -1,5 +1,7 @@
 # 📊 Black Trigram (흑괘) Future SWOT Analysis
 
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) architecture documentation requirements.
+
 **Analysis Date**: January 25, 2026 (Q1 2026)  
 **Horizon**: v2.0 (2028) AWS Backend + Multiplayer Vision  
 **Next Review**: Q1 2027 (Post v1.0 Launch Review)

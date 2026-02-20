@@ -1,3 +1,7 @@
+# 🤝 Contributing to Black Trigram (흑괘)
+
+**🔐 ISMS Alignment:** Contributions follow [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) and [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md).
+
 ## Contributing
 
 [fork]: /fork

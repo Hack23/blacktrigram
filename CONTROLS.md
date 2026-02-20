@@ -1,5 +1,7 @@
 # 🎮 Black Trigram (흑괘) - Complete Controls Reference
 
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) documentation requirements.
+
 **Version**: 0.5.37  
 **Last Updated**: January 2026  
 **Status**: ✅ Production Ready

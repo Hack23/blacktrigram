@@ -1,4 +1,6 @@
-# Black Trigram (흑괘) – Combat System Architecture
+# ⚔️ Black Trigram (흑괘) – Combat System Architecture
+
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) for secure system architecture documentation.
 
 **2D Realistic Precision Combat Simulator** rooted in Korean martial arts and I Ching philosophy.
 

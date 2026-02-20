@@ -1,8 +1,19 @@
 # 📊 Black Trigram (흑괘) SWOT Analysis
 
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) architecture documentation requirements.
+
 **Analysis Date**: January 25, 2026 (Q1 2026)  
 **Previous Analysis**: Pre-Q1 2026 draft SWOT (legacy summary)  
 **Next Review**: Q3 2026 (Post v1.0 Release)
+
+## 📚 Related Documentation
+
+| Document | Focus | Description |
+|----------|-------|-------------|
+| [📐 Architecture](ARCHITECTURE.md) | 🏛️ Structure | C4 model showing system components |
+| [📊 Future SWOT](FUTURE_SWOT.md) | 🔮 Evolution | Strategic analysis of future positioning |
+| [🗺️ Roadmap](ROADMAP.md) | 📋 Planning | v1.0 release timeline and milestones |
+| [📊 Game Status](game-status.md) | 📈 Metrics | Current quality scores and progress |
 
 This document provides a strategic analysis of the Black Trigram Korean martial arts combat simulator's **current Q1 2026 state**, with comprehensive evaluation of strengths, weaknesses, opportunities, and threats based on **actual measured metrics**, market research, and competitive positioning. This analysis informs v1.0 roadmap priorities and strategic decisions for the authentic Korean martial arts educational gaming platform.
 

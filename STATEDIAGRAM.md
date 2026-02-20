@@ -1,5 +1,7 @@
 # 🎮 Black Trigram (흑괘) State Diagrams
 
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) architecture documentation requirements.
+
 ## 📚 Related Documentation
 
 | Document                                      | Focus            | Description                                    |
