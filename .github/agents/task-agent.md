@@ -252,7 +252,7 @@ const agentAssignments = {
   
   // Game Development
   "game-mechanics": "game-developer",
-  "pixi-rendering": "game-developer",
+  "threejs-rendering": "game-developer",
   "audio-system": "game-developer",
   "combat-system": "game-developer",
   
@@ -405,9 +405,9 @@ vulnerability: "Security vulnerability"
 
 # Technical Labels
 react: "React components or hooks"
-pixi: "PixiJS rendering or game engine"
+pixi: "Three.js rendering or game engine"
 typescript: "TypeScript type issues"
-layout: "@pixi/layout responsive design"
+layout: "Responsive design"
 ```
 
 ### Workflow Integration
@@ -424,153 +424,25 @@ layout: "@pixi/layout responsive design"
 
 ## Example Issue Creation Scenarios
 
+Examples are provided in condensed form. All issues must follow the Issue Body Template above.
+
 ### Scenario 1: UI/UX Improvement
-
-```markdown
-**Analysis Finding:**
-Korean font not loading properly on mobile devices
-
-**Issue to Create:**
-Title: 🎨 [UI/UX] Korean font (Noto Sans KR) fails to load on mobile Safari
-
-Description:
-The Korean font (Noto Sans KR) specified in FONT_FAMILY.KOREAN doesn't load 
-properly on iOS Safari, falling back to system font. This breaks the 
-cyberpunk Korean aesthetic.
-
-Current Behavior:
-- Desktop: ✅ Correct font loads
-- Mobile Chrome: ✅ Correct font loads  
-- Mobile Safari: ❌ Falls back to system font
-
-Expected Behavior:
-- All platforms should load Noto Sans KR consistently
-- Fallback should maintain similar aesthetic
-
-Acceptance Criteria:
-- [ ] Noto Sans KR loads on iOS Safari
-- [ ] Appropriate fallback chain defined
-- [ ] Font loading tested on all major mobile browsers
-- [ ] Cypress test added for font verification
-- [ ] Bundle size impact documented (<50KB increase)
-
-ISMS Alignment:
-- Data Classification Policy - User experience data (public)
-- Secure Development Policy - Cross-browser compatibility
-
-Technical Details:
-- File: src/types/constants.ts (FONT_FAMILY)
-- Components: All pixiText elements with Korean characters
-- Font CDN: Google Fonts / Self-hosted consideration
-
-Korean Theming Requirements:
-- ✅ Maintains cyberpunk aesthetic
-- ✅ Supports Korean characters (한글)
-- ✅ Consistent with bilingual design (Korean | English)
-
-Suggested Agent: @frontend-specialist
-Rationale: React component expert with UI/UX focus
-
-Labels: ui-ux, korean-theming, bug, priority-high
-```
+**Finding:** Korean font not loading on mobile Safari
+**Title:** `🎨 [UI/UX] Korean font (Noto Sans KR) fails to load on mobile Safari`
+**Labels:** `ui-ux, korean-theming, bug, priority-high`
+**Agent:** `@frontend-specialist` - React component expert with UI/UX focus
 
 ### Scenario 2: Security/ISMS Issue
-
-```markdown
-**Analysis Finding:**
-OSSF Scorecard shows missing SBOM (Software Bill of Materials)
-
-**Issue to Create:**
-Title: 🔐 [Security] Generate and publish SBOM for dependency transparency
-
-Description:
-Black Trigram lacks a published SBOM, reducing supply chain transparency
-and impacting OSSF Scorecard score (currently missing points on
-"Software Bill of Materials" check).
-
-Current Behavior:
-- No SBOM generated during build
-- No CycloneDX or SPDX output
-- OSSF Scorecard: 0/10 on SBOM check
-
-Expected Behavior:
-- SBOM generated on every release build
-- Published as release artifact
-- CycloneDX format (JSON)
-- Includes all dependencies (direct + transitive)
-
-Acceptance Criteria:
-- [ ] Add @cyclonedx/cyclonedx-npm to devDependencies
-- [ ] Update package.json with SBOM generation script
-- [ ] Integrate SBOM into GitHub Actions release workflow
-- [ ] Publish SBOM.json as release artifact
-- [ ] Document SBOM location in SECURITY.md
-- [ ] OSSF Scorecard SBOM check passes (>8/10)
-
-ISMS Alignment:
-- ✅ Software Bill of Materials (Appendix A.5.19)
-- ✅ Supply Chain Security
-- ✅ Third Party Management Policy
-- ✅ Vulnerability Management
-
-Technical Details:
-- Tool: @cyclonedx/cyclonedx-npm
-- Output: cyclonedx-sbom.json
-- Format: CycloneDX 1.4+ (JSON)
-- Integration: .github/workflows/release.yml
-
-Suggested Agent: @security-specialist
-Rationale: SBOM generation and OSSF Scorecard expertise
-
-Labels: security, isms-compliance, ossf-scorecard, priority-high
-```
+**Finding:** OSSF Scorecard shows missing SBOM
+**Title:** `🔐 [Security] Generate and publish SBOM for dependency transparency`
+**Labels:** `security, isms-compliance, ossf-scorecard, priority-high`
+**Agent:** `@security-specialist` - SBOM generation and OSSF Scorecard expertise
 
 ### Scenario 3: Performance Optimization
-
-```markdown
-**Analysis Finding:**
-Bundle size increased by 200KB in recent release
-
-**Issue to Create:**
-Title: ⚡ [Performance] Optimize bundle size - increased by 200KB in v0.3.30
-
-Description:
-Recent release v0.3.30 shows significant bundle size increase from 
-850KB to 1050KB (+23.5%), impacting load time and mobile performance.
-
-Current Behavior:
-- Main bundle: 1050KB (gzipped: 320KB)
-- Load time: 2.1s (was 1.5s)
-- Lighthouse Performance: 92 (was 97)
-
-Expected Behavior:
-- Main bundle: <900KB (gzipped: <280KB)
-- Load time: <1.8s
-- Lighthouse Performance: >95
-
-Acceptance Criteria:
-- [ ] Identify source of size increase (vite-bundle-analyzer)
-- [ ] Implement code splitting for heavy modules
-- [ ] Lazy load non-critical components
-- [ ] Tree-shake unused PixiJS modules
-- [ ] Update budget.json with new thresholds
-- [ ] Document optimization in ARCHITECTURE.md
-
-Performance Impact:
-- Desktop: Minimal impact
-- Mobile 4G: +0.6s load time ❌
-- Mobile 3G: +1.2s load time ❌
-
-Technical Details:
-- Analyze: npm run build:analyze
-- Suspect: New audio assets or PixiJS modules
-- Target: Reduce by 150KB minimum
-
-Suggested Agent: @game-developer
-Rationale: PixiJS optimization and asset management expertise
-
-Labels: performance, priority-high, pixi
-```
+**Finding:** Bundle size increased by 200KB in recent release
+**Title:** `⚡ [Performance] Optimize bundle size - increased by 200KB`
+**Labels:** `performance, priority-high, three-components`
+**Agent:** `@game-developer` - Three.js optimization and asset management expertise
 
 ## Tools and Commands Reference
 
@@ -714,24 +586,9 @@ Documentation:
 
 **When delegating to agents:**
 
-```typescript
-// Example delegation comment
-/**
- * @coding-agent This issue requires implementing a new Korean-themed
- * UI component following patterns in .github/copilot-instructions.md.
- * 
- * Key requirements:
- * - Use @pixi/layout for responsive design
- * - Apply KOREAN_COLORS for cyberpunk aesthetic
- * - Include bilingual text (Korean | English)
- * - Add data-testid for E2E testing
- * - Maintain 60fps performance
- * 
- * Related files:
- * - src/components/ui/KoreanButton.ts (reference pattern)
- * - src/types/constants.ts (color constants)
- */
-```
+- Provide clear context linking to `.github/copilot-instructions.md`
+- Specify key requirements (Three.js patterns, KOREAN_COLORS, bilingual text, data-testid, 60fps)
+- Reference related files and existing patterns
 
 ### Continuous Improvement
 
@@ -759,40 +616,7 @@ Documentation:
 
 ## Integration with Existing Agents
 
-### Coordination Patterns
-
-```mermaid
-graph TB
-    TaskAgent[🎯 Task Agent<br/>Analysis & Orchestration]
-    
-    TaskAgent --> |Code Issues| CodingAgent[🛠️ Coding Agent]
-    TaskAgent --> |UI/React| FrontendAgent[⚛️ Frontend Specialist]
-    TaskAgent --> |Game Logic| GameAgent[🎮 Game Developer]
-    TaskAgent --> |Test Issues| TestingAgent[🧪 Testing Agent]
-    TaskAgent --> |Test Strategy| TestEngineer[🔬 Test Engineer]
-    TaskAgent --> |Documentation| DocsAgent[📝 Documentation Writer]
-    TaskAgent --> |Security| SecurityAgent[🛡️ Security Specialist]
-    TaskAgent --> |Review| ReviewAgent[🔍 Code Review Agent]
-    
-    CodingAgent --> |Feedback| TaskAgent
-    FrontendAgent --> |Feedback| TaskAgent
-    GameAgent --> |Feedback| TaskAgent
-    TestingAgent --> |Feedback| TaskAgent
-    TestEngineer --> |Feedback| TaskAgent
-    DocsAgent --> |Feedback| TaskAgent
-    SecurityAgent --> |Feedback| TaskAgent
-    ReviewAgent --> |Feedback| TaskAgent
-    
-    style TaskAgent fill:#8BC34A,color:#fff
-    style CodingAgent fill:#4CAF50,color:#fff
-    style FrontendAgent fill:#2196F3,color:#fff
-    style GameAgent fill:#FF9800,color:#fff
-    style TestingAgent fill:#9C27B0,color:#fff
-    style TestEngineer fill:#E91E63,color:#fff
-    style DocsAgent fill:#00BCD4,color:#fff
-    style SecurityAgent fill:#F44336,color:#fff
-    style ReviewAgent fill:#FFC107,color:#000
-```
+Task Agent orchestrates work across: Coding Agent (code), Frontend Specialist (UI/React), Game Developer (game logic), Testing Agent (tests), Test Engineer (strategy), Documentation Writer (docs), Security Specialist (security), and Code Review Agent (reviews).
 
 ## Success Criteria
 
@@ -822,88 +646,9 @@ Your effectiveness is measured by:
 - Clear priorities and roadmap
 - Improved collaboration
 
-## 🤖 GitHub Copilot Coding Tools (Insiders Features)
+## 🤖 GitHub Copilot Coding Tools
 
-### Available Copilot Assignment Tools
-
-#### 1. Basic Assignment (REST API - Legacy)
-```javascript
-github-update_issue({
-  owner: "Hack23",
-  repo: "blacktrigram",
-  issue_number: ISSUE_NUMBER,
-  assignees: ["copilot-swe-agent[bot]"]
-})
-```
-
-#### 2. Advanced Assignment with base_ref
-```javascript
-assign_copilot_to_issue({
-  owner: "Hack23",
-  repo: "blacktrigram",
-  issue_number: ISSUE_NUMBER,
-  base_ref: "feature/branch-name"  // Work from feature branch
-})
-```
-
-#### 3. Custom Instructions Assignment
-```javascript
-assign_copilot_to_issue({
-  owner: "Hack23",
-  repo: "blacktrigram",
-  issue_number: ISSUE_NUMBER,
-  custom_instructions: `
-    - Focus on TypeScript/React patterns
-    - Follow existing Three.js patterns
-    - Include unit tests with >90% coverage
-    - Update ARCHITECTURE.md
-    - Reference ISMS policies
-  `
-})
-```
-
-#### 4. Direct PR Creation with Custom Agent
-```javascript
-create_pull_request_with_copilot({
-  owner: "Hack23",
-  repo: "blacktrigram",
-  title: "Implement security scanning",
-  body: "Add SAST/DAST integration",
-  base_ref: "main",
-  custom_agent: "security-specialist"
-})
-```
-
-#### 5. Stacked PRs Workflow
-```javascript
-// Step 1: Foundation
-const pr1 = create_pull_request_with_copilot({
-  owner: "Hack23",
-  repo: "blacktrigram",
-  title: "Step 1: Data models",
-  body: "Create TypeScript interfaces",
-  base_ref: "main"
-});
-
-// Step 2: Stack on PR 1
-const pr2 = create_pull_request_with_copilot({
-  owner: "Hack23",
-  repo: "blacktrigram",
-  title: "Step 2: Business logic",
-  body: "Implement services",
-  base_ref: pr1.branch  // Stack on previous PR
-});
-```
-
-#### 6. Job Status Tracking
-```javascript
-get_copilot_job_status({
-  owner: "Hack23",
-  repo: "blacktrigram",
-  job_id: "abc123-def456"
-});
-// Returns: { status: "completed", pull_request_url: "...", duration_seconds: 180 }
-```
+Use `assign_copilot_to_issue` for issue assignment, `create_pull_request_with_copilot` for direct PR creation, and `get_copilot_job_status` for tracking. Support `base_ref` and `custom_instructions` parameters for advanced workflows.
 
 ## 🎯 Integration with Agent Skills
 

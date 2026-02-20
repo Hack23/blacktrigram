@@ -87,96 +87,13 @@ You are responsible for:
 
 You have specialized knowledge of combat techniques used by elite Korean special operations forces, integrating tactical military training with traditional martial arts for modern combat scenarios.
 
-#### 1. 암흑작전부대 (Amheuk Jakjeon Budae) - Dark Operations Unit
-
-**Motto**: "어둠 속의 칼날" (Eodum Sok-ui Kalnal) - _"Blade in the Darkness"_
-
-**Combat Specialization**:
-- **심야 침투 (Simya Chimtu)** - Midnight infiltration techniques
-- **외과적 타격 (Oegwajeok Tagyeok)** - Surgical strikes on high-value targets
-- **블랙사이트 구출 (Beullaeksaiteu Guchul)** - Black-site extraction operations
-- **암살 임무 (Amssal Immu)** - Assassination missions with vital point targeting
-- **은밀 드론 작전 (Eunmil Deuron Jakjeon)** - Stealth drone operations
-- **소음기 전투 (Soeumgi Jeontu)** - Suppressed weapons combat
-- **야간투시 전술 (Yagan Tusi Jeonsul)** - Night-vision tactical operations
-
-**Martial Arts Integration**:
-- Hapkido pressure points for silent incapacitation
-- Taekyon stealth movement and silent footwork
-- CQB (근거리 전투) adaptations with vital point targeting
-
-#### 2. 암흑특공대 (Amheuk Teuggongdae) - Shadow Commando Brigade
-
-**Motto**: "보이지 않는 일격" (Boiji Anneun Ilgyeok) - _"The Invisible Strike"_
-
-**Combat Specialization**:
-- **폭파 (Pokpa)** - Demolition and explosive breaching
-- **파괴 (Pagoe)** - Strategic asset sabotage
-- **소형 폭발물 운용 (Sohyeong Pokpallyeom Unyong)** - Compact explosive operations
-- **모듈형 블랙옵스 전투 (Modyulhyeong Beullaekopseu Jeontu)** - Modular black-ops combat
-- **적응 위장 (Jeogeung Wijang)** - Adaptive camouflage tactics
-- **시설 침투 (Siseol Chimtu)** - Fortified facility breaching
-
-**Martial Arts Integration**:
-- Ssireum grappling for close-quarters facility clearing
-- Hapkido joint locks for prisoner control
-- Taekwondo breaking techniques adapted for door/barrier demolition
-
-#### 3. 심야작전부대 (Simya Jakjeon Budae) - Nightfall Infiltration Squadron
-
-**Motto**: "밤이 우리의 무기다" (Bami Uriui Mugida) - _"Night is Our Weapon"_
-
-**Combat Specialization**:
-- **야간 작전 (Yagan Jakjeon)** - Exclusive night-time operations
-- **무음 낙하 (Mueum Nakha)** - Silent parachute insertions
-- **지붕 등반 (Jibung Deungban)** - Roof-top rappelling and entry
-- **근거리 밀접 전투 (Geungeori Miljeop Jeontu)** - Zero-light CQB
-- **정보 수집 (Jeongbo Sujip)** - Intelligence gathering operations
-- **핵심 시설 파괴 (Haeksim Siseol Pagoe)** - Critical infrastructure sabotage
-- **적외선 억제 전술 (Jeogoesŏn Eokje Jeonsul)** - IR-suppression tactics
-
-**Martial Arts Integration**:
-- Taekyon rhythmic movement for silent approach
-- Hapkido nerve strikes for soundless neutralization
-- Modified Taekwondo kicks for vertical combat (stairs, ladders)
-
-#### 4. 블랙옵스부대 (Beullaekopseu Budae) - Black Ops Task Force
-
-**Motto**: "작전은 비공개, 결과는 치명적" (Jakjeon-eun Bigonggae, Gyeolgwaneun Chimyeongjeok) - _"Mission Classified, Result Lethal"_
-
-**Combat Specialization**:
-- **사이버 첩보전 (Saibeo Cheolbojeon)** - Cyber-espionage operations
-- **통신 해킹 (Tongsin Haeking)** - Enemy communications hacking
-- **전자전 감시 정찰 (Jeonjajeon Gamsi Jeongchal)** - C4ISR operations
-- **은밀 잠복 작전 (Eunmil Jambuk Jakjeon)** - Deep-cover tactics
-- **스마트 무기 운용 (Seumateu Mugi Unyong)** - Smart-weapon operations
-- **휴대용 EMP 전술 (Hyudaeyong Jeonjagi Peolseu Jeonsul)** - Portable EMP tactics
-- **사이버 신호 차단 (Saibeo Sinho Chadan)** - Cyber-signal jamming
-
-**Martial Arts Integration**:
-- Hacker archetype combat philosophy with calculated strikes
-- Hapkido for control and interrogation techniques
-- Tech-enhanced vital point targeting with digital assistance
-
-#### 5. 심해침투부대 (Simhae Chimtu Budae) - Deep Sea Infiltration Unit
-
-**Motto**: "가장 깊은 곳에서 올라온 칼날" (Gajang Gipeun Got-eseo Ollaeon Kalnal) - _"Blade Rising from the Deepest Depths"_
-
-**Combat Specialization**:
-- **해상 은밀 작전 (Haesang Eunmil Jakjeon)** - Maritime stealth operations
-- **수중 폭파 (Sujung Pokpa)** - Underwater demolition
-- **은밀 선박 침투 (Eunmil Seonbak Chimtu)** - Covert vessel boarding
-- **해안 파괴 (Haean Pagoe)** - Coastal sabotage operations
-- **소형 잠수정 침투 (Sohyeong Jamsujeong Chimtu)** - Submersible insertions
-- **표류 기뢰 배치 (Pyoryu Girweo Baechi)** - Drifting mine deployment
-- **재호흡기 전술 (Jaehobugi Jeonsul)** - Rebreather combat tactics
-- **양용 전투 (Yangyong Jeontu)** - Amphibious combat operations
-
-**Martial Arts Integration**:
-- Adapted Ssireum for ship deck grappling and wet environments
-- Modified Hapkido for underwater joint locks and control
-- Taekwondo adapted for limited-space vessel combat
-- Based on ROK Navy UDT/SEAL (대한민국 해군 UDT/SEAL) training
+| Unit | Korean | Motto | Key Specializations | Martial Arts Integration |
+|------|--------|-------|---------------------|--------------------------|
+| Dark Operations | 암흑작전부대 | "어둠 속의 칼날" | Infiltration, surgical strikes, stealth | Hapkido pressure points, Taekyon stealth footwork |
+| Shadow Commando | 암흑특공대 | "보이지 않는 일격" | Demolition, sabotage, facility breaching | Ssireum grappling, Hapkido joint locks |
+| Nightfall Squadron | 심야작전부대 | "밤이 우리의 무기다" | Night ops, zero-light CQB, intelligence | Taekyon silent movement, Hapkido nerve strikes |
+| Black Ops Task Force | 블랙옵스부대 | "작전은 비공개, 결과는 치명적" | Cyber-espionage, C4ISR, smart weapons | Tech-enhanced vital point targeting |
+| Deep Sea Unit | 심해침투부대 | "가장 깊은 곳에서 올라온 칼날" | Maritime stealth, underwater demolition | Adapted Ssireum/Hapkido for maritime combat |
 
 ### Dark Ops Combat Applications
 
@@ -554,86 +471,9 @@ src/systems/
 └── types.ts                    # Shared type definitions
 ```
 
-## Example: Adding a New Vital Point
+## Examples
 
-```typescript
-// In VitalPointsData.ts
-{
-  id: "hapkido_radial_nerve",
-  names: {
-    korean: "요골신경",
-    english: "Radial Nerve Strike",
-    romanized: "yogol-singyeong",
-  },
-  position: { x: 150, y: 200 },
-  category: VitalPointCategory.NEUROLOGICAL,
-  severity: VitalPointSeverity.MODERATE,
-  baseDamage: 22,
-  effects: [
-    {
-      id: "arm_paralysis",
-      type: VitalPointEffectType.PARALYSIS,
-      intensity: EffectIntensity.MEDIUM,
-      duration: 2000,
-      description: {
-        korean: "팔 마비",
-        english: "Arm paralysis",
-      },
-      stackable: false,
-      source: "vital_point_system",
-    },
-  ],
-  description: {
-    korean: "합기도의 요골신경 타격으로 팔 일시적 마비 유발",
-    english: "Hapkido radial nerve strike causing temporary arm paralysis",
-    romanized: "Hapkido yogol-singyeong tagyeok",
-  },
-  targetingDifficulty: 0.6,
-  effectiveStances: [TrigramStance.TAE, TrigramStance.SON],
-  martialArtOrigin: 'hapkido',
-  strikeType: 'pressure',
-  archetypeBonus: {
-    amsalja: 1.3,  // Shadow assassin gets +30%
-    jeongbo: 1.2,   // Intelligence operative gets +20%
-  },
-  anatomicalDepth: 'shallow',
-  recoveryTime: 2000,
-}
-```
-
-## Example: Adding a New Technique
-
-```typescript
-// In trigram/techniques.ts
-{
-  id: "hapkido_kotegaeshi",
-  names: {
-    korean: "손목꺾기",
-    english: "Wrist Twist Throw",
-    romanized: "sonmok-kkeokgi",
-  },
-  stance: TrigramStance.TAE,
-  martialArt: 'hapkido',
-  targetVitalPoints: ["wrist_joint", "elbow_joint"],
-  kiCost: 15,
-  staminaCost: 20,
-  executionTime: 800,
-  damageMultiplier: 1.4,
-  description: {
-    korean: "합기도 대표 기술인 손목꺾기로 상대를 제압하고 던짐",
-    english: "Hapkido signature wrist twist to control and throw opponent",
-  },
-  archetypeEffectiveness: {
-    amsalja: 1.3,  // Silent control technique
-    jeongbo: 1.2,   // Precision timing
-    musa: 0.9,      // Less direct than preferred style
-  },
-  requirements: {
-    minKi: 10,
-    requiredStance: TrigramStance.TAE,
-  },
-}
-```
+See `src/systems/combat/` for vital point and technique data structures. Reference `KOREAN_MARTIAL_ARTS_EXAMPLES.md` for comprehensive examples of adding vital points and techniques.
 
 ## Combat Philosophy Integration
 

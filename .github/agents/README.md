@@ -214,22 +214,22 @@ graph LR
 ---
 
 ### 🛠️ [Coding Agent](./coding-agent.md)
-**Primary Role:** Full-Stack TypeScript/React/PixiJS Development
+**Primary Role:** Full-Stack TypeScript/React/Three.js Development
 
 **When to Use:**
 - ✅ Implementing new game features
 - ✅ Creating UI components with Korean theming
-- ✅ Fixing bugs in React/PixiJS code
+- ✅ Fixing bugs in React/Three.js code
 - ✅ Refactoring existing code
-- ✅ Integrating @pixi/layout system
+- ✅ Integrating @react-three/fiber components
 - ✅ Implementing combat mechanics
 
 **Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `playwright-browser_*`
 
 **Expertise:**
-- React + PixiJS integration patterns
+- React + Three.js integration patterns
 - Korean theming and bilingual text
-- Layout system (@pixi/layout)
+- @react-three/fiber and @react-three/drei
 - Combat system implementation
 - Type-safe development with strict TypeScript
 
@@ -258,20 +258,20 @@ graph LR
 ---
 
 ### 🎮 [Game Developer](./game-developer.md)
-**Primary Role:** PixiJS 8.x Game Systems Engineer
+**Primary Role:** Three.js/@react-three/fiber Game Systems Engineer
 
 **When to Use:**
 - ✅ Implementing game loops
 - ✅ Optimizing rendering (60fps target)
 - ✅ Audio system integration
 - ✅ Collision detection
-- ✅ Texture and resource management
+- ✅ 3D scene and resource management
 - ✅ Object pooling
 
 **Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `playwright-browser_*`
 
 **Expertise:**
-- PixiJS v8 integration
+- Three.js / @react-three/fiber integration
 - Game loop architecture
 - Howler.js audio management
 - Performance optimization
@@ -287,7 +287,7 @@ graph LR
 - ✅ Creating integration tests
 - ✅ Developing E2E tests with Cypress
 - ✅ Debugging test failures
-- ✅ Testing PixiJS components
+- ✅ Testing Three.js components
 - ✅ Testing Korean UI elements
 
 **Tools Available:** `view`, `edit`, `create`, `bash`, `playwright-browser_*`
@@ -480,160 +480,19 @@ The Task Agent has access to specialized MCP servers for enhanced capabilities:
 
 ### 🏗️ Agent Architecture Overview
 
-This diagram shows how all agents interact with the essential context files:
-
-```mermaid
-graph TB
-    subgraph "Essential Context Files"
-        Setup[📄 copilot-setup-steps.yml<br/>Build Environment]
-        MCP[📄 copilot-mcp.json<br/>MCP Servers Config]
-        Main[📄 README.md<br/>Project Context]
-    end
-    
-    subgraph "Agent Layer"
-        Task[🎯 Task Agent]
-        Code[🛠️ Coding Agent]
-        Front[⚛️ Frontend Specialist]
-        GameDev[🎮 Game Developer]
-        MartialArts[🥋 Korean Martial Arts Expert]
-        Test[🧪 Testing Agent]
-        TestEng[🔬 Test Engineer]
-        Docs[📝 Documentation Writer]
-        Review[🔍 Code Review Agent]
-        Sec[🛡️ Security Specialist]
-    end
-    
-    subgraph "Operations"
-        Files[📁 File Operations]
-        GitHub[🐙 GitHub API]
-        Browser[🌐 Browser Automation]
-        Cloud[☁️ AWS Operations]
-    end
-    
-    Setup --> Task
-    Setup --> Code
-    Setup --> Front
-    Setup --> GameDev
-    Setup --> MartialArts
-    Setup --> Test
-    Setup --> TestEng
-    Setup --> Docs
-    Setup --> Review
-    Setup --> Sec
-    
-    MCP --> Task
-    MCP --> Code
-    MCP --> Front
-    MCP --> GameDev
-    MCP --> MartialArts
-    MCP --> Test
-    MCP --> TestEng
-    MCP --> Docs
-    MCP --> Review
-    MCP --> Sec
-    
-    Main --> Task
-    Main --> Code
-    Main --> Front
-    Main --> GameDev
-    Main --> MartialArts
-    Main --> Test
-    Main --> TestEng
-    Main --> Docs
-    Main --> Review
-    Main --> Sec
-    
-    Task --> Files
-    Task --> GitHub
-    Task --> Browser
-    Task --> Cloud
-    
-    Code --> Files
-    Front --> Files
-    GameDev --> Files
-    MartialArts --> Files
-    Test --> Files
-    TestEng --> Files
-    Docs --> Files
-    Review --> Files
-    Sec --> Files
-    
-    style Setup fill:#BBDEFB,stroke:#1565C0,stroke-width:2px,color:#000
-    style MCP fill:#C8E6C9,stroke:#2E7D32,stroke-width:2px,color:#000
-    style Main fill:#FFF9C4,stroke:#F57F17,stroke-width:2px,color:#000
-    
-    style Task fill:#8BC34A,stroke:#558B2F,stroke-width:3px,color:#fff
-    style Code fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
-    style Front fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
-    style GameDev fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
-    style MartialArts fill:#673AB7,stroke:#4527A0,stroke-width:2px,color:#fff
-    style Test fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
-    style TestEng fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
-    style Docs fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
-    style Review fill:#FFC107,stroke:#F57F17,stroke-width:2px,color:#000
-    style Sec fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
-    
-    style Files fill:#E0E0E0,stroke:#757575,stroke-width:2px,color:#000
-    style GitHub fill:#E0E0E0,stroke:#757575,stroke-width:2px,color:#000
-    style Browser fill:#E0E0E0,stroke:#757575,stroke-width:2px,color:#000
-    style Cloud fill:#E0E0E0,stroke:#757575,stroke-width:2px,color:#000
-```
+All agents read Essential Context Files (`copilot-setup-steps.yml`, `copilot-mcp.json`, `README.md`) at session start and have access to File Operations and GitHub API. Task Agent additionally uses Browser Automation and AWS Operations.
 
 ### Tool Access by Agent
 
-```mermaid
-graph TD
-    subgraph "Orchestration Agent"
-        TaskAgent[🎯 Task Agent]
-    end
-    
-    subgraph "Read-Only Agents"
-        Review[🔍 Code Review Agent]
-    end
-    
-    subgraph "Documentation Agents"
-        Docs[📝 Documentation Writer]
-    end
-    
-    subgraph "Development Agents"
-        Coding[🛠️ Coding Agent]
-        Frontend[⚛️ Frontend Specialist]
-        Game[🎮 Game Developer]
-    end
-    
-    subgraph "Testing Agents"
-        Testing[🧪 Testing Agent]
-        TestEng[🔬 Test Engineer]
-    end
-    
-    subgraph "Security Agents"
-        Security[🛡️ Security Specialist]
-    end
-    
-    TaskAgent --> MCPTools[view + edit + create + search + bash + custom-agent<br/>+ GitHub MCP + Playwright MCP + AWS MCP]
-    Review --> ViewSearch[view + search_code + playwright-browser_*]
-    Docs --> ViewEdit[view + edit + create + search_code + playwright-browser_*]
-    Coding --> FullTools[All Tools]
-    Frontend --> FullTools
-    Game --> FullTools
-    Testing --> FullTools
-    TestEng --> FullTools
-    Security --> FullTools
-    
-    style TaskAgent fill:#8BC34A,stroke:#558B2F,stroke-width:3px,color:#fff
-    style Review fill:#FFC107,stroke:#F57F17,stroke-width:2px,color:#000
-    style Docs fill:#00BCD4,stroke:#00838F,stroke-width:2px,color:#fff
-    style Coding fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
-    style Frontend fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
-    style Game fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
-    style Testing fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
-    style TestEng fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
-    style Security fill:#F44336,stroke:#C62828,stroke-width:2px,color:#fff
-    style MCPTools fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#000
-    style ViewSearch fill:#FFF9C4,stroke:#F57F17,stroke-width:2px,color:#000
-    style ViewEdit fill:#E0F7FA,stroke:#00838F,stroke-width:2px,color:#000
-    style FullTools fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px,color:#000
-```
+| Agent | Access Level |
+|-------|-------------|
+| 🎯 Task Agent | All tools + GitHub MCP + Playwright MCP + AWS MCP |
+| 🔍 Code Review Agent | View + search + Playwright (read-only) |
+| 📝 Documentation Writer | View + edit + create + search + Playwright |
+| 🛠️ Coding / ⚛️ Frontend / 🎮 Game Dev | All tools |
+| 🧪 Testing / 🔬 Test Engineer | All tools |
+| 🛡️ Security Specialist | All tools |
+| 🥋 Korean Martial Arts Expert | All tools |
 
 ## 🎯 Agent Development Guidelines
 - Performance testing
@@ -845,78 +704,9 @@ Effective agents should:
 
 ## 🎯 Using the Task Agent for Product Management
 
-The Task Agent is your entry point for comprehensive product quality management:
-
-### When to Invoke Task Agent
-
-**Use Task Agent for:**
-- 📊 **Quality Analysis**: "Analyze the current state of Black Trigram and identify areas for improvement"
-- 📝 **Issue Creation**: "Create issues for missing test coverage in combat systems"
-- 🔐 **ISMS Compliance**: "Check ISMS alignment and create issues for gaps"
-- 🎨 **UI/UX Audit**: "Evaluate UI/UX against Korean theming standards"
-- ⚡ **Performance Review**: "Analyze bundle size and create optimization issues"
-- 🤝 **Agent Coordination**: "Delegate the security issues to the appropriate agents"
-
-### Task Agent Workflow Example
-
-```bash
-# 1. Comprehensive Analysis
-@task-agent "Analyze Black Trigram holistically and identify improvement areas 
-across product quality, UI/UX, security, and ISMS compliance"
-
-# 2. Issue Creation
-# Task Agent will create GitHub issues with:
-# - Clear titles and descriptions
-# - Specific acceptance criteria
-# - ISMS policy references
-# - Appropriate labels and priorities
-# - Suggested agent assignments
-
-# 3. Agent Delegation
-# Task Agent will recommend:
-# - @security-specialist for vulnerability issues
-# - @frontend-specialist for UI/UX issues
-# - @test-engineer for coverage issues
-# - @documentation-writer for docs gaps
-
-# 4. Follow-up
-# Track created issues and monitor progress
-```
-
-### Example Task Agent Requests
-
-**Product Quality:**
-```
-@task-agent "Review game-design.md and create issues for unimplemented features"
-```
-
-**UI/UX Evaluation:**
-```
-@task-agent "Test the application with Playwright and create issues for 
-Korean font rendering and responsive design problems"
-```
-
-**ISMS Compliance:**
-```
-@task-agent "Review all security documentation and create issues for missing 
-ISMS policy references, focusing on SECURITY_ARCHITECTURE.md"
-```
-
-**Performance Analysis:**
-```
-@task-agent "Analyze bundle size, identify heavy dependencies, and create 
-optimization issues with specific recommendations"
-```
-
-**Test Coverage:**
-```
-@task-agent "Identify areas with <90% test coverage and create issues with 
-specific test scenarios needed"
-```
+The Task Agent is your entry point for comprehensive product quality management. Use it for quality analysis, issue creation, ISMS compliance checks, UI/UX audits, performance reviews, and agent coordination. See [task-agent.md](./task-agent.md) for full details.
 
 ## Support
-
-For questions or issues:
 
 - Review `.github/copilot-instructions.md` for comprehensive guidelines
 - Check existing codebase for established patterns
@@ -926,7 +716,7 @@ For questions or issues:
 ---
 
 **Project**: Black Trigram (흑괘)
-**Description**: A realistic 2D precision combat game inspired by Korean martial arts
-**Tech Stack**: React, TypeScript, PixiJS, Vite, Vitest, Cypress
+**Description**: A realistic combat simulator inspired by Korean martial arts
+**Tech Stack**: React, TypeScript, Three.js, Vite, Vitest, Cypress
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram_
