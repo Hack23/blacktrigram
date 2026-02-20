@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://hack23.com/icon-192.png" alt="Hack23 Logo" width="192" height="192">
+</p>
+
 <div align="center">
 
 # 🥋 Black Trigram (흑괘)

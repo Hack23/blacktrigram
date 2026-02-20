@@ -1,4 +1,4 @@
-# Unit Test Plan for Black Trigram (흑괘)
+# 🧪 Black Trigram (흑괘) — Unit Test Plan
 
 **🔐 ISMS Alignment:** This unit test plan implements [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) Section 4.3.1 - Unit Testing Requirements.
 
