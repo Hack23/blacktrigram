@@ -1,4 +1,6 @@
-# Black Trigram (흑괘) - Comprehensive Game Design Document
+# 🗺️ Black Trigram (흑괘) - Comprehensive Game Design Document
+
+**🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) for design documentation requirements.
 
 **Version**: 2.1 (Updated January 29, 2026)  
 **Status**: Q1 2026 Combat Realism Production-Ready (13/13 systems complete, 100%)  
