@@ -1,0 +1,40 @@
+/* Critical CSS - Extracted for CSP compliance (no inline styles) */
+body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loading {
+  color: #00ffd0;
+  text-align: center;
+}
+/* Update banner styles (used by sw-register.js) */
+.update-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #00ffd0 0%, #00aa88 100%);
+  color: #000;
+  padding: 16px;
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  z-index: 10000;
+  box-shadow: 0 2px 10px rgba(0, 255, 208, 0.3);
+  cursor: pointer;
+  animation: slideDown 0.3s ease-out;
+}
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
