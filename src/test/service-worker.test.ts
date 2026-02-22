@@ -202,11 +202,18 @@ describe('CSP Compliance (index.html)', () => {
     // Should NOT contain inline <style>...</style> blocks in <head>
     // Check that there are no style elements with CSS rules (but allow empty/comment-only references)
     const headSection = indexHtml.split('</head>')[0] ?? '';
-    expect(headSection).not.toMatch(/<style>\s*body\s*\{/);
+    expect(headSection).not.toMatch(/<style[^>]*>[\s\S]*?<\/style>/);
   });
 
   it('should use external script instead of inline script for SW registration', () => {
     expect(indexHtml).toContain('src="./sw-register.js"');
+
+    // Ensure there are no inline executable <script> tags in <head>
+    // Allow only non-executable types like application/ld+json and scripts with src attributes
+    const headSection = indexHtml.split('</head>')[0] ?? '';
+    expect(headSection).not.toMatch(
+      /<script(?![^>]*\bsrc\b)(?![^>]*type="application\/ld\+json")/i
+    );
   });
 
   it('should not use inline event handlers on font links', () => {

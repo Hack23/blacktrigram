@@ -8,8 +8,16 @@ document.addEventListener("DOMContentLoaded", function () {
       fontLink.media = "all";
     });
     // Fallback: if the link is already loaded (cached), swap immediately
-    if (fontLink.sheet) {
-      fontLink.media = "all";
+    try {
+      if (fontLink.sheet) {
+        fontLink.media = "all";
+      }
+    } catch (e) {
+      // Accessing cross-origin stylesheets can throw a SecurityError;
+      // in that case, rely on the 'load' event handler above to update media.
+      if (fontLink.media === "all") {
+        return;
+      }
     }
   }
 });
