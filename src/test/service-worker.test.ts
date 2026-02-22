@@ -73,6 +73,14 @@ describe('Service Worker Version Management', () => {
       expect(swSource).toContain('.catch(');
       expect(swSource).toContain('offline');
     });
+
+    it('should skip intercepting Google Fonts requests for CSP compliance', () => {
+      const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
+      
+      expect(swSource).toContain('fonts.googleapis.com');
+      expect(swSource).toContain('fonts.gstatic.com');
+      expect(swSource).toContain('Let browser handle font requests natively');
+    });
   });
 
   describe('Service worker lifecycle', () => {
@@ -137,45 +145,79 @@ describe('Service Worker Version Management', () => {
   });
 });
 
-describe('Service Worker Registration (index.html)', () => {
+describe('Service Worker Registration (sw-register.js)', () => {
+  const swRegister = readFileSync(resolve('./public/sw-register.js'), 'utf8');
   const indexHtml = readFileSync(resolve('./index.html'), 'utf8');
 
+  it('should reference external sw-register.js for CSP compliance', () => {
+    expect(indexHtml).toContain('src="./sw-register.js"');
+    // Should NOT contain inline service worker registration script
+    expect(indexHtml).not.toContain('navigator.serviceWorker.register');
+  });
+
   it('should register service worker in production only', () => {
-    expect(indexHtml).toContain('if ("serviceWorker" in navigator)');
-    expect(indexHtml).toContain('isDevelopment');
+    expect(swRegister).toContain('if ("serviceWorker" in navigator)');
+    expect(swRegister).toContain('isDevelopment');
   });
 
   it('should check for updates periodically', () => {
-    expect(indexHtml).toContain('setInterval');
-    expect(indexHtml).toContain('registration.update()');
-    expect(indexHtml).toContain('60000'); // 60 seconds
+    expect(swRegister).toContain('setInterval');
+    expect(swRegister).toContain('registration.update()');
+    expect(swRegister).toContain('60000'); // 60 seconds
   });
 
   it('should listen for update events', () => {
-    expect(indexHtml).toContain('updatefound');
-    expect(indexHtml).toContain('registration.installing');
+    expect(swRegister).toContain('updatefound');
+    expect(swRegister).toContain('registration.installing');
   });
 
   it('should show update banner on new version', () => {
-    expect(indexHtml).toContain('update-banner');
-    expect(indexHtml).toContain('New version available');
+    expect(swRegister).toContain('update-banner');
+    expect(swRegister).toContain('New version available');
   });
 
   it('should auto-reload after delay', () => {
-    expect(indexHtml).toContain('window.location.reload()');
-    expect(indexHtml).toContain('5000'); // 5 seconds
+    expect(swRegister).toContain('window.location.reload()');
+    expect(swRegister).toContain('5000'); // 5 seconds
   });
 
   it('should skip service worker in development', () => {
-    expect(indexHtml).toContain('localhost');
-    expect(indexHtml).toContain('127.0.0.1');
-    expect(indexHtml).toContain('.app.github.dev');
-    expect(indexHtml).toContain('gitpod.io');
+    expect(swRegister).toContain('localhost');
+    expect(swRegister).toContain('127.0.0.1');
+    expect(swRegister).toContain('.app.github.dev');
+    expect(swRegister).toContain('gitpod.io');
   });
 
   it('should unregister service worker in development', () => {
-    expect(indexHtml).toContain('navigator.serviceWorker.getRegistrations()');
-    expect(indexHtml).toContain('registration.unregister()');
+    expect(swRegister).toContain('navigator.serviceWorker.getRegistrations()');
+    expect(swRegister).toContain('registration.unregister()');
+  });
+});
+
+describe('CSP Compliance (index.html)', () => {
+  const indexHtml = readFileSync(resolve('./index.html'), 'utf8');
+
+  it('should use external CSS instead of inline styles', () => {
+    expect(indexHtml).toContain('href="./critical.css"');
+    // Should NOT contain inline <style> blocks
+    expect(indexHtml).not.toMatch(/<style>[\s\S]*?<\/style>/);
+  });
+
+  it('should use external script instead of inline script for SW registration', () => {
+    expect(indexHtml).toContain('src="./sw-register.js"');
+  });
+
+  it('should not use inline event handlers on font links', () => {
+    // onload="..." inline handlers violate CSP script-src
+    expect(indexHtml).not.toMatch(/onload\s*=/);
+  });
+
+  it('should have critical CSS file with required styles', () => {
+    const criticalCss = readFileSync(resolve('./public/critical.css'), 'utf8');
+    expect(criticalCss).toContain('body');
+    expect(criticalCss).toContain('#root');
+    expect(criticalCss).toContain('.loading');
+    expect(criticalCss).toContain('.update-banner');
   });
 });
 

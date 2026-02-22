@@ -67,6 +67,14 @@ self.addEventListener("fetch", (event) => {
     return; // Let browser handle it normally
   }
 
+  // Skip intercepting Google Fonts requests to comply with CSP connect-src
+  if (
+    url.hostname === "fonts.googleapis.com" ||
+    url.hostname === "fonts.gstatic.com"
+  ) {
+    return; // Let browser handle font requests natively
+  }
+
   // Network-first strategy for ALL resources - always get fresh content
   // This ensures users always get the latest version when online
   event.respondWith(
