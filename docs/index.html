@@ -274,36 +274,17 @@
       }
     </script>
 
-    <!-- Critical CSS -->
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        background: #000;
-        font-family: system-ui, -apple-system, sans-serif;
-        overflow: hidden;
-      }
-      #root {
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .loading {
-        color: #00ffd0;
-        text-align: center;
-      }
-    </style>
+    <!-- Critical CSS - External file for CSP compliance -->
+    <link rel="stylesheet" href="./critical.css" />
 
     <!-- Font Loading Strategy: Asynchronously load fonts with font-display swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      id="google-fonts"
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Orbitron:wght@400;700;900&display=swap"
       rel="stylesheet"
       media="print"
-      onload="this.media='all'"
     />
 
     <!-- Asset Preloading for LCP - Only preload assets used in initial render -->
@@ -325,153 +306,9 @@
     <meta name="apple-mobile-web-app-title" content="Black Trigram" />
     <link rel="apple-touch-icon" href="./icons/icon-152x152.png" />
 
-    <!-- PWA Service Worker Registration with Version Checking -->
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          // Check for development environment
-          const isDevelopment =
-            window.location.hostname === "localhost" ||
-            window.location.hostname === "127.0.0.1" ||
-            window.location.hostname.startsWith("192.168.") ||
-            window.location.hostname.startsWith("10.") ||
-            window.location.hostname.includes(".app.github.dev") ||
-            window.location.hostname.includes("gitpod.io") ||
-            window.location.port !== "";
-
-          // Skip SW in development to avoid caching issues
-          if (isDevelopment) {
-            console.log(
-              "Development environment detected - skipping ServiceWorker registration"
-            );
-            // Unregister any existing SW
-            navigator.serviceWorker.getRegistrations().then((registrations) => {
-              registrations.forEach((registration) => {
-                registration.unregister();
-                console.log("ServiceWorker unregistered for development");
-              });
-            });
-            return;
-          }
-
-          const swPath = "./sw.js";
-          navigator.serviceWorker
-            .register(swPath)
-            .then((registration) => {
-              console.log(
-                "ServiceWorker registration successful:",
-                registration
-              );
-
-              // Check for updates every 60 seconds
-              const updateCheckInterval = setInterval(() => {
-                registration.update();
-              }, 60000);
-
-              // Clean up interval on page unload to prevent memory leaks
-              window.addEventListener("beforeunload", () => {
-                clearInterval(updateCheckInterval);
-              });
-
-              // Listen for new service worker waiting to activate
-              registration.addEventListener("updatefound", () => {
-                const newWorker = registration.installing;
-                if (newWorker) {
-                  newWorker.addEventListener("statechange", () => {
-                    if (
-                      newWorker.state === "installed" &&
-                      navigator.serviceWorker.controller
-                    ) {
-                      // New version available - show update notification
-                      console.log(
-                        "New version available! Reloading to update..."
-                      );
-
-                      // Create update banner with accessibility support
-                      const updateBanner = document.createElement("div");
-                      updateBanner.id = "update-banner";
-                      updateBanner.setAttribute("role", "alert");
-                      updateBanner.setAttribute("aria-live", "assertive");
-                      updateBanner.setAttribute("tabindex", "0");
-                      updateBanner.style.cssText = `
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        background: linear-gradient(135deg, #00ffd0 0%, #00aa88 100%);
-                        color: #000;
-                        padding: 16px;
-                        text-align: center;
-                        font-family: 'Orbitron', sans-serif;
-                        font-weight: bold;
-                        z-index: 10000;
-                        box-shadow: 0 2px 10px rgba(0,255,208,0.3);
-                        cursor: pointer;
-                        animation: slideDown 0.3s ease-out;
-                      `;
-                      updateBanner.innerHTML = `
-                        🎮 New version available! Tap to reload and get the latest features 🚀
-                      `;
-
-                      // Add animation (only if not already present)
-                      if (
-                        !document.getElementById("slideDown-animation-style")
-                      ) {
-                        const style = document.createElement("style");
-                        style.id = "slideDown-animation-style";
-                        style.textContent = `
-                          @keyframes slideDown {
-                            from { transform: translateY(-100%); }
-                            to { transform: translateY(0); }
-                          }
-                        `;
-                        document.head.appendChild(style);
-                      }
-
-                      // Guard to prevent double reload
-                      let hasReloaded = false;
-
-                      // Reload on click
-                      updateBanner.addEventListener("click", () => {
-                        if (!hasReloaded) {
-                          hasReloaded = true;
-                          window.location.reload();
-                        }
-                      });
-
-                      // Reload on keyboard interaction (Enter or Space)
-                      updateBanner.addEventListener("keydown", (e) => {
-                        if (
-                          (e.key === "Enter" || e.key === " ") &&
-                          !hasReloaded
-                        ) {
-                          e.preventDefault();
-                          hasReloaded = true;
-                          window.location.reload();
-                        }
-                      });
-
-                      document.body.appendChild(updateBanner);
-
-                      // Auto-reload after 5 seconds if user doesn't click
-                      setTimeout(() => {
-                        if (!hasReloaded) {
-                          hasReloaded = true;
-                          window.location.reload();
-                        }
-                      }, 5000);
-                    }
-                  });
-                }
-              });
-            })
-            .catch((err) => {
-              console.log("ServiceWorker registration failed:", err);
-            });
-        });
-      }
-    </script>
-    <script type="module" crossorigin src="./assets/index-rpmMGd.js"></script>
+    <!-- PWA Service Worker Registration - External file for CSP compliance -->
+    <script src="./sw-register.js"></script>
+    <script type="module" crossorigin src="./assets/index-mCObsX.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/game-BFPOD5.css">
   </head>
   <body>

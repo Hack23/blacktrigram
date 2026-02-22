@@ -1,5 +1,5 @@
 // Version will be injected at build time from package.json
-const APP_VERSION = "0.6.47"; // Placeholder replaced by build process
+const APP_VERSION = "0.6.48"; // Placeholder replaced by build process
 const CACHE_NAME = `black-trigram-v${APP_VERSION}`;
 
 // Minimal caching - essential assets for reliable offline support
@@ -65,6 +65,14 @@ self.addEventListener("fetch", (event) => {
     url.protocol === "wss:"
   ) {
     return; // Let browser handle it normally
+  }
+
+  // Skip intercepting Google Fonts requests to comply with CSP connect-src
+  if (
+    url.hostname === "fonts.googleapis.com" ||
+    url.hostname === "fonts.gstatic.com"
+  ) {
+    return; // Let browser handle font requests natively
   }
 
   // Network-first strategy for ALL resources - always get fresh content
