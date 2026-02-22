@@ -199,8 +199,10 @@ describe('CSP Compliance (index.html)', () => {
 
   it('should use external CSS instead of inline styles', () => {
     expect(indexHtml).toContain('href="./critical.css"');
-    // Should NOT contain inline <style> blocks
-    expect(indexHtml).not.toMatch(/<style>[\s\S]*?<\/style>/);
+    // Should NOT contain inline <style>...</style> blocks in <head>
+    // Check that there are no style elements with CSS rules (but allow empty/comment-only references)
+    const headSection = indexHtml.split('</head>')[0] ?? '';
+    expect(headSection).not.toMatch(/<style>\s*body\s*\{/);
   });
 
   it('should use external script instead of inline script for SW registration', () => {

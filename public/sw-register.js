@@ -1,7 +1,7 @@
 // Service Worker Registration - Extracted for CSP compliance (no inline scripts)
 
 // Async font loading: swap media from 'print' to 'all' when loaded (CSP-compliant)
-(function () {
+document.addEventListener("DOMContentLoaded", function () {
   var fontLink = document.getElementById("google-fonts");
   if (fontLink) {
     fontLink.addEventListener("load", function () {
@@ -12,7 +12,7 @@
       fontLink.media = "all";
     }
   }
-})();
+});
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
