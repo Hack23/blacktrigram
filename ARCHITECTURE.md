@@ -2248,7 +2248,7 @@ graph TD
 ```mermaid
 graph TD
     subgraph "Current: Frontend Only"
-        FE[React + PixiJS]
+        FE[React + Three.js]
         LOCAL[Local State]
         CDN[Static CDN]
     end

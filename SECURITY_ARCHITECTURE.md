@@ -547,18 +547,19 @@ Black Trigram AWS security infrastructure:
 - **🌍 Multi-Region**: Geographic redundancy
 ```
 
-### Current Status
+### AWS Hosting Summary
 
-Black Trigram does not use AWS infrastructure:
+Black Trigram uses AWS infrastructure exclusively for static content hosting and delivery (CloudFront CDN, S3 storage, Route53 DNS). No AWS backend application services are used:
 
-- **🚫 No AWS Services**: Frontend-only application
-- **🚫 No IAM**: No AWS identity management needed
-- **🚫 No VPC**: No virtual private cloud infrastructure
-- **🚫 No Security Groups**: No AWS network security controls
+- **✅ AWS Hosting**: CloudFront, S3, Route53 for static site delivery
+- **🚫 No Backend Services**: No EC2, Lambda, RDS, or DynamoDB
+- **🚫 No Application IAM**: No user identity management (CI/CD OIDC only)
+- **🚫 No VPC Application Tier**: No virtual private cloud for application workloads
+- **🚫 No Security Groups**: No application-level network security controls
 
 ## 🔰 AWS Foundational Security Best Practices
 
-**Current Status**: ❌ Not Applicable - No AWS Services
+**Current Status**: ❌ Not Applicable - No AWS Backend Services
 
 ```mermaid
 flowchart TD
@@ -574,7 +575,7 @@ flowchart TD
 
 ### Current Status
 
-Black Trigram does not implement AWS FSBP:
+Black Trigram does not implement AWS FSBP (uses AWS only for static hosting via CloudFront/S3/Route53):
 
 - **🚫 No AWS Config**: No AWS resources to configure
 - **🚫 No Security Hub**: No AWS security findings to aggregate
