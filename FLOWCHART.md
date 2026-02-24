@@ -38,10 +38,14 @@ flowchart TD
     Menu -->|Training| Training[🥋 Training Mode]
     Menu -->|Versus| CharSelect[👤 Character Select]
     Menu -->|Tutorial| Tutorial[📚 Tutorial Mode]
+    Menu -->|Philosophy| Philosophy[☯️ Philosophy Mode]
+    Menu -->|Controls| Controls[🎮 Controls Guide]
     Menu -->|Settings| Settings[⚙️ Settings]
     Menu -->|Exit| Exit([🚪 Exit Game])
 
     Settings --> Menu
+    Philosophy --> Menu
+    Controls --> Menu
 
     CharSelect --> SelectArchetype{Choose Archetype}
     SelectArchetype -->|무사 Musa| Combat

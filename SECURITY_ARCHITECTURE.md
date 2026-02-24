@@ -545,7 +545,6 @@ Black Trigram AWS security infrastructure:
 - **💚 Automated Monitoring**: Health checks and alarms
 - **📜 Audit Trail**: CloudTrail for compliance
 - **🌍 Multi-Region**: Geographic redundancy
-```
 
 ### AWS Hosting Summary
 
@@ -912,8 +911,8 @@ flowchart TD
         A --> C[🔒 TLS Certificate]
         A --> D[🛠️ Development Time]
 
-        E[🚫 No AWS Costs]
-        F[🚫 No Monitoring Costs]
+        E[💲 AWS Hosting Costs]
+        F[🚫 No Backend Costs]
         G[🚫 No Operations Costs]
     end
 
@@ -925,10 +924,12 @@ flowchart TD
 
 Black Trigram security investment:
 
-- **💰 CDN Costs**: Content delivery network hosting costs
-- **🔒 TLS Certificates**: HTTPS encryption (often free with CDN)
+- **💰 CDN Costs**: AWS CloudFront content delivery hosting costs
+- **💾 Storage Costs**: AWS S3 static asset storage costs
+- **📡 DNS Costs**: AWS Route53 DNS hosting with DNSSEC
+- **🔒 TLS Certificates**: HTTPS encryption via ACM (included with CloudFront)
 - **🛠️ Development Time**: Security implementation during development
-- **🚫 No Infrastructure Costs**: No servers or cloud services to pay for
+- **🚫 No Backend Costs**: No servers, databases, or compute services to pay for
 - **🚫 No Security Tools**: No paid security monitoring or scanning tools
 
 ### Cost Benefits
