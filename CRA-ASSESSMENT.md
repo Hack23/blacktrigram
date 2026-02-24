@@ -45,7 +45,7 @@ This process provides a concise, repeatable CRA Conformity Assessment format (pr
 
 ## 📋 **Quick Use Instructions**
 
-Copy this entire template into `CRA-ASSESSMENT.md` in your project root. Replace all `{{PLACEHOLDERS}}`, remove unused badge options, tick checkboxes, and commit with project changes when security posture materially changes.
+This document provides a concise, repeatable CRA Conformity Assessment for Black Trigram (흑괘). Aligns with CRA Annex I & V, Hack23 classification, secure development, and transparency policies.
 
 **Evidence Integration:** All evidence (SBOM, provenance, test reports) stored in GitHub release artifacts and repository documentation. Assessment references current project state and links to immutable evidence.
 
@@ -58,7 +58,7 @@ The following Hack23 AB projects demonstrate completed CRA assessments using thi
 | 🚀 **Project** | 📦 **Product Type** | 🏷️ **CRA Classification** | 📋 **Assessment Status** | 🔗 **Reference Link** |
 |---------------|-------------------|------------------------|------------------------|---------------------|
 | **🕵️ CIA (Citizen Intelligence Agency)** | Political transparency platform | Standard (Non-commercial OSS) | ✅ Complete | [📄 CRA Assessment](https://github.com/Hack23/cia/blob/master/CRA-ASSESSMENT.md) |
-| **⚫ Black Trigram** | Korean martial atts game | Standard (Non-commercial OSS) | ✅ Complete | [📄 CRA Assessment](https://github.com/Hack23/blacktrigram/blob/main/CRA-ASSESSMENT.md) |
+| **⚫ Black Trigram** | Korean martial arts game | Standard (Non-commercial OSS) | ✅ Complete | [📄 CRA Assessment](https://github.com/Hack23/blacktrigram/blob/main/CRA-ASSESSMENT.md) |
 | **🛡️ CIA Compliance Manager** | Compliance automation tool | Standard (Non-commercial OSS) | ✅ Complete | [📄 CRA Assessment](https://github.com/Hack23/cia-compliance-manager/blob/main/CRA-ASSESSMENT.md) |
 
 ### 🎯 **Implementation Examples**
@@ -91,10 +91,10 @@ _Supports CRA Annex V § 1 - Product Description Requirements_
 | Field                  | Value                                                                                                                                             |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 📦 Product             | Black Trigram (흑괘) - Korean Martial Arts Combat Simulator                                                                                       |
-| 🏷️ Version Tag         | {{VERSION}} (reflects current project state)                                                                                                      |
+| 🏷️ Version Tag         | 0.6.48 (reflects current project state)                                                                                                      |
 | 🔗 Repository          | https://github.com/Hack23/blacktrigram                                                                                                            |
 | 📧 Security Contact    | security@hack23.org                                                                                                                               |
-| 🎯 Purpose (1–2 lines) | Educational 2D combat game teaching authentic Korean martial arts through realistic anatomical targeting and traditional Eight Trigram philosophy |
+| 🎯 Purpose (1–2 lines) | Educational 3D combat game teaching authentic Korean martial arts through realistic anatomical targeting and traditional Eight Trigram philosophy |
 | 🏪 Market              | **Select one:**                                                                                                                                   |
 
 ### 🏪 Market Category (Select One):
@@ -154,7 +154,7 @@ _Supports CRA Annex V § 2 - Technical Documentation Requirements_
 
 | 🏗️ CRA Technical Area                             | 📝 Implementation Summary                                                            | 📋 Evidence Location                                                                                                                                                                                                                                                                                               |
 | ------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 🎨 **Product Architecture** _(Annex V § 2.1)_     | React + PixiJS frontend-only architecture with Korean martial arts game engine       | [📋 Architecture Overview](https://www.hack23.com/black-trigram-docs.html) + [🏛️ ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md) + [⚔️ COMBAT_ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md)                                         |
+| 🎨 **Product Architecture** _(Annex V § 2.1)_     | React + Three.js frontend-only architecture with Korean martial arts game engine       | [📋 Architecture Overview](https://www.hack23.com/black-trigram-docs.html) + [🏛️ ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md) + [⚔️ COMBAT_ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md)                                         |
 | 📦 **SBOM & Components** _(Annex I § 1.1)_        | Complete dependency enumeration via package-lock.json and automated SLSA attestation | [📦 GitHub Release SBOM](https://github.com/Hack23/blacktrigram/releases) + [📋 package.json](https://github.com/Hack23/blacktrigram/blob/main/package.json)                                                                                                                                                       |
 | 🔐 **Cybersecurity Controls** _(Annex I § 1.2)_   | Frontend-only app with HTTPS-only delivery, CSP headers, dependency scanning         | [🛡️ SECURITY_ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md) + [🔑 Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) + [🔒 Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) |
 | 🛡️ **Supply Chain Security** _(Annex I § 1.3)_    | SLSA Level 3 attestations, dependency pinning, automated security scanning           | [🏷️ GitHub Attestations](https://github.com/Hack23/blacktrigram/attestations) + [⚡ WORKFLOWS.md](https://github.com/Hack23/blacktrigram/blob/main/WORKFLOWS.md)                                                                                                                                                   |
@@ -270,10 +270,10 @@ GitHub Attestations: `https://github.com/Hack23/blacktrigram/attestations`
 **🎯 Release Assets Structure:**
 
 ```
-blacktrigram-{{VERSION}}.zip               # Main application bundle
-blacktrigram-{{VERSION}}.zip.intoto.jsonl  # SLSA provenance attestation
-blacktrigram-{{VERSION}}.spdx.json         # SPDX SBOM
-blacktrigram-{{VERSION}}.spdx.json.intoto.jsonl  # SBOM attestation
+blacktrigram-0.6.48.zip               # Main application bundle
+blacktrigram-0.6.48.zip.intoto.jsonl  # SLSA provenance attestation
+blacktrigram-0.6.48.spdx.json         # SPDX SBOM
+blacktrigram-0.6.48.spdx.json.intoto.jsonl  # SBOM attestation
 ```
 
 **📋 Release Notes Format:**
@@ -304,7 +304,7 @@ blacktrigram-{{VERSION}}.spdx.json.intoto.jsonl  # SBOM attestation
 
 Thanks to @dependabot[bot] for automated security updates!
 
-**Full Changelog**: https://github.com/Hack23/blacktrigram/compare/{{PREV_VERSION}}...{{VERSION}}
+**Full Changelog**: https://github.com/Hack23/blacktrigram/compare/v0.6.47...v0.6.48
 ```
 
 **🔍 Evidence Validation Commands:**
@@ -357,12 +357,12 @@ _Supports CRA Article 28 - EU Declaration of Conformity_
 > **📝 Complete when placing product on EU market**
 
 **🏢 Manufacturer:** Hack23 AB, Stockholm, Sweden  
-**📦 Product:** Black Trigram (흑괘) {{VERSION}}  
+**📦 Product:** Black Trigram (흑괘) 0.6.48  
 **📋 CRA Compliance:** Self-assessment documentation supporting CRA essential cybersecurity requirements evaluation  
 **🔍 Assessment:** Self-assessment documentation per Article 24 - Standard product classification  
 **📊 Standards:** ETSI EN 303 645 (IoT Security), ISO/IEC 27001 (ISMS), OWASP ASVS (Application Security), NIST SSDF (Secure Development)
 
-**📅 Date & Signature:** {{CURRENT_DATE}} - James Pether Sörling, CEO
+**📅 Date & Signature:** 2025-08-23 - James Pether Sörling, CEO
 
 **📂 Technical Documentation:** This assessment + evidence bundle supports CRA Annex V technical documentation requirements
 
@@ -422,7 +422,7 @@ CRA assessment updated only when changes constitute "substantial modification" u
 ```markdown
 ## Current CRA Self-Assessment Evidence
 
-**🏷️ Product Version:** {{VERSION}}
+**🏷️ Product Version:** 0.6.48
 **📦 CRA Technical Documentation:** This assessment + [Latest Release](https://github.com/Hack23/blacktrigram/releases/latest)
 **🛡️ Security Attestations:** [GitHub Attestations](https://github.com/Hack23/blacktrigram/attestations)
 **📊 Assessment Status:** ![CRA Status](https://img.shields.io/badge/CRA_Self_Assessment-DOCUMENTED-green)

@@ -65,7 +65,7 @@ stateDiagram-v2
     note right of Loading
         Load audio/visual assets
         Initialize game systems
-        Prepare PixiJS renderer
+        Prepare Three.js/WebGL renderer
     end note
     
     note right of Combat
