@@ -545,20 +545,20 @@ Black Trigram AWS security infrastructure:
 - **💚 Automated Monitoring**: Health checks and alarms
 - **📜 Audit Trail**: CloudTrail for compliance
 - **🌍 Multi-Region**: Geographic redundancy
-```
 
-### Current Status
+### AWS Hosting Summary
 
-Black Trigram does not use AWS infrastructure:
+Black Trigram uses AWS infrastructure exclusively for static content hosting and delivery (CloudFront CDN, S3 storage, Route53 DNS). No AWS backend application services are used:
 
-- **🚫 No AWS Services**: Frontend-only application
-- **🚫 No IAM**: No AWS identity management needed
-- **🚫 No VPC**: No virtual private cloud infrastructure
-- **🚫 No Security Groups**: No AWS network security controls
+- **✅ AWS Hosting**: CloudFront, S3, Route53 for static site delivery
+- **🚫 No Backend Services**: No EC2, Lambda, RDS, or DynamoDB
+- **🚫 No Application IAM**: No user identity management (CI/CD OIDC only)
+- **🚫 No VPC Application Tier**: No virtual private cloud for application workloads
+- **🚫 No Security Groups**: No application-level network security controls
 
 ## 🔰 AWS Foundational Security Best Practices
 
-**Current Status**: ❌ Not Applicable - No AWS Services
+**Current Status**: ❌ Not Applicable - No AWS Backend Services
 
 ```mermaid
 flowchart TD
@@ -574,7 +574,7 @@ flowchart TD
 
 ### Current Status
 
-Black Trigram does not implement AWS FSBP:
+Black Trigram does not implement AWS FSBP (uses AWS only for static hosting via CloudFront/S3/Route53):
 
 - **🚫 No AWS Config**: No AWS resources to configure
 - **🚫 No Security Hub**: No AWS security findings to aggregate
@@ -911,8 +911,8 @@ flowchart TD
         A --> C[🔒 TLS Certificate]
         A --> D[🛠️ Development Time]
 
-        E[🚫 No AWS Costs]
-        F[🚫 No Monitoring Costs]
+        E[💲 AWS Hosting Costs]
+        F[🚫 No Backend Costs]
         G[🚫 No Operations Costs]
     end
 
@@ -924,10 +924,12 @@ flowchart TD
 
 Black Trigram security investment:
 
-- **💰 CDN Costs**: Content delivery network hosting costs
-- **🔒 TLS Certificates**: HTTPS encryption (often free with CDN)
+- **💰 CDN Costs**: AWS CloudFront content delivery hosting costs
+- **💾 Storage Costs**: AWS S3 static asset storage costs
+- **📡 DNS Costs**: AWS Route53 DNS hosting with DNSSEC
+- **🔒 TLS Certificates**: HTTPS encryption via ACM (included with CloudFront)
 - **🛠️ Development Time**: Security implementation during development
-- **🚫 No Infrastructure Costs**: No servers or cloud services to pay for
+- **🚫 No Backend Costs**: No servers, databases, or compute services to pay for
 - **🚫 No Security Tools**: No paid security monitoring or scanning tools
 
 ### Cost Benefits
