@@ -11,13 +11,13 @@
 
 <p align="center">
   <a><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
-  <a><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
-  <a><img src="https://img.shields.io/badge/Effective-2025--09--19-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a><img src="https://img.shields.io/badge/Version-1.1-555?style=for-the-badge" alt="Version"/></a>
+  <a><img src="https://img.shields.io/badge/Effective-2026--02--26-success?style=for-the-badge" alt="Effective Date"/></a>
   <a><img src="https://img.shields.io/badge/Review-Annual-orange?style=for-the-badge" alt="Review Cycle"/></a>
 </p>
 
-**📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-09-19 (UTC)  
-**🔄 Review Cycle:** Annual | **⏰ Next Review:** 2026-09-19  
+**📋 Document Owner:** CEO | **📄 Version:** 1.1 | **📅 Last Updated:** 2026-02-26 (UTC)  
+**🔄 Review Cycle:** Annual | **⏰ Next Review:** 2027-02-26  
 **🏷️ Classification:** Public (Open Source Educational Gaming Platform)
 
 ---
@@ -39,6 +39,40 @@ _— Based on Hack23 AB's commitment to security through transparency and excell
 - **🏗️ Asset-centric analysis:** Educational content and user experience protection
 - **🎯 Scenario-centric modeling:** Real-world gaming platform attack simulation
 - **⚖️ Risk-centric assessment:** Educational value and cultural sensitivity impact
+
+### **🎯 Multi-Strategy Threat Modeling Integration**
+
+This threat model implements all five strategies defined in [Hack23 AB Threat Modeling Policy §4](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md#threat-modeling-strategies):
+
+```mermaid
+mindmap
+  root)🎯 Black Trigram Threat Modeling(
+    (🎖️ Attacker-Centric)
+      [MITRE ATT&CK Mapping]
+      [Attack Tree Analysis]
+      [Kill Chain Disruption]
+      [Threat Agent Profiling]
+    (🏗️ Asset-Centric)
+      [Crown Jewel Analysis]
+      [Asset Inventory & Classification]
+      [Data Flow Threat Annotations]
+      [Cultural Content Protection]
+    (🏛️ Architecture-Centric)
+      [STRIDE per Element]
+      [Trust Boundary Analysis]
+      [DFD with Threat Annotations]
+      [Frontend Security Architecture]
+    (🎯 Scenario-Centric)
+      [Priority Threat Scenarios]
+      [Cultural Misuse Cases]
+      [Educational Integrity What-If]
+      [Gaming Platform Attack Simulation]
+    (⚖️ Risk-Centric)
+      [Quantitative Risk Assessment]
+      [Risk Heat Matrix]
+      [Business Impact Analysis]
+      [Residual Risk Tracking]
+```
 
 ### **🔍 Scope Definition**
 
@@ -353,6 +387,22 @@ flowchart TD
     style PATH5 fill:#e91e63,color:#fff
 ```
 
+### **🔗 Kill Chain Disruption Analysis**
+
+Following [Hack23 AB Threat Modeling Policy §4.1.4](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) — mapping defensive controls to each Cyber Kill Chain phase for the frontend-only architecture:
+
+| Kill Chain Phase | Black Trigram Attack Vector | Defensive Control | Detection Mechanism | Disruption Effectiveness |
+|---|---|---|---|---|
+| **1. Reconnaissance** | Scanning for frontend vulnerabilities, technology fingerprinting | Minimize exposed metadata, generic error pages, security headers | Web analytics anomaly detection, CDN access logs | [![High](https://img.shields.io/badge/Effectiveness-High-green?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **2. Weaponization** | Crafting XSS payloads, malicious asset packages, supply chain exploits | N/A — occurs externally; mitigate via proactive dependency monitoring | Threat intelligence feeds, CVE monitoring, GitHub Security Advisories | [![Medium](https://img.shields.io/badge/Effectiveness-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **3. Delivery** | Compromised CDN assets, malicious NPM packages, phishing links | CSP headers, SRI validation, dependency pinning, SLSA attestations | Dependency scanning (Dependabot), SRI mismatch alerts, CDN integrity monitoring | [![High](https://img.shields.io/badge/Effectiveness-High-green?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **4. Exploitation** | XSS execution, DOM manipulation, WebGL/Canvas exploits | React security patterns, strict CSP, input sanitization, Three.js security context | CSP violation reporting, error boundary triggers, performance anomaly detection | [![High](https://img.shields.io/badge/Effectiveness-High-green?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **5. Installation** | Persistent browser storage manipulation, service worker hijacking | Session-only design, no persistent data, minimal browser API permissions | Storage quota monitoring, service worker integrity validation | [![Very High](https://img.shields.io/badge/Effectiveness-Very_High-darkgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **6. Command & Control** | Exfiltration via DNS tunneling, WebSocket abuse, beacon injection | No outbound data channels by design, strict CORS, no telemetry collection | Network monitoring (CDN logs), CORS violation alerts | [![Very High](https://img.shields.io/badge/Effectiveness-Very_High-darkgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **7. Actions on Objectives** | Content defacement, cultural misrepresentation, user device exploitation | Content integrity validation, cultural review process, browser sandbox | Content monitoring, community reporting, performance budget alerts | [![High](https://img.shields.io/badge/Effectiveness-High-green?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+
+**Key Insight:** Black Trigram's frontend-only architecture provides natural kill chain disruption at phases 5-6, as there is no persistent installation vector and no command & control channel by design. The primary attack surface is concentrated at phases 3-4 (delivery and exploitation), where CSP, SRI, and supply chain security controls provide strong defense.
+
 ---
 
 ## 🎯 Priority Threat Scenarios
@@ -429,6 +479,20 @@ Following [Hack23 AB Threat Agent Classification](https://github.com/Hack23/ISMS
 | **🔒 Accidental Insiders**      | Internal | Unintentional security issues in development process         | [Accidental Exposure](https://attack.mitre.org/techniques/T1552), [Misconfigurations](https://attack.mitre.org/techniques/T1611)    | [![Low](https://img.shields.io/badge/Risk-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)    | No malicious intent             |
 | **🎯 Malicious Insiders**       | Internal | Compromised developer accounts or malicious code injection   | [Supply Chain](https://attack.mitre.org/techniques/T1195), [Code Injection](https://attack.mitre.org/techniques/T1059/007)          | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      | Various motivations             |
 | **🤝 Third-Party CDN/Services** | External | Compromise of external services used by the platform         | [Third-party Service](https://attack.mitre.org/techniques/T1199), [Supply Chain](https://attack.mitre.org/techniques/T1195)         | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  | Indirect compromise             |
+
+### **🌐 Current Threat Landscape — ENISA TL 2024 Integration**
+
+Following [Hack23 AB Threat Modeling Policy §3.1](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) alignment with [ENISA Threat Landscape 2024](https://www.enisa.europa.eu/publications/enisa-threat-landscape-2024) priority threat categories:
+
+| ENISA Priority Threat | Relevance to Black Trigram | Black Trigram Controls | Risk Level | Coverage |
+|---|---|---|---|---|
+| **1. Threats Against Availability** | CDN/hosting DoS, client-side resource exhaustion, performance degradation attacks | CloudFront CDN, resource limits, performance monitoring, error boundaries | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | ✅ Mitigated |
+| **2. Ransomware** | Low relevance — no server-side data, no persistent user data; supply chain risk via compromised dependencies | Session-only design, no data persistence, SBOM, dependency scanning | [![Low](https://img.shields.io/badge/Risk-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | ✅ Mitigated by Design |
+| **3. Threats Against Data** | Limited — no user data collection; educational content integrity at risk | No PII collection, session-only storage, content integrity validation | [![Low](https://img.shields.io/badge/Risk-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | ✅ Mitigated by Design |
+| **4. Malware** | Drive-by downloads via compromised assets, malicious JavaScript injection through supply chain | CSP headers, SRI validation, dependency scanning, SLSA attestations | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | ✅ Mitigated |
+| **5. Social Engineering** | Phishing targeting developers for CI/CD access, fake Korean cultural content submissions | MFA on all accounts, branch protection, code review requirements | [![Medium](https://img.shields.io/badge/Risk-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | ✅ Mitigated |
+| **6. Information Manipulation** | Cultural misrepresentation of Korean martial arts, educational misinformation injection | Cultural expert validation, content review process, community reporting | [![High](https://img.shields.io/badge/Risk-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | ✅ Mitigated |
+| **7. Supply Chain Attacks** | Compromised NPM packages, malicious GitHub Actions, CDN asset tampering | SBOM generation, SLSA provenance, dependency pinning, SRI, hardened CI/CD | [![Critical](https://img.shields.io/badge/Risk-Critical-red?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | ✅ Mitigated |
 
 ---
 
@@ -838,6 +902,57 @@ Following [Hack23 AB Maturity Levels](https://github.com/Hack23/ISMS-PUBLIC/blob
 
 ---
 
+## 📋 ISMS Compliance Framework Mapping
+
+Following [Hack23 AB Threat Modeling Policy §2.1](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) classification-driven approach, this threat model maps to three compliance frameworks:
+
+### **ISO 27001:2022 Control Alignment**
+
+| ISO 27001 Control | Threat Model Coverage | Implementation Status | Evidence |
+|---|---|---|---|
+| **A.5.1 - Policies for information security** | Overall threat modeling methodology | ✅ Implemented | This document, ISMS policy references |
+| **A.8.1 - User endpoint devices** | Browser security controls, WebGL safety | ✅ Implemented | CSP, SRI, browser sandbox controls |
+| **A.8.4 - Access to source code** | Supply chain threats, code injection | ✅ Implemented | Branch protection, code review, SLSA |
+| **A.8.6 - Capacity management** | DoS threats, resource exhaustion | ✅ Implemented | Performance monitoring, resource limits |
+| **A.8.11 - Data masking** | Information disclosure prevention | ✅ Implemented | Session-only design, no data collection |
+| **A.8.16 - Monitoring activities** | Security event detection | ✅ Implemented | CDN logs, CSP violation reporting, error tracking |
+| **A.8.23 - Web filtering** | Malicious content prevention | ✅ Implemented | CSP headers, input validation, content review |
+| **A.8.24 - Use of cryptography** | Asset integrity, transport security | ✅ Implemented | HTTPS, SRI (SHA-384), TLS 1.3 |
+| **A.8.25 - Secure development lifecycle** | Supply chain, code injection | ✅ Implemented | SBOM, dependency scanning, SAST, code review |
+| **A.8.27 - Secure system architecture** | Defense in depth, trust boundaries | ✅ Implemented | Frontend-only design, CSP layers, SRI validation |
+| **A.8.28 - Secure coding** | XSS, injection attacks, tampering | ✅ Implemented | React security patterns, input validation |
+
+### **NIST CSF 2.0 Framework Alignment**
+
+| NIST CSF Function | Category | Black Trigram Implementation | Evidence |
+|---|---|---|---|
+| **GOVERN (GV)** | GV.OC - Organizational Context | Threat model documents risk appetite for educational gaming | This document, risk matrix |
+| **GOVERN (GV)** | GV.RM - Risk Management Strategy | STRIDE and MITRE ATT&CK risk identification | Threat scenarios, risk heat matrix |
+| **IDENTIFY (ID)** | ID.AM - Asset Management | Critical assets and crown jewels identified and classified | Asset-centric analysis section |
+| **IDENTIFY (ID)** | ID.RA - Risk Assessment | Risk heat matrix with likelihood/impact ratings | Priority threat scenarios, quantitative assessment |
+| **PROTECT (PR)** | PR.DS - Data Security | Session-only design, no PII collection | Frontend architecture, CSP controls |
+| **PROTECT (PR)** | PR.IP - Information Protection | Secure development, SRI, CSP, dependency scanning | Build security pipeline, SLSA attestations |
+| **PROTECT (PR)** | PR.PT - Platform Security | Browser security model, CDN protection | Content Security Policy, HTTPS enforcement |
+| **DETECT (DE)** | DE.AE - Anomalies and Events | CSP violation detection, performance anomaly monitoring | Error tracking, CDN monitoring |
+| **DETECT (DE)** | DE.CM - Continuous Monitoring | Dependency vulnerability scanning, integrity validation | Dependabot, SRI checks, SAST |
+| **RESPOND (RS)** | RS.MA - Management | Incident response for content integrity and supply chain | Security policy, vulnerability reporting |
+| **RECOVER (RC)** | RC.RP - Recovery Planning | CDN-based recovery, session-only design simplifies recovery | Architecture design, CDN multi-region |
+
+### **CIS Controls v8.1 Alignment**
+
+| CIS Control | Black Trigram Implementation | Evidence |
+|---|---|---|
+| **2 - Inventory and Control of Software Assets** | SBOM for all dependencies, automated scanning | Package-lock.json, dependency scanning |
+| **3 - Data Protection** | HTTPS enforcement, SRI for asset integrity | TLS 1.3, SHA-384 integrity hashes |
+| **4 - Secure Configuration** | Hardened CSP, security headers, strict CORS | index.html security headers, CDN config |
+| **6 - Access Control Management** | Branch protection, code review requirements | GitHub repository settings, CODEOWNERS |
+| **7 - Continuous Vulnerability Management** | Dependabot, CodeQL, dependency scanning | GitHub Security tab, CI/CD pipeline |
+| **8 - Audit Log Management** | CDN access logs, CSP violation reports | CloudFront logs, browser reporting |
+| **14 - Security Awareness and Training** | Secure coding guidelines, threat model documentation | This document, CONTRIBUTING.md |
+| **16 - Application Software Security** | Input validation, React security patterns, CSP | SAST results, E2E security tests |
+
+---
+
 ## 📚 Related Documents
 
 ### 🔐 ISMS Threat Modeling & Risk Management
@@ -875,6 +990,6 @@ Following [Hack23 AB Maturity Levels](https://github.com/Hack23/ISMS-PUBLIC/blob
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=unlock&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  
-**📅 Effective Date:** 2025-09-19  
-**⏰ Next Review:** 2026-09-19  
+**📅 Effective Date:** 2026-02-26  
+**⏰ Next Review:** 2027-02-26  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![Frontend Security](https://img.shields.io/badge/Frontend-Security_Hardened-darkgreen?style=flat-square&logo=security&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![Hack23 Threat Modeling](https://img.shields.io/badge/Hack23-Threat_Modeling_Policy-purple?style=flat-square&logo=security&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)
