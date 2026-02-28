@@ -83,7 +83,7 @@
     "postprocessing": "6.38.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "three": "0.183.1"
+    "three": "0.183.2"
   },
   "devDependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.1000.0",
