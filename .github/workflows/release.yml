@@ -119,15 +119,6 @@ jobs:
           restore-keys: |
             cypress-${{ runner.os }}-
 
-      - name: Cache build artifacts
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
-        with:
-          path: .tsbuildinfo
-          key: ${{ runner.os }}-tsbuild-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
-          restore-keys: |
-            ${{ runner.os }}-tsbuild-${{ hashFiles('**/package-lock.json') }}-
-            ${{ runner.os }}-tsbuild-
-
       - name: Install dependencies
         run: npm ci
 
@@ -288,7 +279,7 @@ jobs:
 
       - name: Generate SBOM attestation
         id: attestsbom
-        uses: actions/attest-sbom@07e74fc4e78d1aad915e867f9a094073a9f71527 # v4.0.0
+        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
         with:
           subject-path: game-${{ needs.prepare.outputs.version }}.zip
           sbom-path: game-${{ needs.prepare.outputs.version }}.spdx.json
@@ -341,6 +332,10 @@ jobs:
 
       - name: Draft Release Notes
         id: release-drafter
+        # NOTE: release-drafter v6.2.0 emits cosmetic warnings about
+        # "pull_request_target.X is not a known webhook name" due to
+        # Probot framework limitations. These are harmless and tracked
+        # upstream: https://github.com/release-drafter/release-drafter/issues/1369
         uses: release-drafter/release-drafter@6db134d15f3909ccc9eefd369f02bd1e9cffdf97 # v6.2.0
         with:
           version: ${{ needs.prepare.outputs.version }}

@@ -313,7 +313,7 @@ git push origin main
   run: npx @cyclonedx/cyclonedx-npm --output-file sbom.json
 
 - name: Attest SBOM
-  uses: actions/attest-sbom@v1
+  uses: actions/attest@v4
   with:
     subject-path: 'dist/'
 // ... (condensed)
