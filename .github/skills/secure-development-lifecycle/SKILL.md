@@ -313,10 +313,10 @@ git push origin main
   run: npx @cyclonedx/cyclonedx-npm --output-file sbom.json
 
 - name: Attest SBOM
-  uses: actions/attest-sbom@v1
+  uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
   with:
     subject-path: 'dist/'
-// ... (condensed)
+# ... (condensed)
 ```
 
 ### ❌ No Incident Response Plan
