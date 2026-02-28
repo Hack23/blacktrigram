@@ -1,0 +1,130 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-02-28T03:21:45.787Z",
+    "end": "2026-02-28T03:22:12.799Z",
+    "duration": 27012,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "89e0d979-1da5-4506-9605-421710fdb701",
+      "title": "",
+      "fullFile": "cypress/e2e/combat/breathing-disruption.cy.ts",
+      "file": "cypress/e2e/combat/breathing-disruption.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "2bd11623-15ca-4c24-80d2-c9ab0321ca4e",
+          "title": "Breathing Disruption System - E2E Test (Target: 2-3 min)",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should trigger breathing disruption on solar plexus strike and apply stamina regeneration penalty",
+              "fullTitle": "Breathing Disruption System - E2E Test (Target: 2-3 min) should trigger breathing disruption on solar plexus strike and apply stamina regeneration penalty",
+              "timedOut": null,
+              "duration": 12291,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing Breathing Disruption System - Solar Plexus Strike\");\n// ============================================================\n// 1. Verify Combat Screen is Ready (10s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Combat Screen is Ready\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.verifyCombatScreenReady)();\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.waitForTransition)(1000);\n// ============================================================\n// 2. Check Initial State - No Breathing Disruption (10s)\n// ============================================================\ncy.log(\"2️⃣ Checking Initial State - No Breathing Disruption\");\n// Check that breathing indicator is not visible initially (or shows no disruption)\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.verifyElementConditional)('combat-left-hud-breathing-section', 'Breathing indicator may be embedded in canvas or not visible when no disruption');\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.verifyElementConditional)('combat-right-hud-breathing-section', 'Right HUD breathing indicator may not be visible');\n// ============================================================\n// 3. Execute Solar Plexus Strike (20s)\n// ============================================================\ncy.log(\"3️⃣ Executing Solar Plexus Strike\");\n// Switch to Li stance (Fire stance - known for precise strikes)\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.changeStance)(3, \"Li (Fire) - precise strikes\");\n// Execute initial attack\ncy.get(\"body\").type(\" \");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.waitForTransition)(1000);\ncy.log(\"✅ Executed initial attack\");\n// Execute multiple attacks to ensure we hit solar plexus area\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.executeCombatAttacks)(3, 800);\ncy.log(\"✅ Executed multiple strikes to target torso/solar plexus\");\n// ============================================================\n// 4. Verify Breathing Disruption UI Feedback (20s)\n// ============================================================\ncy.log(\"4️⃣ Verifying Breathing Disruption UI Feedback\");\n// Check for breathing indicator visibility\ncy.get(\"body\").then(($body) => {\n    const hasBreathingIndicator = $body.find('[data-testid*=\"breathing\"]').length > 0 ||\n        $body.text().includes(\"호흡곤란\") ||\n        $body.text().includes(\"Breathing Difficulty\");\n    if (hasBreathingIndicator) {\n        cy.log(\"✅ Breathing disruption indicator visible\");\n        if ($body.text().includes(\"호흡곤란\")) {\n            cy.log(\"✅ Korean text (호흡곤란) displayed\");\n        }\n        // Check for English text\n        if ($body.text().includes(\"Breathing Difficulty\")) {\n            cy.log(\"✅ English text (Breathing Difficulty) displayed\");\n        }\n    }\n    else {\n        cy.log(\"⚠️ Breathing disruption may not be triggered or indicator is in canvas\");\n    }\n});\n// Wait to observe the effect\ncy.wait(2000);\n// ============================================================\n// 5. Verify Stamina Regeneration Penalty (30s)\n// ============================================================\ncy.log(\"5️⃣ Verifying Stamina Regeneration Penalty\");\n// Monitor stamina over time to verify reduced regeneration\n// In a real scenario, we would check that stamina regenerates slower\n// For E2E, we verify the system is active by checking UI indicators\ncy.log(\"⏱️ Monitoring stamina regeneration with breathing disruption active\");\ncy.wait(3000); // Wait 3 seconds to observe regeneration\n// Check that player state indicators are updating\ncy.get(\"body\").then(($body) => {\n    // Look for stamina bar or stamina indicators\n    const hasStaminaIndicator = $body.find('[data-testid*=\"stamina\"]').length > 0 ||\n        $body.find('[data-testid*=\"player-hud\"]').length > 0;\n    if (hasStaminaIndicator) {\n        cy.log(\"✅ Player stamina indicators visible\");\n    }\n});\n// ============================================================\n// 6. Verify Recovery Mechanics (20s)\n// ============================================================\ncy.log(\"6️⃣ Verifying Recovery Mechanics\");\n// Wait for potential recovery (breathing disruption should fade over time)\ncy.log(\"⏱️ Waiting for breathing disruption recovery\");\ncy.wait(5000); // Wait 5 seconds\n// Check if disruption indicator shows recovery or reduced severity\ncy.get(\"body\").then(($body) => {\n    if ($body.text().includes(\"Recovery\") || $body.text().includes(\"회복중\")) {\n        cy.log(\"✅ Recovery indicator visible\");\n    }\n    else {\n        cy.log(\"⏱️ Disruption may still be active or recovered\");\n    }\n});\n// ============================================================\n// 7. Test Multiple Respiratory Strikes Accumulation (20s)\n// ============================================================\ncy.log(\"7️⃣ Testing Multiple Respiratory Strikes Accumulation\");\n// Execute more torso strikes to test accumulation\nfor (let i = 0; i < 2; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(1000);\n}\ncy.log(\"✅ Executed additional torso strikes\");\n// Verify that effects accumulate (indicator should still be visible or intensified)\ncy.wait(2000);\n// ============================================================\n// 8. Performance Check (5s)\n// ============================================================\ncy.log(\"8️⃣ Verifying System Performance\");\n// Check that the game is still responsive and rendering at good FPS\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Canvas still rendering\");\n// Check that combat screen is still functional\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.log(\"✅ Combat screen still responsive\");\n// ============================================================\n// Final Summary\n// ============================================================\ncy.log(\"✅ BREATHING DISRUPTION E2E TEST COMPLETE\");\ncy.log(\"Summary:\");\ncy.log(\"- Solar plexus strikes executed\");\ncy.log(\"- Breathing disruption system active\");\ncy.log(\"- UI feedback verified (Korean-English bilingual)\");\ncy.log(\"- Stamina regeneration penalty active\");\ncy.log(\"- Recovery mechanics observed\");\ncy.log(\"- Performance maintained\");",
+              "err": {},
+              "uuid": "dff05930-22f8-4d3f-9996-968c4877ab6a",
+              "parentUUID": "2bd11623-15ca-4c24-80d2-c9ab0321ca4e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display breathing indicator in both left and right HUDs",
+              "fullTitle": "Breathing Disruption System - E2E Test (Target: 2-3 min) should display breathing indicator in both left and right HUDs",
+              "timedOut": null,
+              "duration": 10411,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing Breathing Indicator UI Integration\");\ncy.log(\"Verifying BreathingIndicator in Combat UI\");\n// Execute torso strikes to trigger breathing disruption\ncy.log(\"Executing torso strikes to trigger breathing disruption\");\n// Switch to stance and execute attacks\ncy.get(\"body\").type(\"3\"); // Li stance\ncy.wait(500);\n// Execute multiple attacks to ensure torso damage\nfor (let i = 0; i < 4; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(800);\n}\ncy.log(\"✅ Executed torso strikes\");\n// Wait for breathing disruption to be applied\ncy.wait(1000);\n// Check for breathing indicator containers\ncy.get(\"body\").then(($body) => {\n    // Check for Player 1 breathing indicator container\n    const player1IndicatorExists = $body.find('[data-testid=\"player1-breathing-indicator-container\"]').length > 0;\n    if (player1IndicatorExists) {\n        cy.log(\"✅ Player 1 breathing indicator container found\");\n        // Check for actual breathing indicator component\n        const breathingIndicatorExists = $body.find('[data-testid=\"breathing-indicator\"]').length > 0;\n        if (breathingIndicatorExists) {\n            cy.log(\"✅ BreathingIndicator component visible\");\n            // Check for Korean-English bilingual labels\n            const breathingLabel = $body.find('[data-testid=\"breathing-label\"]');\n            if (breathingLabel.length > 0) {\n                const labelText = breathingLabel.text();\n                // Check for any Korean breathing disruption term\n                const hasKoreanLabel = labelText.includes(\"바람맞음\") || // Winded\n                    labelText.includes(\"헐떡임\") || // Gasping\n                    labelText.includes(\"호흡곤란\"); // Severely Winded\n                // Check for any English breathing disruption term\n                const hasEnglishLabel = labelText.includes(\"Winded\") ||\n                    labelText.includes(\"Gasping\") ||\n                    labelText.includes(\"Severely Winded\");\n                if (hasKoreanLabel) {\n                    cy.log(\"✅ Korean breathing disruption label found\");\n                }\n                if (hasEnglishLabel) {\n                    cy.log(\"✅ English breathing disruption label found\");\n                }\n            }\n            // Check for timer\n            const breathingTimer = $body.find('[data-testid=\"breathing-timer\"]');\n            if (breathingTimer.length > 0) {\n                cy.log(\"✅ Breathing disruption timer visible\");\n            }\n            // Check for icon\n            const breathingIcon = $body.find('[data-testid=\"breathing-icon\"]');\n            if (breathingIcon.length > 0) {\n                cy.log(\"✅ Breathing disruption icon (🫁) visible\");\n            }\n        }\n        else {\n            cy.log(\"⚠️ BreathingIndicator may be hidden (no active disruption yet)\");\n        }\n    }\n    else {\n        cy.log(\"⚠️ Player 1 breathing indicator container not found\");\n    }\n    // Check for Player 2 breathing indicator container\n    const player2IndicatorExists = $body.find('[data-testid=\"player2-breathing-indicator-container\"]').length > 0;\n    if (player2IndicatorExists) {\n        cy.log(\"✅ Player 2 breathing indicator container found\");\n    }\n    else {\n        cy.log(\"⚠️ Player 2 breathing indicator container not found\");\n    }\n});\ncy.log(\"✅ HUD INTEGRATION TEST COMPLETE\");",
+              "err": {},
+              "uuid": "2eaf6929-56ee-437b-9968-ff75f8ba7396",
+              "parentUUID": "2bd11623-15ca-4c24-80d2-c9ab0321ca4e",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "dff05930-22f8-4d3f-9996-968c4877ab6a",
+            "2eaf6929-56ee-437b-9968-ff75f8ba7396"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 22702,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "build/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
