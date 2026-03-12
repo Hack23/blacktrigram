@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
-  <a><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
-  <a><img src="https://img.shields.io/badge/Status-%E2%9C%85_Production-success?style=for-the-badge" alt="Status"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Status-%E2%9C%85_Production-success?style=for-the-badge" alt="Status"/></a>
 </p>
 
 **📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2026-03-12 (UTC)
@@ -116,7 +116,7 @@ pie title Monthly Infrastructure Cost Distribution ($6.50/month)
 | **Total Security Investment** | $0/year | Free OSS tooling |
 | **Vulnerability Detection Rate** | >95% | Automated scanning pipeline |
 | **Mean Time to Detect (MTTD)** | <24 hours | Automated CI/CD scanning |
-| **Code Coverage** | >80% | Vitest + Cypress |
+| **Code Coverage (Target)** | >80% | Vitest + Cypress (target; see UnitTestPlan.md for current coverage) |
 | **Supply Chain Score** | OpenSSF Scorecard | Automated assessment |
 | **SLSA Level** | Level 3 | GitHub Actions attestation |
 | **CII Best Practices** | Passing | Core Infrastructure Initiative |
@@ -180,7 +180,9 @@ flowchart LR
 | **Access Logging** | S3 + CloudFront | $0.00 | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) |
 | **Versioning** | S3 Versioning | $0.00 | [Backup & Recovery Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) |
 | **Origin Access** | CloudFront OAI/OAC | $0.00 | [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) |
-| **Security Headers** | CloudFront Functions | $0.00 | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) |
+| **Security Headers** | CloudFront Functions | $0.00* (assumes free-tier usage) | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) |
+
+*CloudFront Functions pricing includes a monthly free tier (e.g., first 2 million invocations); this plan assumes usage remains within that free tier. Higher invocation volumes will incur additional per-invocation charges according to AWS regional pricing and will increase the AWS Infrastructure and TCO figures accordingly.*
 
 ---
 

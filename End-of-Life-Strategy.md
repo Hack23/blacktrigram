@@ -134,18 +134,18 @@ mindmap
 
 ## ☕ Node.js Release Schedule Evolution & Transition Strategy
 
-### **📢 Node.js Release Schedule Change (Effective October 2026)**
+### **📢 Node.js Release Schedule Change — Alpha From Oct 2026, Annual Major From Apr 2027**
 
-Starting with **Node.js 27.x**, the Node.js project is [evolving its release schedule](https://nodejs.org/en/blog/announcements/evolving-the-nodejs-release-schedule) from **two major releases per year** to **one major release per year**. This change, discussed in [nodejs/Release#1113](https://github.com/nodejs/Release/issues/1113), has significant implications for Black Trigram's lifecycle planning.
+Starting with **Node.js 27.x**, the Node.js project is [evolving its release schedule](https://nodejs.org/en/blog/announcements/evolving-the-nodejs-release-schedule) from **two major releases per year** to **one major release per year**. The new model introduces a **6‑month alpha phase beginning in October 2026** and moves to **a single stable major release each April starting in April 2027**. This change, discussed in [nodejs/Release#1113](https://github.com/nodejs/Release/issues/1113), has significant implications for Black Trigram's lifecycle planning.
 
 #### **📋 Key Changes Summary**
 
 | Aspect | Old Model (≤26.x) | New Model (27.x+) |
 | ------ | ------------------ | ------------------ |
-| **Major releases/year** | 2 (April + October) | 1 (April only) |
+| **Major releases/year** | 2 (April + October) | 1 stable major/year (April; first in Apr 2027) |
 | **LTS eligibility** | Even-numbered only | Every release |
 | **Odd/even distinction** | Yes (odd = Current only) | No — all releases become LTS |
-| **Alpha channel** | None | 6-month alpha (Oct–Mar) with semver-major changes |
+| **Alpha channel** | None | 6-month alpha (Oct–Mar, starting Oct 2026) with semver-major changes |
 | **Alpha versioning** | N/A | Semver prerelease (e.g., `27.0.0-alpha.1`) |
 | **Version numbering** | Sequential | Calendar-aligned (27 in 2027, 28 in 2028) |
 | **Total support window** | ~30 months (LTS only) | 36 months from Current release to EOL |
@@ -184,21 +184,21 @@ gantt
     Node.js 24.x EOL         :crit, node24eol, 2027-04-30, 0d
     Node.js 26.x EOL         :crit, node26eol, 2028-04-30, 0d
 
-    section Node.js New Schedule (27.x+)
+    section Node.js New Schedule (27.x+, approximate)
     Node.js 27.x Alpha       :node27a, 2026-10-01, 2027-03-31
-    Node.js 27.x Current     :node27c, 2027-04-01, 2027-10-01
-    Node.js 27.x LTS         :node27lts, 2027-10-01, 2030-04-01
+    Node.js 27.x Current     :node27c, 2027-04-01, 2027-09-30
+    Node.js 27.x LTS         :node27lts, 2027-10-01, 2030-04-30
     Node.js 28.x Alpha       :node28a, 2027-10-01, 2028-03-31
-    Node.js 28.x Current     :node28c, 2028-04-01, 2028-10-01
-    Node.js 28.x LTS         :node28lts, 2028-10-01, 2031-04-01
+    Node.js 28.x Current     :node28c, 2028-04-01, 2028-09-30
+    Node.js 28.x LTS         :node28lts, 2028-10-01, 2031-04-30
 
     section Black Trigram Strategy
     Current Node 24.x Production :active, bt24prod, 2024-12-01, 2026-06-01
     Node.js 26.x Testing Phase   :bt26test, 2025-08-01, 2025-10-28
-    Node.js 26.x Production      :bt26prod, 2025-10-28, 2027-10-01
-    Node.js 27.x Alpha CI Testing :bt27alpha, 2026-10-01, 2027-04-01
-    Node.js 27.x Migration        :bt27mig, 2027-04-01, 2027-10-01
-    Node.js 27.x Production       :bt27prod, 2027-10-01, 2030-04-01
+    Node.js 26.x Production      :bt26prod, 2025-10-28, 2027-09-30
+    Node.js 27.x Alpha CI Testing :bt27alpha, 2026-10-01, 2027-03-31
+    Node.js 27.x Migration        :bt27mig, 2027-04-01, 2027-09-30
+    Node.js 27.x Production       :bt27prod, 2027-10-01, 2030-04-30
 
     section Risk Management
     26.x Compatibility Testing    :compat26, 2025-06-01, 2025-10-28
