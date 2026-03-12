@@ -205,7 +205,7 @@ flowchart LR
 |------------|-----------|---------------|
 | **Monthly cost per user** | <$0.01 | Educational gaming platform |
 | **Security cost per vulnerability found** | $0.00 | All automated, free tools |
-| **Infrastructure cost ratio** | 100% free-tier eligible tools | Open source project |
+| **Infrastructure cost ratio** | Low-cost AWS infra; most security/dev tooling free-tier/OSS | Open source project |
 | **DR cost overhead** | $0.00 | GitHub Pages as free DR |
 | **Compliance cost** | $0.00 | OSS tools (SonarCloud, FOSSA, Scorecard) |
 
@@ -216,7 +216,7 @@ flowchart LR
 ### Current Optimizations
 
 1. **🆓 Open Source Advantage:** All security scanning tools are free for open source projects
-2. **☁️ AWS Free Tier:** CloudWatch basic monitoring included in AWS free tier for 12 months
+2. **☁️ AWS Free Tier:** CloudWatch basic monitoring is free for 12 months under AWS Free Tier; current cost breakdown and $78/year TCO conservatively assume post–free-tier pricing
 3. **📦 Static Architecture:** No server-side compute costs (no Lambda, EC2, or containers)
 4. **🔒 Built-in Security:** AWS Shield Standard and CloudFront security headers at no additional cost
 5. **🔄 GitHub Actions:** Unlimited CI/CD minutes for public repositories
