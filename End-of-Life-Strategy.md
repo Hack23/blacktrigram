@@ -146,9 +146,9 @@ Starting with **Node.js 27.x**, the Node.js project is [evolving its release sch
 | **LTS eligibility** | Even-numbered only | Every release |
 | **Odd/even distinction** | Yes (odd = Current only) | No — all releases become LTS |
 | **Alpha channel** | None | 6-month alpha (Oct–Mar, starting Oct 2026) with semver-major changes |
-| **Alpha versioning** | N/A | Semver prerelease (e.g., `27.0.0-alpha.1`) |
-| **Version numbering** | Sequential | Calendar-aligned (27 in 2027, 28 in 2028) |
-| **Total support window** | ~30 months (LTS only) | 36 months from Current release to EOL |
+| **Alpha versioning** | N/A | Semver prerelease (e.g., `27.0.0-alpha.1`); alpha for year N+1's major starts Oct of year N |
+| **Version numbering** | Sequential | Calendar-aligned stable release (27 ships Apr 2027, 28 ships Apr 2028); alpha prereleases begin the prior October |
+| **LTS support window (from LTS start to EOL)** | 30 months | 30 months (unchanged; still ~36 months total including 6 months Current + 30 months LTS) |
 
 #### **📊 New Node.js Release Lifecycle Phases**
 

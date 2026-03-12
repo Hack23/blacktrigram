@@ -52,7 +52,7 @@ The current architecture is a **static React SPA** deployed on **AWS CloudFront 
 |---------------|-------------|-------------------|------------------|-----------|
 | **Hosting** | AWS S3 (Static Site) | $0.50 | $6.00 | Static assets, low-traffic educational site |
 | **CDN** | AWS CloudFront | $2.00 | $24.00 | Global edge distribution, HTTPS termination |
-| **DNS** | AWS Route 53 | $1.00 | $12.00 | Hosted zone + DNS queries |
+| **DNS** | AWS Route 53 | $1.00 | $12.00 | Hosted zone + DNS queries; no Route 53 health checks assumed (availability via CloudFront/S3 + monitoring) |
 | **Domain** | Domain Registration | $1.00 | $12.00 | Annual domain renewal (~$1/mo averaged) |
 | **SSL/TLS** | AWS Certificate Manager | $0.00 | $0.00 | Free TLS certificates for CloudFront |
 | **DR Hosting** | GitHub Pages | $0.00 | $0.00 | Free disaster recovery for public repos |
@@ -93,7 +93,9 @@ pie title Monthly Infrastructure Cost Distribution ($6.50/month)
 
 ## 🔐 Security Investment Analysis
 
-### Current Security Services (All Free Tier)
+### Current Security Tooling (Incremental Cost — All Free/OSS)
+
+> **Note:** This table covers *incremental security tooling* costs only. Security-related AWS infrastructure services (e.g., CloudFront, CloudWatch) are accounted for separately under the infrastructure cost breakdown above.
 
 | **Security Service** | **Provider** | **Annual Cost** | **ISMS Policy Alignment** |
 |----------------------|-------------|-----------------|---------------------------|
@@ -107,13 +109,16 @@ pie title Monthly Infrastructure Cost Distribution ($6.50/month)
 | **Unit Testing** | Vitest (OSS) | $0.00 | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) |
 | **CDN Security** | AWS CloudFront (built-in) | $0.00 | [Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) |
 | **TLS Certificates** | AWS Certificate Manager | $0.00 | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) |
-| **Total Security** | | **$0.00** | |
+| **Total Incremental Security Tooling Cost** | *(excludes AWS security services costed in infrastructure)* | **$0.00** | See infrastructure cost breakdown |
 
 ### Security ROI Metrics
 
+> **Note:** ROI figures below cover *incremental security tooling and services only* (all currently OSS/free).
+> Security-related AWS infrastructure (e.g., CloudFront, CloudWatch) is accounted for separately under infrastructure costs and currently totals **≈$48.00/year** across ISMS policy areas.
+
 | **Metric** | **Value** | **Source** |
 |------------|-----------|-----------|
-| **Total Security Investment** | $0/year | Free OSS tooling |
+| **Total Security Tooling Investment** | $0/year | Free OSS tooling (excluding AWS infrastructure spend) |
 | **Vulnerability Detection Rate** | >95% | Automated scanning pipeline |
 | **Mean Time to Detect (MTTD)** | <24 hours | Automated CI/CD scanning |
 | **Code Coverage (Target)** | >80% | Vitest + Cypress (target; see UnitTestPlan.md for current coverage) |
@@ -148,7 +153,7 @@ flowchart LR
     subgraph AWS["☁️ AWS Infrastructure ($6.50/month)"]
         CF["🌍 CloudFront CDN<br/>$2.00/month<br/>Global Edge Distribution<br/>TLS 1.3 Termination"]
         S3["📦 S3 Bucket<br/>$0.50/month<br/>Static Site Hosting<br/>Versioning Enabled"]
-        R53["🔗 Route 53<br/>$1.00/month<br/>DNS Management<br/>Health Checks"]
+        R53["🔗 Route 53<br/>$1.00/month<br/>DNS Management"]
         CW["📊 CloudWatch<br/>$2.00/month<br/>Basic Monitoring<br/>Alerts"]
         ACM["🔒 ACM<br/>$0.00/month<br/>TLS Certificates<br/>Auto-Renewal"]
     end
