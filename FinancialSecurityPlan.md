@@ -37,12 +37,12 @@ The current architecture is a **static React SPA** deployed on **AWS CloudFront 
 
 | **Time Frame** | **Monthly (USD)** | **Annual (USD)** |
 |----------------|-------------------|------------------|
-| **Total Infrastructure** | **$6.50** | **$78.00** |
+| **Total Infrastructure** | **$7.00** | **$84.00** |
 | **Security Tooling** | **$0.00** | **$0.00** |
 | **Development CI/CD** | **$0.00** | **$0.00** |
-| **Grand Total** | **$6.50** | **$78.00** |
+| **Grand Total** | **$7.00** | **$84.00** |
 
-> **Note:** Black Trigram leverages free-tier and low-cost services for open source projects. The primary recurring costs are AWS CloudFront/S3 hosting and Route 53 DNS, with domain registration.
+> **Note:** Black Trigram leverages free-tier and low-cost services for open source projects. The primary recurring costs are AWS CloudFront/S3 hosting, Route 53 DNS with health check failover, and domain registration.
 
 ---
 
@@ -52,7 +52,7 @@ The current architecture is a **static React SPA** deployed on **AWS CloudFront 
 |---------------|-------------|-------------------|------------------|-----------|
 | **Hosting** | AWS S3 (Static Site) | $0.50 | $6.00 | Static assets, low-traffic educational site |
 | **CDN** | AWS CloudFront | $2.00 | $24.00 | Global edge distribution, HTTPS termination |
-| **DNS** | AWS Route 53 | $1.00 | $12.00 | Hosted zone + DNS queries; no Route 53 health checks assumed (availability via CloudFront/S3 + monitoring) |
+| **DNS** | AWS Route 53 | $1.50 | $18.00 | Hosted zone + DNS queries + basic health check for DR failover to GitHub Pages |
 | **Domain** | Domain Registration | $1.00 | $12.00 | Annual domain renewal (~$1/mo averaged) |
 | **SSL/TLS** | AWS Certificate Manager | $0.00 | $0.00 | Free TLS certificates for CloudFront |
 | **DR Hosting** | GitHub Pages | $0.00 | $0.00 | Free disaster recovery for public repos |
@@ -62,7 +62,7 @@ The current architecture is a **static React SPA** deployed on **AWS CloudFront 
 | **SAST** | SonarCloud | $0.00 | $0.00 | Free for open source |
 | **SBOM** | GitHub SBOM + SLSA | $0.00 | $0.00 | Free for public repos |
 | **Monitoring** | AWS CloudWatch (basic) | $2.00 | $24.00 | Basic monitoring and alarms |
-| **Total** | | **$6.50** | **$78.00** | |
+| **Total** | | **$7.00** | **$84.00** | |
 
 ---
 
@@ -81,10 +81,10 @@ The current architecture is a **static React SPA** deployed on **AWS CloudFront 
     }
   }
 }%%
-pie title Monthly Infrastructure Cost Distribution ($6.50/month)
+pie title Monthly Infrastructure Cost Distribution ($7.00/month)
     "AWS CloudFront CDN" : 2.00
     "AWS CloudWatch" : 2.00
-    "AWS Route 53 DNS" : 1.00
+    "AWS Route 53 DNS" : 1.50
     "Domain Registration" : 1.00
     "AWS S3 Hosting" : 0.50
 ```
@@ -114,7 +114,7 @@ pie title Monthly Infrastructure Cost Distribution ($6.50/month)
 ### Security ROI Metrics
 
 > **Note:** ROI figures below cover *incremental security tooling and services only* (all currently OSS/free).
-> Security-related AWS infrastructure (e.g., CloudFront, CloudWatch) is accounted for separately under infrastructure costs and currently totals **≈$48.00/year** across ISMS policy areas.
+> Security-related AWS infrastructure (e.g., CloudFront, CloudWatch, Route 53 health checks) is accounted for separately under infrastructure costs and currently totals **≈$54.00/year** across ISMS policy areas.
 
 | **Metric** | **Value** | **Source** |
 |------------|-----------|-----------|
@@ -150,10 +150,10 @@ flowchart LR
         BROWSER["🖥️ Browser<br/>Korean Martial Arts<br/>Education"]
     end
 
-    subgraph AWS["☁️ AWS Infrastructure ($6.50/month)"]
+    subgraph AWS["☁️ AWS Infrastructure ($7.00/month)"]
         CF["🌍 CloudFront CDN<br/>$2.00/month<br/>Global Edge Distribution<br/>TLS 1.3 Termination"]
         S3["📦 S3 Bucket<br/>$0.50/month<br/>Static Site Hosting<br/>Versioning Enabled"]
-        R53["🔗 Route 53<br/>$1.00/month<br/>DNS Management"]
+        R53["🔗 Route 53<br/>$1.50/month<br/>DNS Management<br/>Health Check Failover"]
         CW["📊 CloudWatch<br/>$2.00/month<br/>Basic Monitoring<br/>Alerts"]
         ACM["🔒 ACM<br/>$0.00/month<br/>TLS Certificates<br/>Auto-Renewal"]
     end
@@ -168,7 +168,7 @@ flowchart LR
     CF --> ACM
     CW --> CF
     CW --> S3
-    R53 -.->|Failover| GHP
+    R53 -.->|Health Check Failover| GHP
 
     style AWS fill:#e3f2fd
     style DR fill:#f3e5f5
@@ -197,12 +197,12 @@ flowchart LR
 
 | **Cost Category** | **Year 1** | **Year 2** | **Year 3** | **3-Year Total** |
 |-------------------|-----------|-----------|-----------|-----------------|
-| **AWS Infrastructure** | $78.00 | $78.00 | $78.00 | $234.00 |
+| **AWS Infrastructure** | $84.00 | $84.00 | $84.00 | $252.00 |
 | **Security Tooling** | $0.00 | $0.00 | $0.00 | $0.00 |
 | **CI/CD Pipeline** | $0.00 | $0.00 | $0.00 | $0.00 |
 | **Compliance Tools** | $0.00 | $0.00 | $0.00 | $0.00 |
 | **Development Tools** | $0.00 | $0.00 | $0.00 | $0.00 |
-| **Total** | **$78.00** | **$78.00** | **$78.00** | **$234.00** |
+| **Total** | **$84.00** | **$84.00** | **$84.00** | **$252.00** |
 
 ### Cost Efficiency Analysis
 
@@ -221,7 +221,7 @@ flowchart LR
 ### Current Optimizations
 
 1. **🆓 Open Source Advantage:** All security scanning tools are free for open source projects
-2. **☁️ AWS Free Tier:** CloudWatch basic monitoring is free for 12 months under AWS Free Tier; current cost breakdown and $78/year TCO conservatively assume post–free-tier pricing
+2. **☁️ AWS Free Tier:** CloudWatch basic monitoring is free for 12 months under AWS Free Tier; current cost breakdown and $84/year TCO conservatively assume post–free-tier pricing
 3. **📦 Static Architecture:** No server-side compute costs (no Lambda, EC2, or containers)
 4. **🔒 Built-in Security:** AWS Shield Standard and CloudFront security headers at no additional cost
 5. **🔄 GitHub Actions:** Unlimited CI/CD minutes for public repositories
@@ -233,7 +233,7 @@ If the platform evolves beyond a static frontend (see [FUTURE_ARCHITECTURE.md](F
 
 | **Evolution Scenario** | **Estimated Monthly Cost** | **Key Cost Drivers** |
 |-----------------------|---------------------------|---------------------|
-| **Current (Static SPA)** | $6.50 | CloudFront + S3 + Route 53 |
+| **Current (Static SPA)** | $7.00 | CloudFront + S3 + Route 53 |
 | **+ API Gateway + Lambda** | $15-25 | Serverless compute |
 | **+ DynamoDB** | $25-40 | Data persistence |
 | **+ WAF + GuardDuty** | $50-75 | Enhanced security services |
@@ -252,9 +252,9 @@ If the platform evolves beyond a static frontend (see [FUTURE_ARCHITECTURE.md](F
 | [**Cryptography Policy**](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) | $0.00 | AWS ACM, GitHub Secret Scanning | TLS certificates and secret protection |
 | [**Network Security Policy**](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) | $24.00 | CloudFront, AWS Shield Standard | CDN and DDoS protection |
 | [**Access Control Policy**](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) | $0.00 | CloudFront OAC, S3 bucket policies | Origin access control |
-| [**Backup & Recovery Policy**](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) | $0.00 | S3 Versioning, GitHub Pages DR | Multi-layer backup strategy |
+| [**Backup & Recovery Policy**](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) | $6.00 | S3 Versioning, GitHub Pages DR, Route 53 health check failover | Multi-layer backup strategy with automatic DR failover |
 | [**Information Security Policy**](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | $24.00 | CloudWatch, Access Logs | Monitoring and audit logging |
-| **Total** | **$48.00** | | |
+| **Total** | **$54.00** | | |
 
 ---
 

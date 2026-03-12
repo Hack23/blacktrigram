@@ -193,15 +193,15 @@ gantt
     Node.js 28.x LTS         :node28lts, 2028-10-01, 2031-04-30
 
     section Black Trigram Strategy
-    Node 24.x Production          :active, bt24prod, 2024-12-01, 2025-10-28
-    24.x → 26.x Migration Support :bt24mig, 2025-08-01, 2025-10-28
-    Node.js 26.x Production       :bt26prod, 2025-10-28, 2027-09-30
+    Node 24.x Production          :active, bt24prod, 2024-12-01, 2026-10-28
+    24.x → 26.x Migration Support :bt24mig, 2026-06-01, 2026-10-28
+    Node.js 26.x Production       :bt26prod, 2026-10-28, 2027-09-30
     Node.js 27.x Alpha CI Testing :bt27alpha, 2026-10-01, 2027-03-31
     Node.js 27.x Migration        :bt27mig, 2027-04-01, 2027-09-30
     Node.js 27.x Production       :bt27prod, 2027-10-01, 2030-04-30
 
     section Risk Management
-    26.x Compatibility Testing    :compat26, 2025-06-01, 2025-10-28
+    26.x Compatibility Testing    :compat26, 2026-04-01, 2026-10-28
     27.x Alpha CI Integration     :alphaci, 2026-10-01, 2027-04-01
     27.x Migration Risk Assessment :milestone, riskassess27, 2027-03-01, 0d
 ```
