@@ -78,10 +78,10 @@ mindmap
         📅 Current: Latest
         ⏰ EOL: ~2027-2028
         🔄 Concurrent Features
-      🎮 PixiJS 8.13.2
+      🎮 Three.js 0.183.x / R3F 9.5.x
         📅 Current: Latest
-        ⏰ EOL: Active (2+ years)
-        🔄 WebGL 2.0 Support
+        ⏰ EOL: Active development
+        🔄 WebGL 2.0 + WebGPU Support
       📱 React Error Boundary 6.0
         📅 Current: Latest
         ⏰ EOL: React-dependent
@@ -104,10 +104,10 @@ mindmap
         📅 Current: Stable
         ⏰ EOL: Long-term stable
         🔄 Web Audio API
-      🎨 @pixi/sound 6.0.1
+      🎨 @react-three/drei 10.7.x
         📅 Current: Latest
-        ⏰ EOL: PixiJS-dependent
-        🔄 Audio Integration
+        ⏰ EOL: R3F-dependent
+        🔄 3D Helpers & Audio
     (🧪 Testing & Quality)
       🧪 Vitest 3.2.4
         📅 Current: Latest
@@ -258,13 +258,13 @@ With the new Node.js release schedule introducing a 6-month alpha phase, Black T
 }%%
 flowchart TB
     subgraph PREPARATION["🔬 Pre-Migration Testing (Aug 2025)"]
-        COMPAT_TEST["🧪 Compatibility Testing<br/>• Vite 7+ compatibility<br/>• React 19 compatibility<br/>• PixiJS 8+ compatibility<br/>• TypeScript 5+ compatibility"]
+        COMPAT_TEST["🧪 Compatibility Testing<br/>• Vite 7+ compatibility<br/>• React 19 compatibility<br/>• Three.js / R3F compatibility<br/>• TypeScript 5+ compatibility"]
         DEP_AUDIT["📦 Dependency Audit<br/>• NPM package compatibility<br/>• Native module rebuilds<br/>• Security vulnerability scan<br/>• License compliance check"]
         PERF_BASELINE["📊 Performance Baseline<br/>• Build time comparison<br/>• Runtime performance<br/>• Memory usage analysis<br/>• Bundle size impact"]
     end
 
     subgraph VALIDATION["✅ Migration Validation (Sep-Oct 2025)"]
-        FEATURE_TEST["🎮 Feature Testing<br/>• Combat system validation<br/>• Audio engine testing<br/>• Korean text rendering<br/>• PixiJS graphics performance"]
+        FEATURE_TEST["🎮 Feature Testing<br/>• Combat system validation<br/>• Audio engine testing<br/>• Korean text rendering<br/>• Three.js 3D graphics performance"]
         E2E_VALIDATION["🔍 E2E Validation<br/>• Complete user journeys<br/>• Cross-browser testing<br/>• Mobile compatibility<br/>• Performance regression"]
         SECURITY_SCAN["🔒 Security Validation<br/>• Vulnerability scanning<br/>• Dependency security<br/>• Secret scanning<br/>• SLSA attestation"]
     end
@@ -399,8 +399,8 @@ gantt
     TypeScript 6.x (Future)   :ts6, 2025-03-01, 2026-09-30
 
     section Graphics and Audio
-    PixiJS 8.x                :active, pixi8, 2024-01-30, 2026-01-30
-    PixiJS 9.x (Future)       :pixi9, 2025-06-01, 2027-06-01
+    Three.js 0.1xx             :active, three, 2024-01-01, 2026-12-31
+    @react-three/fiber 9.x     :active, r3f9, 2024-06-01, 2027-06-01
     Howler.js 2.x             :active, howler2, 2021-03-04, 2027-12-31
 
     section Critical Milestones
@@ -442,7 +442,7 @@ Black Trigram will be designated as EOL and archived in read-only state when ANY
 1. **🚨 Security Support Failure:** No security patches available for critical vulnerabilities in core dependencies
 2. **🌐 Browser Compatibility Loss:** Modern browsers no longer support required WebGL/Canvas APIs
 3. **⚡ Performance Degradation:** Framework limitations causing <30fps on target hardware
-4. **📦 Dependency Chain Collapse:** Critical dependencies (React, PixiJS, Vite) all reach EOL simultaneously
+4. **📦 Dependency Chain Collapse:** Critical dependencies (React, Three.js/R3F, Vite) all reach EOL simultaneously
 
 #### **🟠 Business EOL Triggers (Planned Retirement)**
 
@@ -454,8 +454,8 @@ Black Trigram will be designated as EOL and archived in read-only state when ANY
 #### **🟡 Technical EOL Triggers (Migration Required)**
 
 1. **☕ Node.js Ecosystem End:** Node.js 27+ unsupported and current LTS EOL reached
-2. **⚛️ React Major Breaking Change:** React 20+ incompatible with current PixiJS integration
-3. **🎮 PixiJS Architecture Change:** WebGL 3.0 transition requiring complete rewrite
+2. **⚛️ React Major Breaking Change:** React 20+ incompatible with current Three.js/R3F integration
+3. **🎮 Three.js Architecture Change:** WebGPU transition requiring significant refactoring
 4. **🔧 Build System Evolution:** ES Modules/Import Maps requiring Vite replacement
 
 ### **📊 EOL Decision Matrix**
@@ -522,8 +522,8 @@ Should EOL conditions trigger migration, the successor platform will maintain **
 
 | Component                 | Current (Black Trigram) | Future Candidate                   | Migration Complexity                                                                                                                                       |
 | ------------------------- | ----------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **⚛️ Frontend Framework** | React 19 + PixiJS 8     | React 22+ or Svelte 5+ with WebGPU | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
-| **🎮 Graphics Engine**    | PixiJS WebGL 2.0        | WebGPU native or PixiJS WebGPU     | [![Very High](https://img.shields.io/badge/Complexity-Very_High-red?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **⚛️ Frontend Framework** | React 19 + Three.js/R3F | React 22+ or Svelte 5+ with WebGPU | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
+| **🎮 Graphics Engine**    | Three.js WebGL 2.0      | Three.js WebGPU or native WebGPU   | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
 | **🛠️ Build System**       | Vite 7 + ESBuild        | Rolldown, Turbopack, or Vite Next  | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)    |
 | **📱 Platform Target**    | Web-only                | Progressive Web App + WebAssembly  | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
 | **☕ Runtime**            | Node.js (build only)    | Node.js 27+, Deno, Bun, or Next-gen | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      |
@@ -563,7 +563,7 @@ quadrantChart
 
     Node.js Runtime Upgrade: [0.3, 0.8]
     React Framework Upgrade: [0.4, 0.9]
-    PixiJS WebGPU Migration: [0.9, 0.9]
+    Three.js WebGPU Migration: [0.9, 0.9]
     Build System Modernization: [0.5, 0.6]
     TypeScript Latest: [0.2, 0.7]
     Testing Framework Update: [0.4, 0.5]
