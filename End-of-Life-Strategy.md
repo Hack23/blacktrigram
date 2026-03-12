@@ -82,8 +82,8 @@ mindmap
         📅 Current: Latest
         ⏰ EOL: Active development
         🔄 WebGL 2.0 + WebGPU Support
-      📱 React Error Boundary 6.0
-        📅 Current: Latest
+      📱 Internal ErrorBoundary Component (React)
+        📅 Current: In-repo component
         ⏰ EOL: React-dependent
         🔄 Error Handling
     (🛠️ Build & Tooling)
@@ -100,9 +100,9 @@ mindmap
         ⏰ EOL: Active
         🔄 Flat Config System
     (🎵 Audio & Assets)
-      🎵 Howler.js 2.2.4
-        📅 Current: Stable
-        ⏰ EOL: Long-term stable
+      🎵 Internal Web Audio System (AudioManager)
+        📅 Current: In-repo implementation
+        ⏰ EOL: Browser Web Audio API–dependent
         🔄 Web Audio API
       🎨 @react-three/drei 10.7.x
         📅 Current: Latest
@@ -401,7 +401,6 @@ gantt
     section Graphics and Audio
     Three.js 0.183.x           :active, three, 2024-01-01, 2026-12-31
     @react-three/fiber 9.x     :active, r3f9, 2024-06-01, 2027-06-01
-    Howler.js 2.x             :active, howler2, 2021-03-04, 2027-12-31
 
     section Critical Milestones
     Node.js 24 Migration Alert :milestone, node24alert, 2026-04-30, 0d

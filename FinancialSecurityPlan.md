@@ -46,7 +46,7 @@ The current architecture is a **static React SPA** deployed on **AWS CloudFront 
 
 ---
 
-### 🏗️ Infrastructure Cost Breakdown
+### 🏗️ AWS Infrastructure Cost Breakdown
 
 | **Component** | **Service** | **Monthly (USD)** | **Annual (USD)** | **Notes** |
 |---------------|-------------|-------------------|------------------|-----------|
@@ -56,13 +56,19 @@ The current architecture is a **static React SPA** deployed on **AWS CloudFront 
 | **Domain** | Domain Registration | $1.00 | $12.00 | Annual domain renewal (~$1/mo averaged) |
 | **SSL/TLS** | AWS Certificate Manager | $0.00 | $0.00 | Free TLS certificates for CloudFront |
 | **DR Hosting** | GitHub Pages | $0.00 | $0.00 | Free disaster recovery for public repos |
+| **Monitoring** | AWS CloudWatch (basic) | $2.00 | $24.00 | Basic monitoring and alarms |
+| **AWS/Infra Total** | | **$7.00** | **$84.00** | |
+
+### 🛡️ Security & DevOps Tooling (All Free Tier / OSS)
+
+| **Component** | **Service** | **Monthly (USD)** | **Annual (USD)** | **Notes** |
+|---------------|-------------|-------------------|------------------|-----------|
 | **CI/CD** | GitHub Actions | $0.00 | $0.00 | Free for public repos |
 | **Code Scanning** | GitHub Advanced Security | $0.00 | $0.00 | Free for public repos |
 | **Dependency Scanning** | Dependabot | $0.00 | $0.00 | Free for all repos |
 | **SAST** | SonarCloud | $0.00 | $0.00 | Free for open source |
 | **SBOM** | GitHub SBOM + SLSA | $0.00 | $0.00 | Free for public repos |
-| **Monitoring** | AWS CloudWatch (basic) | $2.00 | $24.00 | Basic monitoring and alarms |
-| **Total** | | **$7.00** | **$84.00** | |
+| **Tooling Total** | | **$0.00** | **$0.00** | |
 
 ---
 
