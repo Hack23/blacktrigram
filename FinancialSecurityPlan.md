@@ -42,7 +42,7 @@ The current architecture is a **static React SPA** deployed on **AWS CloudFront 
 | **Development CI/CD** | **$0.00** | **$0.00** |
 | **Grand Total** | **$7.00** | **$84.00** |
 
-> **Note:** Black Trigram leverages free-tier and low-cost services for open source projects. The primary recurring costs are AWS CloudFront/S3 hosting, Route 53 DNS with health check failover, and domain registration.
+> **Note:** Black Trigram leverages free-tier and low-cost services for open source projects. The primary recurring costs are AWS CloudFront/S3 hosting, Route 53 DNS with health check failover, CloudWatch monitoring, and domain registration.
 
 ---
 
@@ -107,8 +107,8 @@ pie title Monthly Infrastructure Cost Distribution ($7.00/month)
 | **License Compliance** | FOSSA | $0.00 | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) |
 | **E2E Testing** | Cypress (OSS) | $0.00 | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) |
 | **Unit Testing** | Vitest (OSS) | $0.00 | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) |
-| **CDN Security** | AWS CloudFront (built-in) | $0.00 | [Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) |
-| **TLS Certificates** | AWS Certificate Manager | $0.00 | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) |
+| **CDN Security** | AWS CloudFront (built-in) | Included in infrastructure cost | [Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) |
+| **TLS Certificates** | AWS Certificate Manager | Included in infrastructure cost | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) |
 | **Total Incremental Security Tooling Cost** | *(excludes AWS security services costed in infrastructure)* | **$0.00** | See infrastructure cost breakdown |
 
 ### Security ROI Metrics
