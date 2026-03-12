@@ -174,6 +174,7 @@ This Business Continuity Plan (BCP) establishes procedures to maintain and rapid
 | [Architecture](ARCHITECTURE.md)                   | 🏛️ Structure   | Frontend-only system architecture            |
 | [Workflows](WORKFLOWS.md)                         | 🔧 CI/CD       | Automated build and deployment pipelines     |
 | [End-of-Life Strategy](End-of-Life-Strategy.md)   | 📅 Lifecycle   | Long-term support and security patching      |
+| [Financial Security Plan](FinancialSecurityPlan.md) | 💰 Financial | Infrastructure cost analysis and security investment |
 | [Development Guide](development.md)               | 🔧 Development | Build procedures and development environment |
 
 ### **🔍 Scope Definition**
@@ -834,6 +835,7 @@ This Business Continuity Plan integrates with and references the complete ISMS d
 - [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Security controls and infrastructure
 - [🔧 Workflows](./WORKFLOWS.md) - Automated build and deployment pipelines
 - [📅 End-of-Life Strategy](./End-of-Life-Strategy.md) - Long-term support and security patching
+- [💰 Financial Security Plan](./FinancialSecurityPlan.md) - Infrastructure cost analysis and security investment
 - [🔧 Development Guide](./development.md) - Build procedures and development environment
 
 ---

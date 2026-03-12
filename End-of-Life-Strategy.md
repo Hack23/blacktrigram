@@ -6,18 +6,18 @@
 
 <p align="center">
   <strong>🛡️ Proactive Technology Lifecycle Management for Frontend Gaming Platform</strong><br>
-  <em>📦 Current Stack Maintenance • 🔄 Node.js 24 Transition • ⚡ Future-Ready Architecture</em>
+  <em>📦 Current Stack Maintenance • 🔄 Node.js Lifecycle Evolution • ⚡ Future-Ready Architecture</em>
 </p>
 
 <p align="center">
   <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/Effective-2025--09--19-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.1-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2026--03--12-success?style=for-the-badge" alt="Effective Date"/></a>
   <a href="#"><img src="https://img.shields.io/badge/Review-Annual-orange?style=for-the-badge" alt="Review Cycle"/></a>
 </p>
 
-**📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-09-19 (UTC)  
-**🔄 Review Cycle:** Annual | **⏰ Next Review:** 2026-09-19  
+**📋 Document Owner:** CEO | **📄 Version:** 1.1 | **📅 Last Updated:** 2026-03-12 (UTC)  
+**🔄 Review Cycle:** Annual | **⏰ Next Review:** 2027-03-12  
 **🏷️ Classification:** Public (Frontend-Only Educational Gaming Platform)
 
 ---
@@ -65,54 +65,55 @@ mindmap
   root)🥋 Black Trigram Stack(
     (🖥️ Runtime)
       ☕ Node.js 24.x
-        📅 Current: 24.12.0
-        ⏰ EOL: Oct 2026
-        🔄 Next LTS: 26.x (2026)
+        📅 Current: 24.x (aligned with CI node-version: 24)
+        ⏰ EOL: Apr 2027
+        🔄 Next LTS: 26.x (Oct 2025)
+        📢 New schedule from 27.x
       🌐 Browser Runtime
         📅 Evergreen Updates
         ⏰ EOL: N/A (Auto-update)
         🔄 WebGL/WebAssembly Support
     (⚛️ Frontend Framework)
-      📦 React 19.1.1
+      📦 React ^19.2.4
         📅 Current: Latest
         ⏰ EOL: ~2027-2028
         🔄 Concurrent Features
-      🎮 PixiJS 8.13.2
+      🎮 Three.js 0.183.x / R3F 9.5.x
         📅 Current: Latest
-        ⏰ EOL: Active (2+ years)
-        🔄 WebGL 2.0 Support
-      📱 React Error Boundary 6.0
-        📅 Current: Latest
+        ⏰ EOL: Active development
+        🔄 WebGL 2.0 + WebGPU Support
+      📱 Internal ErrorBoundary Component (React)
+        📅 Current: In-repo component
         ⏰ EOL: React-dependent
         🔄 Error Handling
     (🛠️ Build & Tooling)
-      ⚡ Vite 7.1.6
+      ⚡ Vite ^7.3.1
         📅 Current: Latest
         ⏰ EOL: Active (yearly)
         🔄 ESBuild Integration
-      📝 TypeScript 5.9.2
+      📝 TypeScript ^5.9.3
         📅 Current: Latest
         ⏰ EOL: ~6-month cycles
         🔄 Strict Mode Enabled
-      🔍 ESLint 9.36.0
+      🔍 ESLint ^9.39.2
         📅 Current: Latest
         ⏰ EOL: Active
         🔄 Flat Config System
     (🎵 Audio & Assets)
-      🎵 Howler.js 2.2.4
-        📅 Current: Stable
-        ⏰ EOL: Long-term stable
+      🎵 Internal Web Audio System (AudioManager)
+        📅 Current: In-repo implementation
+        ⏰ EOL: Browser Web Audio API–dependent
         🔄 Web Audio API
-      🎨 @pixi/sound 6.0.1
+      🎨 @react-three/drei 10.7.x
         📅 Current: Latest
-        ⏰ EOL: PixiJS-dependent
-        🔄 Audio Integration
+        ⏰ EOL: R3F-dependent
+        🔄 3D Helpers & Audio
     (🧪 Testing & Quality)
-      🧪 Vitest 3.2.4
+      🧪 Vitest ^4.0.x
         📅 Current: Latest
         ⏰ EOL: Active
         🔄 Native ESM Support
-      🔧 Cypress 15.2.0
+      🔧 Cypress ^15.11.x
         📅 Current: Latest
         ⏰ EOL: Active
         🔄 E2E Testing
@@ -122,16 +123,49 @@ mindmap
 
 | **Technology Category** | **Current Version**       | **Release Model**               | **EOL Timeline**   | **Migration Complexity**                                                                                                                                |
 | ----------------------- | ------------------------- | ------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **⚛️ React Framework**  | 19.1.1 (Latest)           | Major annually, Minor quarterly | ~2027-2028         | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
-| **🎮 PixiJS Graphics**  | 8.13.2 (Latest)           | Major annually, Patch monthly   | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **⚡ Vite Build Tool**  | 7.1.6 (Latest)            | Major annually                  | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **📝 TypeScript**       | 5.9.2 (Latest)            | Major every 6 months            | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **☕ Node.js Runtime**  | 24.x (Current)            | Even LTS, Odd Current           | **Oct 2026**       | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
-| **🧪 Testing Stack**    | Vitest 3.x + Cypress 15.x | Major annually                  | Active development | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **⚛️ React Framework**  | ^19.2.4 (Latest)          | Major annually, Minor quarterly | ~2027-2028         | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **🎮 Three.js / R3F**   | 0.183.x / 9.5.x (Latest) | Major annually, Patch monthly   | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
+| **⚡ Vite Build Tool**  | ^7.3.1 (Latest)           | Major annually                  | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
+| **📝 TypeScript**       | ^5.9.3 (Latest)           | Major every 6 months            | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
+| **☕ Node.js Runtime**  | 24.x (Current)            | Major every 6 months; even-numbered majors LTS | **Apr 2027**       | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
+| **🧪 Testing Stack**    | Vitest ^4.0.x + Cypress ^15.11.x | Major annually            | Active development | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
 
 ---
 
-## ☕ Node.js 24 → 26 Transition Strategy
+## ☕ Node.js Release Schedule Evolution & Transition Strategy
+
+### **📢 Node.js Release Schedule Change — Alpha From Oct 2026, Annual Major From Apr 2027**
+
+Starting with **Node.js 27.x**, the Node.js project is [evolving its release schedule](https://nodejs.org/en/blog/announcements/evolving-the-nodejs-release-schedule) from **two major releases per year** to **one major release per year**. The new model introduces a **6‑month alpha phase beginning in October 2026** and moves to **a single stable major release each April starting in April 2027**. This change, discussed in [nodejs/Release#1113](https://github.com/nodejs/Release/issues/1113), has significant implications for Black Trigram's lifecycle planning.
+
+#### **📋 Key Changes Summary**
+
+| Aspect | Old Model (≤26.x) | New Model (27.x+) |
+| ------ | ------------------ | ------------------ |
+| **Major releases/year** | 2 (April + October) | 1 stable major/year (April; first in Apr 2027) |
+| **LTS eligibility** | Even-numbered only | Every release |
+| **Odd/even distinction** | Yes (odd = Current only) | No — all releases become LTS |
+| **Alpha channel** | None | 6-month alpha (Oct–Mar, starting Oct 2026) with semver-major changes |
+| **Alpha versioning** | N/A | Semver prerelease (e.g., `27.0.0-alpha.1`); alpha for year N+1's major starts Oct of year N |
+| **Version numbering** | Sequential | Calendar-aligned stable release (27 ships Apr 2027, 28 ships Apr 2028); alpha prereleases begin the prior October |
+| **LTS support window (from LTS start to EOL)** | 30 months | 30 months (unchanged; still ~36 months total including 6 months Current + 30 months LTS) |
+
+#### **📊 New Node.js Release Lifecycle Phases**
+
+| Phase | Duration | Description |
+| ----- | -------- | ----------- |
+| **Alpha** | 6 months (Oct–Mar) | Early testing, semver-major changes allowed |
+| **Current** | 6 months (Apr–Oct) | Stabilization period |
+| **LTS** | 30 months | Long-term support with security fixes |
+| **EOL** | — | No further support provided |
+
+#### **🎯 Impact on Black Trigram**
+
+- **✅ Simplified planning:** Every release becomes LTS — no need to skip odd-numbered versions
+- **✅ Predictable upgrades:** One major version per year, calendar-aligned
+- **✅ Earlier testing:** Alpha channel enables integration testing 6 months before release
+- **📋 Action required:** Integrate Node.js Alpha releases into CI as early as possible to report bugs before they affect users
+- **🔄 Library authors note:** Testing only on LTS releases means bugs cannot be reported before they affect users
 
 ### **🎯 Strategic Node.js Lifecycle Management**
 
@@ -139,56 +173,75 @@ Following [Hack23 AB's Proactive Runtime Management](https://github.com/Hack23/I
 
 ```mermaid
 gantt
-    title Node.js Lifecycle & Black Trigram Transition Timeline
+    title Node.js Lifecycle & Black Trigram Transition Timeline (Updated Schedule)
     dateFormat YYYY-MM-DD
     axisFormat %Y-%m
 
-    section Node.js Releases
-    Node.js 24.x Current    :active, node24, 2024-04-24, 2024-10-29
+    section Node.js Old Schedule (≤26.x)
     Node.js 24.x LTS        :active, node24lts, 2024-10-29, 2027-04-30
-    Node.js 25.x Current    :node25, 2024-10-22, 2025-04-01
-    Node.js 26.x Current    :node26, 2025-04-22, 2025-10-28
-    Node.js 26.x LTS        :milestone, node26lts, 2025-10-28, 0d
-    Node.js 24.x EOL        :crit, node24eol, 2027-04-30, 0d
+    Node.js 26.x Current     :node26c, 2025-04-22, 2025-10-28
+    Node.js 26.x LTS         :node26lts, 2025-10-28, 2028-04-30
+    Node.js 24.x EOL         :crit, node24eol, 2027-04-30, 0d
+    Node.js 26.x EOL         :crit, node26eol, 2028-04-30, 0d
+
+    section Node.js New Schedule (27.x+, approximate)
+    Node.js 27.x Alpha       :node27a, 2026-10-01, 2027-03-31
+    Node.js 27.x Current     :node27c, 2027-04-01, 2027-09-30
+    Node.js 27.x LTS         :node27lts, 2027-10-01, 2030-04-30
+    Node.js 28.x Alpha       :node28a, 2027-10-01, 2028-03-31
+    Node.js 28.x Current     :node28c, 2028-04-01, 2028-09-30
+    Node.js 28.x LTS         :node28lts, 2028-10-01, 2031-04-30
 
     section Black Trigram Strategy
-    Current Node 24.x Production :active, bt24prod, 2024-12-01, 2026-10-01
-    Node.js 26.x Testing Phase   :bt26test, 2025-08-01, 2025-10-28
-    Node.js 26.x Migration       :bt26mig, 2025-10-28, 2026-01-31
-    Node.js 26.x Production      :prod26, 2026-01-31, 2027-04-30
-    Legacy 24.x Support End      :milestone, legacy24end, 2026-10-01, 0d
+    Node 24.x Production          :active, bt24prod, 2024-12-01, 2026-10-28
+    24.x → 26.x Migration Support :bt24mig, 2026-06-01, 2026-10-28
+    Node.js 26.x Production       :bt26prod, 2026-10-28, 2027-09-30
+    Node.js 27.x Alpha CI Testing :bt27alpha, 2026-10-01, 2027-03-31
+    Node.js 27.x Migration        :bt27mig, 2027-04-01, 2027-09-30
+    Node.js 27.x Production       :bt27prod, 2027-10-01, 2030-04-30
 
     section Risk Management
-    Compatibility Testing       :compat, 2025-06-01, 2025-10-28
-    Dependency Validation       :deps, 2025-07-01, 2025-10-28
-    Performance Benchmarking    :perf, 2025-08-01, 2025-10-28
-    Migration Risk Assessment    :milestone, riskassess, 2025-09-15, 0d
+    26.x Compatibility Testing    :compat26, 2026-04-01, 2026-10-28
+    27.x Alpha CI Integration     :alphaci, 2026-10-01, 2027-04-01
+    27.x Migration Risk Assessment :milestone, riskassess27, 2027-03-01, 0d
 ```
 
 ### **📋 Node.js Transition Trigger Conditions**
 
 #### **🟢 Proactive Migration Triggers (Preferred)**
 
-1. **📅 Node.js 26.x LTS Release:** October 2025 - Begin migration planning
-2. **🛡️ Security Feature Advantages:** Enhanced security features in Node.js 26.x
-3. **⚡ Performance Improvements:** Significant V8 or runtime optimizations
-4. **📦 Ecosystem Compatibility:** Major dependencies requiring Node.js 26+
+1. **📅 Node.js 26.x LTS Release:** October 2025 - Begin migration planning (old schedule, last even-numbered LTS)
+2. **📅 Node.js 27.x Alpha Release:** October 2026 - Begin CI integration testing (new schedule, first calendar-aligned release)
+3. **🛡️ Security Feature Advantages:** Enhanced security features in newer Node.js releases
+4. **⚡ Performance Improvements:** Significant V8 or runtime optimizations
+5. **📦 Ecosystem Compatibility:** Major dependencies requiring newer Node.js
 
 #### **🟡 Risk-Based Migration Triggers (Monitored)**
 
-1. **⏰ 18-Month Warning:** April 2026 - 12 months before Node.js 24.x EOL
+1. **⏰ 18-Month Warning:** October 2025 - 18 months before Node.js 24.x EOL (April 2027)
 2. **🚨 Security Support Concerns:** Security patch availability degradation
 3. **🔧 Tooling Incompatibility:** Build/development tools requiring newer Node.js
 4. **☁️ Hosting Platform Changes:** Deployment platform Node.js requirements
 
 #### **🔴 Critical Migration Triggers (Mandatory)**
 
-1. **⛔ Node.js 24.x EOL Announcement:** April 2027 - End of security support
-2. **🚨 Critical Vulnerability:** Unpatched security issues in Node.js 24.x
-3. **🔧 Build System Incompatibility:** Essential tools no longer supporting Node.js 24.x
+1. **⛔ Node.js 24.x EOL:** April 2027 - End of security support
+2. **🚨 Critical Vulnerability:** Unpatched security issues in current Node.js version
+3. **🔧 Build System Incompatibility:** Essential tools no longer supporting current Node.js
 4. **🌐 Browser API Requirements:** New web standards requiring newer Node.js features
 
-### **🧪 Node.js 26.x Testing & Validation Strategy**
+### **🧪 Node.js Migration Testing & Validation Strategy**
+
+#### **🔬 Alpha Channel CI Integration (New Schedule 27.x+)**
+
+With the new Node.js release schedule introducing a 6-month alpha phase, Black Trigram will integrate alpha releases into CI early to detect compatibility issues before they reach production:
+
+1. **🤖 Automated Alpha Testing:** Add Node.js alpha to CI matrix (non-blocking) during alpha phase
+2. **📋 Bug Reporting:** Report any issues discovered during alpha testing upstream to Node.js
+3. **🔄 Dependency Compatibility:** Validate all major dependencies against alpha releases
+4. **📊 Performance Baselines:** Establish performance baselines during alpha for comparison
+
+#### **📊 Migration Validation Flow**
 
 ```mermaid
 %%{
@@ -204,19 +257,19 @@ gantt
   }
 }%%
 flowchart TB
-    subgraph PREPARATION["🔬 Pre-Migration Testing (Aug 2025)"]
-        COMPAT_TEST["🧪 Compatibility Testing<br/>• Vite 7+ compatibility<br/>• React 19 compatibility<br/>• PixiJS 8+ compatibility<br/>• TypeScript 5+ compatibility"]
+    subgraph PREPARATION["🔬 Pre-Migration Testing (Jun-Jul 2026)"]
+        COMPAT_TEST["🧪 Compatibility Testing<br/>• Vite 7+ compatibility<br/>• React 19 compatibility<br/>• Three.js / R3F compatibility<br/>• TypeScript 5+ compatibility"]
         DEP_AUDIT["📦 Dependency Audit<br/>• NPM package compatibility<br/>• Native module rebuilds<br/>• Security vulnerability scan<br/>• License compliance check"]
         PERF_BASELINE["📊 Performance Baseline<br/>• Build time comparison<br/>• Runtime performance<br/>• Memory usage analysis<br/>• Bundle size impact"]
     end
 
-    subgraph VALIDATION["✅ Migration Validation (Sep-Oct 2025)"]
-        FEATURE_TEST["🎮 Feature Testing<br/>• Combat system validation<br/>• Audio engine testing<br/>• Korean text rendering<br/>• PixiJS graphics performance"]
+    subgraph VALIDATION["✅ Migration Validation (Aug-Sep 2026)"]
+        FEATURE_TEST["🎮 Feature Testing<br/>• Combat system validation<br/>• Audio engine testing<br/>• Korean text rendering<br/>• Three.js 3D graphics performance"]
         E2E_VALIDATION["🔍 E2E Validation<br/>• Complete user journeys<br/>• Cross-browser testing<br/>• Mobile compatibility<br/>• Performance regression"]
         SECURITY_SCAN["🔒 Security Validation<br/>• Vulnerability scanning<br/>• Dependency security<br/>• Secret scanning<br/>• SLSA attestation"]
     end
 
-    subgraph DEPLOYMENT["🚀 Controlled Deployment (Oct 2025)"]
+    subgraph DEPLOYMENT["🚀 Controlled Deployment (Oct 2026)"]
         STAGING_DEPLOY["🧪 Staging Deployment<br/>• Node.js 26.x environment<br/>• Full test suite execution<br/>• Performance monitoring<br/>• Error tracking"]
         CANARY_RELEASE["🐦 Canary Release<br/>• 10% traffic allocation<br/>• Performance monitoring<br/>• Error rate analysis<br/>• User feedback collection"]
         FULL_MIGRATION["🎯 Full Migration<br/>• 100% Node.js 26.x<br/>• Legacy cleanup<br/>• Documentation update<br/>• Team notification"]
@@ -324,14 +377,15 @@ Real-time monitoring using [endoflife.date](https://endoflife.date/) references 
 
 ```mermaid
 gantt
-    title Black Trigram Technology End-of-Life Timeline (2025-2030)
+    title Black Trigram Technology End-of-Life Timeline (2025-2031)
     dateFormat YYYY-MM-DD
     axisFormat %Y
 
     section Runtime and Core
     Node.js 24.x LTS          :active, node24, 2024-10-29, 2027-04-30
     Node.js 26.x LTS (Target) :node26, 2025-10-28, 2028-04-30
-    Node.js 28.x LTS (Future) :node28, 2027-10-28, 2030-04-30
+    Node.js 27.x LTS (New Schedule) :node27, 2027-10-01, 2030-04-30
+    Node.js 28.x LTS (New Schedule) :node28, 2028-10-01, 2031-04-30
 
     section Frontend Framework
     React 19.x                :active, react19, 2024-12-05, 2027-12-31
@@ -345,9 +399,8 @@ gantt
     TypeScript 6.x (Future)   :ts6, 2025-03-01, 2026-09-30
 
     section Graphics and Audio
-    PixiJS 8.x                :active, pixi8, 2024-01-30, 2026-01-30
-    PixiJS 9.x (Future)       :pixi9, 2025-06-01, 2027-06-01
-    Howler.js 2.x             :active, howler2, 2021-03-04, 2027-12-31
+    Three.js 0.183.x           :active, three, 2024-01-01, 2026-12-31
+    @react-three/fiber 9.x     :active, r3f9, 2024-06-01, 2027-06-01
 
     section Critical Milestones
     Node.js 24 Migration Alert :milestone, node24alert, 2026-04-30, 0d
@@ -388,7 +441,7 @@ Black Trigram will be designated as EOL and archived in read-only state when ANY
 1. **🚨 Security Support Failure:** No security patches available for critical vulnerabilities in core dependencies
 2. **🌐 Browser Compatibility Loss:** Modern browsers no longer support required WebGL/Canvas APIs
 3. **⚡ Performance Degradation:** Framework limitations causing <30fps on target hardware
-4. **📦 Dependency Chain Collapse:** Critical dependencies (React, PixiJS, Vite) all reach EOL simultaneously
+4. **📦 Dependency Chain Collapse:** Critical dependencies (React, Three.js/R3F, Vite) all reach EOL simultaneously
 
 #### **🟠 Business EOL Triggers (Planned Retirement)**
 
@@ -399,9 +452,9 @@ Black Trigram will be designated as EOL and archived in read-only state when ANY
 
 #### **🟡 Technical EOL Triggers (Migration Required)**
 
-1. **☕ Node.js Ecosystem End:** Node.js 26+ unsupported and 24.x EOL reached
-2. **⚛️ React Major Breaking Change:** React 20+ incompatible with current PixiJS integration
-3. **🎮 PixiJS Architecture Change:** WebGL 3.0 transition requiring complete rewrite
+1. **☕ Node.js Ecosystem End:** Node.js 27+ unsupported and current LTS EOL reached
+2. **⚛️ React Major Breaking Change:** React 20+ incompatible with current Three.js/R3F integration
+3. **🎮 Three.js Architecture Change:** WebGPU transition requiring significant refactoring
 4. **🔧 Build System Evolution:** ES Modules/Import Maps requiring Vite replacement
 
 ### **📊 EOL Decision Matrix**
@@ -468,11 +521,11 @@ Should EOL conditions trigger migration, the successor platform will maintain **
 
 | Component                 | Current (Black Trigram) | Future Candidate                   | Migration Complexity                                                                                                                                       |
 | ------------------------- | ----------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **⚛️ Frontend Framework** | React 19 + PixiJS 8     | React 22+ or Svelte 5+ with WebGPU | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
-| **🎮 Graphics Engine**    | PixiJS WebGL 2.0        | WebGPU native or PixiJS WebGPU     | [![Very High](https://img.shields.io/badge/Complexity-Very_High-red?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **⚛️ Frontend Framework** | React 19 + Three.js/R3F | React 22+ or Svelte 5+ with WebGPU | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
+| **🎮 Graphics Engine**    | Three.js WebGL 2.0      | Three.js WebGPU or native WebGPU   | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
 | **🛠️ Build System**       | Vite 7 + ESBuild        | Rolldown, Turbopack, or Vite Next  | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)    |
 | **📱 Platform Target**    | Web-only                | Progressive Web App + WebAssembly  | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
-| **☕ Runtime**            | Node.js (build only)    | Deno, Bun, or Next-gen Node.js     | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      |
+| **☕ Runtime**            | Node.js (build only)    | Node.js 27+, Deno, Bun, or Next-gen | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      |
 
 #### **🎯 Migration Success Criteria**
 
@@ -509,7 +562,7 @@ quadrantChart
 
     Node.js Runtime Upgrade: [0.3, 0.8]
     React Framework Upgrade: [0.4, 0.9]
-    PixiJS WebGPU Migration: [0.9, 0.9]
+    Three.js WebGPU Migration: [0.9, 0.9]
     Build System Modernization: [0.5, 0.6]
     TypeScript Latest: [0.2, 0.7]
     Testing Framework Update: [0.4, 0.5]
@@ -644,6 +697,7 @@ flowchart LR
 
 - **[🧠 MINDMAP.md](MINDMAP.md)** — System component relationships and EOL dependencies
 - **[💼 SWOT.md](SWOT.md)** — Strategic assessment including EOL risks and opportunities
+- **[💰 FinancialSecurityPlan.md](FinancialSecurityPlan.md)** — Infrastructure cost analysis and security investment planning
 - **[🔄 WORKFLOWS.md](WORKFLOWS.md)** — CI/CD automation adapted for EOL management
 - **[🎮 game-status.md](game-status.md)** — Current development status and EOL timeline integration
 
@@ -656,6 +710,8 @@ flowchart LR
 ### **📋 External References**
 
 - **[☕ Node.js EOL](https://endoflife.date/nodejs)** — Node.js runtime lifecycle and support timeline
+- **[📢 Node.js Release Schedule Evolution](https://nodejs.org/en/blog/announcements/evolving-the-nodejs-release-schedule)** — New release model starting with 27.x (one major/year, every release LTS)
+- **[📋 nodejs/Release#1113](https://github.com/nodejs/Release/issues/1113)** — Background discussion on the release schedule change
 - **[⚛️ React EOL](https://endoflife.date/react)** — React framework lifecycle and major version support
 - **[📦 NPM Package EOL](https://endoflife.date/)** — General package and library end-of-life tracking
 - **[🌐 Browser Support](https://caniuse.com/)** — Web standard compatibility and browser support lifecycle
@@ -666,6 +722,6 @@ flowchart LR
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=unlock&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  
-**📅 Effective Date:** 2025-09-19  
-**⏰ Next Review:** 2026-09-19  
+**📅 Effective Date:** 2026-03-12  
+**⏰ Next Review:** 2027-03-12  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![Frontend Security](https://img.shields.io/badge/Frontend-Security_Hardened-darkgreen?style=flat-square&logo=security&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
