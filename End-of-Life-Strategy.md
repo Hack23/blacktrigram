@@ -399,7 +399,7 @@ gantt
     TypeScript 6.x (Future)   :ts6, 2025-03-01, 2026-09-30
 
     section Graphics and Audio
-    Three.js 0.1xx             :active, three, 2024-01-01, 2026-12-31
+    Three.js 0.18x             :active, three, 2024-01-01, 2026-12-31
     @react-three/fiber 9.x     :active, r3f9, 2024-06-01, 2027-06-01
     Howler.js 2.x             :active, howler2, 2021-03-04, 2027-12-31
 
