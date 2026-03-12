@@ -221,7 +221,7 @@ flowchart LR
 ### Current Optimizations
 
 1. **🆓 Open Source Advantage:** All security scanning tools are free for open source projects
-2. **☁️ AWS Free Tier:** CloudWatch basic monitoring is free for 12 months under AWS Free Tier; current cost breakdown and $84/year TCO conservatively assume post–free-tier pricing
+2. **☁️ AWS Free Tier:** CloudWatch includes an ongoing Free Tier with fixed quotas for metrics, logs, and alarms; the current cost breakdown and illustrative $84/year TCO assume a low-volume workload with an estimated ≈$2/month CloudWatch portion that will increase if usage exceeds those free-tier quotas
 3. **📦 Static Architecture:** No server-side compute costs (no Lambda, EC2, or containers)
 4. **🔒 Built-in Security:** AWS Shield Standard and CloudFront security headers at no additional cost
 5. **🔄 GitHub Actions:** Unlimited CI/CD minutes for public repositories

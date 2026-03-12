@@ -74,7 +74,7 @@ mindmap
         ⏰ EOL: N/A (Auto-update)
         🔄 WebGL/WebAssembly Support
     (⚛️ Frontend Framework)
-      📦 React 19.1.1
+      📦 React ^19.2.4
         📅 Current: Latest
         ⏰ EOL: ~2027-2028
         🔄 Concurrent Features
@@ -87,15 +87,15 @@ mindmap
         ⏰ EOL: React-dependent
         🔄 Error Handling
     (🛠️ Build & Tooling)
-      ⚡ Vite 7.1.6
+      ⚡ Vite ^7.3.1
         📅 Current: Latest
         ⏰ EOL: Active (yearly)
         🔄 ESBuild Integration
-      📝 TypeScript 5.9.2
+      📝 TypeScript ^5.9.3
         📅 Current: Latest
         ⏰ EOL: ~6-month cycles
         🔄 Strict Mode Enabled
-      🔍 ESLint 9.36.0
+      🔍 ESLint ^9.39.2
         📅 Current: Latest
         ⏰ EOL: Active
         🔄 Flat Config System
@@ -109,11 +109,11 @@ mindmap
         ⏰ EOL: R3F-dependent
         🔄 3D Helpers & Audio
     (🧪 Testing & Quality)
-      🧪 Vitest 3.2.4
+      🧪 Vitest ^4.0.x
         📅 Current: Latest
         ⏰ EOL: Active
         🔄 Native ESM Support
-      🔧 Cypress 15.2.0
+      🔧 Cypress ^15.11.x
         📅 Current: Latest
         ⏰ EOL: Active
         🔄 E2E Testing
@@ -257,19 +257,19 @@ With the new Node.js release schedule introducing a 6-month alpha phase, Black T
   }
 }%%
 flowchart TB
-    subgraph PREPARATION["🔬 Pre-Migration Testing (Aug 2025)"]
+    subgraph PREPARATION["🔬 Pre-Migration Testing (Jun-Jul 2026)"]
         COMPAT_TEST["🧪 Compatibility Testing<br/>• Vite 7+ compatibility<br/>• React 19 compatibility<br/>• Three.js / R3F compatibility<br/>• TypeScript 5+ compatibility"]
         DEP_AUDIT["📦 Dependency Audit<br/>• NPM package compatibility<br/>• Native module rebuilds<br/>• Security vulnerability scan<br/>• License compliance check"]
         PERF_BASELINE["📊 Performance Baseline<br/>• Build time comparison<br/>• Runtime performance<br/>• Memory usage analysis<br/>• Bundle size impact"]
     end
 
-    subgraph VALIDATION["✅ Migration Validation (Sep-Oct 2025)"]
+    subgraph VALIDATION["✅ Migration Validation (Aug-Sep 2026)"]
         FEATURE_TEST["🎮 Feature Testing<br/>• Combat system validation<br/>• Audio engine testing<br/>• Korean text rendering<br/>• Three.js 3D graphics performance"]
         E2E_VALIDATION["🔍 E2E Validation<br/>• Complete user journeys<br/>• Cross-browser testing<br/>• Mobile compatibility<br/>• Performance regression"]
         SECURITY_SCAN["🔒 Security Validation<br/>• Vulnerability scanning<br/>• Dependency security<br/>• Secret scanning<br/>• SLSA attestation"]
     end
 
-    subgraph DEPLOYMENT["🚀 Controlled Deployment (Oct 2025)"]
+    subgraph DEPLOYMENT["🚀 Controlled Deployment (Oct 2026)"]
         STAGING_DEPLOY["🧪 Staging Deployment<br/>• Node.js 26.x environment<br/>• Full test suite execution<br/>• Performance monitoring<br/>• Error tracking"]
         CANARY_RELEASE["🐦 Canary Release<br/>• 10% traffic allocation<br/>• Performance monitoring<br/>• Error rate analysis<br/>• User feedback collection"]
         FULL_MIGRATION["🎯 Full Migration<br/>• 100% Node.js 26.x<br/>• Legacy cleanup<br/>• Documentation update<br/>• Team notification"]
@@ -399,7 +399,7 @@ gantt
     TypeScript 6.x (Future)   :ts6, 2025-03-01, 2026-09-30
 
     section Graphics and Audio
-    Three.js 0.18x             :active, three, 2024-01-01, 2026-12-31
+    Three.js 0.183.x           :active, three, 2024-01-01, 2026-12-31
     @react-three/fiber 9.x     :active, r3f9, 2024-06-01, 2027-06-01
     Howler.js 2.x             :active, howler2, 2021-03-04, 2027-12-31
 
