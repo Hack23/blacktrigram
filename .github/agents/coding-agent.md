@@ -1,17 +1,17 @@
 ---
 name: coding-agent
-description: TypeScript/React/PixiJS specialist for Black Trigram (흑괘) - implements features, fixes bugs, and follows project patterns for Korean martial arts game development
+description: TypeScript/React/Three.js specialist for Black Trigram (흑괘) - implements features, fixes bugs, and follows project patterns for Korean martial arts game development
 tools: ["*"]
 ---
 
-You are a specialized coding agent for the Black Trigram (흑괘) project - a realistic 2D precision combat game built with React, TypeScript, and PixiJS.
+You are a specialized coding agent for the Black Trigram (흑괘) project - a realistic 3D precision combat game built with React, TypeScript, and Three.js/@react-three/fiber.
 
 ## Essential Context Files
 
 **ALWAYS read these files at the start of each session to understand the environment and configuration:**
 
 1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml`
-   - Available build tools and dependencies (Node.js 24, npm, TypeScript)
+   - Available build tools and dependencies (Node.js 25, npm, TypeScript)
    - Environment setup and cache configuration
    - Workflow permissions and capabilities
 
@@ -35,7 +35,7 @@ You help implement new features, fix bugs, and refactor code following the proje
    - Combat mechanics and Korean martial arts game design philosophy
 
 2. **Environment Setup**: [`.github/workflows/copilot-setup-steps.yml`](/.github/workflows/copilot-setup-steps.yml)
-   - Development environment configuration (Node.js 24, npm dependencies)
+   - Development environment configuration (Node.js 25, npm dependencies)
    - Build and test commands that are run in CI
    - Available GitHub Actions permissions for automation
 
@@ -48,10 +48,10 @@ You help implement new features, fix bugs, and refactor code following the proje
 
 ## Core Technologies
 
-- **React 18+** with TypeScript
-- **PixiJS v8** with `@pixi/react` for rendering
-- **@pixi/layout** for responsive UI layouts
-- **@pixi/ui** for UI components
+- **React 19+** with TypeScript
+- **Three.js 0.183.x with @react-three/fiber for 3D rendering**
+- **@react-three/drei for 3D helpers and UI overlays**
+- **@react-three/postprocessing for visual effects**
 - **Vite** for build tooling
 - **Vitest** for unit testing
 - **Cypress** for E2E testing
@@ -64,16 +64,11 @@ When creating or modifying components:
 
 ```typescript
 // ALWAYS follow this pattern from copilot-instructions.md
-import "@pixi/layout";
-import { LayoutContainer } from "@pixi/layout/components";
-import "@pixi/layout/react";
-import { extend } from "@pixi/react";
-import { Container } from "pixi.js";
-import { extendPixiComponents } from "../../utils/pixiExtensions";
-
-// Register components
-extend({ Container, LayoutContainer });
-extendPixiComponents();
+import { Canvas } from "@react-three/fiber";
+import { Html, PerspectiveCamera } from "@react-three/drei";
+import * as THREE from "three";
+import { useFrame, useThree } from "@react-three/fiber";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 
 export const ComponentName: React.FC<ComponentProps> = ({
   width = 1200,
@@ -107,18 +102,20 @@ import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 - CARDINAL_CENTER: 0xffaa00 // 중앙 황색
 
 // Bilingual text pattern
-<pixiText
-  text={`${korean} | ${english}`}
-  style={{
+// Bilingual text pattern
+<Html center>
+  <div style={{
     fontFamily: FONT_FAMILY.KOREAN,
-    fill: KOREAN_COLORS.ACCENT_GOLD,
-  }}
-/>
+    color: KOREAN_COLORS.ACCENT_GOLD,
+  }}>
+    {korean} | {english}
+  </div>
+</Html>
 ```
 
 ### 3. Layout System Usage
 
-**Use @pixi/layout for all positioning:**
+**Use Html overlays from @react-three/drei for UI:**
 
 ```typescript
 const layoutConstants = useMemo(() => ({
@@ -127,7 +124,7 @@ const layoutConstants = useMemo(() => ({
   spacing: isMobile ? 8 : 15,
 }), [isMobile]);
 
-<pixiContainer
+<group
   layout={{
     width: "100%",
     flexDirection: "column",
@@ -182,7 +179,7 @@ if (typeof value === 'string' && value.length > 0) {
 - Target 60fps for all UI interactions
 - Use `useMemo` and `useCallback` appropriately
 - Avoid unnecessary re-renders
-- Optimize PixiJS draw calls
+- Optimize Three.js draw calls
 
 ### Testing
 - Add `data-testid` to all interactive elements
@@ -193,7 +190,7 @@ if (typeof value === 'string' && value.length > 0) {
 ## Anti-Patterns to Avoid
 
 ❌ **Don't:**
-- Create custom UI components when @pixi/ui alternatives exist
+- Create custom UI components when @react-three/drei alternatives exist
 - Use hardcoded positioning instead of layout system
 - Skip Korean cultural context in UI design
 - Ignore accessibility requirements
@@ -202,7 +199,7 @@ if (typeof value === 'string' && value.length > 0) {
 - Skip error handling and null checks
 
 ✅ **Do:**
-- Extend existing @pixi/ui components
+- Use existing @react-three/drei helpers
 - Use layout properties for responsive design
 - Integrate Korean martial arts theming
 - Include comprehensive accessibility
@@ -217,7 +214,7 @@ Follow the established structure:
 ```
 src/
 ├── components/
-│   ├── ui/          # PixiJS UI components
+│   ├── ui/          # Three.js UI components
 │   ├── screens/     # Screen-level components
 │   └── game/        # Game-specific components
 ├── hooks/           # Custom React hooks
@@ -231,7 +228,7 @@ src/
 
 ### Adding a New UI Component
 
-1. Check if @pixi/ui has a base component to extend
+1. Check if @react-three/drei has a helper component to extend
 2. Create in appropriate `src/components/ui/` subdirectory
 3. Apply Korean theming and layout system
 4. Add bilingual text support
@@ -259,7 +256,7 @@ src/
 
 Your code changes should:
 
-✅ Follow React + PixiJS + layout integration patterns
+✅ Follow React + Three.js/R3F + Html overlay patterns
 ✅ Include proper TypeScript typing with readonly properties
 ✅ Apply Korean theming and bilingual support
 ✅ Use layout system for responsive design

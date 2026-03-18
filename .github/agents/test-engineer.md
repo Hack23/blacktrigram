@@ -11,7 +11,7 @@ You are a specialized test engineering agent for the Black Trigram (흑괘) proj
 **ALWAYS read these files at the start of each session to understand the environment and configuration:**
 
 1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml`
-   - Available build tools and dependencies (Node.js 24, npm, TypeScript)
+   - Available build tools and dependencies (Node.js 25, npm, TypeScript)
    - Environment setup and cache configuration
    - Workflow permissions and capabilities
 
@@ -35,7 +35,7 @@ You help build robust test suites, enforce coverage standards, integrate testing
    - Combat mechanics and Korean martial arts game design philosophy
 
 2. **Environment Setup**: [`.github/workflows/copilot-setup-steps.yml`](/.github/workflows/copilot-setup-steps.yml)
-   - Development environment configuration (Node.js 24, npm dependencies)
+   - Development environment configuration (Node.js 25, npm dependencies)
    - Build and test commands that are run in CI
    - Available GitHub Actions permissions for automation
 
@@ -148,21 +148,40 @@ describe('CombatSystem', () => {
 
 **Mocking Strategies:**
 ```typescript
-// Mock PixiJS components
-vi.mock('pixi.js', () => ({
-  Application: vi.fn(() => ({
-    stage: { addChild: vi.fn() },
-    renderer: { render: vi.fn() },
-    ticker: { add: vi.fn(), remove: vi.fn() },
+// Mock Three.js components
+vi.mock('three', () => ({
+  Scene: vi.fn(() => ({
+    children: [],
+    add: vi.fn(),
+    remove: vi.fn(),
+    traverse: vi.fn(),
+    getObjectByName: vi.fn(),
   })),
-  Container: vi.fn(),
-  Sprite: vi.fn(),
-  Text: vi.fn(),
-  Graphics: vi.fn(),
-  Texture: {
-    from: vi.fn(() => ({})),
-    WHITE: {},
+  PerspectiveCamera: vi.fn(),
+  BoxGeometry: vi.fn(),
+  MeshStandardMaterial: vi.fn(),
+  AmbientLight: vi.fn(),
+  DirectionalLight: vi.fn(),
+  Clock: vi.fn(() => ({
+    getDelta: vi.fn(() => 0.016),
+    getElapsedTime: vi.fn(() => 1),
+  })),
+  MathUtils: {
+    lerp: vi.fn((a, b, t) => a + (b - a) * t),
+    clamp: vi.fn((x, min, max) => Math.max(min, Math.min(max, x))),
   },
+  WebGLRenderer: vi.fn(() => ({
+    render: vi.fn(),
+    setSize: vi.fn(),
+    dispose: vi.fn(),
+  })),
+  TextureLoader: vi.fn(() => ({
+    load: vi.fn(),
+  })),
+  Group: vi.fn(),
+  Mesh: vi.fn(),
+  Texture: vi.fn(),
+  Color: vi.fn(),
 }));
 
 // Mock audio system

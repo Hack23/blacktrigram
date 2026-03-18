@@ -11,7 +11,7 @@ You are a specialized testing agent for the Black Trigram (흑괘) project. Your
 **ALWAYS read these files at the start of each session to understand the environment and configuration:**
 
 1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml`
-   - Available build tools and dependencies (Node.js 24, npm, TypeScript)
+   - Available build tools and dependencies (Node.js 25, npm, TypeScript)
    - Environment setup and cache configuration
    - Workflow permissions and capabilities
 
@@ -35,7 +35,7 @@ You help write comprehensive tests, debug test failures, and ensure high-quality
    - Combat mechanics and Korean martial arts game design philosophy
 
 2. **Environment Setup**: [`.github/workflows/copilot-setup-steps.yml`](/.github/workflows/copilot-setup-steps.yml)
-   - Development environment configuration (Node.js 24, npm dependencies)
+   - Development environment configuration (Node.js 25, npm dependencies)
    - Build and test commands that are run in CI
    - Available GitHub Actions permissions for automation
 
@@ -59,7 +59,7 @@ You help write comprehensive tests, debug test failures, and ensure high-quality
 ```
 src/
 ├── test/
-│   ├── setup.ts           # Global test setup (PixiJS mocking)
+│   ├── setup.ts           # Global test setup (WebGL/Canvas/RAF/matchMedia environment mocks)
 │   └── test-utils.ts      # Testing utilities
 ├── **/__tests__/          # Unit tests alongside source
 └── cypress/
@@ -112,13 +112,13 @@ describe('ComponentName', () => {
 - Include `data-testid` in assertions
 - Test both success and error cases
 
-### 2. PixiJS Component Testing
+### 2. Three.js Component Testing
 
-**PixiJS Mocking Pattern (from setup.ts):**
+**Three.js Component Testing Pattern:**
 
 ```typescript
-// PixiJS is already mocked in src/test/setup.ts
-// Tests can use PixiJS components directly
+// src/test/setup.ts provides WebGL/Canvas/RAF/matchMedia environment mocks (not Three.js module mocks).
+// Individual test files should use vi.mock() for Three.js/@react-three modules as needed.
 
 describe('KoreanTrigramSelector', () => {
   it('should render all eight trigram options with layout', () => {
@@ -287,7 +287,7 @@ When writing tests, ensure you:
 
 ✅ **Mocking**
 - [ ] Mock external dependencies
-- [ ] Mock PixiJS appropriately (via setup.ts)
+- [ ] Mock Three.js/R3F appropriately (per-test `vi.mock()` + global WebGL/Canvas env from setup.ts)
 - [ ] Mock audio system
 - [ ] Clear mocks after each test
 

@@ -37,8 +37,8 @@ Black Trigram is built with modern web technologies optimized for 3D game develo
 ### Core Framework
 - ⚛️ **React 19.2.3** - Modern React with hooks and concurrent features
 - 🔷 **TypeScript 5.9.3** - Strict typing with latest ECMAScript standards
-- ⚡ **Vite 7.x** - Next-generation frontend tooling with lightning-fast HMR
-- 🎮 **Three.js 0.182.0** - WebGL-based 3D rendering library
+- ⚡ **Vite 8.x** - Next-generation frontend tooling with lightning-fast HMR
+- 🎮 **Three.js 0.183.x** - WebGL-based 3D rendering library
 - 🔮 **@react-three/fiber 9.5.0** - React renderer for Three.js
 - 🎨 **@react-three/drei 10.7.7** - Useful helpers for React Three Fiber
 
@@ -203,8 +203,8 @@ graph TD
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js**: v24.x (LTS)
-- **npm**: v10.x (included with Node.js)
+- **Node.js**: v25.x or later (see `.nvmrc`)
+- **npm**: v11.x or later (included with Node.js 25+)
 - **Git**: Latest version
 - **Google Chrome**: For E2E testing (installed automatically in CI)
 
@@ -241,7 +241,7 @@ Black Trigram is fully configured for zero-setup cloud development:
 4. Start coding immediately with pre-configured environment
 
 **Codespaces includes:**
-- ✅ Node.js 24 pre-installed
+- ✅ Node.js 25 pre-installed
 - ✅ All dependencies pre-cached
 - ✅ VS Code extensions configured
 - ✅ GitHub Copilot integration with MCP servers
@@ -252,7 +252,7 @@ Black Trigram is fully configured for zero-setup cloud development:
 
 ## 🔧 Build Procedures
 
-Black Trigram uses Vite 7 for blazing-fast development and optimized production builds.
+Black Trigram uses Vite 8 for blazing-fast development and optimized production builds.
 
 ### Development Build
 
