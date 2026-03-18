@@ -17,7 +17,7 @@ Model Context Protocol (MCP) is a protocol that allows AI assistants like GitHub
 
 ## 🔧 Configured MCP Servers
 
-This project uses the following MCP servers to optimize Copilot for our React + Three.js/R3F game development stack:
+This project uses the following MCP servers to optimize Copilot for our React + Three.js/@react-three/fiber game development stack:
 
 ### 1. GitHub Server (`@modelcontextprotocol/server-github`)
 
@@ -52,7 +52,7 @@ This project uses the following MCP servers to optimize Copilot for our React + 
 - E2E test development
 - Visual regression testing
 - Debugging UI issues
-- Testing Three.js/R3F rendering
+- Testing Three.js/@react-three/fiber rendering
 - Validating game mechanics
 
 ### 3. Filesystem Server (`@modelcontextprotocol/server-filesystem`)
@@ -164,7 +164,7 @@ This will check:
 3. **Filesystem**: Generate trigram component files with Korean translations
 4. **Playwright**: Test stance selection and combat animations
 
-### Three.js/R3F Performance Optimization
+### Three.js/@react-three/fiber Performance Optimization
 
 **Scenario**: Optimizing 3D rendering and scene performance
 
@@ -201,7 +201,7 @@ This will check:
 When working with Copilot Chat, you can explicitly request MCP functionality:
 
 **Examples**:
-- "Use the filesystem server to find all components that use Three.js/R3F Canvas elements"
+- "Use the filesystem server to find all components that use Three.js/@react-three/fiber Canvas elements"
 - "With the GitHub server, show me recent changes to the combat system"
 - "Use Playwright to take a screenshot of the trigram selector"
 - "Apply sequential thinking to design the new vital points targeting system"

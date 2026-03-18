@@ -68,12 +68,7 @@ import { Canvas } from "@react-three/fiber";
 import { Html, PerspectiveCamera } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { KOREAN_COLORS } from "../../types/constants";
-// Three.js/R3F component setup
-
-// Register components
-extend({ Container, LayoutContainer });
-extendPixiComponents();
+import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 
 export const ComponentName: React.FC<ComponentProps> = ({
   width = 1200,
@@ -107,13 +102,15 @@ import { KOREAN_COLORS, FONT_FAMILY } from "../../types/constants";
 - CARDINAL_CENTER: 0xffaa00 // 중앙 황색
 
 // Bilingual text pattern
-<Html
-  text={`${korean} | ${english}`}
-  style={{
+// Bilingual text pattern
+<Html center>
+  <div style={{
     fontFamily: FONT_FAMILY.KOREAN,
-    fill: KOREAN_COLORS.ACCENT_GOLD,
-  }}
-/>
+    color: KOREAN_COLORS.ACCENT_GOLD,
+  }}>
+    {korean} | {english}
+  </div>
+</Html>
 ```
 
 ### 3. Layout System Usage
