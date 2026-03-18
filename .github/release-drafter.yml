@@ -126,7 +126,7 @@ template: |
   All test reports are generated automatically and published to GitHub Pages for full transparency.
 
   ## 🎮 Technology Stack (Node.js 25)
-  - ⚡ **Vite 7.x** - Lightning-fast build tool and dev server
+  - ⚡ **Vite 8.x** - Lightning-fast build tool and dev server
   - ⚛️ **React 19** - Modern React with concurrent features and hooks  
   - 🔷 **TypeScript 5.9+** - Strict typing with ES2024 target
   - 🎨 **Three.js 0.183** - High-performance 3D WebGL rendering engine

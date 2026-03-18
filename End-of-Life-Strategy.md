@@ -65,11 +65,11 @@ mindmap
   root)🥋 Black Trigram Stack(
     (🖥️ Runtime)
       ☕ Node.js 25.x
-        📅 Current: 25.x (aligned with CI node-version: 25)
-        ⏰ EOL: Jun 2025 (Current, non-LTS)
-        🔄 Next LTS: 26.x (Oct 2025)
+        📅 CI Runtime: 25.x (aligned with CI node-version: 25)
+        ⏰ EOL: Jun 2025 (odd release, already past — upgrade to 26.x LTS in progress)
+        🔄 Active LTS: 24.x (Apr 2027), 26.x (Oct 2025–Apr 2028)
         📢 New schedule from 27.x
-        🚀 Prepared for Node 26 upgrade
+        🚀 Prepared for Node 26 LTS upgrade
       🌐 Browser Runtime
         📅 Evergreen Updates
         ⏰ EOL: N/A (Auto-update)
@@ -126,9 +126,9 @@ mindmap
 | ----------------------- | ------------------------- | ------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **⚛️ React Framework**  | ^19.2.4 (Latest)          | Major annually, Minor quarterly | ~2027-2028         | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
 | **🎮 Three.js / R3F**   | 0.183.x / 9.5.x (Latest) | Major annually, Patch monthly   | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **⚡ Vite Build Tool**  | ^7.3.1 (Latest)           | Major annually                  | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
+| **⚡ Vite Build Tool**  | ^8.0.0 (Latest)            | Major annually                  | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
 | **📝 TypeScript**       | ^5.9.3 (Latest)           | Major every 6 months            | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **☕ Node.js Runtime**  | 25.x (Current)            | Major every 6 months; even-numbered majors LTS; 26.x LTS imminent | **Jun 2025** (Current); LTS 24.x: **Apr 2027** | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
+| **☕ Node.js Runtime**  | 25.x (CI); 26.x LTS (target) | Major every 6 months; even-numbered majors LTS | LTS 24.x: **Apr 2027**; LTS 26.x: **Apr 2028** | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
 | **🧪 Testing Stack**    | Vitest ^4.0.x + Cypress ^15.11.x | Major annually            | Active development | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
 
 ---
@@ -179,10 +179,10 @@ gantt
     axisFormat %Y-%m
 
     section Node.js Old Schedule (≤26.x)
-    Node.js 24.x LTS        :done, node24lts, 2024-10-29, 2027-04-30
-    Node.js 25.x Current     :active, node25c, 2025-04-22, 2025-06-30
-    Node.js 26.x Current     :node26c, 2025-04-22, 2025-10-28
-    Node.js 26.x LTS         :node26lts, 2025-10-28, 2028-04-30
+    Node.js 24.x LTS        :active, node24lts, 2024-10-29, 2027-04-30
+    Node.js 25.x Current     :done, node25c, 2025-04-22, 2025-06-30
+    Node.js 26.x Current     :done, node26c, 2025-04-22, 2025-10-28
+    Node.js 26.x LTS         :active, node26lts, 2025-10-28, 2028-04-30
     Node.js 24.x EOL         :crit, node24eol, 2027-04-30, 0d
     Node.js 25.x EOL         :crit, node25eol, 2025-06-30, 0d
     Node.js 26.x EOL         :crit, node26eol, 2028-04-30, 0d
@@ -196,16 +196,16 @@ gantt
     Node.js 28.x LTS         :node28lts, 2028-10-01, 2031-04-30
 
     section Black Trigram Strategy
-    Node 25.x Production (Current)  :active, bt25prod, 2025-04-01, 2025-10-28
-    25.x → 26.x Migration Support   :bt25mig, 2025-06-01, 2025-10-28
-    Node.js 26.x Production          :bt26prod, 2025-10-28, 2027-09-30
-    Node.js 27.x Alpha CI Testing    :bt27alpha, 2026-10-01, 2027-03-31
-    Node.js 27.x Migration           :bt27mig, 2027-04-01, 2027-09-30
-    Node.js 27.x Production          :bt27prod, 2027-10-01, 2030-04-30
+    Node 25.x CI Runtime (Current) :done, bt25prod, 2025-04-01, 2026-03-18
+    25.x → 26.x LTS Migration      :active, bt25mig, 2026-03-01, 2026-06-30
+    Node.js 26.x LTS Production     :bt26prod, 2026-06-30, 2028-04-30
+    Node.js 27.x Alpha CI Testing   :bt27alpha, 2026-10-01, 2027-03-31
+    Node.js 27.x Migration          :bt27mig, 2027-04-01, 2027-09-30
+    Node.js 27.x Production         :bt27prod, 2027-10-01, 2030-04-30
 
     section Risk Management
-    26.x Upgrade (Imminent)          :crit, upgrade26, 2025-04-01, 2025-10-28
-    26.x Compatibility Testing       :compat26, 2025-04-01, 2025-10-28
+    26.x LTS Migration (Active)      :active, upgrade26, 2026-03-01, 2026-06-30
+    26.x Compatibility Testing       :compat26, 2026-03-01, 2026-06-30
     27.x Alpha CI Integration        :alphaci, 2026-10-01, 2027-04-01
     27.x Migration Risk Assessment   :milestone, riskassess27, 2027-03-01, 0d
 ```

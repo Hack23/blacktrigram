@@ -22,9 +22,9 @@ All agents should reference these key files to understand the project environmen
 | Agent | Primary Role | Key Capabilities | MCP Servers | Best For |
 |-------|-------------|------------------|-------------|----------|
 | 🎯 **Task Agent** | Product Orchestrator | Issue creation, quality analysis, ISMS compliance, agent delegation | GitHub, Playwright, AWS | Product management, quality oversight, issue tracking |
-| 🛠️ **Coding Agent** | Full-Stack Developer | Feature implementation, bug fixes, Korean theming, PixiJS integration | Standard | General development tasks, new features |
+| 🛠️ **Coding Agent** | Full-Stack Developer | Feature implementation, bug fixes, Korean theming, Three.js/R3F integration | Standard | General development tasks, new features |
 | ⚛️ **Frontend Specialist** | React Expert | Type-safe components, React 19 features, state management | Standard | Complex React components, UI architecture |
-| 🎮 **Game Developer** | PixiJS Specialist | Game loops, rendering optimization, audio integration, 60fps performance | Standard | Game mechanics, PixiJS systems, performance |
+| 🎮 **Game Developer** | Three.js/R3F Specialist | Game loops, rendering optimization, audio integration, 60fps performance | Standard | Game mechanics, Three.js/R3F systems, performance |
 | 🧪 **Testing Agent** | Test Writer | Unit tests, E2E tests, test debugging, mocking | Standard | Writing tests, debugging test failures |
 | 🔬 **Test Engineer** | Test Strategist | Test architecture, coverage enforcement, CI integration | Standard | Test strategy, coverage improvement, CI/CD |
 | 📝 **Documentation Writer** | Documentation Expert | JSDoc/TSDoc, user guides, security policies, bilingual content | Standard | API docs, user guides, SECURITY.md |
@@ -134,16 +134,16 @@ for missing ISMS policy references. Create issues for gaps."
 
 | Aspect | Coding Agent | Frontend Specialist | Game Developer |
 |--------|-------------|-------------------|----------------|
-| **Primary Focus** | General features | React components | PixiJS systems |
+| **Primary Focus** | General features | React components | Three.js/R3F systems |
 | **Best For** | New features, bug fixes | Component architecture | Game mechanics |
-| **Technologies** | TypeScript, React, PixiJS | React 19, strict TS | PixiJS 8.x, audio |
+| **Technologies** | TypeScript, React, Three.js | React 19, strict TS | Three.js 0.183.x, audio |
 | **Complexity** | General | Advanced React | Game-specific |
 | **When to Use** | Most dev tasks | Complex UI patterns | Performance-critical game code |
 
 **Decision Tree:**
 ```
 Development Task
-├─ Is it PixiJS game mechanics? → Game Developer
+├─ Is it Three.js game mechanics? → Game Developer
 ├─ Is it complex React patterns? → Frontend Specialist  
 └─ Is it general feature/bug? → Coding Agent
 ```
@@ -255,7 +255,7 @@ Eight Trigram stance system features"
 # - Assigns to @game-developer
 
 # 2. Game Developer: Implement feature
-@game-developer "Implement issue #123 - Geon stance mechanics with PixiJS"
+@game-developer "Implement issue #123 - Geon stance mechanics with Three.js/R3F"
 
 # 3. Testing Agent: Create tests
 @testing-agent "Create unit and E2E tests for Geon stance (issue #123)"
@@ -279,7 +279,7 @@ Eight Trigram stance system features"
 - [ ] Need agent coordination? → **Task Agent**
 
 ### For Development
-- [ ] PixiJS game mechanics? → **Game Developer**
+- [ ] Three.js game mechanics? → **Game Developer**
 - [ ] Complex React patterns? → **Frontend Specialist**
 - [ ] General feature/bug? → **Coding Agent**
 

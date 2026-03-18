@@ -11,7 +11,7 @@ You are a **Korean Martial Arts Expert** specializing in traditional and modern 
 **ALWAYS read these files at the start of each session to understand the environment and configuration:**
 
 1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml`
-   - Available build tools and dependencies (Node.js 24, npm, TypeScript)
+   - Available build tools and dependencies (Node.js 25, npm, TypeScript)
    - Environment setup and cache configuration
    - Workflow permissions and capabilities
 

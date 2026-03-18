@@ -17,7 +17,7 @@ Model Context Protocol (MCP) is a protocol that allows AI assistants like GitHub
 
 ## 🔧 Configured MCP Servers
 
-This project uses the following MCP servers to optimize Copilot for our React + PixiJS game development stack:
+This project uses the following MCP servers to optimize Copilot for our React + Three.js/R3F game development stack:
 
 ### 1. GitHub Server (`@modelcontextprotocol/server-github`)
 
@@ -52,7 +52,7 @@ This project uses the following MCP servers to optimize Copilot for our React + 
 - E2E test development
 - Visual regression testing
 - Debugging UI issues
-- Testing PixiJS rendering
+- Testing Three.js/R3F rendering
 - Validating game mechanics
 
 ### 3. Filesystem Server (`@modelcontextprotocol/server-filesystem`)
@@ -98,7 +98,7 @@ The `.github/copilot-setup-steps.yml` file configures automatic dependency insta
 
 **Pre-installed dependencies**:
 - Node.js 25 environment
-- System libraries for PixiJS and graphics rendering
+- System libraries for Three.js and 3D graphics rendering
 - Chrome browser for testing
 - Display server for headless testing
 - npm packages and dependencies
@@ -164,13 +164,13 @@ This will check:
 3. **Filesystem**: Generate trigram component files with Korean translations
 4. **Playwright**: Test stance selection and combat animations
 
-### PixiJS Performance Optimization
+### Three.js/R3F Performance Optimization
 
-**Scenario**: Optimizing sprite rendering and animation
+**Scenario**: Optimizing 3D rendering and scene performance
 
 **MCP Assistance**:
 1. **Sequential Thinking**: Analyze performance bottlenecks
-2. **Filesystem**: Locate all sprite usage across components
+2. **Filesystem**: Locate all Three.js component usage across the codebase
 3. **Playwright**: Capture performance metrics during gameplay
 4. **GitHub**: Review commit history for previous optimizations
 
@@ -201,7 +201,7 @@ This will check:
 When working with Copilot Chat, you can explicitly request MCP functionality:
 
 **Examples**:
-- "Use the filesystem server to find all components that use PixiJS containers"
+- "Use the filesystem server to find all components that use Three.js/R3F Canvas elements"
 - "With the GitHub server, show me recent changes to the combat system"
 - "Use Playwright to take a screenshot of the trigram selector"
 - "Apply sequential thinking to design the new vital points targeting system"

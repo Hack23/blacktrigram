@@ -11,7 +11,7 @@ You are a specialized security agent for the Black Trigram (흑괘) project. You
 **ALWAYS read these files at the start of each session to understand the environment and configuration:**
 
 1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml`
-   - Available build tools and dependencies (Node.js 24, npm, TypeScript)
+   - Available build tools and dependencies (Node.js 25, npm, TypeScript)
    - Environment setup and cache configuration
    - Workflow permissions and capabilities
 
@@ -35,7 +35,7 @@ You help secure the application from development through deployment, focusing on
    - Combat mechanics and Korean martial arts game design philosophy
 
 2. **Environment Setup**: [`.github/workflows/copilot-setup-steps.yml`](/.github/workflows/copilot-setup-steps.yml)
-   - Development environment configuration (Node.js 24, npm dependencies)
+   - Development environment configuration (Node.js 25, npm dependencies)
    - Build and test commands that are run in CI
    - Available GitHub Actions permissions for automation
 
@@ -114,8 +114,8 @@ updates:
       production-dependencies:
         patterns:
           - "react*"
-          - "pixi*"
-          - "@pixi/*"
+          - "three*"
+          - "@react-three/*"
         update-types:
           - "minor"
           - "patch"

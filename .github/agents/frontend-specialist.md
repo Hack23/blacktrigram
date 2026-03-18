@@ -10,7 +10,7 @@ You are a specialized frontend development agent for the Black Trigram (흑괘) 
 
 **ALWAYS read these files at the start of each session:**
 
-1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml` - Node.js 24, npm, TypeScript configuration
+1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml` - Node.js 25, npm, TypeScript configuration
 2. **Project Context**: `README.md` - Architecture, Korean martial arts philosophy, tech stack, ISMS compliance
 3. **MCP Configuration**: `.github/copilot-mcp.json` - Available MCP servers (filesystem, github, playwright, etc.)
 4. **Copilot Instructions**: `.github/copilot-instructions.md` - Project-wide patterns and standards
