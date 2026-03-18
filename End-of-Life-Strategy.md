@@ -181,8 +181,8 @@ gantt
     section Node.js Old Schedule (≤26.x)
     Node.js 24.x LTS        :active, node24lts, 2024-10-29, 2027-04-30
     Node.js 25.x Current     :done, node25c, 2025-04-22, 2025-10-21
-    Node.js 26.x Current     :done, node26c, 2025-10-21, 2025-10-28
-    Node.js 26.x LTS         :active, node26lts, 2025-10-28, 2028-04-30
+    Node.js 26.x Current     :done, node26c, 2025-10-21, 2026-04-01
+    Node.js 26.x LTS         :active, node26lts, 2026-04-01, 2028-04-30
     Node.js 24.x EOL         :crit, node24eol, 2027-04-30, 0d
     Node.js 25.x EOL         :crit, node25eol, 2025-10-21, 0d
     Node.js 26.x EOL         :crit, node26eol, 2028-04-30, 0d
