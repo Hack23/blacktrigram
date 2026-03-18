@@ -184,7 +184,7 @@ gantt
     Node.js 26.x Current     :done, node26c, 2025-10-21, 2025-10-28
     Node.js 26.x LTS         :active, node26lts, 2025-10-28, 2028-04-30
     Node.js 24.x EOL         :crit, node24eol, 2027-04-30, 0d
-    Node.js 25.x EOL         :crit, node25eol, 2025-06-30, 0d
+    Node.js 25.x EOL         :crit, node25eol, 2025-10-21, 0d
     Node.js 26.x EOL         :crit, node26eol, 2028-04-30, 0d
 
     section Node.js New Schedule (27.x+, approximate)
@@ -196,7 +196,7 @@ gantt
     Node.js 28.x LTS         :node28lts, 2028-10-01, 2031-04-30
 
     section Black Trigram Strategy
-    Node 25.x CI Runtime (post-EOL) :done, bt25prod, 2025-04-01, 2026-03-18
+    Node 25.x CI Runtime (post-EOL) :done, bt25prod, 2025-04-22, 2026-03-18
     25.x → 26.x LTS Migration      :active, bt25mig, 2026-03-01, 2026-06-30
     Node.js 26.x LTS Production     :bt26prod, 2026-06-30, 2028-04-30
     Node.js 27.x Alpha CI Testing   :bt27alpha, 2026-10-01, 2027-03-31
@@ -223,14 +223,14 @@ gantt
 
 #### **🟡 Risk-Based Migration Triggers (Monitored)**
 
-1. **⏰ Node.js 25.x EOL:** June 2025 - Odd-numbered release, short support window; upgrade to 26.x required
+1. **⏰ Node.js 25.x EOL:** October 2025 - Odd-numbered release, short support window; upgrade to 26.x required
 2. **🚨 Security Support Concerns:** Security patch availability degradation
 3. **🔧 Tooling Incompatibility:** Build/development tools requiring newer Node.js
 4. **☁️ Hosting Platform Changes:** Deployment platform Node.js requirements
 
 #### **🔴 Critical Migration Triggers (Mandatory)**
 
-1. **⛔ Node.js 25.x EOL:** June 2025 - End of support for current odd-numbered release
+1. **⛔ Node.js 25.x EOL:** October 2025 - End of support for current odd-numbered release
 2. **⛔ Node.js 24.x EOL:** April 2027 - End of security support for previous LTS
 3. **🚨 Critical Vulnerability:** Unpatched security issues in current Node.js version
 4. **🔧 Build System Incompatibility:** Essential tools no longer supporting current Node.js

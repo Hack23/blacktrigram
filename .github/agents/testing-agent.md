@@ -287,7 +287,7 @@ When writing tests, ensure you:
 
 ✅ **Mocking**
 - [ ] Mock external dependencies
-- [ ] Mock Three.js/R3F appropriately (via setup.ts)
+- [ ] Mock Three.js/R3F appropriately (per-test `vi.mock()` + global WebGL/Canvas env from setup.ts)
 - [ ] Mock audio system
 - [ ] Clear mocks after each test
 
