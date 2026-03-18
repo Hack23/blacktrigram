@@ -1,6 +1,6 @@
 {
   "name": "Black Trigram Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:22-trixie",
+  "image": "mcr.microsoft.com/devcontainers/base:debian",
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {
       "installDirectlyFromGitHubRelease": true,
