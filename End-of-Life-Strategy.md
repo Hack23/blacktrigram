@@ -389,7 +389,7 @@ gantt
 
     section Runtime and Core
     Node.js 24.x LTS          :active, node24, 2024-10-29, 2027-04-30
-    Node.js 25.x Current (historical track) :done, node25, 2025-04-22, 2025-06-30
+    Node.js 25.x Current (historical track) :done, node25, 2025-04-22, 2025-10-21
     Node.js 26.x LTS (Target) :node26, 2025-10-28, 2028-04-30
     Node.js 27.x LTS (New Schedule) :node27, 2027-10-01, 2030-04-30
     Node.js 28.x LTS (New Schedule) :node28, 2028-10-01, 2031-04-30
@@ -410,7 +410,7 @@ gantt
     @react-three/fiber 9.x     :active, r3f9, 2024-06-01, 2027-06-01
 
     section Critical Milestones
-    Node.js 25 → 26 Upgrade    :milestone, node25upgrade, 2025-04-30, 0d
+    Node.js 25 → 26 Upgrade    :milestone, node25upgrade, 2026-04-01, 0d
     Node.js 24 Migration Alert :milestone, node24alert, 2026-04-30, 0d
     React 19 Assessment       :milestone, react19assess, 2026-12-01, 0d
     Major Stack Review        :milestone, stackreview, 2027-01-01, 0d

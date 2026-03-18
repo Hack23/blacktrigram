@@ -459,7 +459,7 @@ flowchart TD
 ### Copilot Environment Features
 
 - **🌐 Complete Three.js Test Environment**: Chrome with WebGL, Xvfb for headless rendering
-- **📦 Node.js 25**: Latest current release with npm caching for faster builds (Node 26 LTS upgrade imminent)
+- **📦 Node.js 25**: Active CI baseline with npm caching for faster builds (Node 26 LTS migration in progress)
 - **🎮 Gaming Test Infrastructure**: Fonts, graphics libraries, Korean language support
 - **🔧 MCP Server Integration**: GitHub, filesystem, git, memory, sequential-thinking, playwright servers
 - **🔒 Security Hardening**: StepSecurity harden-runner with egress policy auditing
