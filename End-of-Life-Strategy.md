@@ -65,9 +65,9 @@ mindmap
   root)🥋 Black Trigram Stack(
     (🖥️ Runtime)
       ☕ Node.js 25.x
-        📅 CI Runtime: 25.x (aligned with CI node-version: 25)
-        ⏰ EOL: Jun 2025 (odd release, already past — upgrade to 26.x LTS in progress)
-        🔄 Active LTS: 24.x (Apr 2027), 26.x (Oct 2025–Apr 2028)
+        📅 CI Runtime Baseline (transitioning): 25.x while migration to 26.x LTS is active
+        ⏰ Lifecycle source of truth: [Node.js release schedule](https://github.com/nodejs/release#release-schedule)
+        🔄 LTS migration track: 24.x and 26.x (migration target: 26.x)
         📢 New schedule from 27.x
         🚀 Prepared for Node 26 LTS upgrade
       🌐 Browser Runtime
@@ -388,8 +388,8 @@ gantt
     axisFormat %Y
 
     section Runtime and Core
-    Node.js 24.x LTS          :done, node24, 2024-10-29, 2027-04-30
-    Node.js 25.x Current       :active, node25, 2025-04-22, 2025-06-30
+    Node.js 24.x LTS          :active, node24, 2024-10-29, 2027-04-30
+    Node.js 25.x Current (historical track) :done, node25, 2025-04-22, 2025-06-30
     Node.js 26.x LTS (Target) :node26, 2025-10-28, 2028-04-30
     Node.js 27.x LTS (New Schedule) :node27, 2027-10-01, 2030-04-30
     Node.js 28.x LTS (New Schedule) :node28, 2028-10-01, 2031-04-30

@@ -49,9 +49,9 @@ You help implement new features, fix bugs, and refactor code following the proje
 ## Core Technologies
 
 - **React 18+** with TypeScript
-- **Three.js 0.183.x with @react-three/fiber for 3D rendering
-- **@react-three/drei for 3D helpers and UI overlays
-- **@react-three/postprocessing for visual effects
+- **Three.js 0.183.x with @react-three/fiber for 3D rendering**
+- **@react-three/drei for 3D helpers and UI overlays**
+- **@react-three/postprocessing for visual effects**
 - **Vite** for build tooling
 - **Vitest** for unit testing
 - **Cypress** for E2E testing

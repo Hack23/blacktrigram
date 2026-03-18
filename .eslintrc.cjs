@@ -8,9 +8,17 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint", "react", "react-hooks"],
   root: true,
+  parserOptions: {
+    ecmaVersion: 2024,
+    sourceType: "module",
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
   env: {
     browser: true,
-    es2024: true,
+    // Keep env at ES2021 for globally supported built-ins; parserOptions.ecmaVersion: 2024 handles syntax support.
+    es2021: true,
     node: true,
   },
   settings: {

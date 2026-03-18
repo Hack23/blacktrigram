@@ -150,19 +150,38 @@ describe('CombatSystem', () => {
 ```typescript
 // Mock Three.js components
 vi.mock('three', () => ({
-  Application: vi.fn(() => ({
-    stage: { addChild: vi.fn() },
-    renderer: { render: vi.fn() },
-    ticker: { add: vi.fn(), remove: vi.fn() },
+  Scene: vi.fn(() => ({
+    children: [],
+    add: vi.fn(),
+    remove: vi.fn(),
+    traverse: vi.fn(),
+    getObjectByName: vi.fn(),
   })),
-  Container: vi.fn(),
-  Sprite: vi.fn(),
-  Text: vi.fn(),
-  Graphics: vi.fn(),
-  Texture: {
-    from: vi.fn(() => ({})),
-    WHITE: {},
+  PerspectiveCamera: vi.fn(),
+  BoxGeometry: vi.fn(),
+  MeshStandardMaterial: vi.fn(),
+  AmbientLight: vi.fn(),
+  DirectionalLight: vi.fn(),
+  Clock: vi.fn(() => ({
+    getDelta: vi.fn(() => 0.016),
+    getElapsedTime: vi.fn(() => 1),
+  })),
+  MathUtils: {
+    lerp: vi.fn((a, b, t) => a + (b - a) * t),
+    clamp: vi.fn((x, min, max) => Math.max(min, Math.min(max, x))),
   },
+  WebGLRenderer: vi.fn(() => ({
+    render: vi.fn(),
+    setSize: vi.fn(),
+    dispose: vi.fn(),
+  })),
+  TextureLoader: vi.fn(() => ({
+    load: vi.fn(),
+  })),
+  Group: vi.fn(),
+  Mesh: vi.fn(),
+  Texture: vi.fn(),
+  Color: vi.fn(),
 }));
 
 // Mock audio system
