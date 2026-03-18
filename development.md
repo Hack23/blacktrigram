@@ -38,7 +38,7 @@ Black Trigram is built with modern web technologies optimized for 3D game develo
 - ⚛️ **React 19.2.3** - Modern React with hooks and concurrent features
 - 🔷 **TypeScript 5.9.3** - Strict typing with latest ECMAScript standards
 - ⚡ **Vite 8.x** - Next-generation frontend tooling with lightning-fast HMR
-- 🎮 **Three.js 0.182.0** - WebGL-based 3D rendering library
+- 🎮 **Three.js 0.183.x** - WebGL-based 3D rendering library
 - 🔮 **@react-three/fiber 9.5.0** - React renderer for Three.js
 - 🎨 **@react-three/drei 10.7.7** - Useful helpers for React Three Fiber
 

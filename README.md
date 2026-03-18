@@ -183,16 +183,16 @@ Built for **combat realism** and **authentic simulation**:
 
 ### 🎮 Rendering Engine
 
-![Three.js](https://img.shields.io/badge/Three.js-0.181-000000?style=for-the-badge&logo=three.js)
-![React Three Fiber](https://img.shields.io/badge/R3F-9.4-00ffff?style=for-the-badge&logo=react)
+![Three.js](https://img.shields.io/badge/Three.js-0.183-000000?style=for-the-badge&logo=three.js)
+![React Three Fiber](https://img.shields.io/badge/R3F-9.5-00ffff?style=for-the-badge&logo=react)
 ![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript)
 
 ### ⚡ Performance Optimized
 
-![Vite](https://img.shields.io/badge/Vite-7.x-646cff?style=for-the-badge&logo=vite)
+![Vite](https://img.shields.io/badge/Vite-8.x-646cff?style=for-the-badge&logo=vite)
 ![WebGL](https://img.shields.io/badge/WebGL-Hardware_Accelerated-990000?style=for-the-badge)
-![Howler.js](https://img.shields.io/badge/Audio-Howler.js-ff9500?style=for-the-badge)
+![Web Audio](https://img.shields.io/badge/Audio-Web_Audio_API-ff9500?style=for-the-badge)
 ![60fps](https://img.shields.io/badge/Target-60fps-4caf50?style=for-the-badge)
 
 ### 🎨 3D Visual Effects
@@ -379,7 +379,7 @@ George Dorn provides detailed repository deep-dives based on actual code inspect
 
 **[Repository Deep-Dive](https://hack23.com/blog-george-dorn-trigram-code.html)**
 
-**Stack:** TypeScript 5.9, React 19, Three.js 0.181, Vite 7  
+**Stack:** TypeScript 5.9, React 19, Three.js 0.183, Vite 8  
 **Metrics:** 132 TypeScript files, 70 vital points system, 5 fighter archetypes
 
 Examined package.json dependencies, explored src/ structure, verified combat system implementation, and reviewed AI integrations.

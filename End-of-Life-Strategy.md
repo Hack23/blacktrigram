@@ -264,7 +264,7 @@ With the new Node.js release schedule introducing a 6-month alpha phase, Black T
 }%%
 flowchart TB
     subgraph PREPARATION["🔬 Pre-Migration Testing (Jun-Jul 2026)"]
-        COMPAT_TEST["🧪 Compatibility Testing<br/>• Vite 7+ compatibility<br/>• React 19 compatibility<br/>• Three.js / R3F compatibility<br/>• TypeScript 5+ compatibility"]
+        COMPAT_TEST["🧪 Compatibility Testing<br/>• Vite 8+ compatibility<br/>• React 19 compatibility<br/>• Three.js / R3F compatibility<br/>• TypeScript 5+ compatibility"]
         DEP_AUDIT["📦 Dependency Audit<br/>• NPM package compatibility<br/>• Native module rebuilds<br/>• Security vulnerability scan<br/>• License compliance check"]
         PERF_BASELINE["📊 Performance Baseline<br/>• Build time comparison<br/>• Runtime performance<br/>• Memory usage analysis<br/>• Bundle size impact"]
     end
@@ -531,7 +531,7 @@ Should EOL conditions trigger migration, the successor platform will maintain **
 | ------------------------- | ----------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **⚛️ Frontend Framework** | React 19 + Three.js/R3F | React 22+ or Svelte 5+ with WebGPU | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
 | **🎮 Graphics Engine**    | Three.js WebGL 2.0      | Three.js WebGPU or native WebGPU   | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
-| **🛠️ Build System**       | Vite 7 + ESBuild        | Rolldown, Turbopack, or Vite Next  | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)    |
+| **🛠️ Build System**       | Vite 8 + ESBuild        | Rolldown, Turbopack, or Vite Next  | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)    |
 | **📱 Platform Target**    | Web-only                | Progressive Web App + WebAssembly  | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)        |
 | **☕ Runtime**            | Node.js (build only)    | Node.js 27+, Deno, Bun, or Next-gen | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)      |
 
