@@ -42,20 +42,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      # Cache APT packages for faster installs
-      - name: Cache APT packages
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
-        with:
-          path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/copilot-setup-steps.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-apt-
-
       # Setup complete Three.js test environment
       - name: Setup Three.js Test Environment (Chrome + Xvfb + Dependencies)
         run: |
           echo "🔧 Setting up complete Three.js test environment..."
-
           # Install system dependencies for Three.js rendering
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
@@ -71,7 +61,6 @@ jobs:
             libx11-xcb1 libxcomposite1 libxdamage1 \
             libxfixes3 libxrandr2 libxrender1 \
             libxshmfence1 xdg-utils wget libxkbcommon0 xkb-data
-
           # Install Google Chrome Stable for Three.js WebGL support
           wget -qO- https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
           echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
@@ -91,15 +80,6 @@ jobs:
           XKB_DEFAULT_MODEL: pc105
           XKB_DEFAULT_LAYOUT: us
 
-      # Start Xvfb early for Playwright/Chrome
-      - name: Start Xvfb
-        run: |
-          echo "🖥️ Starting Xvfb virtual display..."
-          Xvfb :99 -screen 0 1920x1080x24 &
-          sleep 2
-          echo "DISPLAY=:99" >> $GITHUB_ENV
-          echo "✅ Xvfb started on display :99"
-
       # JavaScript/TypeScript setup
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -107,30 +87,10 @@ jobs:
           node-version: "24"
           cache: "npm"
 
-      - name: Cache dependencies
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install dependencies
         run: npm ci
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
-
-      # Cache global npm packages for MCP servers
-      - name: Cache global npm packages
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
-        with:
-          path: |
-            ~/.npm
-            /usr/local/lib/node_modules
-            /usr/local/bin/mcp-server-*
-          key: ${{ runner.os }}-mcp-servers-v4-${{ hashFiles('.github/copilot-mcp.json') }}
-          restore-keys: |
-            ${{ runner.os }}-mcp-servers-v4-
 
       # Pre-install MCP server packages globally
       - name: Install MCP server packages globally
@@ -177,14 +137,6 @@ jobs:
           DISPLAY: ":99"
           PLAYWRIGHT_BROWSERS_PATH: "0"
         
-      - name: Cache Cypress binary
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-
-
       - name: Verify Cypress for Three.js Testing
         run: |
           npx cypress verify
