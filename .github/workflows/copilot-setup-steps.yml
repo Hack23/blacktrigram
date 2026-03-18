@@ -137,12 +137,6 @@ jobs:
           DISPLAY: ":99"
           PLAYWRIGHT_BROWSERS_PATH: "0"
         
-      - name: Verify Cypress for Three.js Testing
-        run: |
-          npx cypress verify
-          npx cypress info
-          echo "✅ Cypress verified and ready for Three.js tests"
-
       - name: Display environment info
         run: |
           echo "========================================="
