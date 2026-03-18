@@ -550,8 +550,8 @@ type PlayerArchetype = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
 
 ### 📋 Prerequisites
 
-- **Node.js 24** (LTS) - [Download Node.js](https://nodejs.org/)
-- **npm 10+** (included with Node.js 24)
+- **Node.js 25+** (Current) - [Download Node.js](https://nodejs.org/)
+- **npm 11+** (included with Node.js 25)
 - Modern browser with WebGL 2.0 support
 
 ### 🌐 Enter the Dojang
@@ -565,7 +565,7 @@ type PlayerArchetype = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
 git clone https://github.com/Hack23/blacktrigram.git
 cd blacktrigram
 
-# Install dependencies (requires Node.js 24)
+# Install dependencies (requires Node.js 25+)
 npm install
 
 # Start combat simulation

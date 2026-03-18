@@ -432,7 +432,7 @@ GitHub Copilot environment preparation with Model Context Protocol (MCP) servers
 flowchart TD
     Trigger[🚀 Workflow Trigger] --> Setup[🔧 Environment Setup]
     Setup --> Chrome[🌐 Chrome Installation]
-    Setup --> Node[📦 Node.js 24]
+    Setup --> Node[📦 Node.js 25]
     Setup --> ThreeJS[🎮 Three.js Test Environment]
     
     Chrome --> WebGL[🎨 WebGL Support]
@@ -459,7 +459,7 @@ flowchart TD
 ### Copilot Environment Features
 
 - **🌐 Complete Three.js Test Environment**: Chrome with WebGL, Xvfb for headless rendering
-- **📦 Node.js 24**: Latest LTS with npm caching for faster builds
+- **📦 Node.js 25**: Latest current release with npm caching for faster builds (Node 26 LTS upgrade imminent)
 - **🎮 Gaming Test Infrastructure**: Fonts, graphics libraries, Korean language support
 - **🔧 MCP Server Integration**: GitHub, filesystem, git, memory, sequential-thinking, playwright servers
 - **🔒 Security Hardening**: StepSecurity harden-runner with egress policy auditing

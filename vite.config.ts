@@ -96,8 +96,7 @@ export default defineConfig(({ command, mode: _mode }) => ({
     ],
   },
   build: {
-    target: "es2022",
-    // Increased chunk size warning limit for single bundle
+    target: "es2024",
     chunkSizeWarningLimit: 1500,
     // Force minification
     minify: "esbuild",
@@ -151,9 +150,8 @@ export default defineConfig(({ command, mode: _mode }) => ({
   },
 
   esbuild: {
-    target: "es2022",
+    target: "es2024",
     jsx: "automatic",
-    // Remove console logs in production and development to align with production behavior
     drop: ["console", "debugger"],
     // Optimize for smaller bundle
     legalComments: "none",

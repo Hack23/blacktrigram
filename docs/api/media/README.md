@@ -37,7 +37,7 @@ All agents reference these key files to understand the project environment and c
 
 ### 1. 🔧 Setup & Environment
 **File**: `.github/workflows/copilot-setup-steps.yml`
-- Node.js 24, npm, TypeScript toolchain
+- Node.js 25, npm, TypeScript toolchain
 - Build and test environment setup
 - Cache configuration for dependencies
 - Workflow permissions (read/write access levels)
@@ -75,7 +75,7 @@ All agents have access to essential project configuration files that define the 
 | File | Purpose | What Agents Find Here |
 |------|---------|----------------------|
 | **[`README.md`](/README.md)** | Main Project Context | Project overview, tech stack, ISMS compliance framework, combat mechanics, Korean martial arts philosophy |
-| **[`.github/workflows/copilot-setup-steps.yml`](/.github/workflows/copilot-setup-steps.yml)** | Environment Setup | Node.js 24 configuration, npm dependencies, build/test commands, GitHub Actions permissions |
+| **[`.github/workflows/copilot-setup-steps.yml`](/.github/workflows/copilot-setup-steps.yml)** | Environment Setup | Node.js 25 configuration, npm dependencies, build/test commands, GitHub Actions permissions |
 | **[`.github/copilot-mcp.json`](/.github/copilot-mcp.json)** | MCP Server Configuration | Available MCP servers (filesystem, github, git, memory, sequential-thinking, playwright, brave-search, aws), tool capabilities, integration patterns |
 
 ### MCP Servers Available

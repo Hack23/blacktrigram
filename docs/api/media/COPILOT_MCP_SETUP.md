@@ -97,7 +97,7 @@ This project uses the following MCP servers to optimize Copilot for our React + 
 The `.github/copilot-setup-steps.yml` file configures automatic dependency installation when Copilot Workspace starts:
 
 **Pre-installed dependencies**:
-- Node.js 24 environment
+- Node.js 25 environment
 - System libraries for PixiJS and graphics rendering
 - Chrome browser for testing
 - Display server for headless testing

@@ -64,11 +64,12 @@ Based on [Hack23 AB Classification Framework](https://github.com/Hack23/ISMS-PUB
 mindmap
   root)🥋 Black Trigram Stack(
     (🖥️ Runtime)
-      ☕ Node.js 24.x
-        📅 Current: 24.x (aligned with CI node-version: 24)
-        ⏰ EOL: Apr 2027
+      ☕ Node.js 25.x
+        📅 Current: 25.x (aligned with CI node-version: 25)
+        ⏰ EOL: Jun 2025 (Current, non-LTS)
         🔄 Next LTS: 26.x (Oct 2025)
         📢 New schedule from 27.x
+        🚀 Prepared for Node 26 upgrade
       🌐 Browser Runtime
         📅 Evergreen Updates
         ⏰ EOL: N/A (Auto-update)
@@ -127,7 +128,7 @@ mindmap
 | **🎮 Three.js / R3F**   | 0.183.x / 9.5.x (Latest) | Major annually, Patch monthly   | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
 | **⚡ Vite Build Tool**  | ^7.3.1 (Latest)           | Major annually                  | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
 | **📝 TypeScript**       | ^5.9.3 (Latest)           | Major every 6 months            | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **☕ Node.js Runtime**  | 24.x (Current)            | Major every 6 months; even-numbered majors LTS | **Apr 2027**       | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
+| **☕ Node.js Runtime**  | 25.x (Current)            | Major every 6 months; even-numbered majors LTS; 26.x LTS imminent | **Jun 2025** (Current); LTS 24.x: **Apr 2027** | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
 | **🧪 Testing Stack**    | Vitest ^4.0.x + Cypress ^15.11.x | Major annually            | Active development | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
 
 ---
@@ -178,10 +179,12 @@ gantt
     axisFormat %Y-%m
 
     section Node.js Old Schedule (≤26.x)
-    Node.js 24.x LTS        :active, node24lts, 2024-10-29, 2027-04-30
+    Node.js 24.x LTS        :done, node24lts, 2024-10-29, 2027-04-30
+    Node.js 25.x Current     :active, node25c, 2025-04-22, 2025-06-30
     Node.js 26.x Current     :node26c, 2025-04-22, 2025-10-28
     Node.js 26.x LTS         :node26lts, 2025-10-28, 2028-04-30
     Node.js 24.x EOL         :crit, node24eol, 2027-04-30, 0d
+    Node.js 25.x EOL         :crit, node25eol, 2025-06-30, 0d
     Node.js 26.x EOL         :crit, node26eol, 2028-04-30, 0d
 
     section Node.js New Schedule (27.x+, approximate)
@@ -193,42 +196,45 @@ gantt
     Node.js 28.x LTS         :node28lts, 2028-10-01, 2031-04-30
 
     section Black Trigram Strategy
-    Node 24.x Production          :active, bt24prod, 2024-12-01, 2026-10-28
-    24.x → 26.x Migration Support :bt24mig, 2026-06-01, 2026-10-28
-    Node.js 26.x Production       :bt26prod, 2026-10-28, 2027-09-30
-    Node.js 27.x Alpha CI Testing :bt27alpha, 2026-10-01, 2027-03-31
-    Node.js 27.x Migration        :bt27mig, 2027-04-01, 2027-09-30
-    Node.js 27.x Production       :bt27prod, 2027-10-01, 2030-04-30
+    Node 25.x Production (Current)  :active, bt25prod, 2025-04-01, 2025-10-28
+    25.x → 26.x Migration Support   :bt25mig, 2025-06-01, 2025-10-28
+    Node.js 26.x Production          :bt26prod, 2025-10-28, 2027-09-30
+    Node.js 27.x Alpha CI Testing    :bt27alpha, 2026-10-01, 2027-03-31
+    Node.js 27.x Migration           :bt27mig, 2027-04-01, 2027-09-30
+    Node.js 27.x Production          :bt27prod, 2027-10-01, 2030-04-30
 
     section Risk Management
-    26.x Compatibility Testing    :compat26, 2026-04-01, 2026-10-28
-    27.x Alpha CI Integration     :alphaci, 2026-10-01, 2027-04-01
-    27.x Migration Risk Assessment :milestone, riskassess27, 2027-03-01, 0d
+    26.x Upgrade (Imminent)          :crit, upgrade26, 2025-04-01, 2025-10-28
+    26.x Compatibility Testing       :compat26, 2025-04-01, 2025-10-28
+    27.x Alpha CI Integration        :alphaci, 2026-10-01, 2027-04-01
+    27.x Migration Risk Assessment   :milestone, riskassess27, 2027-03-01, 0d
 ```
 
 ### **📋 Node.js Transition Trigger Conditions**
 
 #### **🟢 Proactive Migration Triggers (Preferred)**
 
-1. **📅 Node.js 26.x LTS Release:** October 2025 - Begin migration planning (old schedule, last even-numbered LTS)
-2. **📅 Node.js 27.x Alpha Release:** October 2026 - Begin CI integration testing (new schedule, first calendar-aligned release)
-3. **🛡️ Security Feature Advantages:** Enhanced security features in newer Node.js releases
-4. **⚡ Performance Improvements:** Significant V8 or runtime optimizations
-5. **📦 Ecosystem Compatibility:** Major dependencies requiring newer Node.js
+1. **📅 Node.js 26.x Release:** April 2025 - Available now; upgrade to 26.x planned within 2 weeks of stable release
+2. **📅 Node.js 26.x LTS Release:** October 2025 - Transition to LTS for production stability (old schedule, last even-numbered LTS)
+3. **📅 Node.js 27.x Alpha Release:** October 2026 - Begin CI integration testing (new schedule, first calendar-aligned release)
+4. **🛡️ Security Feature Advantages:** Enhanced security features in newer Node.js releases
+5. **⚡ Performance Improvements:** Significant V8 or runtime optimizations
+6. **📦 Ecosystem Compatibility:** Major dependencies requiring newer Node.js
 
 #### **🟡 Risk-Based Migration Triggers (Monitored)**
 
-1. **⏰ 18-Month Warning:** October 2025 - 18 months before Node.js 24.x EOL (April 2027)
+1. **⏰ Node.js 25.x EOL:** June 2025 - Odd-numbered release, short support window; upgrade to 26.x required
 2. **🚨 Security Support Concerns:** Security patch availability degradation
 3. **🔧 Tooling Incompatibility:** Build/development tools requiring newer Node.js
 4. **☁️ Hosting Platform Changes:** Deployment platform Node.js requirements
 
 #### **🔴 Critical Migration Triggers (Mandatory)**
 
-1. **⛔ Node.js 24.x EOL:** April 2027 - End of security support
-2. **🚨 Critical Vulnerability:** Unpatched security issues in current Node.js version
-3. **🔧 Build System Incompatibility:** Essential tools no longer supporting current Node.js
-4. **🌐 Browser API Requirements:** New web standards requiring newer Node.js features
+1. **⛔ Node.js 25.x EOL:** June 2025 - End of support for current odd-numbered release
+2. **⛔ Node.js 24.x EOL:** April 2027 - End of security support for previous LTS
+3. **🚨 Critical Vulnerability:** Unpatched security issues in current Node.js version
+4. **🔧 Build System Incompatibility:** Essential tools no longer supporting current Node.js
+5. **🌐 Browser API Requirements:** New web standards requiring newer Node.js features
 
 ### **🧪 Node.js Migration Testing & Validation Strategy**
 
@@ -382,7 +388,8 @@ gantt
     axisFormat %Y
 
     section Runtime and Core
-    Node.js 24.x LTS          :active, node24, 2024-10-29, 2027-04-30
+    Node.js 24.x LTS          :done, node24, 2024-10-29, 2027-04-30
+    Node.js 25.x Current       :active, node25, 2025-04-22, 2025-06-30
     Node.js 26.x LTS (Target) :node26, 2025-10-28, 2028-04-30
     Node.js 27.x LTS (New Schedule) :node27, 2027-10-01, 2030-04-30
     Node.js 28.x LTS (New Schedule) :node28, 2028-10-01, 2031-04-30
@@ -403,6 +410,7 @@ gantt
     @react-three/fiber 9.x     :active, r3f9, 2024-06-01, 2027-06-01
 
     section Critical Milestones
+    Node.js 25 → 26 Upgrade    :milestone, node25upgrade, 2025-04-30, 0d
     Node.js 24 Migration Alert :milestone, node24alert, 2026-04-30, 0d
     React 19 Assessment       :milestone, react19assess, 2026-12-01, 0d
     Major Stack Review        :milestone, stackreview, 2027-01-01, 0d

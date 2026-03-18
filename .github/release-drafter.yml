@@ -125,17 +125,17 @@ template: |
 
   All test reports are generated automatically and published to GitHub Pages for full transparency.
 
-  ## 🎮 Technology Stack (Node.js 24)
+  ## 🎮 Technology Stack (Node.js 25)
   - ⚡ **Vite 7.x** - Lightning-fast build tool and dev server
   - ⚛️ **React 19** - Modern React with concurrent features and hooks  
-  - 🔷 **TypeScript 5.9+** - Strict typing with latest ESNext standards
-  - 🎨 **Three.js 0.182** - High-performance 3D WebGL rendering engine
+  - 🔷 **TypeScript 5.9+** - Strict typing with ES2024 target
+  - 🎨 **Three.js 0.183** - High-performance 3D WebGL rendering engine
   - 🔗 **@react-three/fiber 9.5** - React renderer for Three.js
   - 🎁 **@react-three/drei 10.7** - Useful helpers for react-three-fiber
-  - 🎵 **Howler.js** - Robust audio library for spatial 3D sound
+  - 🎵 **Web Audio API** - Internal AudioManager for spatial 3D sound
   - 🧪 **Vitest 4.x** - Fast unit testing with coverage and benchmarking
   - 🌲 **Cypress 15.x** - Reliable E2E testing for 3D combat mechanics
-  - 📦 **Node.js 24** - Latest Node.js LTS for development and CI/CD
+  - 📦 **Node.js 25** - Latest Node.js current release for development and CI/CD
 
   ## 🔍 Code Quality & Security Analysis
   [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)

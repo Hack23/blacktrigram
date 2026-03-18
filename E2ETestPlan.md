@@ -282,7 +282,7 @@ e2e-tests:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v6
       with:
-        node-version: "24"
+        node-version: "25"
     - name: Install dependencies
       run: npm install
     - name: Start app and run Cypress tests

@@ -241,7 +241,7 @@ Black Trigram is fully configured for zero-setup cloud development:
 4. Start coding immediately with pre-configured environment
 
 **Codespaces includes:**
-- ✅ Node.js 24 pre-installed
+- ✅ Node.js 25 pre-installed
 - ✅ All dependencies pre-cached
 - ✅ VS Code extensions configured
 - ✅ GitHub Copilot integration with MCP servers

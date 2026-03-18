@@ -10,7 +10,7 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    es2021: true,
+    es2024: true,
     node: true,
   },
   settings: {
