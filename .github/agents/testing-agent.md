@@ -59,7 +59,7 @@ You help write comprehensive tests, debug test failures, and ensure high-quality
 ```
 src/
 ├── test/
-│   ├── setup.ts           # Global test setup (Three.js mocking)
+│   ├── setup.ts           # Global test setup (WebGL/Canvas/RAF/matchMedia environment mocks)
 │   └── test-utils.ts      # Testing utilities
 ├── **/__tests__/          # Unit tests alongside source
 └── cypress/
@@ -114,11 +114,11 @@ describe('ComponentName', () => {
 
 ### 2. Three.js Component Testing
 
-**Three.js Mocking Pattern (from setup.ts):**
+**Three.js Component Testing Pattern:**
 
 ```typescript
-// Three.js is already mocked in src/test/setup.ts
-// Tests can use Three.js components directly
+// src/test/setup.ts provides WebGL/Canvas/RAF/matchMedia environment mocks (not Three.js module mocks).
+// Individual test files should use vi.mock() for Three.js/@react-three modules as needed.
 
 describe('KoreanTrigramSelector', () => {
   it('should render all eight trigram options with layout', () => {

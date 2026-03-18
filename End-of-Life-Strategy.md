@@ -88,7 +88,7 @@ mindmap
         ⏰ EOL: React-dependent
         🔄 Error Handling
     (🛠️ Build & Tooling)
-      ⚡ Vite ^7.3.1
+      ⚡ Vite ^8.0.0
         📅 Current: Latest
         ⏰ EOL: Active (yearly)
         🔄 ESBuild Integration
@@ -180,8 +180,8 @@ gantt
 
     section Node.js Old Schedule (≤26.x)
     Node.js 24.x LTS        :active, node24lts, 2024-10-29, 2027-04-30
-    Node.js 25.x Current     :done, node25c, 2025-04-22, 2025-06-30
-    Node.js 26.x Current     :done, node26c, 2025-04-22, 2025-10-28
+    Node.js 25.x Current     :done, node25c, 2025-04-22, 2025-10-21
+    Node.js 26.x Current     :done, node26c, 2025-10-21, 2025-10-28
     Node.js 26.x LTS         :active, node26lts, 2025-10-28, 2028-04-30
     Node.js 24.x EOL         :crit, node24eol, 2027-04-30, 0d
     Node.js 25.x EOL         :crit, node25eol, 2025-06-30, 0d
@@ -196,7 +196,7 @@ gantt
     Node.js 28.x LTS         :node28lts, 2028-10-01, 2031-04-30
 
     section Black Trigram Strategy
-    Node 25.x CI Runtime (Current) :done, bt25prod, 2025-04-01, 2026-03-18
+    Node 25.x CI Runtime (post-EOL) :done, bt25prod, 2025-04-01, 2026-03-18
     25.x → 26.x LTS Migration      :active, bt25mig, 2026-03-01, 2026-06-30
     Node.js 26.x LTS Production     :bt26prod, 2026-06-30, 2028-04-30
     Node.js 27.x Alpha CI Testing   :bt27alpha, 2026-10-01, 2027-03-31
@@ -214,8 +214,8 @@ gantt
 
 #### **🟢 Proactive Migration Triggers (Preferred)**
 
-1. **📅 Node.js 26.x Release:** April 2025 - Available now; upgrade to 26.x planned within 2 weeks of stable release
-2. **📅 Node.js 26.x LTS Release:** October 2025 - Transition to LTS for production stability (old schedule, last even-numbered LTS)
+1. **📅 Node.js Major Release Available:** Upgrade planned within 4 weeks of each stable release (see [official release schedule](https://github.com/nodejs/release#release-schedule))
+2. **📅 Node.js LTS Promotion:** Transition to LTS for production stability once the release enters LTS phase
 3. **📅 Node.js 27.x Alpha Release:** October 2026 - Begin CI integration testing (new schedule, first calendar-aligned release)
 4. **🛡️ Security Feature Advantages:** Enhanced security features in newer Node.js releases
 5. **⚡ Performance Improvements:** Significant V8 or runtime optimizations
@@ -400,8 +400,8 @@ gantt
     React 21.x (Future)       :react21, 2026-12-01, 2029-12-31
 
     section Build and Tooling
-    Vite 7.x                  :active, vite7, 2024-12-03, 2025-12-31
-    Vite 8.x (Future)         :vite8, 2025-06-01, 2026-12-31
+    Vite 8.x                  :active, vite8, 2025-06-01, 2026-12-31
+    Vite 9.x (Future)         :vite9, 2026-06-01, 2027-12-31
     TypeScript 5.x            :active, ts5, 2024-03-16, 2025-09-30
     TypeScript 6.x (Future)   :ts6, 2025-03-01, 2026-09-30
 
