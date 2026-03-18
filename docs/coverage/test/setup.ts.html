@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45.45% </span>
+                <span class="strong">46.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>70/154</span>
+                <span class='fraction'>72/154</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.82% </span>
+                <span class="strong">63.23% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>40/68</span>
+                <span class='fraction'>43/68</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.18% </span>
+                <span class="strong">48.59% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>67/142</span>
+                <span class='fraction'>69/142</span>
             </div>
         
             
@@ -392,10 +392,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15526x</span>
+<span class="cline-any cline-yes">15528x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15526x</span>
+<span class="cline-any cline-yes">15528x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -409,8 +409,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -634,8 +634,8 @@
 <span class="cline-any cline-yes">449x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">449x</span>
-<span class="cline-any cline-yes">29965x</span>
-<span class="cline-any cline-yes">29965x</span>
+<span class="cline-any cline-yes">30118x</span>
+<span class="cline-any cline-yes">30118x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -651,8 +651,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">449x</span>
-<span class="cline-any cline-yes">199x</span>
-<span class="cline-any cline-yes">199x</span>
+<span class="cline-any cline-yes">352x</span>
+<span class="cline-any cline-yes">352x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -660,8 +660,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">449x</span>
-<span class="cline-any cline-yes">103x</span>
-<span class="cline-any cline-yes">103x</span>
+<span class="cline-any cline-yes">256x</span>
+<span class="cline-any cline-yes">256x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -669,7 +669,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">77x</span>
+<span class="cline-any cline-yes">230x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">449x</span>
@@ -706,9 +706,9 @@ beforeAll(() =&gt; {
     const message = typeof chunk === "string" ? chunk : <span class="branch-1 cbranch-no" title="branch not covered" >chunk.toString();</span>
     
     // Suppress HTMLCanvasElement warnings from jsdom
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (
+    if (
       message.includes("Not implemented: HTMLCanvasElement") ||
-<span class="branch-1 cbranch-no" title="branch not covered" >      message.includes("without installing the canvas npm package")</span>
+      message.includes("without installing the canvas npm package")
     ) {
       // Call callback if provided to avoid breaking the stream
       if (typeof encodingOrCallback === "function") {
@@ -720,8 +720,8 @@ beforeAll(() =&gt; {
     }
     
     // Pass through all other messages with proper type handling
-<span class="cstat-no" title="statement not covered" >    if (typeof encodingOrCallback === "function") {</span>
-<span class="cstat-no" title="statement not covered" >      return originalStderrWrite(chunk, encodingOrCallback);</span>
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof encodingOrCallback === "function") {
+      return originalStderrWrite(chunk, encodingOrCallback);
     }
 <span class="cstat-no" title="statement not covered" >    return originalStderrWrite(chunk, encodingOrCallback, callback);</span>
   }) as typeof process.stderr.write;
@@ -1003,7 +1003,7 @@ afterEach(() =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-14T20:59:42.144Z
+                at 2026-03-18T20:14:46.667Z
             </div>
         <script src="../prettify.js"></script>
         <script>
