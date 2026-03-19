@@ -13,13 +13,13 @@
 
 <p align="center">
   <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/Version-1.1-555?style=for-the-badge" alt="Version"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/Effective-2025--08--23-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.2-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2026--03--19-success?style=for-the-badge" alt="Effective Date"/></a>
   <a href="#"><img src="https://img.shields.io/badge/Review-Quarterly-orange?style=for-the-badge" alt="Review Cycle"/></a>
 </p>
 
-**Document Owner:** CEO | **Version:** 1.1 | **Last Updated:** 2025-08-23  
-**Review Cycle:** Quarterly | **Next Review:** 2025-11-23
+**Document Owner:** CEO | **Version:** 1.2 | **Last Updated:** 2026-03-19  
+**Review Cycle:** Quarterly | **Next Review:** 2026-06-19
 
 ---
 
@@ -91,7 +91,7 @@ _Supports CRA Annex V § 1 - Product Description Requirements_
 | Field                  | Value                                                                                                                                             |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 📦 Product             | Black Trigram (흑괘) - Korean Martial Arts Combat Simulator                                                                                       |
-| 🏷️ Version Tag         | 0.6.48 (reflects current project state)                                                                                                      |
+| 🏷️ Version Tag         | 0.6.58 (reflects current project state)                                                                                                      |
 | 🔗 Repository          | https://github.com/Hack23/blacktrigram                                                                                                            |
 | 📧 Security Contact    | security@hack23.org                                                                                                                               |
 | 🎯 Purpose (1–2 lines) | Educational 3D combat game teaching authentic Korean martial arts through realistic anatomical targeting and traditional Eight Trigram philosophy |
@@ -270,10 +270,10 @@ GitHub Attestations: `https://github.com/Hack23/blacktrigram/attestations`
 **🎯 Release Assets Structure:**
 
 ```
-blacktrigram-0.6.48.zip               # Main application bundle
-blacktrigram-0.6.48.zip.intoto.jsonl  # SLSA provenance attestation
-blacktrigram-0.6.48.spdx.json         # SPDX SBOM
-blacktrigram-0.6.48.spdx.json.intoto.jsonl  # SBOM attestation
+blacktrigram-0.6.58.zip               # Main application bundle
+blacktrigram-0.6.58.zip.intoto.jsonl  # SLSA provenance attestation
+blacktrigram-0.6.58.spdx.json         # SPDX SBOM
+blacktrigram-0.6.58.spdx.json.intoto.jsonl  # SBOM attestation
 ```
 
 **📋 Release Notes Format:**
@@ -304,7 +304,7 @@ blacktrigram-0.6.48.spdx.json.intoto.jsonl  # SBOM attestation
 
 Thanks to @dependabot[bot] for automated security updates!
 
-**Full Changelog**: https://github.com/Hack23/blacktrigram/compare/v0.6.47...v0.6.48
+**Full Changelog**: https://github.com/Hack23/blacktrigram/compare/v0.6.57...v0.6.58
 ```
 
 **🔍 Evidence Validation Commands:**
@@ -357,12 +357,12 @@ _Supports CRA Article 28 - EU Declaration of Conformity_
 > **📝 Complete when placing product on EU market**
 
 **🏢 Manufacturer:** Hack23 AB, Stockholm, Sweden  
-**📦 Product:** Black Trigram (흑괘) 0.6.48  
+**📦 Product:** Black Trigram (흑괘) 0.6.58  
 **📋 CRA Compliance:** Self-assessment documentation supporting CRA essential cybersecurity requirements evaluation  
 **🔍 Assessment:** Self-assessment documentation per Article 24 - Standard product classification  
 **📊 Standards:** ETSI EN 303 645 (IoT Security), ISO/IEC 27001 (ISMS), OWASP ASVS (Application Security), NIST SSDF (Secure Development)
 
-**📅 Date & Signature:** 2025-08-23 - James Pether Sörling, CEO
+**📅 Date & Signature:** 2026-03-19 - James Pether Sörling, CEO
 
 **📂 Technical Documentation:** This assessment + evidence bundle supports CRA Annex V technical documentation requirements
 
@@ -393,9 +393,9 @@ No outstanding CRA documentation gaps identified for standard classification
 
 | 👤 **Role**                    | 📝 **Name**          | 📅 **Date**      | ✍️ **Assessment Attestation**                      |
 | ------------------------------ | -------------------- | ---------------- | -------------------------------------------------- |
-| 🔒 **CRA Security Assessment** | James Pether Sörling | 2025-08-23 | Essential requirements documented and assessed     |
-| 🎯 **Product Responsibility**  | James Pether Sörling | 2025-08-23 | Technical documentation complete and structured    |
-| ⚖️ **Legal Compliance Review** | James Pether Sörling | 2025-08-23 | EU regulatory documentation requirements addressed |
+| 🔒 **CRA Security Assessment** | James Pether Sörling | 2026-03-19 | Essential requirements documented and assessed     |
+| 🎯 **Product Responsibility**  | James Pether Sörling | 2026-03-19 | Technical documentation complete and structured    |
+| ⚖️ **Legal Compliance Review** | James Pether Sörling | 2026-03-19 | EU regulatory documentation requirements addressed |
 
 **📊 CRA Assessment Status:** SELF_ASSESSMENT_DOCUMENTED
 
@@ -422,7 +422,7 @@ CRA assessment updated only when changes constitute "substantial modification" u
 ```markdown
 ## Current CRA Self-Assessment Evidence
 
-**🏷️ Product Version:** 0.6.48
+**🏷️ Product Version:** 0.6.58
 **📦 CRA Technical Documentation:** This assessment + [Latest Release](https://github.com/Hack23/blacktrigram/releases/latest)
 **🛡️ Security Attestations:** [GitHub Attestations](https://github.com/Hack23/blacktrigram/attestations)
 **📊 Assessment Status:** ![CRA Status](https://img.shields.io/badge/CRA_Self_Assessment-DOCUMENTED-green)
@@ -456,6 +456,7 @@ CRA assessment updated only when changes constitute "substantial modification" u
 - **[🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)** — Overall security governance and business value framework
 - **[🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)** — Data and asset classification methodology with business impact analysis
 - **[🌐 ISMS Transparency Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/ISMS_Transparency_Plan.md)** — Public disclosure strategy and stakeholder communication
+- **[📋 CRA Conformity Assessment Process](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CRA_Conformity_Assessment_Process.md)** — CRA self-assessment methodology and conformity documentation template
 
 #### **🛡️ Security Control Implementation**
 
@@ -463,6 +464,7 @@ CRA assessment updated only when changes constitute "substantial modification" u
 - **[🔑 Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md)** — Identity management, MFA requirements, and privilege management
 - **[🌐 Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md)** — Network segmentation, firewall rules, and perimeter security
 - **[🏷️ Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md)** — Information handling, protection levels, and retention requirements
+- **[🎯 Threat Modeling](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)** — Threat identification, attack surface analysis, and risk-based security design
 
 #### **⚙️ Operational Excellence Framework**
 
@@ -501,6 +503,6 @@ CRA assessment updated only when changes constitute "substantial modification" u
 **Approved by:** James Pether Sörling, CEO  
 **Distribution:** Public  
 **Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels)  
-**Effective Date:** 2025-08-23  
+**Effective Date:** 2026-03-19  
 **CRA Alignment:** Template supports CRA Annex V technical documentation and self-assessment requirements
 **ISMS Integration:** Comprehensive alignment with public ISMS framework for operational excellence

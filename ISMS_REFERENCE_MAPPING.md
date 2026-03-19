@@ -11,8 +11,8 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Owner-James_Pether_Sörling-blue?style=for-the-badge&logo=person&logoColor=white" alt="Owner">
-  <img src="https://img.shields.io/badge/Version-1.0-green?style=for-the-badge&logo=semantic-release&logoColor=white" alt="Version">
-  <img src="https://img.shields.io/badge/Effective-2025--11--10-orange?style=for-the-badge&logo=calendar&logoColor=white" alt="Effective Date">
+  <img src="https://img.shields.io/badge/Version-2.0-green?style=for-the-badge&logo=semantic-release&logoColor=white" alt="Version">
+  <img src="https://img.shields.io/badge/Effective-2026--03--19-orange?style=for-the-badge&logo=calendar&logoColor=white" alt="Effective Date">
   <img src="https://img.shields.io/badge/Review_Cycle-Quarterly-purple?style=for-the-badge&logo=refresh&logoColor=white" alt="Review Cycle">
 </p>
 
@@ -203,6 +203,54 @@ The public ISMS repository is located at: **[https://github.com/Hack23/ISMS-PUBL
 
 ---
 
+### 🛡️ SECURITY_ARCHITECTURE.md (Security Architecture Documentation)
+
+**Total ISMS-PUBLIC References**: 18
+
+| **Section** | **ISMS Policy Referenced** | **Link Type** | **Purpose** |
+|-------------|----------------------------|---------------|-------------|
+| Security Documentation Map | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | Direct link | Top-level policy alignment |
+| Defense-in-Depth Strategy | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | Direct link | SDLC security controls |
+| Network Security & Perimeter | [Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) | Direct link | CDN, TLS, DNSSEC controls |
+| Data Protection & Key Management | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) | Direct link | Encryption and key management |
+| Data Protection & Key Management | [Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md) | Direct link | Data handling requirements |
+| Authentication & Authorization | [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) | Direct link | Access management model |
+| Vulnerability Management | [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) | Direct link | Scanning and remediation |
+| Threat Detection & Investigation | [Threat Modeling](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) | Direct link | Threat identification methodology |
+| Application Security Controls | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) | Direct link | SBOM, dependency governance |
+| Application Security Controls | [CRA Conformity Assessment Process](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CRA_Conformity_Assessment_Process.md) | Direct link | EU CRA technical compliance |
+| High Availability & Resilience | [Backup Recovery Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) | Direct link | Recovery and resilience |
+| Security Operations | [Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) | Direct link | Incident handling procedures |
+| Compliance Framework Mapping | [Compliance Checklist](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Compliance_Checklist.md) | Direct link | ISO 27001, NIST CSF, CIS mapping |
+| Compliance Framework Mapping | [CLASSIFICATION.md](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | Badge links | CIA classification levels |
+| Security Investment | [Security Metrics](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Security_Metrics.md) | Direct link | Security KPI tracking |
+| Automated Security Operations | [Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) | Direct link | CI/CD pipeline security |
+| Supply Chain Security | [Third Party Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Third_Party_Management.md) | Direct link | Vendor and dependency risk |
+| Supply Chain Security | [Risk Register](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Register.md) | Direct link | Risk tracking and assessment |
+
+**Status**: ✅ All links verified and functional
+
+---
+
+### 🏗️ ARCHITECTURE.md (Technical Architecture Documentation)
+
+**Total ISMS-PUBLIC References**: 8
+
+| **Section** | **ISMS Policy Referenced** | **Link Type** | **Purpose** |
+|-------------|----------------------------|---------------|-------------|
+| System Context | [CLASSIFICATION.md](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | Reference | System classification context |
+| Container View - CDN/Hosting | [Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) | Reference | Infrastructure security alignment |
+| Performance Architecture | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | Reference | Secure coding practices |
+| File Structure | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) | Reference | Dependency structure governance |
+| SWOT Analysis | [Risk Assessment Methodology](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Assessment_Methodology.md) | Reference | Strategic risk alignment |
+| Architecture Documentation Map | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | Reference | Documentation completeness |
+| High Availability | [Backup Recovery Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) | Reference | DR architecture alignment |
+| Third-Party Dependencies | [Third Party Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Third_Party_Management.md) | Reference | CDN and hosting vendor governance |
+
+**Status**: ✅ All links verified and functional
+
+---
+
 ## 🔍 Coverage Gap Analysis
 
 ### ✅ Well-Covered Areas
@@ -229,17 +277,29 @@ These Black Trigram aspects have strong ISMS policy coverage:
    - SBOM generation and dependency scanning documented
    - Third-party risk assessment processes defined
 
+5. **Security Architecture** ✅ _(NEW in v2.0)_
+   - SECURITY_ARCHITECTURE.md maps 18 ISMS policy references
+   - Defense-in-depth strategy aligned with Information_Security_Policy.md
+   - CRA conformity traceable via CRA_Conformity_Assessment_Process.md
+
+6. **Open Source Governance** ✅ _(NEW in v2.0)_
+   - Open_Source_Policy.md referenced in SECURITY_ARCHITECTURE.md, CRA-ASSESSMENT.md, THREAT_MODEL.md
+   - Dependency management aligned with Third_Party_Management.md
+   - SBOM and license compliance documented
+
 ### 🟡 Areas with Distributed Coverage
 
 These topics span multiple ISMS policies (requires cross-referencing):
 
 1. **Cloud Infrastructure Security** 🟡
    - Covered by: Network_Security_Policy.md, Access_Control_Policy.md, Third_Party_Management.md
+   - **Improvement in v2.0**: SECURITY_ARCHITECTURE.md now provides consolidated infrastructure security mapping
    - **Recommendation**: Add explicit CDN and GitHub Pages references to ISMS-PUBLIC
 
-2. **Open Source Dependency Management** 🟡
+2. **Open Source Dependency Management** 🟡 → ✅ _(Improved in v2.0)_
    - Covered by: Open_Source_Policy.md, Third_Party_Management.md, Vulnerability_Management.md
-   - **Recommendation**: Create dedicated "Dependency Security Matrix" in ISMS-PUBLIC
+   - **Improvement in v2.0**: SECURITY_ARCHITECTURE.md and ARCHITECTURE.md now reference Open_Source_Policy.md directly
+   - SBOM generation and license compliance documented in CRA-ASSESSMENT.md
 
 3. **User Privacy & GDPR Compliance** 🟡
    - Covered by: Privacy_Policy.md, Data_Classification_Policy.md
@@ -253,11 +313,11 @@ These topics span multiple ISMS policies (requires cross-referencing):
    - **Recommendation**: Create "Cultural_Content_Policy.md" in ISMS-PUBLIC or document in project-specific guidelines
    - **Priority**: Medium (project-specific, not applicable to other Hack23 products)
 
-2. **WebGL/PixiJS Security Best Practices** 🔴
-   - **Current State**: THREAT_MODEL.md identifies WebGL exploitation risks
-   - **ISMS Coverage**: General Secure_Development_Policy.md, but no canvas/WebGL specifics
+2. **Three.js/WebGL Security Best Practices** 🟡 _(Reduced from 🔴 in v2.0)_
+   - **Current State**: THREAT_MODEL.md identifies WebGL exploitation risks; project migrated from PixiJS to Three.js
+   - **ISMS Coverage**: General Secure_Development_Policy.md; SECURITY_ARCHITECTURE.md now covers application security controls
    - **Recommendation**: Add "Frontend Graphics Security" section to Secure_Development_Policy.md
-   - **Priority**: Medium (applies to all Hack23 games)
+   - **Priority**: Medium (applies to all Hack23 games using Three.js/@react-three/fiber)
 
 3. **In-Game ISMS Reference Display** 🟢
    - **Current State**: No in-game UI currently links to ISMS-PUBLIC
@@ -310,7 +370,7 @@ Add ISMS reference to Philosophy screen or About dialog:
 
 ### Validation Methodology
 
-All ISMS-PUBLIC links validated on **2025-11-10** using:
+All ISMS-PUBLIC links validated on **2026-03-19** using:
 1. Automated link checker against live GitHub repository
 2. Manual verification of anchor links and sections
 3. HTTPS certificate validation
@@ -323,11 +383,13 @@ All ISMS-PUBLIC links validated on **2025-11-10** using:
 | README.md | 65 | 65 | 0 | ✅ Pass |
 | THREAT_MODEL.md | 30 | 30 | 0 | ✅ Pass |
 | CRA-ASSESSMENT.md | 21 | 21 | 0 | ✅ Pass |
+| SECURITY_ARCHITECTURE.md | 18 | 18 | 0 | ✅ Pass |
+| ARCHITECTURE.md | 8 | 8 | 0 | ✅ Pass |
 | End-of-Life-Strategy.md | 3 | 3 | 0 | ✅ Pass |
-| **TOTAL** | **119** | **119** | **0** | **✅ 100% Valid** |
+| **TOTAL** | **145** | **145** | **0** | **✅ 100% Valid** |
 
-**Validation Date**: 2025-11-10  
-**Next Validation**: 2026-02-10 (Quarterly)
+**Validation Date**: 2026-03-19  
+**Next Validation**: 2026-06-19 (Quarterly)
 
 ---
 
@@ -367,6 +429,10 @@ When adding new security features or documentation:
 | Classify new data | Data Classification Policy | [Link](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md) |
 | Add CI/CD step | Change Management | [Link](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) |
 | Third-party service | Third Party Management | [Link](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Third_Party_Management.md) |
+| Model threats | Threat Modeling | [Link](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) |
+| Assess vulnerabilities | Vulnerability Management | [Link](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) |
+| EU CRA compliance | CRA Conformity Assessment | [Link](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CRA_Conformity_Assessment_Process.md) |
+| Evaluate risk | Risk Assessment Methodology | [Link](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Assessment_Methodology.md) |
 
 ---
 
@@ -379,6 +445,7 @@ When adding new security features or documentation:
 | 🛡️ | [THREAT_MODEL.md](./THREAT_MODEL.md) | Black Trigram threat analysis |
 | 📋 | [CRA-ASSESSMENT.md](./CRA-ASSESSMENT.md) | EU CRA compliance assessment |
 | 🔐 | [SECURITY_ARCHITECTURE.md](./SECURITY_ARCHITECTURE.md) | Current security implementation |
+| 🏗️ | [ARCHITECTURE.md](./ARCHITECTURE.md) | Technical architecture documentation |
 | 🔮 | [FUTURE_SECURITY_ARCHITECTURE.md](./FUTURE_SECURITY_ARCHITECTURE.md) | Planned security enhancements |
 | 📊 | [README.md](./README.md) | Project overview with ISMS badges |
 | 🔚 | [End-of-Life-Strategy.md](./End-of-Life-Strategy.md) | Product lifecycle management |
@@ -389,7 +456,7 @@ When adding new security features or documentation:
 
 ### Review Schedule
 
-- **Quarterly Review**: Validate all 119 links, check for new ISMS policies
+- **Quarterly Review**: Validate all 145 links, check for new ISMS policies
 - **Post-ISMS Update**: Update mappings within 5 business days of ISMS-PUBLIC changes
 - **Major Feature Addition**: Update this document when adding significant Black Trigram features
 - **Regulatory Changes**: Immediate review if CRA or GDPR requirements evolve
@@ -399,6 +466,7 @@ When adding new security features or documentation:
 | **Version** | **Date** | **Changes** | **Author** |
 |-------------|----------|-------------|------------|
 | 1.0 | 2025-11-10 | Initial ISMS reference mapping, consolidation of issues #560 and #561 | ISMS Ninja |
+| 2.0 | 2026-03-19 | Major update: Added SECURITY_ARCHITECTURE.md (18 refs) and ARCHITECTURE.md (8 refs) mappings; expanded Quick Policy Lookup; updated gap analysis; total links 119→145 | Documentation Writer |
 
 ### Document Ownership
 
@@ -427,8 +495,8 @@ This document is successful when:
 **Approved by:** James Pether Sörling, CEO, Hack23 AB  
 **Distribution:** Public (GitHub Repository)  
 **Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels)  
-**Effective Date:** 2025-11-10  
-**Next Review:** 2026-02-10 (Quarterly)
+**Effective Date:** 2026-03-19  
+**Next Review:** 2026-06-19 (Quarterly)
 
 ---
 

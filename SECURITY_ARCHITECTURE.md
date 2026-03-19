@@ -1,29 +1,51 @@
-# 🛡️ Black Trigram (흑괘) Security Architecture
+<p align="center">
+  <img src="https://hack23.com/icon-192.png" alt="Hack23 Logo" width="192" height="192">
+</p>
+
+<h1 align="center">🛡️ Black Trigram (흑괘) — Security Architecture</h1>
+
+<p align="center">
+  <strong>🔒 Defense-in-Depth Security for Korean Martial Arts Combat Simulator</strong><br>
+  <em>🛡️ ISMS Aligned • Frontend-Only • Supply Chain Security • Multi-Layer Defense</em>
+</p>
+
+<p align="center">
+  <a><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
+  <a><img src="https://img.shields.io/badge/Version-2.0-555?style=for-the-badge" alt="Version"/></a>
+  <a><img src="https://img.shields.io/badge/Effective-2026--03--19-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a><img src="https://img.shields.io/badge/Review-Annual-orange?style=for-the-badge" alt="Review Cycle"/></a>
+</p>
+
+**📋 Document Owner:** CEO | **📄 Version:** 2.0 | **📅 Last Updated:** 2026-03-19 (UTC)
+**🔄 Review Cycle:** Annual | **⏰ Next Review:** 2027-03-19
+**🏷️ Classification:** Public (Open Source Educational Gaming Platform)
+
+---
 
 This document outlines the comprehensive security architecture of the Black Trigram Korean martial arts combat simulator, detailing how we protect our systems and data through multiple security layers.
 
 ## 📑 Table of Contents
 
 - [🔐 Security Documentation Map](#-security-documentation-map)
-- [🔑 Authentication Architecture](#-authentication-architecture)
+- [🏛️ Security Architecture Overview](#-security-architecture-overview)
+- [🔑 Authentication & Authorization](#-authentication--authorization)
 - [📜 Data Integrity & Auditing](#-data-integrity--auditing)
 - [📊 Session & Action Tracking](#-session--action-tracking)
 - [🔍 Security Event Monitoring](#-security-event-monitoring)
-- [🌐 Network Security](#-network-security)
-- [🔌 VPC Endpoints Security](#-vpc-endpoints-security)
-- [🏗️ High Availability Design](#-high-availability-design)
-- [💾 Data Protection](#-data-protection)
+- [🌐 Network Security & Perimeter Protection](#-network-security--perimeter-protection)
+- [🔌 VPC Endpoints & Private Access](#-vpc-endpoints--private-access)
+- [🏗️ High Availability & Resilience](#-high-availability--resilience)
+- [🔒 Data Protection & Key Management](#-data-protection--key-management)
 - [☁️ AWS Security Infrastructure](#-aws-security-infrastructure)
 - [🔰 AWS Foundational Security Best Practices](#-aws-foundational-security-best-practices)
-- [🕵️ Threat Detection & Investigation](#-threat-detection--investigation)
-- [🔎 Vulnerability Management](#-vulnerability-management)
-- [⚡ Resilience & Operational Readiness](#-resilience--operational-readiness)
-- [📋 Configuration & Compliance Management](#-configuration--compliance-management)
-- [📊 Monitoring & Analytics](#-monitoring--analytics)
+- [⚡ Threat Detection & Investigation](#-threat-detection--investigation)
+- [🔍 Vulnerability Management](#-vulnerability-management)
+- [⚙️ Configuration & Compliance Management](#-configuration--compliance-management)
+- [📈 Security Monitoring & Analytics](#-security-monitoring--analytics)
 - [🤖 Automated Security Operations](#-automated-security-operations)
-- [🔒 Application Security](#-application-security)
-- [📜 Compliance Framework](#-compliance-framework)
-- [🛡️ Defense-in-Depth Strategy](#-defense-in-depth-strategy)
+- [🛡️ Application Security Controls](#-application-security-controls)
+- [📋 Compliance Framework Mapping](#-compliance-framework-mapping)
+- [🏆 Defense-in-Depth Strategy](#-defense-in-depth-strategy)
 - [🔄 Security Operations](#-security-operations)
 - [💰 Security Investment](#-security-investment)
 - [🏛️ CI/CD Security Architecture](#-cicd-security-architecture)
@@ -71,7 +93,74 @@ This security architecture implements controls aligned with Hack23 AB's publicly
 | **💾 Data Protection** | ✅ Implemented | No persistent data - session-only storage |
 | **🚨 Incident Response** | ✅ Documented | GitHub Security Advisories, coordinated disclosure |
 
-## 🔑 Authentication Architecture
+## 🏛️ Security Architecture Overview
+
+The following diagram illustrates the layered defense-in-depth architecture for Black Trigram, showing how security controls are organized across infrastructure, application, and development layers.
+
+```mermaid
+graph TD
+    subgraph "🏆 Defense-in-Depth Security Architecture"
+        direction TB
+
+        subgraph "Layer 1: Perimeter & Network Security"
+            L1A[🌐 CloudFront CDN<br/>400+ Edge Locations]
+            L1B[🛡️ AWS Shield Standard<br/>DDoS Protection L3/L4]
+            L1C[🔐 TLS 1.3<br/>HTTPS-Only Enforcement]
+            L1D[📡 Route53 DNSSEC<br/>DNS Integrity]
+        end
+
+        subgraph "Layer 2: Application Security Controls"
+            L2A[🛡️ Content Security Policy<br/>XSS Prevention]
+            L2B[🔒 Security Headers<br/>HSTS, X-Frame-Options]
+            L2C[🔍 Input Validation<br/>Client-Side Sanitization]
+            L2D[🖥️ Browser Sandbox<br/>Origin Isolation]
+        end
+
+        subgraph "Layer 3: Data Protection & Key Management"
+            L3A[💾 SSE-S3 Encryption<br/>At-Rest Protection]
+            L3B[🔑 ACM Certificates<br/>Auto-Renewal]
+            L3C[🗝️ OIDC Federation<br/>No Static Credentials]
+            L3D[📦 S3 Versioning<br/>Recovery Capability]
+        end
+
+        subgraph "Layer 4: Supply Chain & CI/CD Security"
+            L4A[🔍 CodeQL SAST<br/>Vulnerability Detection]
+            L4B[📦 Dependency Review<br/>SCA Scanning]
+            L4C[🔏 SLSA Attestations<br/>Build Provenance]
+            L4D[📄 SBOM Generation<br/>Transparency]
+        end
+
+        subgraph "Layer 5: Monitoring & Compliance"
+            L5A[⭐ OSSF Scorecard<br/>Supply Chain Rating]
+            L5B[🕷️ ZAP DAST<br/>Dynamic Testing]
+            L5C[📊 Lighthouse Audit<br/>Best Practices]
+            L5D[📋 ISMS Alignment<br/>ISO 27001 / NIST CSF]
+        end
+    end
+
+    L1A --> L2A
+    L2A --> L3A
+    L3A --> L4A
+    L4A --> L5A
+
+    style L1A,L1B,L1C,L1D fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white,font-weight:bold
+    style L2A,L2B,L2C,L2D fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
+    style L3A,L3B,L3C,L3D fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
+    style L4A,L4B,L4C,L4D fill:#AA00FF,stroke:#6200EA,stroke-width:2px,color:white,font-weight:bold
+    style L5A,L5B,L5C,L5D fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
+```
+
+### Security Layer Summary
+
+| **Layer** | **Controls** | **Status** |
+|-----------|-------------|------------|
+| **🌐 Perimeter & Network** | CloudFront CDN, AWS Shield, TLS 1.3, DNSSEC | ✅ Implemented |
+| **🛡️ Application Controls** | CSP, Security Headers, Input Validation, Browser Sandbox | ✅ Implemented |
+| **🔒 Data Protection** | SSE-S3, ACM Certificates, OIDC, S3 Versioning | ✅ Implemented |
+| **🔏 Supply Chain & CI/CD** | CodeQL, Dependency Review, SLSA, SBOM | ✅ Implemented |
+| **📋 Monitoring & Compliance** | OSSF Scorecard, ZAP DAST, Lighthouse, ISMS | ✅ Implemented |
+
+## 🔑 Authentication & Authorization
 
 **Current Status**: ❌ No Authentication - Client-Side Only Web Application
 
@@ -104,6 +193,13 @@ Black Trigram is a frontend-only web application with:
 - **💾 No Persistent Data**: All state stored in browser session only
 - **🔄 No Backend Services**: Purely static content delivery
 - **⚠️ No Access Controls**: All game content publicly accessible
+
+### Authorization Model
+
+- **🔓 Open Access**: All game content is publicly available with no authorization gates
+- **🔑 CI/CD OIDC**: GitHub Actions uses OIDC federation for AWS deployment (no static credentials)
+- **🛡️ IAM Least Privilege**: AWS `GithubWorkFlowRole` scoped to minimal S3/CloudFront permissions
+- **📋 No RBAC**: No role-based access control — not applicable for frontend-only architecture
 
 ### Security Implications
 
@@ -223,7 +319,7 @@ Black Trigram security monitoring:
 - **❌ No Threat Detection**: Cannot identify attacks
 - **❌ No Incident Response**: No system to detect incidents
 
-## 🌐 Network Security
+## 🌐 Network Security & Perimeter Protection
 
 **Current Status**: ✅ AWS CloudFront + Route53 - Multi-Region with GitHub Pages DR
 
@@ -354,7 +450,7 @@ flowchart LR
 - **✅ CAB Forum**: Certificate Authority baseline requirements compliance
 - **✅ Industry Standards**: Follows DNS security best practices
 
-## 🔌 VPC Endpoints Security
+## 🔌 VPC Endpoints & Private Access
 
 **Current Status**: ❌ Not Applicable - No AWS Infrastructure
 
@@ -377,7 +473,7 @@ Black Trigram does not use VPC infrastructure:
 - **🚫 No Private Subnets**: Static content delivery only
 - **🚫 No Endpoints**: No AWS service endpoints needed
 
-## 🏗️ High Availability Design
+## 🏗️ High Availability & Resilience
 
 **Current Status**: ✅ Multi-Region AWS + GitHub Pages DR
 
@@ -433,7 +529,18 @@ Black Trigram availability strategy:
 - **📄 Independent DR**: GitHub Pages as separate infrastructure
 - **💚 Active Monitoring**: Continuous health check validation
 
-## 💾 Data Protection
+### Static Content Resilience
+
+As a static content application, Black Trigram benefits from inherent resilience characteristics:
+
+- **✅ CDN Resilience**: Global content distribution provides natural resilience
+- **🚫 No RTO/RPO Required**: No data persistence means no recovery objectives
+- **🚫 No DR Planning Required**: Static content requires no disaster recovery beyond CDN
+- **🌍 Geographic Distribution**: Content available from multiple locations
+- **⚡ Automatic Failover**: CDN handles edge location failures automatically
+- **🔄 No Data Loss Risk**: No persistent data to lose
+
+## 🔒 Data Protection & Key Management
 
 **Current Status**: ✅ TLS Encryption + S3 Server-Side Encryption
 
@@ -473,6 +580,14 @@ Black Trigram data protection:
 - **🔑 Certificate Management**: Automated certificate renewal
 - **🛡️ Browser Isolation**: Each player's session data isolated by browser
 - **🔄 Data Recovery**: S3 versioning enables point-in-time recovery
+
+### Key Management
+
+- **🔑 ACM Managed Keys**: TLS certificate private keys managed by AWS Certificate Manager — no manual key handling
+- **🗝️ SSE-S3 Keys**: S3 server-side encryption keys fully managed by AWS — automatic key rotation
+- **🔐 OIDC Tokens**: Short-lived, automatically rotated federated tokens for CI/CD deployment — no static secrets
+- **🚫 No Application Keys**: No API keys, encryption keys, or secrets stored in source code or application
+- **📋 Key Rotation**: All cryptographic material automatically rotated by AWS managed services
 
 ## ☁️ AWS Security Infrastructure
 
@@ -581,7 +696,7 @@ Black Trigram does not implement AWS FSBP (uses AWS only for static hosting via 
 - **🚫 No GuardDuty**: No AWS environment to monitor
 - **🚫 No Inspector**: No AWS resources to scan
 
-## 🕵️ Threat Detection & Investigation
+## ⚡ Threat Detection & Investigation
 
 **Current Status**: ❌ No Threat Detection - Frontend Only
 
@@ -611,7 +726,7 @@ Black Trigram threat detection:
 - **❌ No Visibility**: Cannot detect client-side attacks
 - **❌ No Response**: No incident response capabilities
 
-## 🔎 Vulnerability Management
+## 🔍 Vulnerability Management
 
 **Current Status**: ❌ No Vulnerability Management - Static Content
 
@@ -641,37 +756,7 @@ Black Trigram vulnerability management:
 - **❌ Client-Side Risks**: Browser vulnerabilities outside our control
 - **❌ Dependency Risks**: Frontend dependencies need manual updates
 
-## ⚡ Resilience & Operational Readiness
-
-**Current Status**: ❌ Not Applicable - Static Content Delivery
-
-```mermaid
-flowchart TD
-    subgraph "Static Content Resilience"
-        A[📦 CDN Resilience] --> B[🌍 Global Distribution]
-        C[🔄 No Recovery<br>Objectives]
-        D[🚫 No Disaster<br>Recovery]
-    end
-
-    style A,B fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
-    style C,D fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
-```
-
-### Current Status
-
-Black Trigram resilience:
-
-- **✅ CDN Resilience**: Global content distribution provides natural resilience
-- **🚫 No RTO/RPO**: No data persistence means no recovery objectives
-- **🚫 No DR Planning**: Static content requires no disaster recovery
-
-### Resilience Benefits
-
-- **🌍 Geographic Distribution**: Content available from multiple locations
-- **⚡ Automatic Failover**: CDN handles edge location failures automatically
-- **🔄 No Data Loss**: No persistent data to lose
-
-## 📋 Configuration & Compliance Management
+## ⚙️ Configuration & Compliance Management
 
 **Current Status**: ❌ No Configuration Management - Static Content
 
@@ -700,7 +785,7 @@ Black Trigram configuration management:
 - **🔧 Static Configuration**: No runtime configuration changes
 - **✅ Version Control**: All configuration in source control
 
-## 📊 Monitoring & Analytics
+## 📈 Security Monitoring & Analytics
 
 **Current Status**: ❌ No Security Monitoring - Frontend Only
 
@@ -760,7 +845,7 @@ Black Trigram automated operations:
 - **✅ No Downtime**: No maintenance windows or patches needed
 - **✅ Self-Healing**: CDN automatically handles edge location issues
 
-## 🔒 Application Security
+## 🛡️ Application Security Controls
 
 **Current Status**: ✅ Partial Implementation - Frontend Security Only
 
@@ -798,7 +883,7 @@ Black Trigram application security:
 - **🔍 Input Sanitization**: Validation of all user inputs
 - **🚪 Same-Origin Policy**: Browser enforces origin restrictions
 
-## 📜 Compliance Framework
+## 📋 Compliance Framework Mapping
 
 **Current Status**: ❌ No Formal Compliance - Educational Application
 
@@ -829,7 +914,7 @@ Black Trigram compliance:
 - **🔒 Privacy First**: No user data collection reduces compliance burden
 - **🌍 Global Access**: No geographic restrictions or data residency requirements
 
-## 🛡️ Defense-in-Depth Strategy
+## 🏆 Defense-in-Depth Strategy
 
 **Current Status**: ✅ Simplified Defense Strategy - Minimal Attack Surface
 
@@ -1066,8 +1151,8 @@ As documented in the [End-of-Life Strategy](End-of-Life-Strategy.md), any future
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: Standard](https://img.shields.io/badge/A-Standard-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
-**📅 Effective Date:** 2025-01-15  
-**⏰ Next Review:** 2025-04-15  
+**📅 Effective Date:** 2026-03-19  
+**⏰ Next Review:** 2027-03-19  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![AWS Well-Architected](https://img.shields.io/badge/AWS-Well_Architected-orange?style=flat-square&logo=amazon-aws&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram with Security_
