@@ -1,0 +1,177 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>BACK_KICK_ANIMATION | Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API - v0.7.0</title><meta name="description" content="Documentation for Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><script async src="../assets/hierarchy.js" id="tsd-hierarchy-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="/" class="title">Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API - v0.7.0</a><div id="tsd-toolbar-links"><a href="https://github.com/Hack23/blacktrigram">GitHub</a><a href="https://blacktrigram.com/">Live Game</a><a href="https://github.com/Hack23/blacktrigram/blob/main/README.md">README</a><a href="https://github.com/Hack23/blacktrigram/blob/main/game-design.md">Game Design</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md">Architecture</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md">Security</a><a href="https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md">Combat System</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><ul class="tsd-breadcrumb" aria-label="Breadcrumb"><li><a href="../modules/systems_animation.html">systems/animation</a></li><li><a href="" aria-current="page">BACK_KICK_ANIMATION</a></li></ul><h1>Variable BACK_KICK_ANIMATION<code class="tsd-tag">Const</code></h1></div><div class="tsd-signature"><span class="tsd-kind-variable">BACK_KICK_ANIMATION</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/blacktrigram.SkeletalAnimation.html" class="tsd-signature-type tsd-kind-interface">SkeletalAnimation</a><span class="tsd-signature-symbol"> = ...</span></div><div class="tsd-comment tsd-typography"><p>Back Kick - 뒤차기 (Dwi Chagi) or 뒤후리기 (Dwi Hurigi)</p>
+<p>Powerful spinning heel thrust - one of Taekwondo's most devastating techniques.
+180° body rotation into linear heel strike - combines spin speed with thrust power.</p>
+<p><strong>Korean Martial Arts Biomechanics</strong> (한국 무술 생체역학):</p>
+<p><strong>Stance &amp; Weight Distribution</strong> (자세와 체중 분배):</p>
+<ul>
+<li>Start: 겨루기 자세 (Fighting stance) facing target, 60/40</li>
+<li>Spin: Weight shifts during 180° rotation</li>
+<li>Thrust: 100% weight on supporting leg, back to target</li>
+<li>Recovery: Complete rotation, return to facing target</li>
+<li>Key: Blind technique - must look over shoulder!</li>
+</ul>
+<p><strong>Spin &amp; Chamber Phase - 회전+준비 (Hoejeon + Junbi)</strong> [200ms]:</p>
+<ul>
+<li>Body rotation: 180° SPIN - turns BACK to target</li>
+<li>Head: Looks OVER SHOULDER at target throughout (critical!)</li>
+<li>Direction: Can spin either direction - usually toward back leg</li>
+<li>Supporting leg: Pivots on ball of foot during rotation</li>
+<li>Kicking leg: Lifts and CHAMBERS during spin
+<ul>
+<li>Hip flexion: ~90° (1.57 rad) as knee rises</li>
+<li>Knee: Bent ~60° (1.05 rad) during chamber</li>
+</ul>
+</li>
+<li>Hips: Rotate 180° to face AWAY from target</li>
+<li>Shoulders: Rotate with hips, back now to target</li>
+<li>Arms: 상단막기 (High guard) during spin - vulnerable moment!</li>
+<li>Eyes: NEVER lose sight of target - look over shoulder!</li>
+<li>Breathing: Inhale during spin (준비 호흡)</li>
+<li>Balance: Core engaged, smooth rotation</li>
+<li>Supporting foot: Pivots smoothly 180°</li>
+</ul>
+<p><strong>Thrust/Extension Phase - 차기 (Chagi)</strong> [300ms]:</p>
+<ul>
+<li>Leg: EXPLODES BACKWARD in straight line</li>
+<li>Knee: Extends from 60° → 170° (0.18 rad) - nearly straight</li>
+<li>Striking surface: 뒤꿈치 (heel) - hardest point</li>
+<li>Trajectory: STRAIGHT LINEAR backward thrust</li>
+<li>Hip: Drives BACKWARD through target - powerful thrust</li>
+<li>Ankle: PLANTARFLEXED (발목 펴기) - heel projects backward</li>
+<li>Body: Leans FORWARD ~15-20° to counterbalance</li>
+<li>Torso: Bent forward at waist, back parallel to ground</li>
+<li>Supporting leg: Straight 170° (0.18 rad), stable base</li>
+<li>Arms: Extended forward or high guard for balance</li>
+<li>Head: STILL looking over shoulder at target (critical visual!)</li>
+<li>Hip thrust: Drives kicking hip BACKWARD into strike</li>
+<li>Power: Linear backward thrust like mule kick!</li>
+<li>Breathing: Building to exhale</li>
+</ul>
+<p><strong>Peak Impact - 정점 (Jeongjeom)</strong> [120ms]:</p>
+<ul>
+<li>Maximum extension: Leg nearly straight 170° (0.18 rad)</li>
+<li>Impact: Heel DRIVES through target backward</li>
+<li>Target zones:
+<ul>
+<li>명치 (solar plexus) - wind knockout</li>
+<li>늑골 (ribs) - rib fracture potential</li>
+<li>얼굴 (face) - knockout if aimed high</li>
+<li>무릎 (knee) - joint destruction if low</li>
+</ul>
+</li>
+<li>Body lean: Maximum forward ~20-25° (like horse stance lean)</li>
+<li>Breathing: EXPLOSIVE exhale &quot;차!&quot; (Cha!) or &quot;우억!&quot; (Wueok!)</li>
+<li>Power delivery: Full body mass + spin momentum + thrust</li>
+<li>Supporting leg: Rock solid, no wobble</li>
+<li>Back to target: Completely vulnerable - must land kick!</li>
+<li>Eyes: Target locked through side vision</li>
+<li>Follow-through: Hip continues backward past initial contact</li>
+</ul>
+<p><strong>Recovery/Complete Rotation - 복귀/회전완성 (Bokgwi/Hoejeon Wanseong)</strong> [380ms]:</p>
+<ul>
+<li>Leg: Retracts from extension, pulls back</li>
+<li>Body: CONTINUES rotation to complete 360° total (or stops at 180°)</li>
+<li>Two options:
+<ol>
+<li><strong>Complete spin</strong> (360° total): Continue rotation to face target again</li>
+<li><strong>Reverse spin</strong> (180° back): Reverse spin to face target</li>
+</ol>
+</li>
+<li>Typical: Complete the spin (forward momentum)</li>
+<li>Head: Rotates to acquire target visually again</li>
+<li>Foot: Lowers to ground facing target (forward position typical)</li>
+<li>Supporting leg: Completes pivot</li>
+<li>Weight: Shifts from 100% → 60/40 distribution</li>
+<li>Hips: Square back to target (정면 - Jeongmyeon)</li>
+<li>Arms: Return to 중단막기 (middle guard)</li>
+<li>Stance: Reset to 겨루기 자세 (fighting ready)</li>
+<li>Breathing: Controlled recovery</li>
+<li>Balance: Smooth completion, no stumbling</li>
+</ul>
+<p><strong>Combat Applications</strong> (전투 응용):</p>
+<ul>
+<li>Counter technique: Spin AWAY from attack, back kick stops it</li>
+<li>Surprise attack: Unexpected rotation confuses opponent</li>
+<li>Power strike: Combines spin momentum + linear thrust = devastating</li>
+<li>Target selection:
+<ul>
+<li>Body: 명치 (solar plexus), 늑골 (ribs) - most reliable</li>
+<li>Head: High back kick - spectacular knockout</li>
+<li>Knee: Low back kick - mobility destruction</li>
+</ul>
+</li>
+<li>Combinations:
+<ul>
+<li>돌려차기-뒤차기 (Roundhouse-Back kick) - spin combo</li>
+<li>뒤차기-돌려차기 (Back-Roundhouse) - continue spin</li>
+<li>옆차기-뒤차기 (Side-Back kick) - lateral to rear</li>
+</ul>
+</li>
+</ul>
+<p><strong>Biomechanical Keys</strong> (생체역학 핵심):</p>
+<ol>
+<li><strong>180° spin</strong> = Enables backward thrust (must turn back!)</li>
+<li><strong>Look over shoulder</strong> = Visual targeting (no look = no hit!)</li>
+<li><strong>Linear thrust</strong> = Maximum backward power</li>
+<li><strong>Heel strike</strong> = Concentrated force, bone-on-bone</li>
+<li><strong>Forward lean</strong> = Counterbalance enables full extension</li>
+<li><strong>Spin momentum</strong> = Adds rotational energy to linear thrust</li>
+</ol>
+<p><strong>Physics Principle</strong>: &quot;회전 운동량이 직선 충격으로 변한다&quot;
+(Rotational momentum converts to linear impact)</p>
+<ul>
+<li>Spin angular velocity → Leg linear velocity</li>
+<li>Rotational KE + Thrust KE = Devastating combined force</li>
+<li>Heel = Point force = Maximum PSI</li>
+<li>Backward thrust = Mule kick biomechanics</li>
+</ul>
+<p><strong>Taekwondo Principle</strong>: &quot;뒤차기는 태권도의 용기다&quot;
+(Back kick is the courage of Taekwondo)</p>
+<ul>
+<li>Most risky: Turn your back = ultimate vulnerability</li>
+<li>Most powerful: Spin + thrust = maximum force</li>
+<li>Most surprising: Unexpected rotation and strike</li>
+<li>Most committed: No retreat - must land or fail</li>
+</ul>
+<p><strong>Common Mistakes</strong> (흔한 실수):</p>
+<ul>
+<li>❌ No shoulder look (안 쳐다보기) - BLIND kick will miss!</li>
+<li>❌ Bent leg thrust (구부린 다리) - Power leak</li>
+<li>❌ Upright body (똑바로 서기) - Can't extend fully</li>
+<li>❌ Slow spin (느린 회전) - Telegraphed, countered</li>
+<li>❌ Incomplete rotation (불완전 회전) - Awkward angle</li>
+<li>❌ Pointed toes (발끝 펴기) - Wrong striking surface</li>
+<li>✅ Correct: Fast spin + shoulder look + forward lean + heel thrust</li>
+</ul>
+<p><strong>Training Points</strong> (훈련 포인트):</p>
+<ul>
+<li>Shoulder look critical: Practice looking back during spin</li>
+<li>Spin speed: Faster spin = more power and less telegraphing</li>
+<li>Balance: Single-leg balance while rotated backward</li>
+<li>Forward lean: Must lean to extend fully - practice against wall</li>
+<li>Landing: Complete rotation smoothly without stumbling</li>
+</ul>
+<p><strong>Competition vs. Street</strong> (겨루기 vs. 실전):</p>
+<ul>
+<li>Competition: Spectacular scoring technique, high-risk/high-reward</li>
+<li>Street: VERY risky - turning back = vulnerable</li>
+<li>Best when: Opponent charging - spin and stop them cold</li>
+<li>Avoid when: Multiple opponents - never turn back!</li>
+</ul>
+<p><strong>Risk Assessment</strong> (위험 평가):</p>
+<ul>
+<li>⚠️ Turning back = Temporary blindness</li>
+<li>⚠️ Spin time = Vulnerable moment</li>
+<li>⚠️ If miss = Back still to opponent = bad position</li>
+<li>✅ If land = Devastating power ends fight</li>
+</ul>
+<p><strong>Breathing Pattern</strong> (호흡 패턴):</p>
+<ul>
+<li>Spin/Chamber: Inhale during rotation (회전중 들이마시기)</li>
+<li>Thrust: Hold breath during acceleration (추진중 호흡 유지)</li>
+<li>Impact: Explosive 기합 (Kihap) &quot;차!&quot; or &quot;우억!&quot;</li>
+<li>Recovery: Controlled recovery breath while completing rotation</li>
+</ul>
+<p>Total duration: 1000ms (HEAVY technique)</p>
+</div><div class="tsd-comment tsd-typography"><div class="tsd-tag-korean"><h4 class="tsd-anchor-link" id="korean">Korean<a href="#korean" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>뒤차기애니메이션</p>
+</div></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/animation/catalogs/KickAnimations.ts#L790">systems/animation/catalogs/KickAnimations.ts:790</a></li></ul></aside></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div></div><div class="site-menu"><nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/Hack23/blacktrigram/tree/main/docs">🎮 Game Documentation</a><a href="https://github.com/Hack23/blacktrigram/blob/main/MINDMAP.md">🥋 Korean Martial Arts</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md">🏛️ Architecture (C4)</a><a href="https://github.com/Hack23/blacktrigram/blob/main/DATA_MODEL.md">📊 Data Model</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md">🛡️ Security Architecture</a><a href="https://github.com/Hack23/blacktrigram/blob/main/THREAT_MODEL.md">🎯 Threat Model</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SWOT.md">📈 SWOT Analysis</a><a href="https://github.com/Hack23/blacktrigram/blob/main/STATEDIAGRAM.md">🔄 State Diagrams</a><a href="https://github.com/Hack23/blacktrigram/blob/main/CRA-ASSESSMENT.md">📋 CRA Assessment</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ISMS_REFERENCE_MAPPING.md">📚 ISMS Mapping</a><a href="https://github.com/Hack23/blacktrigram" class="tsd-nav-link">GitHub</a><a href="https://blacktrigram.com/" class="tsd-nav-link">Live Game</a><a href="https://github.com/Hack23/blacktrigram/blob/main/README.md" class="tsd-nav-link">README</a><a href="https://github.com/Hack23/blacktrigram/blob/main/game-design.md" class="tsd-nav-link">Game Design</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md" class="tsd-nav-link">Architecture</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md" class="tsd-nav-link">Security</a><a href="https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md" class="tsd-nav-link">Combat System</a></nav><nav class="tsd-navigation"><a href="../modules.html">Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API - v0.7.0</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>

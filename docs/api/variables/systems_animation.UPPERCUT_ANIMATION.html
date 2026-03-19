@@ -1,0 +1,105 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>UPPERCUT_ANIMATION | Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API - v0.7.0</title><meta name="description" content="Documentation for Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><script async src="../assets/hierarchy.js" id="tsd-hierarchy-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="/" class="title">Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API - v0.7.0</a><div id="tsd-toolbar-links"><a href="https://github.com/Hack23/blacktrigram">GitHub</a><a href="https://blacktrigram.com/">Live Game</a><a href="https://github.com/Hack23/blacktrigram/blob/main/README.md">README</a><a href="https://github.com/Hack23/blacktrigram/blob/main/game-design.md">Game Design</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md">Architecture</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md">Security</a><a href="https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md">Combat System</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><ul class="tsd-breadcrumb" aria-label="Breadcrumb"><li><a href="../modules/systems_animation.html">systems/animation</a></li><li><a href="" aria-current="page">UPPERCUT_ANIMATION</a></li></ul><h1>Variable UPPERCUT_ANIMATION<code class="tsd-tag">Const</code></h1></div><div class="tsd-signature"><span class="tsd-kind-variable">UPPERCUT_ANIMATION</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/blacktrigram.SkeletalAnimation.html" class="tsd-signature-type tsd-kind-interface">SkeletalAnimation</a><span class="tsd-signature-symbol"> = ...</span></div><div class="tsd-comment tsd-typography"><p>Uppercut - 어퍼컷 (상승권 - Sangseung Gwon / 올려치기 - Ollyeochigi)</p>
+<p>Rising punch targeting chin from below using leg drive and upward hip thrust.
+Devastating close-range knockout technique generating power from ground through vertical chain.</p>
+<p><strong>Korean Martial Arts Biomechanics</strong> (한국 무술 생체역학):</p>
+<p><strong>Stance &amp; Weight Distribution</strong> (자세와 체중 분배):</p>
+<ul>
+<li>Start: 60/40 weight distribution</li>
+<li>Crouch: Weight shifts to 65/35 on striking side (loading)</li>
+<li>Impact: 70/30 - full commitment to vertical drive</li>
+<li>Stance width: SLIGHTLY WIDER for stable base during crouch</li>
+</ul>
+<p><strong>Crouch/Chamber Phase - 낮추기 (Najchugi)</strong> [150ms]:</p>
+<ul>
+<li>Body: Drops CENTER OF GRAVITY by ~10-15cm (무게중심 낮추기)</li>
+<li>Striking leg: Knee bends DEEPER ~100° (1.75 rad) - loading spring</li>
+<li>Hip: Tilts backward and DOWN on striking side (~15° pelvic tilt)</li>
+<li>Striking fist: Drops to hip level, palm facing INWARD/UPWARD (손바닥 위로)</li>
+<li>Elbow: Bent ~110° (1.92 rad), close to ribs</li>
+<li>Rear hand: Maintains 중단막기 (chin protection) - critical for counters</li>
+<li>Shoulders: Dip slightly on striking side (~10° drop)</li>
+<li>Breathing: Quick inhale while loading (준비 호흡)</li>
+<li>Weight: Loads onto ball of striking-side foot</li>
+</ul>
+<p><strong>Drive/Explosion Phase - 상승 (Sangseung)</strong> [200ms]:</p>
+<ul>
+<li>Legs: EXPLOSIVE EXTENSION - knee straightens from 100° → 170° (0.18 rad)</li>
+<li>Hip thrust: Drives UPWARD and FORWARD (~20° upward angle)</li>
+<li>Power chain: Ground → Legs → Hips → Core → Shoulder → Fist (VERTICAL)</li>
+<li>Heel: Lifts off ground as leg extends</li>
+<li>Pelvis: Thrusts upward and forward, creating hip drive</li>
+<li>Torso: Rises with hip drive, slight forward lean (~10°)</li>
+<li>Striking shoulder: Begins upward drive</li>
+<li>Fist: Starts vertical ascent along CENTERLINE</li>
+</ul>
+<p><strong>Strike/Extension Phase - 타격 (Tagyeok)</strong> [100ms]:</p>
+<ul>
+<li>Fist: Rises in VERTICAL PATH from hip to chin level</li>
+<li>Fist rotation: Inward palm → Neutral/Pronated (90° rotation)</li>
+<li>Elbow: Remains bent ~120° (2.09 rad) throughout - NOT straight punch!</li>
+<li>Trajectory: Fist travels UPWARD at ~60-70° angle from horizontal</li>
+<li>Shoulder: Completes upward drive, elevating ~15cm</li>
+<li>Hip: Full upward thrust completed</li>
+<li>Legs: Fully extended, body at maximum height</li>
+<li>Breathing: EXPLOSIVE exhale &quot;우억!&quot; (Wueok!) - rising kihap</li>
+</ul>
+<p><strong>Peak Impact - 정점 (Jeongjeom)</strong> [100ms]:</p>
+<ul>
+<li>Target: 턱 (chin) from BELOW - ideal knockout angle</li>
+<li>Impact surface: Knuckles facing UPWARD, hitting underside of jaw</li>
+<li>Body position: Full vertical extension, heel off ground</li>
+<li>Power delivery: ALL body mass driving UPWARD into target</li>
+<li>Neck snap: Opponent's head snaps BACKWARD and UP (knockout mechanism)</li>
+<li>Weight: 70/30 forward, committed to strike</li>
+<li>Rear hand: STILL protecting (never drops!)</li>
+</ul>
+<p><strong>Retraction Phase - 회수 (Hoisu)</strong> [150ms]:</p>
+<ul>
+<li>Fist: Drops back toward hip via same path</li>
+<li>Body: Begins lowering back to normal height</li>
+<li>Legs: Bend slightly to absorb return motion</li>
+<li>Hip: Settles back to neutral pelvic alignment</li>
+<li>Heel: Returns to ground</li>
+</ul>
+<p><strong>Recovery Phase - 복귀 (Bokgwi)</strong> [200ms]:</p>
+<ul>
+<li>Return to 중단막기 (middle guard) bilateral protection</li>
+<li>Center of gravity: Returns to normal fighting height</li>
+<li>Weight: Resets to 60/40 distribution</li>
+<li>Stance: 겨루기 자세 (fighting stance) restored</li>
+<li>Breathing: Controlled recovery, ready for next technique</li>
+</ul>
+<p><strong>Combat Applications</strong> (전투 응용):</p>
+<ul>
+<li>Primary target: 턱 (chin/jaw) from below - maximum knockout potential</li>
+<li>Ideal range: CLOSE combat (0.3-0.5m) - too close for straight punches</li>
+<li>Combinations: After body shot brings opponent's hands down</li>
+<li>Counter: When opponent ducks or bends forward</li>
+<li>Liver targeting: Body uppercut to 간장 (liver) at close range</li>
+</ul>
+<p><strong>Biomechanical Keys</strong> (생체역학 핵심):</p>
+<ol>
+<li><strong>Leg drive</strong> (다리 추진력): 60% of power comes from legs!</li>
+<li><strong>Hip thrust</strong> (엉덩이 밀기): 25% from upward pelvic motion</li>
+<li><strong>Shoulder lift</strong> (어깨 들기): 10% from shoulder elevation</li>
+<li><strong>Arm</strong> (팔): Only 5% - mostly for targeting!</li>
+</ol>
+<p><strong>Physics Principle</strong>: &quot;상승하는 힘은 중력을 이긴다&quot;
+(Rising force defeats gravity)</p>
+<ul>
+<li>Vertical strike vector meets horizontal chin = devastating angle</li>
+<li>Opponent's neck structure weakest against upward force</li>
+<li>Body weight + leg extension = maximum vertical power transfer</li>
+</ul>
+<p><strong>Common Mistakes</strong> (흔한 실수):</p>
+<ul>
+<li>❌ Arm-only punch (팔만) - No leg drive = weak uppercut</li>
+<li>❌ Wide arc (넓은 호) - Too telegraphed and slow</li>
+<li>❌ Straight up (수직) - Needs forward component for power</li>
+<li>✅ Correct: Deep crouch + explosive leg extension + upward hip thrust</li>
+</ul>
+<p><strong>Taekwondo Principle</strong>: &quot;땅에서 하늘로&quot; (From Earth to Heaven)
+The uppercut exemplifies vertical power generation - like jumping!</p>
+<p>Total duration: 800ms (HEAVY_LIGHT technique)</p>
+</div><div class="tsd-comment tsd-typography"><div class="tsd-tag-korean"><h4 class="tsd-anchor-link" id="korean">Korean<a href="#korean" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>어퍼컷애니메이션</p>
+</div></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/animation/catalogs/PunchAnimations.ts#L453">systems/animation/catalogs/PunchAnimations.ts:453</a></li></ul></aside></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div></div><div class="site-menu"><nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/Hack23/blacktrigram/tree/main/docs">🎮 Game Documentation</a><a href="https://github.com/Hack23/blacktrigram/blob/main/MINDMAP.md">🥋 Korean Martial Arts</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md">🏛️ Architecture (C4)</a><a href="https://github.com/Hack23/blacktrigram/blob/main/DATA_MODEL.md">📊 Data Model</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md">🛡️ Security Architecture</a><a href="https://github.com/Hack23/blacktrigram/blob/main/THREAT_MODEL.md">🎯 Threat Model</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SWOT.md">📈 SWOT Analysis</a><a href="https://github.com/Hack23/blacktrigram/blob/main/STATEDIAGRAM.md">🔄 State Diagrams</a><a href="https://github.com/Hack23/blacktrigram/blob/main/CRA-ASSESSMENT.md">📋 CRA Assessment</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ISMS_REFERENCE_MAPPING.md">📚 ISMS Mapping</a><a href="https://github.com/Hack23/blacktrigram" class="tsd-nav-link">GitHub</a><a href="https://blacktrigram.com/" class="tsd-nav-link">Live Game</a><a href="https://github.com/Hack23/blacktrigram/blob/main/README.md" class="tsd-nav-link">README</a><a href="https://github.com/Hack23/blacktrigram/blob/main/game-design.md" class="tsd-nav-link">Game Design</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md" class="tsd-nav-link">Architecture</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md" class="tsd-nav-link">Security</a><a href="https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md" class="tsd-nav-link">Combat System</a></nav><nav class="tsd-navigation"><a href="../modules.html">Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API - v0.7.0</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>

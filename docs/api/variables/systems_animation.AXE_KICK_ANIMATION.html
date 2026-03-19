@@ -1,0 +1,166 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>AXE_KICK_ANIMATION | Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API - v0.7.0</title><meta name="description" content="Documentation for Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><script async src="../assets/hierarchy.js" id="tsd-hierarchy-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="/" class="title">Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API - v0.7.0</a><div id="tsd-toolbar-links"><a href="https://github.com/Hack23/blacktrigram">GitHub</a><a href="https://blacktrigram.com/">Live Game</a><a href="https://github.com/Hack23/blacktrigram/blob/main/README.md">README</a><a href="https://github.com/Hack23/blacktrigram/blob/main/game-design.md">Game Design</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md">Architecture</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md">Security</a><a href="https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md">Combat System</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><ul class="tsd-breadcrumb" aria-label="Breadcrumb"><li><a href="../modules/systems_animation.html">systems/animation</a></li><li><a href="" aria-current="page">AXE_KICK_ANIMATION</a></li></ul><h1>Variable AXE_KICK_ANIMATION<code class="tsd-tag">Const</code></h1></div><div class="tsd-signature"><span class="tsd-kind-variable">AXE_KICK_ANIMATION</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/blacktrigram.SkeletalAnimation.html" class="tsd-signature-type tsd-kind-interface">SkeletalAnimation</a><span class="tsd-signature-symbol"> = ...</span></div><div class="tsd-comment tsd-typography"><p>Axe Kick - 내려차기 (Naeryeo Chagi) or 찍기 (Jjikgi)</p>
+<p>Spectacular high-reaching kick that descends like an axe blade onto target.
+Heel (뒤꿈치 - Dwikkumchi) drops vertically from above - devastating when lands!</p>
+<p><strong>Korean Martial Arts Biomechanics</strong> (한국 무술 생체역학):</p>
+<p><strong>Stance &amp; Weight Distribution</strong> (자세와 체중 분배):</p>
+<ul>
+<li>Start: 겨루기 자세 (Fighting stance), 60/40</li>
+<li>Rise: 100% weight on supporting leg</li>
+<li>Chop: 100% weight, body leans back for counterbalance</li>
+<li>Recovery: Gradual return to 60/40</li>
+<li>Requires: Excellent flexibility (유연성) and balance (균형)</li>
+</ul>
+<p><strong>Rise Phase - 올리기 (Olligi)</strong> [200ms]:</p>
+<ul>
+<li>Kicking leg: Lifts STRAIGHT UP in vertical plane</li>
+<li>Hip flexion: MAXIMUM ~120-140° (2.09-2.44 rad) - very high!</li>
+<li>Knee: STRAIGHT or nearly straight 170° (0.18 rad) throughout rise</li>
+<li>Ankle: DORSIFLEXED (발목 굽히기) - heel ready for strike</li>
+<li>Leg path: Vertical rise DIRECTLY in front of body</li>
+<li>Height: Leg rises ABOVE target height (need height to chop down!)</li>
+<li>Supporting leg: Straight 170° (0.18 rad), rock-solid base</li>
+<li>Hips: Slight forward tilt to assist leg rise</li>
+<li>Torso: Slight backward lean ~10° to counterbalance</li>
+<li>Arms: 상단막기 (High guard) protects during extended position</li>
+<li>Head: Looks UP following leg rise, then locks on target</li>
+<li>Breathing: Deep inhale during rise (힘내기)</li>
+<li>Balance: Core TIGHTLY engaged - stability critical</li>
+<li>Supporting heel: May lift slightly to assist height</li>
+</ul>
+<p><strong>Apex/Peak Position - 정점 (Jeongjeom)</strong> [Brief moment]:</p>
+<ul>
+<li>Leg: At maximum height - ideally ABOVE own head!</li>
+<li>Hip: Fully flexed, leg vertical or beyond</li>
+<li>Body: Backward lean increases to ~15-20°</li>
+<li>Moment of transition: Ascending motion → Descending motion</li>
+<li>Critical: Must maintain balance at apex!</li>
+</ul>
+<p><strong>Chop/Descending Phase - 내려치기 (Naeryeochigi)</strong> [300ms]:</p>
+<ul>
+<li>Leg: Drops STRAIGHT DOWN in vertical plane - like axe blade!</li>
+<li>Motion: CONTROLLED DROP initially, accelerates with gravity</li>
+<li>Knee: Stays straight ~170° (0.18 rad) - rigid striking lever</li>
+<li>Ankle: Maintains dorsiflexion - heel is blade edge</li>
+<li>Striking surface: 뒤꿈치 (heel) - hardest part descending</li>
+<li>Trajectory: VERTICAL or slightly forward - NOT backward!</li>
+<li>Speed: Accelerates due to gravity + muscle contraction</li>
+<li>Hip: Drives DOWN and FORWARD to add power</li>
+<li>Body: Continues backward lean ~15-20° for balance</li>
+<li>Arms: High guard maintained - face protection</li>
+<li>Breathing: Begin exhale during descent</li>
+<li>Supporting leg: Stays straight and stable</li>
+<li>Eyes: Lock on target during descent</li>
+</ul>
+<p><strong>Impact Phase - 타격 (Tagyeok)</strong> [120ms]:</p>
+<ul>
+<li>Impact: Heel CHOPS DOWN onto target</li>
+<li>Target zones:
+<ul>
+<li>머리 (head/crown) - knockout/concussion</li>
+<li>어깨 (shoulder) - collar bone break</li>
+<li>쇄골 (clavicle) - structural break</li>
+<li>팔 (arm) - limb disable if blocking</li>
+</ul>
+</li>
+<li>Impact energy: Body weight + gravity + muscle force</li>
+<li>Breathing: EXPLOSIVE exhale &quot;하!&quot; (Ha!) or &quot;척!&quot; (Cheok!)</li>
+<li>Follow-through: Heel continues DOWN past initial contact</li>
+<li>Body: Maximum backward lean ~20-25° at impact</li>
+<li>Supporting leg: Solid base absorbs impact shock</li>
+<li>Power: Downward force = devastating on rigid structures</li>
+</ul>
+<p><strong>Set Down Phase - 착지 (Chakji)</strong> [150ms]:</p>
+<ul>
+<li>Leg: CONTROLLED descent to floor from impact</li>
+<li>Knee: May bend slightly ~160° (0.28 rad) to cushion landing</li>
+<li>Foot: Places forward in front of body (typical placement)</li>
+<li>Hip: Releases flexion, leg lowers smoothly</li>
+<li>Body: Begins returning to upright position</li>
+<li>Weight: Begins transferring to kicking leg as it lands</li>
+<li>Balance: Smooth transition, no stumbling</li>
+</ul>
+<p><strong>Recovery Phase - 복귀 (Bokgwi)</strong> [230ms]:</p>
+<ul>
+<li>Stance: Foot now planted forward, weight shifts forward</li>
+<li>Body: Returns to upright fighting posture</li>
+<li>Weight: Settles to 60/40 distribution (may now be in switched stance)</li>
+<li>Hips: Return to neutral square position</li>
+<li>Arms: Return to 중단막기 (middle guard)</li>
+<li>Stance: Reset to 겨루기 자세 (fighting ready)</li>
+<li>Breathing: Controlled recovery breath</li>
+<li>Balance: Full stability restored</li>
+</ul>
+<p><strong>Combat Applications</strong> (전투 응용):</p>
+<ul>
+<li>Head strike (머리공격): Knockout potential - concussion</li>
+<li>Collar bone (쇄골): Structural break - disabling</li>
+<li>Shoulder (어깨): Joint damage or dislocation</li>
+<li>Breaking guard: Chop down on opponent's blocking arms</li>
+<li>Combinations:
+<ul>
+<li>앞차기-내려차기 (Front-Axe) - fake low, go high</li>
+<li>내려차기-돌려차기 (Axe-Roundhouse) - vertical to horizontal</li>
+<li>After grab escape: Leg free → immediate axe kick</li>
+</ul>
+</li>
+</ul>
+<p><strong>Biomechanical Keys</strong> (생체역학 핵심):</p>
+<ol>
+<li><strong>Straight leg rise</strong> = Maximum height (bent knee = lower height)</li>
+<li><strong>Vertical path</strong> = Pure downward force (no angle dissipation)</li>
+<li><strong>Gravity assist</strong> = Free energy addition to strike</li>
+<li><strong>Heel strike</strong> = Hardest surface, concentrated force</li>
+<li><strong>Backward lean</strong> = Counterbalance enables high rise and stable descent</li>
+<li><strong>Flexibility</strong> = Determines maximum height and effectiveness</li>
+</ol>
+<p><strong>Physics Principle</strong>: &quot;중력은 최고의 친구다&quot;
+(Gravity is your best friend)</p>
+<ul>
+<li>Potential energy (height) → Kinetic energy (descent)</li>
+<li>Acceleration = 9.8 m/s² + muscle contraction</li>
+<li>Vertical impact = No force dissipation to sides</li>
+<li>Heel = Smallest contact area = Maximum PSI</li>
+</ul>
+<p><strong>Taekwondo Principle</strong>: &quot;내려차기는 태권도의 예술이다&quot;
+(Axe kick is the art of Taekwondo)</p>
+<ul>
+<li>Most spectacular: Visual impact and difficulty</li>
+<li>Most flexible: Requires extreme hip flexibility</li>
+<li>Most balanced: Perfect balance while extended</li>
+<li>Most surprising: Unexpected attack angle from above</li>
+</ul>
+<p><strong>Common Mistakes</strong> (흔한 실수):</p>
+<ul>
+<li>❌ Bent knee rise (구부린 무릎) - Can't reach height</li>
+<li>❌ Backward trajectory (뒤로 내리기) - Misses target</li>
+<li>❌ Pointed toes (발끝 펴기) - Wrong striking surface</li>
+<li>❌ Forward lean (앞으로 기울기) - Loss of balance, falls forward</li>
+<li>❌ No height (낮은 올리기) - Weak chop, not enough drop</li>
+<li>❌ Uncontrolled descent (통제 안됨) - Can't stop, miss target</li>
+<li>✅ Correct: Straight leg high + vertical chop + controlled descent + heel strike</li>
+</ul>
+<p><strong>Training Points</strong> (훈련 포인트):</p>
+<ul>
+<li>Flexibility first: Can't axe kick without hamstring flexibility!</li>
+<li>Height practice: Kick high first, accuracy second</li>
+<li>Balance work: Single-leg balance drills essential</li>
+<li>Controlled descent: Not just dropping - DRIVING down</li>
+<li>Landing practice: Smooth set-down without stumbling</li>
+</ul>
+<p><strong>Flexibility Requirements</strong> (유연성 요구사항):</p>
+<ul>
+<li>Hamstring: Must reach 160-180° hip flexion</li>
+<li>Hip flexors: Must support leg at high position</li>
+<li>Lower back: Must tolerate backward lean</li>
+<li>Standing leg: Calf flexibility for supporting heel lift</li>
+</ul>
+<p><strong>Competition vs. Street</strong> (겨루기 vs. 실전):</p>
+<ul>
+<li>Competition: Spectacular, high-scoring technique</li>
+<li>Street: RISKY - high commitment, long recovery if miss</li>
+<li>Demo: Flashy, breaks boards held high</li>
+<li>Practical: Best when opponent's guard is high</li>
+</ul>
+<p>Total duration: 1000ms (HEAVY technique)</p>
+</div><div class="tsd-comment tsd-typography"><div class="tsd-tag-korean"><h4 class="tsd-anchor-link" id="korean">Korean<a href="#korean" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>내려차기애니메이션</p>
+</div></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/animation/catalogs/KickAnimations.ts#L622">systems/animation/catalogs/KickAnimations.ts:622</a></li></ul></aside></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div></div><div class="site-menu"><nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/Hack23/blacktrigram/tree/main/docs">🎮 Game Documentation</a><a href="https://github.com/Hack23/blacktrigram/blob/main/MINDMAP.md">🥋 Korean Martial Arts</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md">🏛️ Architecture (C4)</a><a href="https://github.com/Hack23/blacktrigram/blob/main/DATA_MODEL.md">📊 Data Model</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md">🛡️ Security Architecture</a><a href="https://github.com/Hack23/blacktrigram/blob/main/THREAT_MODEL.md">🎯 Threat Model</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SWOT.md">📈 SWOT Analysis</a><a href="https://github.com/Hack23/blacktrigram/blob/main/STATEDIAGRAM.md">🔄 State Diagrams</a><a href="https://github.com/Hack23/blacktrigram/blob/main/CRA-ASSESSMENT.md">📋 CRA Assessment</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ISMS_REFERENCE_MAPPING.md">📚 ISMS Mapping</a><a href="https://github.com/Hack23/blacktrigram" class="tsd-nav-link">GitHub</a><a href="https://blacktrigram.com/" class="tsd-nav-link">Live Game</a><a href="https://github.com/Hack23/blacktrigram/blob/main/README.md" class="tsd-nav-link">README</a><a href="https://github.com/Hack23/blacktrigram/blob/main/game-design.md" class="tsd-nav-link">Game Design</a><a href="https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md" class="tsd-nav-link">Architecture</a><a href="https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md" class="tsd-nav-link">Security</a><a href="https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md" class="tsd-nav-link">Combat System</a></nav><nav class="tsd-navigation"><a href="../modules.html">Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API - v0.7.0</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>
