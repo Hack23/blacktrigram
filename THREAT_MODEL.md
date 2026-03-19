@@ -11,13 +11,13 @@
 
 <p align="center">
   <a><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
-  <a><img src="https://img.shields.io/badge/Version-1.1-555?style=for-the-badge" alt="Version"/></a>
-  <a><img src="https://img.shields.io/badge/Effective-2026--02--26-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a><img src="https://img.shields.io/badge/Version-2.0-555?style=for-the-badge" alt="Version"/></a>
+  <a><img src="https://img.shields.io/badge/Effective-2026--03--19-success?style=for-the-badge" alt="Effective Date"/></a>
   <a><img src="https://img.shields.io/badge/Review-Annual-orange?style=for-the-badge" alt="Review Cycle"/></a>
 </p>
 
-**📋 Document Owner:** CEO | **📄 Version:** 1.1 | **📅 Last Updated:** 2026-02-26 (UTC)  
-**🔄 Review Cycle:** Annual | **⏰ Next Review:** 2027-02-26  
+**📋 Document Owner:** CEO | **📄 Version:** 2.0 | **📅 Last Updated:** 2026-03-19 (UTC)  
+**🔄 Review Cycle:** Annual | **⏰ Next Review:** 2027-03-19  
 **🏷️ Classification:** Public (Open Source Educational Gaming Platform)
 
 ---
@@ -902,6 +902,174 @@ Following [Hack23 AB Maturity Levels](https://github.com/Hack23/ISMS-PUBLIC/blob
 
 ---
 
+## 📈 AI-Enabled Threat Evolution
+
+### **🤖 AI Model Evolution — Threat Landscape Perspective (2026–2037)**
+
+Following [Hack23 AB Threat Modeling Policy — AI-Enabled Threats](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md), this section addresses the evolving AI threat landscape relevant to Black Trigram's frontend-only educational gaming platform.
+
+#### **🔴 Near-Term AI Threats (2026–2028)**
+
+| AI Threat Vector | Black Trigram Impact | Likelihood | Severity | Mitigation |
+|---|---|---|---|---|
+| **AI-generated phishing targeting game communities** | Social engineering against contributors and players via Discord/GitHub | Medium | Medium | Contributor verification processes, signed commits, community awareness training |
+| **AI-powered automated vulnerability scanning against CDN** | Automated reconnaissance and exploitation of CDN-hosted static assets | Medium | Low | CDN WAF rules, rate limiting, CloudFront Shield Standard, SRI integrity validation |
+| **Deepfake content injection into game assets** | Manipulated Korean cultural content (images, audio, 3D models) injected via supply chain | Low | High | Asset integrity hashes (SRI SHA-384), SBOM for all assets, manual cultural review gates |
+| **AI-assisted social engineering targeting contributors** | AI-crafted PRs with subtle malicious code, convincing impersonation of maintainers | Medium | High | Branch protection, mandatory code review, CODEOWNERS enforcement, GPG-signed commits |
+
+#### **🟡 Mid-Term AI Threats (2028–2032)**
+
+| AI Threat Vector | Black Trigram Impact | Likelihood | Severity | Mitigation Strategy |
+|---|---|---|---|---|
+| **AI-generated zero-day exploit chains** | Automated discovery of browser/WebGL exploit chains targeting game rendering | Low | High | Browser sandbox reliance, CSP strict-dynamic, regular dependency updates |
+| **LLM-poisoned dependency packages** | AI-crafted malicious npm packages mimicking legitimate game libraries | Medium | High | Lockfile pinning, dependency scanning (Dependabot, Socket.dev), SLSA provenance verification |
+| **AI-driven cultural manipulation** | Automated generation of culturally offensive Korean content to damage reputation | Low | Critical | Expert review pipeline, community reporting, automated content similarity checks |
+| **Automated CI/CD pipeline compromise** | AI agents targeting GitHub Actions workflows with crafted inputs | Low | Medium | Workflow permissions minimization, pinned action SHAs, OpenSSF Scorecard monitoring |
+
+#### **🟠 Long-Term AI Threats (2032–2037)**
+
+| AI Threat Vector | Black Trigram Impact | Likelihood | Severity | Preparedness |
+|---|---|---|---|---|
+| **Autonomous attack agents** | Self-directed AI systems that identify, exploit, and persist in browser environments | Low | Critical | Defense-in-depth architecture, zero-trust browser model, minimal attack surface |
+| **AI-generated counterfeit game clones** | Complete AI replication of Black Trigram with malware injection | Low | High | Open source licensing enforcement, brand protection, community verification |
+| **Quantum-assisted cryptographic attacks** | Breaking SRI hashes and TLS in transit | Very Low | Critical | Monitor NIST PQC standards, prepare migration to quantum-safe algorithms |
+
+#### **🛡️ AI Threat Countermeasures for Educational Gaming**
+
+```mermaid
+flowchart TD
+    A[🤖 AI Threat Detection] --> B{Threat Category}
+    B -->|Content Manipulation| C[Cultural Review Gate]
+    B -->|Supply Chain| D[SBOM + SRI Validation]
+    B -->|Social Engineering| E[Contributor Verification]
+    B -->|Automated Exploitation| F[CDN WAF + CSP]
+    C --> G[Expert Korean Cultural Validation]
+    D --> H[SLSA Provenance + Lockfile Audit]
+    E --> I[Signed Commits + Code Review]
+    F --> J[Rate Limiting + Shield Standard]
+    G --> K[✅ Safe to Deploy]
+    H --> K
+    I --> K
+    J --> K
+```
+
+**Key Principle:** Black Trigram's frontend-only, stateless architecture inherently limits the AI threat surface — no backend APIs, no user databases, no authentication systems to compromise. AI threats primarily target the supply chain and cultural content integrity.
+
+---
+
+## 🎯 Threat Modeling Maturity Assessment
+
+### **📊 Threat Modeling Maturity Levels**
+
+Following [Hack23 AB Threat Modeling Policy — Maturity Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md), this section tracks Black Trigram's progressive implementation of threat modeling practices.
+
+| Maturity Level | Name | Description | Black Trigram Status | Evidence |
+|---|---|---|---|---|
+| **Level 1** | **Ad-hoc** | Threat modeling performed reactively, no documented process | ✅ Completed | Initial project setup phase (pre-v0.1) |
+| **Level 2** | **Repeatable** | Basic threat modeling with documented outcomes, applied to major changes | ✅ Completed | STRIDE analysis in early THREAT_MODEL.md versions, security reviews on PRs |
+| **Level 3** | **Defined** | Comprehensive threat model documented with multiple frameworks (STRIDE, MITRE ATT&CK), integrated into SDLC | ✅ Current State | This document (v2.0), CI/CD security gates, SBOM generation, CodeQL scanning |
+| **Level 4** | **Managed** | Metrics-driven threat assessment, automated threat detection, quantitative risk measurement | 🎯 Target (2026) | Planned: automated DAST in CI, threat metrics dashboard, risk score tracking |
+| **Level 5** | **Optimizing** | Continuous threat intelligence integration, predictive threat analysis, AI-assisted threat modeling | 🔮 Future (2027+) | Planned: threat intelligence feeds, automated threat model updates, ML-based anomaly detection |
+
+#### **📈 Maturity Progression Roadmap**
+
+```mermaid
+graph LR
+    L1[Level 1<br/>Ad-hoc<br/>✅ Done] --> L2[Level 2<br/>Repeatable<br/>✅ Done]
+    L2 --> L3[Level 3<br/>Defined<br/>✅ Current]
+    L3 --> L4[Level 4<br/>Managed<br/>🎯 2026]
+    L4 --> L5[Level 5<br/>Optimizing<br/>🔮 2027+]
+    style L1 fill:#4CAF50,color:#fff
+    style L2 fill:#4CAF50,color:#fff
+    style L3 fill:#2196F3,color:#fff
+    style L4 fill:#FF9800,color:#fff
+    style L5 fill:#9C27B0,color:#fff
+```
+
+#### **🎯 Level 3 → Level 4 Gap Analysis**
+
+| Capability | Level 3 (Current) | Level 4 (Target) | Gap | Action Plan |
+|---|---|---|---|---|
+| **Threat identification** | Manual STRIDE + MITRE ATT&CK analysis | Automated threat surface scanning | Automation gap | Integrate OWASP ZAP into CI for CDN-deployed previews |
+| **Risk quantification** | Qualitative risk heat matrix | Quantitative risk scores with metrics | Metrics gap | Define KRIs (Key Risk Indicators) for supply chain and content integrity |
+| **Threat intelligence** | Annual ENISA TL review | Continuous threat feed integration | Timeliness gap | Subscribe to GitHub Advisory Database API, automate CVE correlation |
+| **Validation cadence** | Quarterly review cycle | Continuous automated validation | Frequency gap | Implement nightly dependency audit, weekly SBOM diff checks |
+| **Cultural threat monitoring** | Expert review gates | Automated cultural content scanning | Automation gap | Develop Korean cultural content validation heuristics |
+
+---
+
+## 🎪 Threat Modeling Workshop Framework
+
+### **📋 Pre-Workshop Preparation**
+
+Following [Hack23 AB Threat Modeling Policy — Workshop Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md), Black Trigram conducts structured threat modeling workshops tailored to the educational gaming context.
+
+#### **📝 Pre-Workshop Checklist**
+
+| # | Preparation Item | Owner | Status |
+|---|---|---|---|
+| 1 | Review current THREAT_MODEL.md and identify areas needing update | Security Lead | ☐ Before each workshop |
+| 2 | Gather latest ENISA Threat Landscape and GitHub Advisory DB updates | Security Lead | ☐ Before each workshop |
+| 3 | Collect CDN access logs and CSP violation reports from the past quarter | DevOps Lead | ☐ Before each workshop |
+| 4 | Review all dependency updates and SBOM changes since last workshop | Development Lead | ☐ Before each workshop |
+| 5 | Prepare updated architecture diagrams (ARCHITECTURE.md, DATA_MODEL.md) | Architecture Lead | ☐ Before each workshop |
+| 6 | Identify new Korean cultural content additions requiring threat review | Cultural Expert | ☐ Before each workshop |
+| 7 | Review open GitHub Security Advisories and Dependabot alerts | Security Lead | ☐ Before each workshop |
+| 8 | Prepare MITRE ATT&CK navigator layer with current coverage | Security Lead | ☐ Before each workshop |
+
+#### **👥 Workshop Participants**
+
+| Role | Responsibility | Required |
+|---|---|---|
+| **Security Lead** | Facilitates STRIDE analysis, maintains threat model | ✅ Required |
+| **Development Lead** | Provides implementation context, identifies new attack surfaces | ✅ Required |
+| **Korean Cultural Expert** | Validates cultural threat scenarios, reviews content integrity | ✅ Required |
+| **DevOps/CI Lead** | Reviews supply chain and deployment pipeline threats | ✅ Required |
+| **Community Representative** | Provides player perspective on social engineering threats | Recommended |
+
+### **📅 Workshop Agenda — Educational Gaming Threat Review**
+
+| Time | Activity | Duration | Output |
+|---|---|---|---|
+| **09:00** | 🎯 Opening: Review previous threat model, metrics, and action items | 30 min | Status dashboard update |
+| **09:30** | 🌐 Threat landscape update: ENISA TL, AI threats, gaming-specific trends | 30 min | Updated threat landscape section |
+| **10:00** | 🏗️ Architecture review: New components, data flows, trust boundaries | 45 min | Updated architecture-centric analysis |
+| **10:45** | ☕ Break | 15 min | — |
+| **11:00** | 🎭 STRIDE per element: Walk through each frontend component | 60 min | Updated STRIDE analysis table |
+| **12:00** | 🍽️ Lunch | 60 min | — |
+| **13:00** | 🇰🇷 Cultural threat deep-dive: Korean content integrity, deepfake risks | 45 min | Updated cultural threat catalog |
+| **13:45** | 🔗 Supply chain analysis: Dependency review, SBOM changes, npm risks | 45 min | Updated kill chain analysis |
+| **14:30** | ☕ Break | 15 min | — |
+| **14:45** | 🎖️ MITRE ATT&CK mapping update: New techniques, coverage gaps | 45 min | Updated ATT&CK navigator layer |
+| **15:30** | ⚖️ Risk scoring: Re-assess risk heat matrix, update priorities | 30 min | Updated risk heat matrix |
+| **16:00** | 📋 Action items: Assign mitigations, set deadlines, update maturity level | 30 min | Action item register |
+| **16:30** | ✅ Close: Summarize findings, confirm next workshop date | 15 min | Workshop summary report |
+
+### **📤 Post-Workshop Action Items**
+
+| # | Action | Owner | Deadline | Tracking |
+|---|---|---|---|---|
+| 1 | Update THREAT_MODEL.md with all workshop findings | Security Lead | 1 week post-workshop | GitHub PR |
+| 2 | File GitHub issues for new mitigations identified | Development Lead | 1 week post-workshop | GitHub Issues |
+| 3 | Update MITRE ATT&CK navigator layer export | Security Lead | 2 weeks post-workshop | Repository commit |
+| 4 | Validate cultural content changes flagged in workshop | Cultural Expert | 2 weeks post-workshop | Review gate sign-off |
+| 5 | Update risk heat matrix and risk register | Security Lead | 2 weeks post-workshop | Risk Register update |
+| 6 | Implement priority security controls from gap analysis | Development Lead | Next sprint | Sprint tracking |
+| 7 | Schedule follow-up review for critical findings | Security Lead | 1 month post-workshop | Calendar invite |
+| 8 | Publish workshop summary to team (sanitized for public) | Security Lead | 1 week post-workshop | Team communication |
+
+#### **📊 Workshop Effectiveness Metrics**
+
+| Metric | Target | Measurement |
+|---|---|---|
+| **Threats identified per workshop** | ≥ 5 new or updated threats | Count of threat model changes |
+| **Action item completion rate** | ≥ 90% within deadline | Issue tracking completion |
+| **Time to mitigation** | ≤ 30 days for High/Critical | Days from identification to control implementation |
+| **Participant coverage** | All required roles present | Attendance record |
+| **Maturity progression** | Advance 1 sub-level per year | Maturity assessment score |
+
+---
+
 ## 📋 ISMS Compliance Framework Mapping
 
 Following [Hack23 AB Threat Modeling Policy §2.1](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) classification-driven approach, this threat model maps to three compliance frameworks:
@@ -990,6 +1158,6 @@ Following [Hack23 AB Threat Modeling Policy §2.1](https://github.com/Hack23/ISM
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=unlock&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  
-**📅 Effective Date:** 2026-02-26  
-**⏰ Next Review:** 2027-02-26  
+**📅 Effective Date:** 2026-03-19  
+**⏰ Next Review:** 2027-03-19  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![Frontend Security](https://img.shields.io/badge/Frontend-Security_Hardened-darkgreen?style=flat-square&logo=security&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![Hack23 Threat Modeling](https://img.shields.io/badge/Hack23-Threat_Modeling_Policy-purple?style=flat-square&logo=security&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)
