@@ -960,6 +960,6 @@ Following [Hack23 AB Maturity Levels](https://github.com/Hack23/ISMS-PUBLIC/blob
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=unlock&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)  
-**📅 Effective Date:** 2026-01-25  
-**⏰ Next Review:** 2027-01-25  
+**📅 Effective Date:** 2026-03-19  
+**⏰ Next Review:** 2026-09-19  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![AWS Security](https://img.shields.io/badge/AWS-Security_Hardened-darkgreen?style=flat-square&logo=amazonaws&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![PCI DSS](https://img.shields.io/badge/PCI_DSS-Compliant-purple?style=flat-square&logo=stripe&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![Hack23 Threat Modeling](https://img.shields.io/badge/Hack23-Threat_Modeling_Policy-purple?style=flat-square&logo=security&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)
