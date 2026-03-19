@@ -1,7 +1,7 @@
 {
   "name": "game-app",
   "private": true,
-  "version": "0.6.58",
+  "version": "0.7.0",
   "type": "module",
   "engines": {
     "node": ">=25.0.0",
