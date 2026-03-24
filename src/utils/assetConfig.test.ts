@@ -46,6 +46,12 @@ describe("assetConfig", () => {
       );
     });
 
+    it("normalizes missing leading slash when no base path set", () => {
+      expect(resolveAssetPath("assets/audio/music/intro_theme.mp3")).toBe(
+        "/assets/audio/music/intro_theme.mp3",
+      );
+    });
+
     it("prepends base path", () => {
       setAssetBasePath("https://cdn.example.com");
       expect(resolveAssetPath("/assets/audio/music/intro_theme.mp3")).toBe(
