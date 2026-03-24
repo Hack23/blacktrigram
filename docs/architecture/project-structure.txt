@@ -1342,6 +1342,8 @@ src/utils/accessibility.test.ts
 src/utils/accessibility.ts
 src/utils/archetypeAssets.test.ts
 src/utils/arenaWorldDimensions.ts
+src/utils/assetConfig.test.ts
+src/utils/assetConfig.ts
 src/utils/cameraShake.ts
 src/utils/characterScaling.ts
 src/utils/clothingColors.test.ts
