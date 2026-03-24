@@ -162,6 +162,7 @@
     "@react-three/drei": "10.7.7",
     "@react-three/fiber": "9.5.0",
     "@react-three/postprocessing": "3.0.4",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -217,7 +218,5 @@
       "eslint": "$eslint"
     }
   },
-  "dependencies": {
-    "@testing-library/dom": "^10.4.1"
-  }
+  "dependencies": {}
 }
