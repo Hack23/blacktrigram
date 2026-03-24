@@ -1230,7 +1230,7 @@ export function generateMeridianEffects(
   const now = timestamp ?? Date.now(); // Use provided timestamp or current time
 
   // Fix: Use proper EffectIntensity enum values from types/enums.ts
-  let effectIntensity: EffectIntensity = EffectIntensity.MINOR;
+  let effectIntensity: EffectIntensity;
   if (intensityValue > 0.7) effectIntensity = EffectIntensity.SEVERE;
   else if (intensityValue > 0.4) effectIntensity = EffectIntensity.MODERATE;
   else effectIntensity = EffectIntensity.MINOR;
