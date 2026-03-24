@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "useDefineForClassFields": true,
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./lib",
+    "declarationDir": "./lib",
+    "declarationMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/components/*": ["src/components/*"],
+      "@/systems/*": ["src/systems/*"],
+      "@/types/*": ["src/types/*"],
+      "@/audio/*": ["src/audio/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/data/*": ["src/data/*"],
+      "@/assets/*": ["src/assets/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "lib",
+    "**/*.cy.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "src/test/**",
+    "src/main.tsx"
+  ]
+}

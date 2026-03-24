@@ -18,6 +18,7 @@
   },
   "include": [
     "vite.config.ts",
+    "vite.lib.config.ts",
     "vitest.config.ts",
     "cypress.config.ts",
     "scripts/**/*.ts",
