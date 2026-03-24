@@ -1,8 +1,73 @@
 {
-  "name": "game-app",
-  "private": true,
+  "name": "blacktrigram",
   "version": "0.7.1",
+  "description": "Black Trigram (흑괘) - Korean Martial Arts Combat Simulator. Reusable game systems, combat mechanics, animation framework, and Korean martial arts data built with React, Three.js, and TypeScript.",
   "type": "module",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./systems": {
+      "types": "./lib/systems/index.d.ts",
+      "import": "./lib/systems/index.js"
+    },
+    "./types": {
+      "types": "./lib/types/index.d.ts",
+      "import": "./lib/types/index.js"
+    },
+    "./audio": {
+      "types": "./lib/audio/index.d.ts",
+      "import": "./lib/audio/index.js"
+    },
+    "./utils": {
+      "types": "./lib/utils/index.d.ts",
+      "import": "./lib/utils/index.js"
+    },
+    "./components": {
+      "types": "./lib/components/index.d.ts",
+      "import": "./lib/components/index.js"
+    }
+  },
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md"
+  ],
+  "keywords": [
+    "korean-martial-arts",
+    "combat-simulator",
+    "three-js",
+    "react",
+    "game-engine",
+    "trigram",
+    "vital-points",
+    "hapkido",
+    "taekwondo",
+    "animation-system",
+    "3d-combat",
+    "i-ching",
+    "typescript"
+  ],
+  "author": "Hack23 AB",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hack23/blacktrigram.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hack23/blacktrigram/issues"
+  },
+  "homepage": "https://hack23.github.io/blacktrigram/",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org/"
+  },
   "engines": {
     "node": ">=25.0.0",
     "npm": ">=11.0.0"
@@ -15,6 +80,8 @@
     "build:profile": "tsc -b && vite build --mode production --profile --minify esbuild",
     "build:stats": "tsc -b && vite build --mode production && npx vite-bundle-analyzer dist/assets/*.js",
     "build:fast": "tsc -b --incremental && vite build --mode production --minify esbuild",
+    "build:lib": "rm -rf lib && tsc -p tsconfig.lib.json && tsc-alias -p tsconfig.lib.json && vite build --config vite.lib.config.ts",
+    "prepublishOnly": "npm run lint && npm run check && npm run test && npm run build:lib",
     "check": "tsc -b",
     "check:test": "tsc -p tsconfig.test.json --noEmit",
     "test:check": "tsc -p tsconfig.test.json --noEmit",
@@ -80,18 +147,21 @@
     "screenshots:post": "npx tsx scripts/post-screenshots-to-pr.ts",
     "screenshots:all": "npm run screenshots:capture && npm run screenshots:post"
   },
-  "dependencies": {
-    "@react-three/drei": "10.7.7",
-    "@react-three/fiber": "9.5.0",
-    "@react-three/postprocessing": "3.0.4",
-    "postprocessing": "6.39.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "three": "0.183.2"
+  "peerDependencies": {
+    "@react-three/drei": "^10.0.0",
+    "@react-three/fiber": "^9.0.0",
+    "@react-three/postprocessing": "^3.0.0",
+    "postprocessing": "^6.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.183.0"
   },
   "devDependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.1015.0",
     "@eslint/js": "^9.39.2",
+    "@react-three/drei": "10.7.7",
+    "@react-three/fiber": "9.5.0",
+    "@react-three/postprocessing": "3.0.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -126,9 +196,14 @@
     "mochawesome-report-generator": "6.3.2",
     "openai": "^6.32.0",
     "playwright": "1.58.2",
+    "postprocessing": "6.39.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "start-server-and-test": "^2.1.5",
+    "three": "0.183.2",
     "ts-morph": "^27.0.2",
     "ts-node": "^10.9.2",
+    "tsc-alias": "1.8.16",
     "tsx": "^4.21.0",
     "typedoc": "^0.28.18",
     "typedoc-plugin-markdown": "^4.11.0",
