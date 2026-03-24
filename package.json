@@ -36,8 +36,7 @@
     "lib",
     "README.md",
     "LICENSE",
-    "SECURITY.md",
-    "CHANGELOG.md"
+    "SECURITY.md"
   ],
   "keywords": [
     "korean-martial-arts",
@@ -81,7 +80,7 @@
     "build:profile": "tsc -b && vite build --mode production --profile --minify esbuild",
     "build:stats": "tsc -b && vite build --mode production && npx vite-bundle-analyzer dist/assets/*.js",
     "build:fast": "tsc -b --incremental && vite build --mode production --minify esbuild",
-    "build:lib": "rm -rf lib && tsc -p tsconfig.lib.json && vite build --config vite.lib.config.ts && rm -rf lib/assets",
+    "build:lib": "rm -rf lib && tsc -p tsconfig.lib.json && vite build --config vite.lib.config.ts",
     "prepublishOnly": "npm run lint && npm run check && npm run test && npm run build:lib",
     "check": "tsc -b",
     "check:test": "tsc -p tsconfig.test.json --noEmit",
@@ -148,21 +147,13 @@
     "screenshots:post": "npx tsx scripts/post-screenshots-to-pr.ts",
     "screenshots:all": "npm run screenshots:capture && npm run screenshots:post"
   },
-  "dependencies": {
-    "@react-three/drei": "10.7.7",
-    "@react-three/fiber": "9.5.0",
-    "@react-three/postprocessing": "3.0.4",
-    "postprocessing": "6.39.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "three": "0.183.2"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^9.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "three": "^0.170.0"
+    "three": "^0.183.0"
   },
   "peerDependenciesMeta": {
     "@react-three/drei": {
@@ -174,6 +165,9 @@
   },
   "devDependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.1015.0",
+    "@react-three/drei": "10.7.7",
+    "@react-three/fiber": "9.5.0",
+    "@react-three/postprocessing": "3.0.4",
     "@eslint/js": "^9.39.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -213,6 +207,10 @@
     "ts-morph": "^27.0.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
+    "postprocessing": "6.39.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "three": "0.183.2",
     "typedoc": "^0.28.18",
     "typedoc-plugin-markdown": "^4.11.0",
     "typedoc-plugin-mermaid": "^1.12.0",
