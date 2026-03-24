@@ -94,7 +94,9 @@ template: |
   [![npm version](https://img.shields.io/npm/v/blacktrigram?style=flat-square&logo=npm)](https://www.npmjs.com/package/blacktrigram)
 
   ```bash
-  npm install blacktrigram@$RESOLVED_VERSION
+  npm install blacktrigram
+  # or to pin to a specific version:
+  # npm install blacktrigram@<version>
   ```
 
   Reusable game systems, combat mechanics, animation framework, and Korean martial arts data built with React, Three.js, and TypeScript.

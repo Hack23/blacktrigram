@@ -4,6 +4,7 @@
  * @category Utilities
  */
 
+export * from "./assetConfig";
 export * from "./colorUtils";
 export * from "./colorHelpers";
 export * from "./deviceDetection";
