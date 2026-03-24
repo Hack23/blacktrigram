@@ -152,7 +152,7 @@ export function useSkeletalAnimation(
     animTimeRef.current = 0;
 
     let selectedAnim: SkeletalAnimation | null = null;
-    let playbackSpeed = 1.0;
+    let playbackSpeed: number;
     let shouldClearDiagonalRotation = true;
 
     if (currentAnimation === "attack" && attackAnimation) {

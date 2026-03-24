@@ -376,7 +376,7 @@ export class AdaptiveDifficulty {
       [DifficultyTier.EXPERT]: "Expert (전문)",
     };
 
-    let message = "";
+    let message: string;
     if (shouldIncrease) {
       message = "Player shows mastery - increasing difficulty";
     } else if (skillLevel < 0.3) {

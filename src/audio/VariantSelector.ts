@@ -30,7 +30,7 @@ export class VariantSelector {
     }
 
     // Select variant based on archetype
-    let variantIndex = 0;
+    let variantIndex: number;
     switch (archetype) {
       case "musa": // Traditional warrior - use original
         variantIndex = 0;
