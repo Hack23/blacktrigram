@@ -8,6 +8,7 @@ export default tseslint.config(
   {
     ignores: [
       "dist",
+      "lib",
       "coverage",
       "docs",
       "cypress/results",
