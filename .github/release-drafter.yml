@@ -90,6 +90,15 @@ template: |
   - **Combat Realism**: Physics-based combat with injury progression and balance systems
   - **Korean Cultural Authenticity**: Bilingual interface with traditional martial arts philosophy
 
+  ## 📦 npm Package
+  [![npm version](https://img.shields.io/npm/v/blacktrigram?style=flat-square&logo=npm)](https://www.npmjs.com/package/blacktrigram)
+
+  ```bash
+  npm install blacktrigram@$RESOLVED_VERSION
+  ```
+
+  Reusable game systems, combat mechanics, animation framework, and Korean martial arts data built with React, Three.js, and TypeScript.
+
   ## 🔐 Security Compliance & Supply Chain Transparency
   [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/blacktrigram/attestations)
   [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Hack23/blacktrigram/badge)](https://scorecard.dev/viewer/?uri=github.com/Hack23/blacktrigram)
@@ -102,6 +111,11 @@ template: |
   - [Download SBOM (SPDX)](https://github.com/Hack23/blacktrigram/releases/download/$RESOLVED_VERSION/game-$RESOLVED_VERSION.spdx.json)
   - [Build Provenance Bundle](https://github.com/Hack23/blacktrigram/releases/download/$RESOLVED_VERSION/game-$RESOLVED_VERSION.zip.intoto.jsonl)
   - [SBOM Attestation Bundle](https://github.com/Hack23/blacktrigram/releases/download/$RESOLVED_VERSION/game-$RESOLVED_VERSION.spdx.json.intoto.jsonl)
+
+  **npm Package Provenance:**
+  ```bash
+  npm audit signatures blacktrigram@$RESOLVED_VERSION
+  ```
 
   ## 🏛️ Hack23 ISMS Framework Alignment
   [![Information Security Policy](https://img.shields.io/badge/ISMS-Information%20Security%20Policy-0066CC?style=flat-square&logo=shield&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
@@ -118,12 +132,24 @@ template: |
   [![Scorecard supply-chain security](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml)
 
   **📈 Test Reports & Coverage (Transparency):**
-  - **Unit Test Coverage**: [View HTML Report](https://hack23.github.io/blacktrigram/coverage/index.html) | [JSON Report](https://hack23.github.io/blacktrigram/coverage/coverage-summary.json)
-  - **E2E Test Report**: [Mochawesome Report](https://hack23.github.io/blacktrigram/cypress/mochawesome/index.html)
-  - **API Documentation**: [TypeDoc Reference](https://hack23.github.io/blacktrigram/api/) | [Module Dependencies](https://hack23.github.io/blacktrigram/dependencies/module-dependencies.svg)
-  - **Performance**: [Lighthouse Report](https://hack23.github.io/blacktrigram/lighthouse/index.html) | [Budget Status](https://github.com/Hack23/blacktrigram/blob/main/budget.json)
+  - **Unit Test Coverage**: [View HTML Report](https://blacktrigram.com/docs/test-results/coverage/index.html) | [JSON Report](https://blacktrigram.com/docs/test-results/coverage/coverage-summary.json)
+  - **E2E Test Report**: [Mochawesome Report](https://blacktrigram.com/docs/cypress/mochawesome/index.html)
+  - **API Documentation**: [TypeDoc Reference](https://blacktrigram.com/api/) | [Module Dependencies](https://blacktrigram.com/docs/dependencies/module-dependencies.svg)
+  - **Performance**: [Lighthouse Report](https://blacktrigram.com/docs/lighthouse/index.html) | [Budget Status](https://github.com/Hack23/blacktrigram/blob/main/budget.json)
 
-  All test reports are generated automatically and published to GitHub Pages for full transparency.
+  All test reports are generated automatically and published for full transparency.
+
+  ## 🏛️ Architecture Documentation
+  - [🏛️ Architecture](https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md) - C4 Model system architecture
+  - [🔒 Security Architecture](https://github.com/Hack23/blacktrigram/blob/main/SECURITY_ARCHITECTURE.md) - Security design and controls
+  - [🛡️ Threat Model](https://github.com/Hack23/blacktrigram/blob/main/THREAT_MODEL.md) - Threat analysis and mitigations
+  - [📊 Data Model](https://github.com/Hack23/blacktrigram/blob/main/DATA_MODEL.md) - Data structures and relationships
+  - [🔄 Flowchart](https://github.com/Hack23/blacktrigram/blob/main/FLOWCHART.md) - Process flows
+  - [📈 State Diagram](https://github.com/Hack23/blacktrigram/blob/main/STATEDIAGRAM.md) - State machines
+  - [🧠 Mindmap](https://github.com/Hack23/blacktrigram/blob/main/MINDMAP.md) - Feature overview
+  - [💼 SWOT Analysis](https://github.com/Hack23/blacktrigram/blob/main/SWOT.md) - Strategic analysis
+  - [🚀 Future Architecture](https://github.com/Hack23/blacktrigram/blob/main/FUTURE_ARCHITECTURE.md) - Evolution roadmap
+  - [🔮 Future Security](https://github.com/Hack23/blacktrigram/blob/main/FUTURE_SECURITY_ARCHITECTURE.md) - Security roadmap
 
   ## 🎮 Technology Stack (Node.js 25)
   - ⚡ **Vite 8.x** - Lightning-fast build tool and dev server
@@ -143,6 +169,13 @@ template: |
   [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
   [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
   [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
+
+  ## 📚 Additional Resources
+  - **Live Game**: https://blacktrigram.com/
+  - **API Documentation**: https://blacktrigram.com/api/
+  - **npm Package**: https://www.npmjs.com/package/blacktrigram
+  - **Security Policy**: https://github.com/Hack23/blacktrigram/blob/main/SECURITY.md
+  - **Hack23 ISMS**: https://github.com/Hack23/ISMS-PUBLIC
 
   ## 👥 Contributors
   Thanks to $CONTRIBUTORS for their contributions to this release!
