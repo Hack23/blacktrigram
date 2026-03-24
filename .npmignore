@@ -1,0 +1,61 @@
+# Source and development files
+src/
+public/
+scripts/
+cypress/
+docs/
+build/
+coverage/
+builds/
+.devcontainer/
+
+# Configuration files
+.github/
+.eslintrc.cjs
+eslint.config.js
+vite.config.ts
+vite.lib.config.ts
+vitest.config.ts
+cypress.config.ts
+tsconfig.json
+tsconfig.app.json
+tsconfig.node.json
+tsconfig.lib.json
+tsconfig.test.json
+.dependency-cruiser.cjs
+typedoc.json
+knip.json
+.nvmrc
+
+# Build artifacts for the app (not the library)
+dist/
+
+# Test and development files
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+**/*.cy.ts
+**/__tests__/
+**/mocks/
+**/test/
+*.tsbuildinfo
+
+# IDE and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Asset generation scripts
+generate-sitemaps.js
+fixprops.ts
+vite-plugins/
+
+# Documentation source
+*.md
+!README.md
+!LICENSE
+!SECURITY.md
+
