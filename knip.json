@@ -25,7 +25,7 @@
     "duplicates": "warn"
   },
   "eslint": {
-    "config": [".eslintrc.cjs"]
+    "config": ["eslint.config.js"]
   },
   "cypress": {
     "entry": [
