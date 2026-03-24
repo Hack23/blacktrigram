@@ -1,7 +1,7 @@
 /**
  * Asset path configuration for Black Trigram library consumers.
  *
- * By default, all asset URLs are root-relative (e.g. `/assets/audio/...`).
+ * By default, all asset URLs are root-relative (e.g. /assets/audio/*).
  * Library consumers who host assets at a different path can call
  * {@link setAssetBasePath} to prefix all asset URLs.
  *
@@ -39,7 +39,7 @@ export function getAssetBasePath(): string {
 /**
  * Resolve an asset path by prepending the configured base path.
  *
- * @param path - Root-relative asset path starting with `/` (e.g. `"/assets/audio/music/intro_theme.mp3"`)
+ * @param path - Root-relative asset path starting with a forward slash
  * @returns The resolved URL with the configured base path prepended
  */
 export function resolveAssetPath(path: string): string {
