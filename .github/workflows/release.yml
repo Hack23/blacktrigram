@@ -436,7 +436,9 @@ jobs:
           npm pack --dry-run
           echo ""
           echo "📋 Package files:"
-          tar -tzf $(npm pack 2>/dev/null | tail -n 1) | head -50
+          TARBALL=$(npm pack)
+          tar -tzf "$TARBALL" | head -50
+          rm -f "$TARBALL"
 
       - name: Publish to npm with provenance
         run: npm publish --provenance --access public
