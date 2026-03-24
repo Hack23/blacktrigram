@@ -80,7 +80,7 @@
     "build:profile": "tsc -b && vite build --mode production --profile --minify esbuild",
     "build:stats": "tsc -b && vite build --mode production && npx vite-bundle-analyzer dist/assets/*.js",
     "build:fast": "tsc -b --incremental && vite build --mode production --minify esbuild",
-    "build:lib": "rm -rf lib && tsc -p tsconfig.lib.json && vite build --config vite.lib.config.ts",
+    "build:lib": "rm -rf lib && tsc -p tsconfig.lib.json && tsc-alias -p tsconfig.lib.json && vite build --config vite.lib.config.ts",
     "prepublishOnly": "npm run lint && npm run check && npm run test && npm run build:lib",
     "check": "tsc -b",
     "check:test": "tsc -p tsconfig.test.json --noEmit",
@@ -147,7 +147,6 @@
     "screenshots:post": "npx tsx scripts/post-screenshots-to-pr.ts",
     "screenshots:all": "npm run screenshots:capture && npm run screenshots:post"
   },
-  "dependencies": {},
   "peerDependencies": {
     "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^9.0.0",
@@ -157,26 +156,13 @@
     "react-dom": "^19.0.0",
     "three": "^0.183.0"
   },
-  "peerDependenciesMeta": {
-    "@react-three/drei": {
-      "optional": true
-    },
-    "@react-three/fiber": {
-      "optional": true
-    },
-    "@react-three/postprocessing": {
-      "optional": true
-    },
-    "postprocessing": {
-      "optional": true
-    }
-  },
+  "peerDependenciesMeta": {},
   "devDependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.1015.0",
+    "@eslint/js": "^9.39.2",
     "@react-three/drei": "10.7.7",
     "@react-three/fiber": "9.5.0",
     "@react-three/postprocessing": "3.0.4",
-    "@eslint/js": "^9.39.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -211,14 +197,15 @@
     "mochawesome-report-generator": "6.3.2",
     "openai": "^6.32.0",
     "playwright": "1.58.2",
-    "start-server-and-test": "^2.1.5",
-    "ts-morph": "^27.0.2",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.21.0",
     "postprocessing": "6.39.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "start-server-and-test": "^2.1.5",
     "three": "0.183.2",
+    "ts-morph": "^27.0.2",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "1.8.16",
+    "tsx": "^4.21.0",
     "typedoc": "^0.28.18",
     "typedoc-plugin-markdown": "^4.11.0",
     "typedoc-plugin-mermaid": "^1.12.0",

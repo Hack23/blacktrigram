@@ -47,6 +47,8 @@ export default defineConfig({
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
         "three",
+        // Externalize three/* subpath imports (e.g. three/examples/jsm/...)
+        /^three\//,
         "@react-three/fiber",
         "@react-three/drei",
         "@react-three/postprocessing",

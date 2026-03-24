@@ -114,7 +114,7 @@ template: |
 
   **npm Package Provenance:**
   ```bash
-  npm audit signatures blacktrigram@$RESOLVED_VERSION
+  npm audit signatures blacktrigram
   ```
 
   ## 🏛️ Hack23 ISMS Framework Alignment

@@ -441,7 +441,7 @@ jobs:
           rm -f "$TARBALL"
 
       - name: Publish to npm with provenance
-        run: npm publish --provenance --access public
+        run: npm publish --provenance --access public --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true

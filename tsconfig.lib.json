@@ -17,6 +17,7 @@
     "noFallthroughCasesInSwitch": true,
     "declaration": true,
     "emitDeclarationOnly": true,
+    "outDir": "./lib",
     "declarationDir": "./lib",
     "declarationMap": true,
     "baseUrl": ".",
