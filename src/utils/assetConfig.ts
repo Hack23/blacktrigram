@@ -39,7 +39,7 @@ export function getAssetBasePath(): string {
 /**
  * Resolve an asset path by prepending the configured base path.
  *
- * @param path - Root-relative asset path starting with a forward slash
+ * @param path - Root-relative asset path starting with a forward slash, e.g. /assets/audio/music/intro_theme.mp3
  * @returns The resolved URL with the configured base path prepended
  */
 export function resolveAssetPath(path: string): string {
