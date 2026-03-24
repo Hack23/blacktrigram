@@ -39,12 +39,14 @@ export function getAssetBasePath(): string {
 /**
  * Resolve an asset path by prepending the configured base path.
  *
- * @param path - Root-relative asset path (e.g. `"/assets/audio/music/intro_theme.mp3"`)
+ * @param path - Root-relative asset path starting with `/` (e.g. `"/assets/audio/music/intro_theme.mp3"`)
  * @returns The resolved URL with the configured base path prepended
  */
 export function resolveAssetPath(path: string): string {
   if (!assetBasePath) {
     return path;
   }
-  return `${assetBasePath}${path}`;
+  // Ensure path starts with / for correct concatenation
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${assetBasePath}${normalizedPath}`;
 }

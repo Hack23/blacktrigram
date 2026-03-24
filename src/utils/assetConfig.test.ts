@@ -59,5 +59,12 @@ describe("assetConfig", () => {
         "/my-app/assets/visual/logo/black-trigram.png",
       );
     });
+
+    it("normalizes paths without leading slash", () => {
+      setAssetBasePath("https://cdn.example.com");
+      expect(resolveAssetPath("assets/audio/music/intro_theme.mp3")).toBe(
+        "https://cdn.example.com/assets/audio/music/intro_theme.mp3",
+      );
+    });
   });
 });
