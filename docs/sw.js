@@ -93,11 +93,14 @@ self.addEventListener("fetch", (event) => {
           const responseClone = response.clone();
           
           // Cache for offline fallback only
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          }).catch(() => {
-            // Silently ignore cache write failures (e.g., quota exceeded)
-          });
+          caches
+            .open(CACHE_NAME)
+            .then((cache) => {
+              return cache.put(event.request, responseClone);
+            })
+            .catch(() => {
+              // Silently ignore cache write failures (e.g., quota exceeded)
+            });
         }
         return response;
       })

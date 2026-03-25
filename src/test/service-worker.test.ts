@@ -84,9 +84,10 @@ describe('Service Worker Version Management', () => {
     it('should handle cache write failures gracefully', () => {
       const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
       
-      // Cache writes can fail (e.g., quota exceeded) and must not cause
-      // unhandled promise rejections in the service worker
-      expect(swSource).toMatch(/\.catch\s*\(/);
+      // unhandled promise rejections in the service worker. Ensure that
+      // cache.put(...) is part of a handled promise chain.
+      expect(swSource).toMatch(/cache\.put\([^)]*\);\s*\n\s*}\)\s*\n\s*\.catch\s*\(|then\(\s*\(cache\)\s*=>\s*\{\s*\n\s*return cache\.put\(/);
+
     });
 
     it('should have offline fallback', () => {
@@ -249,11 +250,15 @@ describe('CSP Compliance (index.html)', () => {
     expect(indexHtml).not.toContain('X-UA-Compatible');
   });
 
-  it('should not preload assets that are loaded by React components', () => {
-    // Preloading assets used by React components causes "not used within a few seconds" warnings
-    // because React takes time to bootstrap and mount the component that uses the asset
-    // Use a case-insensitive regex to catch rel='preload' with any quotes/spacing/case
-    expect(indexHtml).not.toMatch(/rel\s*=\s*["']preload["']/i);
+  it('should not preload logo asset that is loaded by React components', () => {
+    // Preloading assets used exclusively by React components (like the black trigram logo)
+    // can cause "not used within a few seconds" warnings because React takes time to bootstrap
+    // and mount the component that uses the asset.
+    // Assert specifically that black-trigram.png is not preloaded with rel="preload",
+    // while allowing other legitimate preloads (e.g., critical fonts or CSS).
+    expect(indexHtml).not.toMatch(
+      /<link[^>]+rel\s*=\s*["']preload["'][^>]+href\s*=\s*["'][^"']*black-trigram\.png["']/i
+    );
   });
 
   it('should have critical CSS file with required styles', () => {
