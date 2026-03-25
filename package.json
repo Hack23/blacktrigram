@@ -196,7 +196,7 @@
     "postprocessing": "6.39.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "start-server-and-test": "^2.1.5",
+    "start-server-and-test": "^3.0.0",
     "three": "0.183.2",
     "ts-morph": "^27.0.2",
     "ts-node": "^10.9.2",
