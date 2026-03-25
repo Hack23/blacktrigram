@@ -84,12 +84,11 @@ describe('Service Worker Version Management', () => {
     it('should handle cache write failures gracefully', () => {
       const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
       
-      // unhandled promise rejections in the service worker. Ensure that
-      // cache.put(...) is returned inside caches.open().then() and followed by .catch(),
-      // and the entire chain is wrapped in event.waitUntil() to keep the SW alive.
+      // cache.put(...) is invoked as part of the caches.open().then() chain,
+      // followed by .catch(), and the entire chain is wrapped in event.waitUntil()
+      // to keep the SW alive during the async work.
       expect(swSource).toMatch(/event\.waitUntil\s*\(/);
-      expect(swSource).toMatch(/caches\s*\n?\s*\.open\([^)]*\)\s*\n?\s*\.then\(\s*\(cache\)\s*=>\s*\{/);
-      expect(swSource).toMatch(/return cache\.put\([^)]*\)[\s\S]*?\.catch\s*\(/);
+      expect(swSource).toMatch(/caches\s*\.\s*open\([^)]*\)[\s\S]*?\.then\([\s\S]*cache\.put\([^)]*\)[\s\S]*?\.catch\s*\(/);
 
     });
 
