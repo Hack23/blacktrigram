@@ -71,7 +71,22 @@ describe('Service Worker Version Management', () => {
       
       // Cache API rejects put() with status 206 (Partial Content)
       // The SW must filter these out before calling cache.put()
-      expect(swSource).toContain('response.status !== 206');
+      expect(swSource).toMatch(/response\.status\s*!==?\s*206/);
+    });
+
+    it('should only cache GET requests', () => {
+      const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
+      
+      // Cache API only supports GET requests
+      expect(swSource).toMatch(/event\.request\.method\s*===?\s*["']GET["']/);
+    });
+
+    it('should handle cache write failures gracefully', () => {
+      const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
+      
+      // Cache writes can fail (e.g., quota exceeded) and must not cause
+      // unhandled promise rejections in the service worker
+      expect(swSource).toMatch(/\.catch\s*\(/);
     });
 
     it('should have offline fallback', () => {
@@ -237,7 +252,8 @@ describe('CSP Compliance (index.html)', () => {
   it('should not preload assets that are loaded by React components', () => {
     // Preloading assets used by React components causes "not used within a few seconds" warnings
     // because React takes time to bootstrap and mount the component that uses the asset
-    expect(indexHtml).not.toContain('rel="preload"');
+    // Use a case-insensitive regex to catch rel='preload' with any quotes/spacing/case
+    expect(indexHtml).not.toMatch(/rel\s*=\s*["']preload["']/i);
   });
 
   it('should have critical CSS file with required styles', () => {

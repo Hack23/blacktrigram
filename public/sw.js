@@ -80,15 +80,23 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Only cache successful, complete, non-opaque responses
+        // Only cache successful, complete, non-opaque GET responses
         // Skip partial responses (206) as Cache API does not support them
-        if (response.ok && response.status !== 206 && response.type !== "opaque") {
+        // Skip non-GET requests as Cache API only supports GET
+        if (
+          event.request.method === "GET" &&
+          response.ok &&
+          response.status !== 206 &&
+          response.type !== "opaque"
+        ) {
           // Clone response for caching (responses can only be used once)
           const responseClone = response.clone();
           
           // Cache for offline fallback only
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
+          }).catch(() => {
+            // Silently ignore cache write failures (e.g., quota exceeded)
           });
         }
         return response;
