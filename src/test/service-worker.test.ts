@@ -66,6 +66,14 @@ describe('Service Worker Version Management', () => {
       expect(swSource).toContain('Network-first strategy');
     });
 
+    it('should skip caching partial responses (status 206)', () => {
+      const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
+      
+      // Cache API rejects put() with status 206 (Partial Content)
+      // The SW must filter these out before calling cache.put()
+      expect(swSource).toContain('response.status !== 206');
+    });
+
     it('should have offline fallback', () => {
       const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
       
@@ -219,6 +227,17 @@ describe('CSP Compliance (index.html)', () => {
   it('should not use inline event handlers on font links', () => {
     // onload="..." inline handlers violate CSP script-src
     expect(indexHtml).not.toMatch(/onload\s*=/);
+  });
+
+  it('should not contain deprecated X-UA-Compatible meta tag', () => {
+    // X-UA-Compatible is deprecated - IE and Chrome Frame are discontinued
+    expect(indexHtml).not.toContain('X-UA-Compatible');
+  });
+
+  it('should not preload assets that are loaded by React components', () => {
+    // Preloading assets used by React components causes "not used within a few seconds" warnings
+    // because React takes time to bootstrap and mount the component that uses the asset
+    expect(indexHtml).not.toContain('rel="preload"');
   });
 
   it('should have critical CSS file with required styles', () => {

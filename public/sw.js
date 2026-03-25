@@ -80,8 +80,9 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Only cache successful, non-opaque responses
-        if (response.ok && response.type !== "opaque") {
+        // Only cache successful, complete, non-opaque responses
+        // Skip partial responses (206) as Cache API does not support them
+        if (response.ok && response.status !== 206 && response.type !== "opaque") {
           // Clone response for caching (responses can only be used once)
           const responseClone = response.clone();
           
