@@ -66,6 +66,32 @@ describe('Service Worker Version Management', () => {
       expect(swSource).toContain('Network-first strategy');
     });
 
+    it('should skip caching partial responses (status 206)', () => {
+      const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
+      
+      // Cache API rejects put() with status 206 (Partial Content)
+      // The SW must filter these out before calling cache.put()
+      expect(swSource).toMatch(/response\.status\s*!==?\s*206/);
+    });
+
+    it('should only cache GET requests', () => {
+      const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
+      
+      // Cache API only supports GET requests
+      expect(swSource).toMatch(/event\.request\.method\s*===?\s*["']GET["']/);
+    });
+
+    it('should handle cache write failures gracefully', () => {
+      const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
+      
+      // cache.put(...) is invoked as part of the caches.open().then() chain,
+      // followed by .catch(), and the entire chain is wrapped in event.waitUntil()
+      // to keep the SW alive during the async work.
+      expect(swSource).toMatch(/event\.waitUntil\s*\(/);
+      expect(swSource).toMatch(/caches\s*\.\s*open\([^)]*\)[\s\S]*?\.then\([\s\S]*cache\.put\([^)]*\)[\s\S]*?\.catch\s*\(/);
+
+    });
+
     it('should have offline fallback', () => {
       const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
       
@@ -219,6 +245,22 @@ describe('CSP Compliance (index.html)', () => {
   it('should not use inline event handlers on font links', () => {
     // onload="..." inline handlers violate CSP script-src
     expect(indexHtml).not.toMatch(/onload\s*=/);
+  });
+
+  it('should not contain deprecated X-UA-Compatible meta tag', () => {
+    // X-UA-Compatible is deprecated - IE and Chrome Frame are discontinued
+    expect(indexHtml).not.toContain('X-UA-Compatible');
+  });
+
+  it('should not preload logo asset that is loaded by React components', () => {
+    // Preloading assets used exclusively by React components (like the black trigram logo)
+    // can cause "not used within a few seconds" warnings because React takes time to bootstrap
+    // and mount the component that uses the asset.
+    // Assert specifically that black-trigram.png is not preloaded with rel="preload",
+    // while allowing other legitimate preloads (e.g., critical fonts or CSS).
+    expect(indexHtml).not.toMatch(
+      /<link[^>]+rel\s*=\s*["']preload["'][^>]+href\s*=\s*["'][^"']*black-trigram\.png["']/i
+    );
   });
 
   it('should have critical CSS file with required styles', () => {
