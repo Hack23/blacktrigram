@@ -85,8 +85,11 @@ describe('Service Worker Version Management', () => {
       const swSource = readFileSync(resolve('./public/sw.js'), 'utf8');
       
       // unhandled promise rejections in the service worker. Ensure that
-      // cache.put(...) is part of a handled promise chain.
-      expect(swSource).toMatch(/cache\.put\([^)]*\);\s*\n\s*}\)\s*\n\s*\.catch\s*\(|then\(\s*\(cache\)\s*=>\s*\{\s*\n\s*return cache\.put\(/);
+      // cache.put(...) is returned inside caches.open().then() and followed by .catch(),
+      // and the entire chain is wrapped in event.waitUntil() to keep the SW alive.
+      expect(swSource).toMatch(/event\.waitUntil\s*\(/);
+      expect(swSource).toMatch(/caches\s*\n?\s*\.open\([^)]*\)\s*\n?\s*\.then\(\s*\(cache\)\s*=>\s*\{/);
+      expect(swSource).toMatch(/return cache\.put\([^)]*\)[\s\S]*?\.catch\s*\(/);
 
     });
 
