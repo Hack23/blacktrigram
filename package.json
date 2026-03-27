@@ -216,7 +216,7 @@
   "overrides": {
     "eslint-plugin-react-hooks": {
       "eslint": "$eslint"
-    }
-  },
-  "dependencies": {}
+    },
+    "glob": "13.0.1"
+  }
 }
