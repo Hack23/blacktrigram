@@ -31,8 +31,8 @@ describe("PerformanceMonitor", () => {
     // Mock performance.now
     vi.spyOn(performance, 'now').mockReturnValue(0);
 
-    originalNavigator = global.navigator;
-    Object.defineProperty(global, "navigator", {
+    originalNavigator = globalThis.navigator;
+    Object.defineProperty(globalThis, "navigator", {
       value: {
         ...originalNavigator,
         hardwareConcurrency: 8,
@@ -49,7 +49,7 @@ describe("PerformanceMonitor", () => {
   });
 
   afterEach(() => {
-    Object.defineProperty(global, "navigator", {
+    Object.defineProperty(globalThis, "navigator", {
       value: originalNavigator,
       writable: true,
       configurable: true,
@@ -77,7 +77,7 @@ describe("PerformanceMonitor", () => {
 
   describe("getPerformanceTier", () => {
     it("should detect high-end desktop", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           hardwareConcurrency: 8,
@@ -96,7 +96,7 @@ describe("PerformanceMonitor", () => {
     });
 
     it("should detect medium-end device", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           hardwareConcurrency: 4,
@@ -118,7 +118,7 @@ describe("PerformanceMonitor", () => {
     });
 
     it("should detect low-end device", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           hardwareConcurrency: 2,
@@ -137,7 +137,7 @@ describe("PerformanceMonitor", () => {
     });
 
     it("should detect iOS devices correctly", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           hardwareConcurrency: 6,
@@ -216,7 +216,7 @@ describe("PerformanceMonitor", () => {
 
   describe("canHandle60Fps", () => {
     it("should return true for high-end devices", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           hardwareConcurrency: 8,
@@ -235,7 +235,7 @@ describe("PerformanceMonitor", () => {
     });
 
     it("should return false for low-end devices", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           hardwareConcurrency: 2,
@@ -256,7 +256,7 @@ describe("PerformanceMonitor", () => {
 
   describe("getQualityRecommendations", () => {
     it("should recommend high quality for high-end devices", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           hardwareConcurrency: 8,
@@ -281,7 +281,7 @@ describe("PerformanceMonitor", () => {
     });
 
     it("should recommend medium quality for medium-end devices", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           hardwareConcurrency: 4,
@@ -309,7 +309,7 @@ describe("PerformanceMonitor", () => {
     });
 
     it("should recommend low quality for low-end devices", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           hardwareConcurrency: 2,
@@ -441,7 +441,7 @@ describe("PerformanceMonitor", () => {
 
   describe("Connection type detection", () => {
     it("should consider connection type in tier detection", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           hardwareConcurrency: 4,

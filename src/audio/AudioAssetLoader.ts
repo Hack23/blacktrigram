@@ -200,7 +200,7 @@ export class AudioAssetLoader {
       const audio = new Audio();
       audio.preload = "auto";
 
-      let timeoutId: NodeJS.Timeout | null = null;
+      let timeoutId: ReturnType<typeof setTimeout> | null = null;
       let resolved = false;
 
       const onLoad = () => {

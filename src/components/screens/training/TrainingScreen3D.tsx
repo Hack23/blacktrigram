@@ -1154,7 +1154,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
   const isFirstModeEffectRef = useRef<boolean>(true);
   const isTrainingRef = useRef<boolean>(trainingState.isTraining);
-  const modeChangeTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const modeChangeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Keep a ref in sync with the latest training state for use inside timeouts
   useEffect(() => {

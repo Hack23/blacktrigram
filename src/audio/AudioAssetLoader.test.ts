@@ -12,7 +12,7 @@ describe("AudioAssetLoader", () => {
   beforeEach(() => {
     loader = new AudioAssetLoader();
     // Save the original Audio constructor from setup.ts
-    originalAudio = global.Audio;
+    originalAudio = globalThis.Audio;
     vi.clearAllMocks();
   });
 
@@ -56,7 +56,7 @@ describe("AudioAssetLoader", () => {
 
     it("should handle load timeout", async () => {
       // Mock Audio that never fires canplaythrough
-      global.Audio = class {
+      globalThis.Audio = class {
         src = "";
         preload = "auto";
         addEventListener = vi.fn();
@@ -80,13 +80,13 @@ describe("AudioAssetLoader", () => {
       expect(result.formatUsed).toBe("placeholder");
 
       // Restore mock
-      global.Audio = originalAudio;
+      globalThis.Audio = originalAudio;
     });
 
     it("should try format fallback (webm → mp3)", async () => {
       const attemptedUrls: string[] = [];
 
-      global.Audio = class {
+      globalThis.Audio = class {
         src = "";
         preload = "auto";
         addEventListener = vi.fn((event: string, handler: () => void) => {
@@ -116,13 +116,13 @@ describe("AudioAssetLoader", () => {
       expect(attemptedUrls.length).toBeGreaterThan(0);
 
       // Restore mock
-      global.Audio = originalAudio;
+      globalThis.Audio = originalAudio;
     });
 
     it("should retry with exponential backoff", async () => {
       let attempts = 0;
 
-      global.Audio = class {
+      globalThis.Audio = class {
         src = "";
         preload = "auto";
         addEventListener = vi.fn((event: string, handler: () => void) => {
@@ -155,7 +155,7 @@ describe("AudioAssetLoader", () => {
       expect(attempts).toBeGreaterThanOrEqual(3);
 
       // Restore mock
-      global.Audio = originalAudio;
+      globalThis.Audio = originalAudio;
     });
 
     it("should respect priority levels", async () => {
@@ -247,7 +247,7 @@ describe("AudioAssetLoader", () => {
     it("should handle mixed success and failure in batch", async () => {
       let loadCount = 0;
 
-      global.Audio = class {
+      globalThis.Audio = class {
         src = "";
         preload = "auto";
         addEventListener = vi.fn((event: string, handler: () => void) => {
@@ -286,7 +286,7 @@ describe("AudioAssetLoader", () => {
       expect(results).toHaveLength(2);
 
       // Restore mock
-      global.Audio = originalAudio;
+      globalThis.Audio = originalAudio;
     });
   });
 
@@ -471,7 +471,7 @@ describe("AudioAssetLoader", () => {
 
   describe("silent placeholder", () => {
     it("should create silent placeholder for failed loads", async () => {
-      global.Audio = class {
+      globalThis.Audio = class {
         src = "";
         preload = "auto";
         addEventListener = vi.fn((event: string, handler: () => void) => {
@@ -501,7 +501,7 @@ describe("AudioAssetLoader", () => {
       expect(result.formatUsed).toBe("placeholder");
 
       // Restore mock
-      global.Audio = originalAudio;
+      globalThis.Audio = originalAudio;
     });
   });
 });

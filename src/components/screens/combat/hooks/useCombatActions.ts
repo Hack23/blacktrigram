@@ -404,8 +404,8 @@ export function useCombatActions(
   } = config;
 
   // Refs to track knockback recovery timeouts for cleanup
-  const player1KnockbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const player2KnockbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const player1KnockbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const player2KnockbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Cleanup timeouts on unmount
   useEffect(() => {

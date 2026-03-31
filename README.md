@@ -379,7 +379,7 @@ George Dorn provides detailed repository deep-dives based on actual code inspect
 
 **[Repository Deep-Dive](https://hack23.com/blog-george-dorn-trigram-code.html)**
 
-**Stack:** TypeScript 5.9, React 19, Three.js 0.183, Vite 8  
+**Stack:** TypeScript 6.0, React 19, Three.js 0.183, Vite 8  
 **Metrics:** 132 TypeScript files, 70 vital points system, 5 fighter archetypes
 
 Examined package.json dependencies, explored src/ structure, verified combat system implementation, and reviewed AI integrations.

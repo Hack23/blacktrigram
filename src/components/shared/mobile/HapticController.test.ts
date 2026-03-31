@@ -20,13 +20,13 @@ describe("HapticController", () => {
 
   beforeEach(() => {
     // Store original navigator
-    originalNavigator = global.navigator;
+    originalNavigator = globalThis.navigator;
     
     // Mock navigator.vibrate
     vibrateSpy = vi.fn().mockReturnValue(true);
     
     // Replace navigator completely
-    Object.defineProperty(global, "navigator", {
+    Object.defineProperty(globalThis, "navigator", {
       value: {
         ...originalNavigator,
         vibrate: vibrateSpy,
@@ -52,7 +52,7 @@ describe("HapticController", () => {
   });
 
   afterEach(() => {
-    Object.defineProperty(global, "navigator", {
+    Object.defineProperty(globalThis, "navigator", {
       value: originalNavigator,
       writable: true,
       configurable: true,
@@ -181,7 +181,7 @@ describe("HapticController", () => {
 
     it("should adapt pattern for low-end devices", () => {
       // Mock low-end device
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: vibrateSpy,
@@ -264,7 +264,7 @@ describe("HapticController", () => {
 
   describe("Device detection", () => {
     it("should detect high-end desktop", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: vibrateSpy,
@@ -284,7 +284,7 @@ describe("HapticController", () => {
     });
 
     it("should detect medium-end device", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: vibrateSpy,
@@ -304,7 +304,7 @@ describe("HapticController", () => {
     });
 
     it("should detect low-end device", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: vibrateSpy,
@@ -324,7 +324,7 @@ describe("HapticController", () => {
     });
 
     it("should disable haptics on low-end devices by default", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: vibrateSpy,
@@ -440,7 +440,7 @@ describe("HapticController", () => {
     });
 
     it("should handle missing vibrate API", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           // No vibrate property

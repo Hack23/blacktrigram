@@ -49,9 +49,9 @@ class MockAudioElement {
   }
 }
 
-global.Audio = MockAudioElement as any;
-global.AudioContext = MockAudioContext as any;
-(global as any).webkitAudioContext = MockAudioContext;
+globalThis.Audio = MockAudioElement as any;
+globalThis.AudioContext = MockAudioContext as any;
+(globalThis as any).webkitAudioContext = MockAudioContext;
 
 describe("AudioManager", () => {
   const mockAudioConfig: AudioConfig = {
@@ -592,11 +592,11 @@ describe("AudioManager", () => {
   describe("Fallback Mode", () => {
     it("should enable fallback mode when AudioContext fails", async () => {
       // Temporarily break AudioContext
-      const originalAudioContext = global.AudioContext;
-      const originalWebkitAudioContext = (global as any).webkitAudioContext;
+      const originalAudioContext = globalThis.AudioContext;
+      const originalWebkitAudioContext = (globalThis as any).webkitAudioContext;
 
-      delete (global as any).AudioContext;
-      delete (global as any).webkitAudioContext;
+      delete (globalThis as any).AudioContext;
+      delete (globalThis as any).webkitAudioContext;
 
       const audioManager = new AudioManager();
       await audioManager.initialize(mockAudioConfig);
@@ -605,8 +605,8 @@ describe("AudioManager", () => {
       expect(audioManager.isInitialized).toBe(true);
 
       // Restore
-      global.AudioContext = originalAudioContext;
-      (global as any).webkitAudioContext = originalWebkitAudioContext;
+      globalThis.AudioContext = originalAudioContext;
+      (globalThis as any).webkitAudioContext = originalWebkitAudioContext;
     });
   });
 
@@ -634,8 +634,8 @@ describe("AudioManager", () => {
       await audioManager.initialize(mockAudioConfig);
 
       // Mock Audio constructor to throw error
-      const originalAudio = global.Audio;
-      global.Audio = class {
+      const originalAudio = globalThis.Audio;
+      globalThis.Audio = class {
         constructor() {
           throw new Error("Failed to create audio");
         }
@@ -655,7 +655,7 @@ describe("AudioManager", () => {
       await expect(audioManager.loadAsset(asset)).resolves.not.toThrow();
 
       // Restore
-      global.Audio = originalAudio;
+      globalThis.Audio = originalAudio;
     });
 
     it("should get loaded assets", async () => {

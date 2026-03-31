@@ -97,7 +97,7 @@ export const useGrapplingAudio = () => {
   const audio = useAudio();
   const lastPlayTime = useRef<Record<string, number>>({});
   const activeSoundCount = useRef(0); // Track concurrent sound instances
-  const activeTimers = useRef<Set<NodeJS.Timeout>>(new Set()); // Track active timers for cleanup
+  const activeTimers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set()); // Track active timers for cleanup
 
   // Cleanup all active timers on unmount
   useEffect(() => {

@@ -290,7 +290,7 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
   isMobile = false,
 }) => {
   const [showEffect, setShowEffect] = useState(visible);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Get colors based on hit type
   const effectColor = useMemo(() => {

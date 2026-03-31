@@ -275,7 +275,7 @@ describe("AudioElementPool", () => {
 
       expect(audio).not.toBeNull();
       // Check that audio is an instance of the global Audio constructor (from setup.ts)
-      expect(audio).toBeInstanceOf(global.Audio);
+      expect(audio).toBeInstanceOf(globalThis.Audio);
     });
 
     it("should release audio element back to pool", () => {
@@ -323,7 +323,7 @@ describe("AudioElementPool", () => {
       const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       // Use the global Audio constructor from setup.ts
-      const audio = new (global.Audio as any)();
+      const audio = new (globalThis.Audio as any)();
       audioPool.release("nonexistent", audio as any);
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(

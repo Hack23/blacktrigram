@@ -253,7 +253,7 @@ describe("TouchOptimizer", () => {
         if (typeof cb === 'function') {
           cb();
         }
-        return 0 as unknown as NodeJS.Timeout;
+        return 0 as unknown as ReturnType<typeof setTimeout>;
       });
 
       const element = document.createElement('div');

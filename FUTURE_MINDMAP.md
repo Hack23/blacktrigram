@@ -431,7 +431,7 @@ mindmap
       Framework Upgrades
         React 19+
         Three.js (Current)
-        TypeScript 5+
+        TypeScript 6+
         Vite 6+
       State Management
         Zustand Evolution

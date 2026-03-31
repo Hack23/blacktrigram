@@ -32,7 +32,7 @@ export const useCombatAudio = () => {
   const audio = useAudio();
   const lastPlayTime = useRef<Record<string, number>>({});
   const activeSounds = useRef(new Set<string>());
-  const timeoutIds = useRef<Set<NodeJS.Timeout>>(new Set());
+  const timeoutIds = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
   // Cleanup all timeouts on unmount
   useEffect(() => {

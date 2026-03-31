@@ -42,7 +42,7 @@ describe("useKeyboardControls", () => {
 
     // Mock localStorage
     const localStorageMock: Record<string, string> = {};
-    global.localStorage = {
+    globalThis.localStorage = {
       getItem: vi.fn((key: string) => localStorageMock[key] || null),
       setItem: vi.fn((key: string, value: string) => {
         localStorageMock[key] = value;

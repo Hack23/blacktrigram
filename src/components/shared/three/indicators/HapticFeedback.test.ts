@@ -24,13 +24,13 @@ import {
 describe("HapticFeedback", () => {
   // Mock navigator.vibrate
   const mockVibrate = vi.fn();
-  const originalNavigator = global.navigator;
+  const originalNavigator = globalThis.navigator;
 
   beforeEach(() => {
     mockVibrate.mockClear();
     
     // Mock navigator with vibrate support
-    Object.defineProperty(global, "navigator", {
+    Object.defineProperty(globalThis, "navigator", {
       value: {
         ...originalNavigator,
         vibrate: mockVibrate,
@@ -43,7 +43,7 @@ describe("HapticFeedback", () => {
 
   afterEach(() => {
     // Restore original navigator
-    Object.defineProperty(global, "navigator", {
+    Object.defineProperty(globalThis, "navigator", {
       value: originalNavigator,
       writable: true,
       configurable: true,
@@ -56,7 +56,7 @@ describe("HapticFeedback", () => {
     });
 
     it("should return false when vibrate API is not available", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: undefined,
@@ -69,7 +69,7 @@ describe("HapticFeedback", () => {
     });
 
     it("should return false when navigator is not available", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: undefined,
         writable: true,
         configurable: true,
@@ -91,7 +91,7 @@ describe("HapticFeedback", () => {
     });
 
     it("should not vibrate if haptic is not supported", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: undefined,
@@ -121,7 +121,7 @@ describe("HapticFeedback", () => {
     });
 
     it("should not vibrate if haptic is not supported", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: undefined,
@@ -157,7 +157,7 @@ describe("HapticFeedback", () => {
     });
 
     it("should not vibrate if haptic is not supported", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: undefined,
@@ -187,7 +187,7 @@ describe("HapticFeedback", () => {
     });
 
     it("should not call vibrate if haptic is not supported", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: undefined,
@@ -213,7 +213,7 @@ describe("HapticFeedback", () => {
   describe("isMobileDevice", () => {
     beforeEach(() => {
       // Mock window object
-      Object.defineProperty(global, "window", {
+      Object.defineProperty(globalThis, "window", {
         value: {
           innerWidth: 375, // Mobile width
         },
@@ -222,7 +222,7 @@ describe("HapticFeedback", () => {
       });
 
       // Mock navigator with touch support
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: mockVibrate,
@@ -239,7 +239,7 @@ describe("HapticFeedback", () => {
     });
 
     it("should return true for Android user agent with touch", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: mockVibrate,
@@ -254,7 +254,7 @@ describe("HapticFeedback", () => {
     });
 
     it("should return false for desktop without touch", () => {
-      Object.defineProperty(global, "window", {
+      Object.defineProperty(globalThis, "window", {
         value: {
           innerWidth: 1920, // Desktop width
         },
@@ -262,7 +262,7 @@ describe("HapticFeedback", () => {
         configurable: true,
       });
 
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: mockVibrate,
@@ -277,7 +277,7 @@ describe("HapticFeedback", () => {
     });
 
     it("should return false when window is not defined", () => {
-      Object.defineProperty(global, "window", {
+      Object.defineProperty(globalThis, "window", {
         value: undefined,
         writable: true,
         configurable: true,
@@ -360,7 +360,7 @@ describe("HapticFeedback", () => {
     });
 
     it("should not vibrate if haptic is not supported", () => {
-      Object.defineProperty(global, "navigator", {
+      Object.defineProperty(globalThis, "navigator", {
         value: {
           ...originalNavigator,
           vibrate: undefined,
