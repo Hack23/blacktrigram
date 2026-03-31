@@ -120,8 +120,8 @@ export function useRoundTransition(
 
   // Use ref to track if we should continue countdown
   const countdownActive = useRef(false);
-  const countdownTimer = useRef<NodeJS.Timeout | null>(null);
-  const transitionTimer = useRef<NodeJS.Timeout | null>(null);
+  const countdownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /**
    * Clear all active timers

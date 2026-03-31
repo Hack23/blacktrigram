@@ -46,7 +46,7 @@ describe("AudioUtils", () => {
       }
     }
 
-    global.Audio = MockAudio as any;
+    globalThis.Audio = MockAudio as any;
   });
 
   describe("selectAudioFormat", () => {
@@ -318,12 +318,12 @@ describe("AudioUtils", () => {
     });
 
     it("should return false when Audio is undefined", () => {
-      const originalAudio = global.Audio;
-      delete (global as any).Audio;
+      const originalAudio = globalThis.Audio;
+      delete (globalThis as any).Audio;
 
       expect(AudioUtilsModule.isAudioSupported()).toBe(false);
 
-      global.Audio = originalAudio;
+      globalThis.Audio = originalAudio;
     });
   });
 
@@ -434,14 +434,14 @@ describe("AudioUtils", () => {
 
   describe("canPlayType - edge cases", () => {
     it("should return false when Audio is undefined", () => {
-      const originalAudio = global.Audio;
-      delete (global as any).Audio;
+      const originalAudio = globalThis.Audio;
+      delete (globalThis as any).Audio;
 
       expect(AudioUtilsModule.canPlayType("audio/mp3")).toBe(true); // Test env fallback
       expect(AudioUtilsModule.canPlayType("audio/wav")).toBe(true); // Test env fallback
       expect(AudioUtilsModule.canPlayType("audio/ogg")).toBe(false); // Not in test env fallback
 
-      global.Audio = originalAudio;
+      globalThis.Audio = originalAudio;
     });
 
     it("should handle maybe response", () => {

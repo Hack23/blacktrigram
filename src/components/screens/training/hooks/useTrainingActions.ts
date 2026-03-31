@@ -298,7 +298,7 @@ export function useTrainingActions(
   } = config;
 
   // Ref to store timeout for dummy reset
-  const dummyResetTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const dummyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleStartTraining = useCallback(() => {
     actions.startTraining();

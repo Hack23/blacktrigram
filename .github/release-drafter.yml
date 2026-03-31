@@ -156,7 +156,7 @@ template: |
   ## 🎮 Technology Stack (Node.js 25)
   - ⚡ **Vite 8.x** - Lightning-fast build tool and dev server
   - ⚛️ **React 19** - Modern React with concurrent features and hooks  
-  - 🔷 **TypeScript 5.9+** - Strict typing with ES2024 target
+  - 🔷 **TypeScript 6** - Strict typing with ES2024 target
   - 🎨 **Three.js 0.183** - High-performance 3D WebGL rendering engine
   - 🔗 **@react-three/fiber 9.5** - React renderer for Three.js
   - 🎁 **@react-three/drei 10.7** - Useful helpers for react-three-fiber

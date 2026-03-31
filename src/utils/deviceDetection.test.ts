@@ -18,8 +18,8 @@ import {
 
 describe('deviceDetection', () => {
   // Store original values
-  const originalNavigator = global.navigator;
-  const originalWindow = global.window;
+  const originalNavigator = globalThis.navigator;
+  const originalWindow = globalThis.window;
 
   /**
    * Mock navigator and window for testing
@@ -32,7 +32,7 @@ describe('deviceDetection', () => {
     maxTouchPoints?: number;
   }) {
     // Mock navigator
-    Object.defineProperty(global, 'navigator', {
+    Object.defineProperty(globalThis, 'navigator', {
       writable: true,
       configurable: true,
       value: {
@@ -62,7 +62,7 @@ describe('deviceDetection', () => {
       mockWindow.ontouchstart = {};
     }
     
-    Object.defineProperty(global, 'window', {
+    Object.defineProperty(globalThis, 'window', {
       writable: true,
       configurable: true,
       value: mockWindow,
@@ -71,12 +71,12 @@ describe('deviceDetection', () => {
 
   afterEach(() => {
     // Restore original values
-    Object.defineProperty(global, 'navigator', {
+    Object.defineProperty(globalThis, 'navigator', {
       writable: true,
       configurable: true,
       value: originalNavigator,
     });
-    Object.defineProperty(global, 'window', {
+    Object.defineProperty(globalThis, 'window', {
       writable: true,
       configurable: true,
       value: originalWindow,

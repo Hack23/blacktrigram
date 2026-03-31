@@ -92,7 +92,7 @@ mindmap
         📅 Current: Latest
         ⏰ EOL: Active (yearly)
         🔄 ESBuild Integration
-      📝 TypeScript ^5.9.3
+      📝 TypeScript ^6.0.2
         📅 Current: Latest
         ⏰ EOL: ~6-month cycles
         🔄 Strict Mode Enabled
@@ -127,7 +127,7 @@ mindmap
 | **⚛️ React Framework**  | ^19.2.4 (Latest)          | Major annually, Minor quarterly | ~2027-2028         | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
 | **🎮 Three.js / R3F**   | 0.183.x / 9.5.x (Latest) | Major annually, Patch monthly   | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
 | **⚡ Vite Build Tool**  | ^8.0.0 (Latest)            | Major annually                  | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **📝 TypeScript**       | ^5.9.3 (Latest)           | Major every 6 months            | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
+| **📝 TypeScript**       | ^6.0.2 (Latest)           | Major every ~12 months          | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
 | **☕ Node.js Runtime**  | 25.x (CI); 26.x LTS (target) | Major every 6 months; even-numbered majors LTS | LTS 24.x: **Apr 2027**; LTS 26.x: **Apr 2028** | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
 | **🧪 Testing Stack**    | Vitest ^4.0.x + Cypress ^15.11.x | Major annually            | Active development | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
 
@@ -264,7 +264,7 @@ With the new Node.js release schedule introducing a 6-month alpha phase, Black T
 }%%
 flowchart TB
     subgraph PREPARATION["🔬 Pre-Migration Testing (Jun-Jul 2026)"]
-        COMPAT_TEST["🧪 Compatibility Testing<br/>• Vite 8+ compatibility<br/>• React 19 compatibility<br/>• Three.js / R3F compatibility<br/>• TypeScript 5+ compatibility"]
+        COMPAT_TEST["🧪 Compatibility Testing<br/>• Vite 8+ compatibility<br/>• React 19 compatibility<br/>• Three.js / R3F compatibility<br/>• TypeScript 6+ compatibility"]
         DEP_AUDIT["📦 Dependency Audit<br/>• NPM package compatibility<br/>• Native module rebuilds<br/>• Security vulnerability scan<br/>• License compliance check"]
         PERF_BASELINE["📊 Performance Baseline<br/>• Build time comparison<br/>• Runtime performance<br/>• Memory usage analysis<br/>• Bundle size impact"]
     end
@@ -402,8 +402,8 @@ gantt
     section Build and Tooling
     Vite 8.x                  :active, vite8, 2025-06-01, 2026-12-31
     Vite 9.x (Future)         :vite9, 2026-06-01, 2027-12-31
-    TypeScript 5.x            :active, ts5, 2024-03-16, 2025-09-30
-    TypeScript 6.x (Future)   :ts6, 2025-03-01, 2026-09-30
+    TypeScript 5.x            :done, ts5, 2024-03-16, 2025-09-30
+    TypeScript 6.x            :active, ts6, 2026-03-01, 2027-03-31
 
     section Graphics and Audio
     Three.js 0.183.x           :active, three, 2024-01-01, 2026-12-31

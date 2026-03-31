@@ -15,7 +15,7 @@ describe("ControlMapper", () => {
   beforeEach(() => {
     // Mock localStorage
     localStorageMock = {};
-    global.localStorage = {
+    globalThis.localStorage = {
       getItem: vi.fn((key: string) => localStorageMock[key] || null),
       setItem: vi.fn((key: string, value: string) => {
         localStorageMock[key] = value;

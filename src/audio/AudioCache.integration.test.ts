@@ -29,7 +29,7 @@ class MockAudioElement {
   removeEventListener = vi.fn();
 }
 
-global.Audio = MockAudioElement as any;
+globalThis.Audio = MockAudioElement as any;
 
 // Mock AudioContext
 class MockAudioContext {
@@ -40,8 +40,8 @@ class MockAudioContext {
   sampleRate = 44100;
 }
 
-global.AudioContext = MockAudioContext as any;
-(global as any).webkitAudioContext = MockAudioContext;
+globalThis.AudioContext = MockAudioContext as any;
+(globalThis as any).webkitAudioContext = MockAudioContext;
 
 describe("AudioCache Integration with AudioManager", () => {
   const MB = 1024 * 1024;

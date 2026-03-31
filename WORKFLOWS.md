@@ -2,6 +2,8 @@
 
 This document details the continuous integration and deployment workflows used in the Black Trigram project. The workflows automate testing, security scanning, and release procedures to ensure code quality and security compliance aligned with Hack23 AB's [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) and [Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) standards.
 
+**Current TypeScript version: 6.0.2**
+
 ## 🔐 ISMS Policy Alignment
 
 Black Trigram's CI/CD workflows implement security controls mandated by Hack23 AB's ISMS framework:

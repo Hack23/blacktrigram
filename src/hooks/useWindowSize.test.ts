@@ -60,13 +60,13 @@ describe("useWindowSize", () => {
 
   it("should use initial values if provided", () => {
     // Temporarily remove window for SSR simulation
-    const originalWindow = global.window;
+    const originalWindow = globalThis.window;
     // @ts-expect-error - simulating SSR
-    delete global.window;
+    delete globalThis.window;
 
     // For SSR, the hook should use initial values
     // Note: In browser environment, this test verifies the option exists
-    global.window = originalWindow;
+    globalThis.window = originalWindow;
 
     const { result } = renderHook(() =>
       useWindowSize({ initialWidth: 800, initialHeight: 600 })

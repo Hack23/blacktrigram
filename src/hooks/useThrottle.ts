@@ -33,7 +33,7 @@ export function useThrottle<T extends (...args: never[]) => void>(
   delay: number
 ): T {
   const lastRunRef = useRef<number>(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const callbackRef = useRef(callback);
   
   // Keep callback ref up to date

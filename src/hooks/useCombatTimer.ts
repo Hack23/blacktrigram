@@ -126,7 +126,7 @@ export function useCombatTimer(
   const [timeRemaining, setTimeRemaining] = useState(initialTime);
   const [isTimeUp, setIsTimeUp] = useState(false);
   const lastWarningRef = useRef<TimerWarningLevel>("none");
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Reset timer when initialTime or resetKey changes (new round)
   useEffect(() => {
