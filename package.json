@@ -30,13 +30,29 @@
     "./components": {
       "types": "./lib/components/index.d.ts",
       "import": "./lib/components/index.js"
+    },
+    "./hooks": {
+      "types": "./lib/hooks/index.d.ts",
+      "import": "./lib/hooks/index.js"
+    },
+    "./data": {
+      "types": "./lib/data/index.d.ts",
+      "import": "./lib/data/index.js"
     }
   },
   "files": [
     "lib",
     "README.md",
     "LICENSE",
-    "SECURITY.md"
+    "SECURITY.md",
+    "ARCHITECTURE.md",
+    "SECURITY_ARCHITECTURE.md",
+    "COMBAT_ARCHITECTURE.md",
+    "DATA_MODEL.md",
+    "THREAT_MODEL.md",
+    "ISMS_REFERENCE_MAPPING.md",
+    "CONTROLS.md",
+    "CRA-ASSESSMENT.md"
   ],
   "keywords": [
     "korean-martial-arts",
