@@ -118,7 +118,7 @@ export function useTechniqueSelection(
   );
 
   // Ref for cleanup
-  const cooldownUpdateIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cooldownUpdateIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Update cooldowns every 100ms
   useEffect(() => {
