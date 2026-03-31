@@ -23,7 +23,7 @@ export default defineConfig({
     "import.meta.env.APP_VERSION": JSON.stringify(packageJson.version),
   },
   build: {
-    target: "es2024",
+    target: "esnext",
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       formats: ["es"],

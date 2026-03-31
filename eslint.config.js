@@ -25,7 +25,7 @@ export default tseslint.config(
       "**/__tests__/**",
     ],
     languageOptions: {
-      ecmaVersion: 2024,
+      ecmaVersion: 2025,
       globals: globals.browser,
       parserOptions: {
         project: [

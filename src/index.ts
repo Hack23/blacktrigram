@@ -18,6 +18,8 @@ export * from "./utils";
 // Namespaced exports for typedoc/navigation clarity
 export * as Audio from "./audio";
 export * as Components from "./components";
+export * as Data from "./data";
+export * as Hooks from "./hooks";
 export * as Systems from "./systems";
 export * as Types from "./types";
 export * as Utils from "./utils";

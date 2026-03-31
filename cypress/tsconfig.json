@@ -1,8 +1,8 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "ES2024",
-    "lib": ["ES2024", "DOM"],
+    "target": "ES2025",
+    "lib": ["ES2025", "DOM"],
     "types": ["cypress", "node"],
     "isolatedModules": false,
     "skipLibCheck": true,

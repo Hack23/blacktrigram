@@ -96,7 +96,7 @@ export default defineConfig(({ command, mode: _mode }) => ({
     ],
   },
   build: {
-    target: "es2024",
+    target: "esnext",
     chunkSizeWarningLimit: 1500,
     // Force minification
     minify: "esbuild",
@@ -150,7 +150,7 @@ export default defineConfig(({ command, mode: _mode }) => ({
   },
 
   esbuild: {
-    target: "es2024",
+    target: "esnext",
     jsx: "automatic",
     drop: ["console", "debugger"],
     // Optimize for smaller bundle
