@@ -890,6 +890,7 @@ src/data/archetypeClothing.test.ts
 src/data/archetypeClothing.ts
 src/data/archetypePhysicalAttributes.test.ts
 src/data/archetypePhysicalAttributes.ts
+src/data/index.ts
 src/data/techniqueMappings.ts
 src/data/techniques.test.ts
 src/data/techniques.ts
@@ -898,6 +899,7 @@ src/hooks/__tests__/useHUDLayout.test.ts
 src/hooks/__tests__/useHandPoseTransitions.test.ts
 src/hooks/__tests__/useKeyboardControls.test.ts
 src/hooks/__tests__/useSkeletalAnimation.test.ts
+src/hooks/index.ts
 src/hooks/useActionFeedback.test.ts
 src/hooks/useActionFeedback.ts
 src/hooks/useBalanceAnimations.ts
