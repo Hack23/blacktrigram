@@ -4,10 +4,24 @@
  */
 
 import { TrigramStance } from "@/types";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AI_PERSONALITIES } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 import { AIActionType, AIDecisionTree, CombatContext } from "./DecisionTree";
+
+/**
+ * Seeded PRNG (mulberry32) for deterministic Math.random mocking.
+ * Produces the same sequence for a given seed, eliminating test flakiness.
+ */
+function createSeededRandom(seed: number): () => number {
+  let s = seed | 0;
+  return () => {
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
 /**
  * Mock combat context factory
@@ -1184,12 +1198,13 @@ describe("AIDecisionTree", () => {
     });
 
     it("should increase stance change frequency with 1.2x modifier after 10 seconds", () => {
+      // Use seeded PRNG to make this test deterministic (no flakiness from Math.random)
+      const seeded = createSeededRandom(42);
+      vi.spyOn(Math, "random").mockImplementation(seeded);
+
       let lowFatigueChanges = 0;
       let highFatigueChanges = 0;
 
-      // Use fresh instances to avoid cooldown
-      // Increased sample size from 1000 to 2000 for better statistical reliability
-      // Larger sample size reduces variance and makes test more stable
       const SAMPLE_SIZE = 2000;
       for (let i = 0; i < SAMPLE_SIZE; i++) {
         const lowTree = new AIDecisionTree();
@@ -1209,7 +1224,7 @@ describe("AIDecisionTree", () => {
 
         const lowDecision = lowTree.makeDecision(
           lowFatigueContext,
-          AI_PERSONALITIES.BALANCED_FIGHTER, // 0.7 base frequency
+          AI_PERSONALITIES.BALANCED_FIGHTER,
           comboSystem,
         );
 
@@ -1228,23 +1243,21 @@ describe("AIDecisionTree", () => {
         }
       }
 
-      // High fatigue should produce more stance changes (1.2x multiplier)
-      // With 0.25 base and 2000 iterations: low ~500 changes, high ~600 changes (0.25 * 1.2 = 0.30)
-      // Expected difference: ~100 changes (20% increase from 1.2x modifier)
-      // Due to randomness, we expect high fatigue to have more changes but allow for statistical variance
-      // Standard deviation ≈ sqrt(2000 * 0.25 * 0.75) ≈ 19.4
-      // We require high fatigue to be greater than low fatigue (no minimum threshold)
-      // This is the most lenient test that still validates the fatigue multiplier works
-      // The probability of high being less than low is very small (~0.3% with 1.2x modifier)
+      vi.restoreAllMocks();
+
+      // With seeded PRNG, results are deterministic — high fatigue (1.2x modifier)
+      // always produces strictly more stance changes than low fatigue (1.0x)
       expect(highFatigueChanges).toBeGreaterThan(lowFatigueChanges);
     });
 
     it("should further increase frequency with 1.5x modifier after 20 seconds", () => {
+      // Use seeded PRNG to make this test deterministic (no flakiness from Math.random)
+      const seeded = createSeededRandom(123);
+      vi.spyOn(Math, "random").mockImplementation(seeded);
+
       let midFatigueChanges = 0;
       let highFatigueChanges = 0;
 
-      // Increased sample size from 500 to 2000 for statistical reliability
-      // Consistent with the neighboring test that uses 2000 iterations
       const SAMPLE_SIZE = 2000;
       for (let i = 0; i < SAMPLE_SIZE; i++) {
         const midTree = new AIDecisionTree();
@@ -1283,8 +1296,10 @@ describe("AIDecisionTree", () => {
         }
       }
 
-      // 1.5x modifier should produce more stance changes than 1.2x modifier
-      // With 2000 samples the larger expected difference is statistically robust
+      vi.restoreAllMocks();
+
+      // With seeded PRNG, results are deterministic — 1.5x modifier
+      // always produces strictly more stance changes than 1.2x modifier
       expect(highFatigueChanges).toBeGreaterThan(midFatigueChanges);
     });
 
