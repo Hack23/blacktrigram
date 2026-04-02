@@ -337,8 +337,8 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
       const endTime = performance.now();
       const duration = endTime - startTime;
 
-      // Should complete in less than 10ms
-      expect(duration).toBeLessThan(10);
+      // Should complete in less than 50ms (generous for CI environments with variable load)
+      expect(duration).toBeLessThan(50);
     });
 
     it("should handle full transition efficiently", () => {

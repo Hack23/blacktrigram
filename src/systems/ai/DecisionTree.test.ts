@@ -1233,9 +1233,9 @@ describe("AIDecisionTree", () => {
       // Expected difference: ~100 changes (20% increase from 1.2x modifier)
       // Due to randomness, we expect high fatigue to have more changes but allow for statistical variance
       // Standard deviation ≈ sqrt(2000 * 0.25 * 0.75) ≈ 19.4
-      // We require high fatigue to be greater than low fatigue (no minimum threshold)
-      // This is the most lenient test that still validates the fatigue multiplier works
-      // The probability of high being less than low is very small (~0.3% with 1.2x modifier)
+      // We require high fatigue to produce at least as many stance changes as low fatigue (no minimum threshold)
+      // This is the most lenient test that still validates the fatigue multiplier works while allowing ties
+      // The probability of high being strictly less than low is very small (~0.3% with 1.2x modifier)
       // Use >= to avoid flaky boundary failures when randomness produces equal counts
       expect(highFatigueChanges).toBeGreaterThanOrEqual(lowFatigueChanges);
     });
