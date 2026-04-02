@@ -34,7 +34,7 @@ You are a specialized security agent for the Black Trigram (흑괘) project. You
 - Keep security policy (SECURITY.md) current
 
 ### License Compliance
-- Only allow: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD
+- Only allow: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense, CC0-1.0
 - Flag: GPL, AGPL, LGPL, SSPL, Commons Clause, EUPL (require review)
 - Run `npm run test:licenses` before adding any dependency
 - Maintain license attribution in NOTICE or LICENSE files

@@ -67,8 +67,10 @@ cypress/e2e/              # E2E test specs
 npm test                  # Run all unit tests
 npm test -- --watch       # Watch mode
 npm test -- --coverage    # With coverage report
-npm run cypress:run       # E2E headless
-npm run cypress:open      # E2E interactive
+npm run test:e2e          # Cypress E2E tests (local)
+npm run test:e2e:ci       # Cypress E2E tests (CI/headless)
+npm run cypress:install   # Install Cypress binary (when needed)
+npm run cypress:verify    # Verify Cypress installation
 ```
 
 ## Debugging Failures
