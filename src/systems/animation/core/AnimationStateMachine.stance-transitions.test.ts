@@ -324,39 +324,27 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
   });
 
   describe("Performance", () => {
-    it("should handle rapid blend queries efficiently", () => {
+    it("should handle rapid blend queries without errors", () => {
       machine.transitionToStanceChange(TrigramStance.GEON, TrigramStance.TAE);
 
-      const startTime = performance.now();
-
-      // Query blend 1000 times
+      // Query blend 1000 times — verifies no crashes or invalid state under rapid calls
+      // Actual timing benchmarks live in vitest bench files, not unit tests
       for (let i = 0; i < 1000; i++) {
-        machine.getStanceTransitionBlend();
+        const blend = machine.getStanceTransitionBlend();
+        // Blend should always return a valid object
+        expect(blend).toBeDefined();
       }
-
-      const endTime = performance.now();
-      const duration = endTime - startTime;
-
-      // Should complete in less than 50ms (generous for CI environments with variable load)
-      expect(duration).toBeLessThan(50);
     });
 
-    it("should handle full transition efficiently", () => {
+    it("should handle full transition without errors", () => {
       machine.transitionToStanceChange(TrigramStance.GEON, TrigramStance.TAE);
 
-      const startTime = performance.now();
-
-      // Run through entire animation
+      // Run through entire animation — verifies state machine stays consistent
       for (let i = 0; i < 36; i++) {
         machine.update(1 / 60);
-        machine.getStanceTransitionBlend();
+        const blend = machine.getStanceTransitionBlend();
+        expect(blend).toBeDefined();
       }
-
-      const endTime = performance.now();
-      const duration = endTime - startTime;
-
-      // Should complete in less than 5ms
-      expect(duration).toBeLessThan(5);
     });
   });
 
