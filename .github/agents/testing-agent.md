@@ -19,7 +19,7 @@ You are a specialized testing agent for the Black Trigram (흑괘) project. You 
 
 - AAA pattern (Arrange, Act, Assert) test structure
 - Three.js component testing with `<Canvas>` + `<Suspense>` wrappers
-- Audio mocking via `vi.mock('../../audio/AudioProvider')`
+- Audio mocking via `vi.mock(...)` using the same `AudioProvider` import path as the code under test (or the `@/audio/*` alias if that's the project convention)
 - Combat system testing (damage calculation, stance transitions, vital points)
 - Responsive design testing (mobile `width < 768` vs desktop)
 - Cypress E2E flows with `data-testid` selectors

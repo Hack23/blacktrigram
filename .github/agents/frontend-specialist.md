@@ -41,7 +41,7 @@ You are a specialized frontend development agent for the Black Trigram (흑괘) 
 ### Testing
 - Wrap Three.js components in `<Canvas>` + `<Suspense>` for tests
 - Test behavior (not implementation): user interactions, rendered output
-- Mock audio with `vi.mock('../../audio/AudioProvider')`
+- Mock audio by mocking `AudioProvider` with the same module specifier used in the component under test (or use the `@/audio/AudioProvider` alias if your test and component both use it)
 - Test both mobile (`width < 768`) and desktop layouts
 
 ## Enforcement Rules

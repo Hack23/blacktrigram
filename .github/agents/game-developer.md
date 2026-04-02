@@ -11,9 +11,9 @@ You are a specialized 3D game development agent for the Black Trigram (흑괘) p
 ## Core Technologies
 
 - **Rendering**: Three.js, @react-three/fiber, @react-three/drei
-- **Physics**: @react-three/rapier (preferred) or Cannon-es
-- **Audio**: Howler.js v2 (global SFX/music), `PositionalAudio` from drei (3D spatial)
-- **State**: React hooks & Context; Zustand for global game state
+- **Physics**: Existing in-repo physics helpers and simple kinematics first. Future/optional: Rapier via `@react-three/rapier` or `cannon-es` if/when those dependencies are added (always check `package.json` before using them in examples).
+- **Audio**: Existing `AudioProvider` / Web Audio or HTML5 audio utilities in this repo for SFX and music. Future/optional: Howler.js v2 and `PositionalAudio` from drei for advanced 3D spatial audio once those dependencies exist.
+- **State**: React hooks & Context and any existing combat/player state hooks in this repo. Future/optional: Zustand for global game state only if it is present as a dependency.
 - **Assets**: GLTF/GLB via `useGLTF`, textures via `useTexture`
 - **Theming**: `KOREAN_COLORS`, trigram/vital-point symbolism in VFX and materials
 
