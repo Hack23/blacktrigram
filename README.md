@@ -14,6 +14,7 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 ![Dark Trigram Logo](public/black-trigram.png)
 
 [![GitHub Release](https://img.shields.io/github/v/release/Hack23/blacktrigram)](https://github.com/Hack23/blacktrigram/releases)
+[![NPM Release](https://img.shields.io/npm/v/blacktrigram.svg)](https://www.npmjs.com/package/blacktrigram)
 [![License](https://img.shields.io/github/license/Hack23/blacktrigram.svg)](https://github.com/Hack23/blacktrigram/raw/master/LICENSE.md)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Hack23/blacktrigram/badge)](https://scorecard.dev/viewer/?uri=github.com/Hack23/blacktrigram)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/10777/badge)](https://bestpractices.coreinfrastructure.org/projects/10777)
