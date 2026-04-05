@@ -158,11 +158,11 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
     cy.verifyThreeJSRendering({ timeout: 3000, minPixelChange: 30 });
     
     // Verify health bars still update
-    cy.verifyHealthBar("player1-health", 0, 100).then((health) => {
+    cy.verifyHealthBar("health-bar-player_1", 0, 100).then((health) => {
       cy.log(`Player 1 health after stress test: ${health}`);
     });
     
-    cy.verifyHealthBar("player2-health", 0, 100).then((health) => {
+    cy.verifyHealthBar("health-bar-player_2", 0, 100).then((health) => {
       cy.log(`Player 2 health after stress test: ${health}`);
       // Opponent should have taken damage
       expect(health).to.be.lessThan(100);

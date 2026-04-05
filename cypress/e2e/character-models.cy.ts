@@ -64,7 +64,7 @@ describe("Character Models - Visual Regression Tests", () => {
         changeStance(parseInt(stance.key), `${stance.korean} (${stance.symbol})`);
         
         // Verify stance indicator updated (changeStance already waits for this)
-        cy.get('[data-testid="player1-stance-indicator"]', { timeout: 2000 })
+        cy.get('[data-testid="stance-indicator-player_1"]', { timeout: 2000 })
           .should("exist")
           .invoke("text")
           .should("include", stance.name);
@@ -89,7 +89,7 @@ describe("Character Models - Visual Regression Tests", () => {
         cy.wait(300);
         
         // Verify stance indicator exists and has color
-        cy.get('[data-testid="player1-stance-indicator"]').should("exist");
+        cy.get('[data-testid="stance-indicator-player_1"]').should("exist");
         
         // In a real implementation, you'd extract color values here
         // For now, we verify visual distinctiveness through screenshots
@@ -344,8 +344,8 @@ describe("Character Models - Visual Regression Tests", () => {
       cy.get('[data-testid="combat-screen"]').should("exist");
       
       // Verify both health bars (indicating both characters rendered)
-      cy.get('[data-testid="player1-health"]').should("exist");
-      cy.get('[data-testid="player2-health"]').should("exist");
+      cy.get('[data-testid="health-bar-player_1"]').should("exist");
+      cy.get('[data-testid="health-bar-player_2"]').should("exist");
       
       // Capture screenshot showing both characters
       cy.get('[data-testid="combat-screen"]')
@@ -431,7 +431,7 @@ describe("Character Models - Visual Regression Tests", () => {
         cy.wait(300);
         
         // Verify stance indicator shows correct symbol (if visible)
-        cy.get('[data-testid="player1-stance-indicator"]')
+        cy.get('[data-testid="stance-indicator-player_1"]')
           .should("exist")
           .invoke("text")
           .then((text) => {
@@ -460,7 +460,7 @@ describe("Character Models - Visual Regression Tests", () => {
         cy.wait(200);
         
         // Verify indicator is visible
-        cy.get('[data-testid="player1-stance-indicator"]')
+        cy.get('[data-testid="stance-indicator-player_1"]')
           .should("be.visible");
       }
       
@@ -471,9 +471,9 @@ describe("Character Models - Visual Regression Tests", () => {
       cy.annotate("Testing health bar contrast");
       
       // Verify health bars are visible
-      cy.get('[data-testid="player1-health"]')
+      cy.get('[data-testid="health-bar-player_1"]')
         .should("be.visible");
-      cy.get('[data-testid="player2-health"]')
+      cy.get('[data-testid="health-bar-player_2"]')
         .should("be.visible");
       
       // Capture for contrast analysis

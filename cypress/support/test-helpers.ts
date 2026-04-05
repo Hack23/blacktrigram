@@ -32,8 +32,8 @@ export function setupScreen(screenType?: 'combat' | 'training' | 'controls' | 'p
   } else if (screenType) {
     cy.navigateToScreen(
       screenType, 
-      `${screenType}-button`, 
-      `menu-${screenType}`, 
+      `menu-item-${screenType}`, 
+      `menu-item-${screenType}`, 
       getScreenShortcutKey(screenType)
     );
   }
@@ -253,7 +253,7 @@ export function testAllTrigramStances(verifyCallback?: (stanceNum: number, stanc
     cy.get("body").type(stanceNumber.toString());
 
     // Wait for stance indicator to update (more reliable than fixed delay)
-    cy.get('[data-testid="player1-stance-indicator"]', { timeout: 1000 })
+    cy.get('[data-testid="stance-indicator-player_1"]', { timeout: 1000 })
       .should("contain", stanceNames[index]);
 
     cy.log(`✅ Stance ${stanceNumber}: ${stanceNames[index]}`);
@@ -280,7 +280,7 @@ export function changeStance(stanceNumber: number, stanceName?: string): void {
   
   // Wait for stance indicator to update (more reliable than fixed delay)
   if (stanceNumber >= 1 && stanceNumber <= 8) {
-    cy.get('[data-testid="player1-stance-indicator"]', { timeout: 1000 })
+    cy.get('[data-testid="stance-indicator-player_1"]', { timeout: 1000 })
       .should('contain', stanceNames[stanceNumber - 1]);
   }
   

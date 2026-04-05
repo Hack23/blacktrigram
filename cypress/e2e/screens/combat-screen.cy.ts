@@ -54,10 +54,10 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     verifyActiveWebGLRendering();
 
     // Verify health bars exist and have valid data
-    cy.verifyHealthBar("player1-health", 0, 100).then((health) => {
+    cy.verifyHealthBar("health-bar-player_1", 0, 100).then((health) => {
       cy.log(`Player 1 health verified: ${health}`);
     });
-    cy.verifyHealthBar("player2-health", 0, 100).then((health) => {
+    cy.verifyHealthBar("health-bar-player_2", 0, 100).then((health) => {
       cy.log(`Player 2 health verified: ${health}`);
     });
 
@@ -91,7 +91,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("Testing attack action with health tracking...");
 
     // Capture initial health of player 2 (opponent)
-    cy.get('[data-testid="player2-health"]', { timeout: 5000 })
+    cy.get('[data-testid="health-bar-player_2"]', { timeout: 5000 })
       .should("exist")
       .invoke("attr", "data-current")
       .then((health) => {
@@ -102,7 +102,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
         cy.get("body").type(" ");
 
         // Wait for health to update using assertion instead of fixed wait
-        cy.get('[data-testid="player2-health"]', { timeout: 1500 })
+        cy.get('[data-testid="health-bar-player_2"]', { timeout: 1500 })
           .invoke("attr", "data-current")
           .should((updatedHealth) => {
             const updatedHealthValue = parseFloat(updatedHealth as string);
@@ -121,7 +121,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       });
 
     // Second attack with verification
-    cy.get('[data-testid="player2-health"]')
+    cy.get('[data-testid="health-bar-player_2"]')
       .invoke("attr", "data-current")
       .then((health) => {
         const beforeAttack = parseFloat(health as string);
@@ -129,7 +129,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
         cy.get("body").type(" ");
 
         // Wait for health to update using assertion
-        cy.get('[data-testid="player2-health"]', { timeout: 1500 })
+        cy.get('[data-testid="health-bar-player_2"]', { timeout: 1500 })
           .invoke("attr", "data-current")
           .should((updatedHealth) => {
             const updatedHealthValue = parseFloat(updatedHealth as string);
@@ -149,7 +149,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // Try using attack button if it exists with health verification
     cy.get("body").then(($body) => {
       if ($body.find('[data-testid="attack-button"]').length > 0) {
-        cy.get('[data-testid="player2-health"]')
+        cy.get('[data-testid="health-bar-player_2"]')
           .invoke("attr", "data-current")
           .then((health) => {
             const before = parseFloat(health as string);
@@ -157,7 +157,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
             cy.get('[data-testid="attack-button"]').click({ force: true });
 
             // Wait for health to update using assertion
-            cy.get('[data-testid="player2-health"]', { timeout: 1500 })
+            cy.get('[data-testid="health-bar-player_2"]', { timeout: 1500 })
               .invoke("attr", "data-current")
               .should((updatedHealth) => {
                 const updatedHealthValue = parseFloat(updatedHealth as string);
@@ -223,12 +223,12 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Check for player stance indicators
     cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="player1-stance-indicator"]').length > 0) {
-        cy.get('[data-testid="player1-stance-indicator"]').should("exist");
+      if ($body.find('[data-testid="stance-indicator-player_1"]').length > 0) {
+        cy.get('[data-testid="stance-indicator-player_1"]').should("exist");
         cy.log("✅ Player 1 stance indicator found");
       }
-      if ($body.find('[data-testid="player2-stance-indicator"]').length > 0) {
-        cy.get('[data-testid="player2-stance-indicator"]').should("exist");
+      if ($body.find('[data-testid="stance-indicator-player_2"]').length > 0) {
+        cy.get('[data-testid="stance-indicator-player_2"]').should("exist");
         cy.log("✅ Player 2 stance indicator found");
       }
     });
@@ -254,7 +254,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
       // Change stance and verify
       cy.get("body").type("1");
-      cy.get('[data-testid="player1-stance-indicator"]', { timeout: 1000 })
+      cy.get('[data-testid="stance-indicator-player_1"]', { timeout: 1000 })
         .invoke("text")
         .should("include", "geon");
 
@@ -263,7 +263,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
       // Change stance again and verify
       cy.get("body").type("3");
-      cy.get('[data-testid="player1-stance-indicator"]', { timeout: 1000 })
+      cy.get('[data-testid="stance-indicator-player_1"]', { timeout: 1000 })
         .invoke("text")
         .should("include", "li");
 
