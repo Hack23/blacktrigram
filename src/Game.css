@@ -102,13 +102,13 @@ canvas:focus {
 
 @keyframes target-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 208, 0.4);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary-cyan) 40%, transparent);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(0, 255, 208, 0);
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-primary-cyan) 0%, transparent);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 208, 0);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary-cyan) 0%, transparent);
   }
 }
 
@@ -184,7 +184,7 @@ canvas:focus {
 .player-health-bar {
   width: 300px;
   height: 20px;
-  background: rgba(0, 0, 0, 0.7);
+  background: color-mix(in srgb, var(--color-primary-black) 70%, transparent);
   border: 1px solid var(--color-primary-cyan);
   position: relative;
 }
