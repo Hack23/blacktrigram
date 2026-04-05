@@ -330,7 +330,7 @@ Cypress.Commands.add("returnToIntro", () => {
   });
 
   // Wait for intro screen using assertion-based wait
-  cy.get('[data-testid="intro-screen"]', { timeout: 2000 }).should("exist");
+  cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
 
   // Verify we're back on intro screen
   cy.get("body").then(($body) => {

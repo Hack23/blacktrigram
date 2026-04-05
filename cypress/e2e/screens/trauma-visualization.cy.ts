@@ -203,10 +203,14 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
    * Integration smoke test verifying the app loads correctly.
    * Merged into parent describe to avoid cypress-junit-reporter crash
    * when multiple top-level describes share afterEach hooks.
+   *
+   * NOTE: beforeEach already visits "/" and enters combat mode, so we
+   * verify the window from the current page instead of re-visiting "/"
+   * which would cause a full page reload mid-test and leave the
+   * afterEach teardown (returnToIntro) in an inconsistent state.
    */
   it("should verify InjuryTracker exports are available", () => {
-    // This is a smoke test to ensure modules are exported correctly
-    cy.visit("/");
+    // Verify window exists from the combat screen setup by beforeEach
     cy.window().should("exist");
     cy.log("✅ Window loaded successfully");
   });

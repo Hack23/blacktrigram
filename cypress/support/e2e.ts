@@ -153,7 +153,11 @@ afterEach(() => {
 /// <reference types="cypress" />
 /// <reference path="./commands.ts" />
 
-Cypress.on("fail", (err, _runnable) => {
-  console.error("Cypress test failed:", err.message);
-  return false;
+// Log test failures for debugging without swallowing errors.
+// NOTE: Returning false from Cypress.on("fail") prevents the test from properly
+// failing and can cause infinite recovery loops when hooks (beforeEach/afterEach)
+// encounter errors. We intentionally let the error propagate.
+Cypress.on("fail", (err, runnable) => {
+  console.error(`Cypress test failed [${runnable.title}]:`, err.message);
+  throw err;
 });
