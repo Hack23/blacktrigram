@@ -34,8 +34,8 @@
 
 /* Training Mode Selector */
 .mode-button {
-  background: rgba(45, 45, 45, 0.5);
-  border: 2px solid rgba(0, 255, 255, 0.4);
+  background: color-mix(in srgb, var(--color-bg-light) 50%, transparent);
+  border: 2px solid color-mix(in srgb, var(--color-primary-cyan) 40%, transparent);
   border-radius: 8px;
   padding: 10px;
   cursor: pointer;
@@ -45,13 +45,13 @@
 }
 
 .mode-button.selected {
-  background: rgba(0, 255, 255, 0.25);
+  background: color-mix(in srgb, var(--color-primary-cyan) 25%, transparent);
   border-color: var(--color-primary-cyan);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary-cyan) 50%, transparent);
 }
 
 .mode-button:not(.selected):hover {
-  background: rgba(64, 64, 64, 0.7);
+  background: color-mix(in srgb, var(--color-gray-300) 70%, transparent);
   border-color: var(--color-primary-cyan);
   transform: scale(1.02);
 }
@@ -59,13 +59,13 @@
 .mode-button:focus-visible {
   outline: 2px solid var(--color-primary-cyan);
   outline-offset: 2px;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.8);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary-cyan) 80%, transparent);
 }
 
 /* Vital Point Button */
 .vital-point-button {
-  background: rgba(45, 45, 45, 0.5);
-  border: 2px solid rgba(255, 170, 0, 0.5);
+  background: color-mix(in srgb, var(--color-bg-light) 50%, transparent);
+  border: 2px solid color-mix(in srgb, var(--color-korean-center) 50%, transparent);
   border-radius: 8px;
   padding: 8px;
   cursor: pointer;
@@ -75,11 +75,11 @@
 }
 
 .vital-point-button.selected {
-  background: rgba(255, 170, 0, 0.3);
+  background: color-mix(in srgb, var(--color-korean-center) 30%, transparent);
 }
 
 .vital-point-button:not(.selected):hover {
-  background: rgba(64, 64, 64, 0.7);
+  background: color-mix(in srgb, var(--color-gray-300) 70%, transparent);
 }
 
 /* Training Feedback Animation - Fast and snappy */
@@ -98,12 +98,12 @@
 }
 
 .training-feedback {
-  background: rgba(0, 0, 0, 0.9);
+  background: color-mix(in srgb, var(--color-primary-black) 90%, transparent);
   border: 3px solid var(--color-primary-gold);
   border-radius: 16px;
   color: var(--color-primary-gold);
   text-align: center;
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 30px color-mix(in srgb, var(--color-primary-gold) 50%, transparent);
   animation: feedbackPulse 0.4s ease-out;
   min-width: 200px;
 }

@@ -488,7 +488,7 @@ body {
 .app-header {
   padding: 1rem 2rem;
   background: color-mix(in srgb, var(--color-bg-dark) 90%, transparent);
-  border-bottom: 2px solid #ffd700;
+  border-bottom: 2px solid var(--color-primary-gold);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -505,13 +505,13 @@ body {
 .korean-title {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #ffd700;
+  color: var(--color-primary-gold);
   text-shadow: 2px 2px 4px color-mix(in srgb, var(--color-primary-black) 80%, transparent);
 }
 
 .english-title {
   font-size: 1rem;
-  color: #87ceeb;
+  color: var(--color-info);
   font-style: italic;
   text-shadow: 1px 1px 2px color-mix(in srgb, var(--color-primary-black) 60%, transparent);
 }
@@ -533,14 +533,14 @@ body {
 
 .phase-indicator {
   background: color-mix(in srgb, var(--color-primary-gold) 20%, transparent);
-  color: #ffd700;
-  border: 1px solid #ffd700;
+  color: var(--color-primary-gold);
+  border: 1px solid var(--color-primary-gold);
 }
 
 .time-indicator {
   background: color-mix(in srgb, var(--color-info) 20%, transparent);
-  color: #87ceeb;
-  border: 1px solid #87ceeb;
+  color: var(--color-info);
+  border: 1px solid var(--color-info);
 }
 
 .app-main {
