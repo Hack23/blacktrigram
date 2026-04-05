@@ -100,13 +100,13 @@
 @keyframes timerFlash {
   0%, 100% {
     color: var(--color-korean-south);
-    text-shadow: 0 0 10px rgba(255, 68, 68, 0.8),
-                 0 0 20px rgba(255, 68, 68, 0.5);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--color-korean-south) 80%, transparent),
+                 0 0 20px color-mix(in srgb, var(--color-korean-south) 50%, transparent);
   }
   50% {
     color: var(--color-korean-center);
-    text-shadow: 0 0 15px rgba(255, 170, 0, 1),
-                 0 0 30px rgba(255, 170, 0, 0.7);
+    text-shadow: 0 0 15px var(--color-korean-center),
+                 0 0 30px color-mix(in srgb, var(--color-korean-center) 70%, transparent);
   }
 }
 
