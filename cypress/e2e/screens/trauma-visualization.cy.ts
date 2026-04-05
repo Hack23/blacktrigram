@@ -198,14 +198,12 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
 
     cy.log("Round persistence test skipped (requires implementation)");
   });
-});
 
-/**
- * Trauma Visualization Unit Integration Tests
- * 
- * These tests verify the integration between trauma system components
- */
-describe("Trauma Visualization - Integration Tests", () => {
+  /**
+   * Integration smoke test verifying the app loads correctly.
+   * Merged into parent describe to avoid cypress-junit-reporter crash
+   * when multiple top-level describes share afterEach hooks.
+   */
   it("should verify InjuryTracker exports are available", () => {
     // This is a smoke test to ensure modules are exported correctly
     cy.visit("/");

@@ -76,12 +76,15 @@ export type {
 } from "./types";
 
 export * from "./ai";
+export * from "./bodypart";
+export * from "./breathing";
 export * from "./combat";
 export * from "./combat/FallIntegration";
 export * from "./CombatSystem";
 export * from "./effects";
 export * from "./game";
 export * from "./LayoutSystem";
+export * from "./movement";
 export * from "./player";
 export * from "./trigram";
 export * from "./TrigramSystem";

@@ -6,6 +6,9 @@
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
@@ -57,7 +60,7 @@
   "keywords": [
     "korean-martial-arts",
     "combat-simulator",
-    "three-js",
+    "threejs",
     "react",
     "game-engine",
     "trigram",
@@ -67,7 +70,17 @@
     "animation-system",
     "3d-combat",
     "i-ching",
-    "typescript"
+    "typescript",
+    "webgl",
+    "react-three-fiber",
+    "gamedev",
+    "fighting-game",
+    "martial-arts",
+    "game-ai",
+    "physics-engine",
+    "state-machine",
+    "cyberpunk",
+    "korean"
   ],
   "author": "Hack23 AB",
   "license": "Apache-2.0",
