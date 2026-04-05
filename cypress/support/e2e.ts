@@ -75,47 +75,58 @@ beforeEach(() => {
 });
 
 afterEach(function () {
-  // Detect resource leaks
-  cy.detectResourceLeaks();
+  // All cleanup here is best-effort — failures must not cascade into the
+  // next test.  testIsolation: true already gives each test a clean page.
+
+  // Detect resource leaks (non-critical)
+  try {
+    cy.detectResourceLeaks();
+  } catch {
+    // Ignore — leak detection is informational only
+  }
 
   // Log test result for monitoring
   const testResult = this.currentTest?.state ?? "unknown";
   const testName = this.currentTest?.title ?? "unknown";
   const testDuration = this.currentTest?.duration ?? 0;
 
-  cy.task("logTestMetrics", {
-    test: testName,
-    status: testResult,
-    duration: testDuration,
-  });
+  try {
+    cy.task("logTestMetrics", {
+      test: testName,
+      status: testResult,
+      duration: testDuration,
+    });
+  } catch {
+    // Ignore task failures — metrics logging is non-critical
+  }
 
   // Force cleanup of any remaining resources
-  cy.window().then((win) => {
-    // Stop any running audio
-    const audioElements = document.getElementsByTagName("audio");
-    Array.from(audioElements).forEach((audio) => {
-      audio.pause();
-      audio.remove();
-    });
+  cy.window({ log: false }).then((win) => {
+    try {
+      // Stop any running audio
+      const audioElements = document.getElementsByTagName("audio");
+      Array.from(audioElements).forEach((audio) => {
+        audio.pause();
+        audio.remove();
+      });
 
-    // Clear PixiJS resources
-    const pixiWin = win as Window & {
-      PIXI?: unknown;
-      __pixiApp?: {
-        destroy: (
-          removeView: boolean,
-          options?: { children?: boolean; texture?: boolean }
-        ) => void;
+      // Clear PixiJS resources
+      const pixiWin = win as Window & {
+        PIXI?: unknown;
+        __pixiApp?: {
+          destroy: (
+            removeView: boolean,
+            options?: { children?: boolean; texture?: boolean }
+          ) => void;
+        };
       };
-    };
 
-    if (pixiWin.PIXI && pixiWin.__pixiApp) {
-      try {
+      if (pixiWin.PIXI && pixiWin.__pixiApp) {
         pixiWin.__pixiApp.destroy(true, { children: true, texture: true });
         delete pixiWin.__pixiApp;
-      } catch {
-        // Ignore cleanup errors
       }
+    } catch {
+      // Ignore cleanup errors — testIsolation handles reset
     }
   });
 });
@@ -141,10 +152,13 @@ Cypress.on("uncaught:exception", (err, _runnable) => {
 
 // Performance logging for CI
 afterEach(() => {
-  cy.window().then((win) => {
-    // Clear any previous performance marks
-    if (win.performance?.clearMarks) {
-      win.performance.clearMarks();
+  cy.window({ log: false }).then((win) => {
+    try {
+      if (win.performance?.clearMarks) {
+        win.performance.clearMarks();
+      }
+    } catch {
+      // Ignore — performance cleanup is non-critical
     }
   });
 });

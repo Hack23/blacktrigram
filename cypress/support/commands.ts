@@ -316,28 +316,28 @@ Cypress.Commands.add(
 
 // Return to intro screen from anywhere
 Cypress.Commands.add("returnToIntro", () => {
-  // Try return button first
+  // Best-effort navigation back to intro screen.
+  // This is used in afterEach hooks, so it must NOT throw on failure —
+  // testIsolation: true already ensures a fresh page between tests.
   cy.get("body").then(($body) => {
     if ($body.find('[data-testid="return-to-menu-button"]').length > 0) {
       cy.get('[data-testid="return-to-menu-button"]').click({ force: true });
     } else if ($body.find('[data-testid="return-menu-button"]').length > 0) {
       cy.get('[data-testid="return-menu-button"]').click({ force: true });
     } else {
-      // Use ESC key as fallback
       cy.log("Return button not found, using ESC key");
       cy.get("body").type("{esc}");
     }
   });
 
-  // Wait for intro screen using assertion-based wait
-  cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
-
-  // Verify we're back on intro screen
+  // Use a conditional check instead of a hard assertion so afterEach
+  // hooks don't cascade-fail when the page state is broken.
+  cy.wait(1000); // Brief wait for navigation
   cy.get("body").then(($body) => {
     if ($body.find('[data-testid="intro-screen"]').length > 0) {
       cy.log("✅ Successfully returned to intro screen");
     } else {
-      cy.log("⚠️ Intro screen not detected, but continuing test");
+      cy.log("⚠️ Intro screen not detected — testIsolation will reset page");
     }
   });
 });
