@@ -438,7 +438,7 @@ export function verifyMultipleElements(testIds: string[]): void {
  * Verify training screen is ready
  */
 export function verifyTrainingScreenReady(): void {
-  cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should("exist");
+  cy.get('[data-testid="training-screen-3d"]', { timeout: 10000 }).should("exist");
   cy.log("✅ Training screen loaded");
   verifyCanvasVisible();
 }

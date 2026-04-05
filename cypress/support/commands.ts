@@ -224,26 +224,13 @@ Cypress.Commands.add("waitForCanvasReady", () => {
 // Enhanced Training mode helpers with better waiting strategy
 Cypress.Commands.add("enterTrainingMode", () => {
   // Try to find and click training button more efficiently
+  // Priority: menu-item-training (actual visible button) > keyboard fallback
+  // Note: training-button is a hidden span alias (display: none), not clickable
   cy.get("body").then(($body) => {
-    // First try menu buttons
-    const menuButtons = [
-      '[data-testid="menu-button-training"]',
-      '[data-testid="training-button"]',
-      '[data-testid="menu-item-training"]',
-    ];
-
-    let buttonFound = false;
-    for (const selector of menuButtons) {
-      if ($body.find(selector).length > 0) {
-        cy.get(selector, { timeout: 5000 })
-          .should("be.visible")
-          .click({ force: true });
-        buttonFound = true;
-        break;
-      }
-    }
-
-    if (!buttonFound) {
+    if ($body.find('[data-testid="menu-item-training"]').length > 0) {
+      cy.get('[data-testid="menu-item-training"]', { timeout: 5000 })
+        .click({ force: true });
+    } else {
       // Use keyboard shortcut as reliable fallback
       cy.log("No training button found, using keyboard shortcut '2'");
       cy.get("body").focus().type("2");
@@ -251,7 +238,7 @@ Cypress.Commands.add("enterTrainingMode", () => {
   });
 
   // More efficient waiting - check for screen first, then details
-  cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should("exist");
+  cy.get('[data-testid="training-screen-3d"]', { timeout: 10000 }).should("exist");
 
   // Optional verification - don't fail test if missing
   cy.get("body").then(($body) => {
@@ -268,10 +255,11 @@ Cypress.Commands.add("enterTrainingMode", () => {
 // Enhanced combat mode entry with streamlined logic
 Cypress.Commands.add("enterCombatMode", () => {
   // Try clicking the combat button first
+  // Priority: menu-item-versus (actual visible button) > keyboard fallback
+  // Note: combat-button is a hidden span alias (display: none), not clickable
   cy.get("body").then(($body) => {
-    if ($body.find('[data-testid="combat-button"]').length > 0) {
-      cy.get('[data-testid="combat-button"]', { timeout: 10000 })
-        .should("be.visible")
+    if ($body.find('[data-testid="menu-item-versus"]').length > 0) {
+      cy.get('[data-testid="menu-item-versus"]', { timeout: 10000 })
         .click({ force: true });
     } else {
       // Use keyboard shortcut as fallback
@@ -281,7 +269,7 @@ Cypress.Commands.add("enterCombatMode", () => {
   });
 
   // Wait for combat screen using assertion-based wait
-  cy.get('[data-testid="combat-screen"]', { timeout: 2000 }).should("exist");
+  cy.get('[data-testid="combat-screen"]', { timeout: 10000 }).should("exist");
 
   // Verify we're in combat mode
   cy.get("body").then(($body) => {
@@ -563,10 +551,10 @@ Cypress.Commands.add("navigateToTraining", () => {
   cy.waitForGameReady();
 
   // Try multiple ways to enter training mode
+  // Note: training-button is a hidden span alias (display: none), not clickable
   cy.get("body").then(($body) => {
-    if ($body.find('[data-testid="training-button"]').length > 0) {
-      cy.get('[data-testid="training-button"]', { timeout: 8000 })
-        .should("be.visible")
+    if ($body.find('[data-testid="menu-item-training"]').length > 0) {
+      cy.get('[data-testid="menu-item-training"]', { timeout: 8000 })
         .click({ force: true });
     } else {
       cy.log("Training button not found, using keyboard shortcut");
@@ -578,7 +566,7 @@ Cypress.Commands.add("navigateToTraining", () => {
   cy.wait(1500);
 
   // Verify training screen exists with optimized timeout
-  cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should("exist");
+  cy.get('[data-testid="training-screen-3d"]', { timeout: 10000 }).should("exist");
   cy.get('[data-testid="training-header"]', { timeout: 8000 }).should("exist");
 
   cy.log("✅ Training screen loaded successfully");

@@ -90,14 +90,11 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // ============================================================
     cy.log("2️⃣ Verifying Menu Buttons");
 
-    // Check for combat button (using multiple possible test IDs)
+    // Check for combat button (using actual menu-item testids)
     cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="combat-button"]').length > 0) {
-        cy.get('[data-testid="combat-button"]').should("be.visible");
+      if ($body.find('[data-testid="menu-item-versus"]').length > 0) {
+        cy.get('[data-testid="menu-item-versus"]').should("be.visible");
         cy.log("✅ Combat button found");
-      } else if ($body.find('[data-testid="menu-combat"]').length > 0) {
-        cy.get('[data-testid="menu-combat"]').should("be.visible");
-        cy.log("✅ Menu combat found");
       } else {
         cy.log("⚠️ Combat button not found with standard test IDs");
       }
@@ -105,12 +102,9 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Check for training button
     cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="training-button"]').length > 0) {
-        cy.get('[data-testid="training-button"]').should("be.visible");
+      if ($body.find('[data-testid="menu-item-training"]').length > 0) {
+        cy.get('[data-testid="menu-item-training"]').should("be.visible");
         cy.log("✅ Training button found");
-      } else if ($body.find('[data-testid="menu-training"]').length > 0) {
-        cy.get('[data-testid="menu-training"]').should("be.visible");
-        cy.log("✅ Menu training found");
       } else {
         cy.log("⚠️ Training button not found with standard test IDs");
       }
@@ -118,12 +112,9 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Check for controls button
     cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="controls-button"]').length > 0) {
-        cy.get('[data-testid="controls-button"]').should("be.visible");
+      if ($body.find('[data-testid="menu-item-controls"]').length > 0) {
+        cy.get('[data-testid="menu-item-controls"]').should("be.visible");
         cy.log("✅ Controls button found");
-      } else if ($body.find('[data-testid="menu-controls"]').length > 0) {
-        cy.get('[data-testid="menu-controls"]').should("be.visible");
-        cy.log("✅ Menu controls found");
       } else {
         cy.log("⚠️ Controls button not found with standard test IDs");
       }
@@ -131,12 +122,9 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Check for philosophy button
     cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="philosophy-button"]').length > 0) {
-        cy.get('[data-testid="philosophy-button"]').should("be.visible");
+      if ($body.find('[data-testid="menu-item-philosophy"]').length > 0) {
+        cy.get('[data-testid="menu-item-philosophy"]').should("be.visible");
         cy.log("✅ Philosophy button found");
-      } else if ($body.find('[data-testid="menu-philosophy"]').length > 0) {
-        cy.get('[data-testid="menu-philosophy"]').should("be.visible");
-        cy.log("✅ Menu philosophy found");
       } else {
         cy.log("⚠️ Philosophy button not found with standard test IDs");
       }
@@ -180,7 +168,7 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("5️⃣ Testing Navigation to Training");
 
     cy.enterTrainingMode();
-    cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should(
+    cy.get('[data-testid="training-screen-3d"]', { timeout: 10000 }).should(
       "exist"
     );
     cy.log("✅ Successfully navigated to Training");
@@ -195,7 +183,7 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("6️⃣ Testing Navigation to Controls");
 
     // Navigate to controls screen using reusable command
-    cy.navigateToScreen("controls", "controls-button", "menu-controls", "3");
+    cy.navigateToScreen("controls", "menu-item-controls", "menu-item-controls", "3");
 
     cy.returnToIntro();
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
@@ -209,8 +197,8 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // Navigate to philosophy screen using reusable command
     cy.navigateToScreen(
       "philosophy",
-      "philosophy-button",
-      "menu-philosophy",
+      "menu-item-philosophy",
+      "menu-item-philosophy",
       "4"
     );
 
@@ -247,8 +235,8 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // Check menu buttons still accessible
     cy.get("body").then(($body) => {
       if (
-        $body.find('[data-testid="combat-button"]').length > 0 ||
-        $body.find('[data-testid="menu-combat"]').length > 0
+        $body.find('[data-testid="menu-item-versus"]').length > 0 ||
+        $body.find('[data-testid="menu-item-training"]').length > 0
       ) {
         cy.log("✅ Menu buttons accessible on tablet");
       }
