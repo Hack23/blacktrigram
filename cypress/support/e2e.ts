@@ -77,28 +77,22 @@ beforeEach(() => {
 afterEach(function () {
   // All cleanup here is best-effort — failures must not cascade into the
   // next test.  testIsolation: true already gives each test a clean page.
+  // IMPORTANT: None of these operations use Cypress assertions (.should),
+  // so they cannot trigger the Cypress.on("fail") handler.
 
-  // Detect resource leaks (non-critical)
-  try {
-    cy.detectResourceLeaks();
-  } catch {
-    // Ignore — leak detection is informational only
-  }
+  // Detect resource leaks (logs only, no assertions)
+  cy.detectResourceLeaks();
 
   // Log test result for monitoring
   const testResult = this.currentTest?.state ?? "unknown";
   const testName = this.currentTest?.title ?? "unknown";
   const testDuration = this.currentTest?.duration ?? 0;
 
-  try {
-    cy.task("logTestMetrics", {
-      test: testName,
-      status: testResult,
-      duration: testDuration,
-    });
-  } catch {
-    // Ignore task failures — metrics logging is non-critical
-  }
+  cy.task("logTestMetrics", {
+    test: testName,
+    status: testResult,
+    duration: testDuration,
+  });
 
   // Force cleanup of any remaining resources
   cy.window({ log: false }).then((win) => {
@@ -126,7 +120,7 @@ afterEach(function () {
         delete pixiWin.__pixiApp;
       }
     } catch {
-      // Ignore cleanup errors — testIsolation handles reset
+      // Ignore synchronous DOM/resource cleanup errors
     }
   });
 });

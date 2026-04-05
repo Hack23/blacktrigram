@@ -330,9 +330,8 @@ Cypress.Commands.add("returnToIntro", () => {
     }
   });
 
-  // Use a conditional check instead of a hard assertion so afterEach
-  // hooks don't cascade-fail when the page state is broken.
-  cy.wait(1000); // Brief wait for navigation
+  // Conditional check — no hard assertion. If the intro screen doesn't
+  // appear, testIsolation will navigate to about:blank before the next test.
   cy.get("body").then(($body) => {
     if ($body.find('[data-testid="intro-screen"]').length > 0) {
       cy.log("✅ Successfully returned to intro screen");
