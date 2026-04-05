@@ -72,7 +72,7 @@ beforeEach(() => {
 
   // Start resource monitoring for leak detection (best-effort; command may
   // not be registered if resource-monitoring.ts fails to load)
-  try { cy.startResourceMonitoring(); } catch { /* non-critical */ }
+  try { cy.startResourceMonitoring(); } catch { /* command may not be registered */ }
 });
 
 afterEach(function () {
@@ -82,7 +82,7 @@ afterEach(function () {
   // so they cannot trigger the Cypress.on("fail") handler.
 
   // Detect resource leaks (logs only, no assertions; best-effort)
-  try { cy.detectResourceLeaks(); } catch { /* non-critical */ }
+  try { cy.detectResourceLeaks(); } catch { /* command may not be registered */ }
 
   // Log test result for monitoring
   const testResult = this.currentTest?.state ?? "unknown";
@@ -166,6 +166,8 @@ afterEach(() => {
 // IMPORTANT: `return false` is required for Cypress's internal error recovery
 // during support file initialization. Without it, webpack compilation warnings
 // in the support modules prevent custom commands from registering.
+// Returning false prevents Cypress from failing the test, allowing initialization
+// to complete despite non-critical errors during module loading.
 //
 // The previous infinite-hang issue (cypress/downloads/downloads.html reload loop)
 // was caused by afterEach hooks throwing errors that were swallowed. The fix is
