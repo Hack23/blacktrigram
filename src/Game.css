@@ -12,13 +12,13 @@ canvas:focus {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #000;
+  background-color: var(--color-primary-black);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  color: #00ffd0;
+  color: var(--color-primary-cyan);
   font-family: "Orbitron", "Noto Sans KR", monospace;
 }
 
@@ -39,8 +39,8 @@ canvas:focus {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(0, 255, 208, 0.3);
-  border-top: 4px solid #00ffd0;
+  border: 4px solid color-mix(in srgb, var(--color-primary-cyan) 30%, transparent);
+  border-top: 4px solid var(--color-primary-cyan);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -71,7 +71,7 @@ canvas:focus {
   position: absolute;
   width: 20px;
   height: 20px;
-  border: 1px solid #00ffd0;
+  border: 1px solid var(--color-primary-cyan);
   transform: translate(-50%, -50%);
   opacity: 0.7;
   animation: target-pulse 2s infinite;
@@ -81,7 +81,7 @@ canvas:focus {
 .vital-point::after {
   content: "";
   position: absolute;
-  background-color: #00ffd0;
+  background-color: var(--color-primary-cyan);
 }
 
 .vital-point::before {
@@ -102,21 +102,21 @@ canvas:focus {
 
 @keyframes target-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 208, 0.4);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary-cyan) 40%, transparent);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(0, 255, 208, 0);
+    box-shadow: 0 0 0 10px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 208, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 
 /* Neon text effect for Korean text */
 .neon-text {
-  color: #fff;
-  text-shadow: 0 0 5px #00ffd0, 0 0 10px #00ffd0, 0 0 20px #00ffd0,
-    0 0 40px #00ffd0;
+  color: var(--color-korean-west);
+  text-shadow: 0 0 5px var(--color-primary-cyan), 0 0 10px var(--color-primary-cyan), 0 0 20px var(--color-primary-cyan),
+    0 0 40px var(--color-primary-cyan);
   font-weight: bold;
 }
 
@@ -142,7 +142,7 @@ canvas:focus {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: radial-gradient(ellipse at center, #0a0a2e 0%, #000000 100%);
+  background: radial-gradient(ellipse at center, var(--color-bg-medium) 0%, var(--color-primary-black) 100%);
 }
 
 .combat-overlay {
@@ -184,14 +184,14 @@ canvas:focus {
 .player-health-bar {
   width: 300px;
   height: 20px;
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid var(--primary-cyan);
+  background: color-mix(in srgb, var(--color-primary-black) 70%, transparent);
+  border: 1px solid var(--color-primary-cyan);
   position: relative;
 }
 
 .health-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff4136, #ffdc00, #2ecc40);
+  background: linear-gradient(90deg, var(--color-korean-south), var(--color-warning), var(--color-success));
   transition: width 0.3s ease;
 }
 
@@ -207,8 +207,8 @@ canvas:focus {
 .trigram-symbol {
   width: 40px;
   height: 40px;
-  border: 2px solid var(--primary-cyan);
-  background: rgba(0, 255, 255, 0.1);
+  border: 2px solid var(--color-primary-cyan);
+  background: color-mix(in srgb, var(--color-primary-cyan) 10%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -219,6 +219,6 @@ canvas:focus {
 
 .trigram-symbol:hover,
 .trigram-symbol.active {
-  background: rgba(0, 255, 255, 0.3);
-  box-shadow: 0 0 15px var(--primary-cyan);
+  background: color-mix(in srgb, var(--color-primary-cyan) 30%, transparent);
+  box-shadow: 0 0 15px var(--color-primary-cyan);
 }

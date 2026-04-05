@@ -37,62 +37,23 @@
   --font-korean: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
   --font-cyber: "Orbitron", "SF Mono", "Monaco", "Consolas", monospace;
   
+  /* Gray Scale */
+  --color-gray-100: #1a1a1a;
+  --color-gray-200: #2d2d2d;
+  --color-gray-300: #444444;
+  --color-gray-400: #666666;
+  --color-gray-500: #888888;
+  --color-gray-600: #999999;
+  --color-gray-700: #aaaaaa;
+  --color-gray-800: #cccccc;
+  --color-gray-900: #e0e0e0;
+
   /* Spacing Scale */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
-  
-  /* Deprecated - Kept for backward compatibility, will be removed in v2.0 */
-  /* @deprecated Use --color-accent-cyan instead */
-  --korean-primary: var(--color-accent-cyan);
-  /* @deprecated Use --color-accent-orange instead */
-  --korean-secondary: var(--color-accent-orange);
-  /* @deprecated Use --color-warning instead */
-  --korean-accent: var(--color-warning);
-  /* @deprecated Use --color-bg-dark instead */
-  --korean-bg-dark: var(--color-bg-dark);
-  /* @deprecated Use --color-bg-medium instead */
-  --korean-bg-medium: var(--color-bg-medium);
-  /* @deprecated Use --color-text-primary instead */
-  --korean-text-primary: var(--color-text-primary);
-  /* @deprecated Use --color-text-tertiary instead */
-  --korean-text-secondary: var(--color-text-tertiary);
-  /* @deprecated Use --color-korean-east instead */
-  --korean-glow: var(--color-korean-east);
-  /* @deprecated Use --color-danger instead */
-  --korean-danger: var(--color-danger);
-  /* @deprecated Use --color-korean-south instead */
-  --korean-red: var(--color-korean-south);
-  /* @deprecated Use --color-primary-gold instead */
-  --korean-gold: var(--color-primary-gold);
-  /* @deprecated Use --color-primary-black instead */
-  --korean-black: var(--color-primary-black);
-  /* @deprecated Use --color-korean-west instead */
-  --korean-white: var(--color-korean-west);
-  /* @deprecated Use --color-accent-blue instead */
-  --dojang-blue: var(--color-accent-blue);
-  /* @deprecated Use --color-primary-cyan instead */
-  --primary-cyan: var(--color-primary-cyan);
-  /* @deprecated Use --color-accent-blue instead. Will be removed in v2.0 */
-  --primary-blue: var(--color-accent-blue);
-  /* @deprecated Use --color-accent-magenta instead */
-  --accent-magenta: var(--color-accent-magenta);
-  /* @deprecated Use --color-bg-dark instead */
-  --background-dark: var(--color-bg-dark);
-  /* @deprecated Use --color-text-primary instead */
-  --text-primary: var(--color-text-primary);
-  /* @deprecated Use --color-korean-south instead. Will be removed in v2.0 */
-  --trigram-red: var(--color-korean-south);
-  /* @deprecated Use --color-primary-gold instead */
-  --trigram-gold: var(--color-primary-gold);
-  /* @deprecated Use --color-primary-black instead */
-  --trigram-black: var(--color-primary-black);
-  /* @deprecated Use --color-korean-west instead */
-  --trigram-white: var(--color-korean-west);
-  /* @deprecated Use --color-primary-cyan instead. Will be removed in v2.0 */
-  --black-trigram-cyan: var(--color-primary-cyan);
 }
 
 * {
@@ -103,8 +64,8 @@
 
 body {
   font-family: var(--font-korean);
-  background-color: var(--background-dark);
-  color: var(--text-primary);
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-primary);
   overflow: hidden;
 }
 
@@ -118,8 +79,8 @@ body {
 
 /* Cyberpunk aesthetic */
 .cyberpunk-glow {
-  box-shadow: 0 0 10px var(--primary-cyan);
-  border: 1px solid var(--primary-cyan);
+  box-shadow: 0 0 10px var(--color-primary-cyan);
+  border: 1px solid var(--color-primary-cyan);
 }
 
 .korean-text {
@@ -139,7 +100,7 @@ a:hover {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-  color: var(--korean-gold);
+  color: var(--color-primary-gold);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
@@ -433,9 +394,9 @@ html {
 .dojang-background {
   background: linear-gradient(
     135deg,
-    var(--korean-black) 0%,
-    var(--dojang-blue) 50%,
-    var(--korean-red) 100%
+    var(--color-primary-black) 0%,
+    var(--color-accent-blue) 50%,
+    var(--color-korean-south) 100%
   );
   background-size: 200% 200%;
   animation: dojaingGradient 8s ease infinite;
