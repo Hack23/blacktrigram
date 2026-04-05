@@ -183,14 +183,6 @@
     "react-dom": "^19.0.0",
     "three": "^0.183.0"
   },
-  "peerDependenciesMeta": {
-    "@react-three/postprocessing": {
-      "optional": true
-    },
-    "postprocessing": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@aws-sdk/client-bedrock-runtime": "3.1024.0",
     "@eslint/js": "10.0.1",
