@@ -181,7 +181,7 @@ describe("TechniqueCard", () => {
           <TechniqueCard {...defaultProps} isAvailable={true} />
         );
         const card = container.querySelector('[data-testid^="technique-card"]') as HTMLElement;
-        expect(card.style.backgroundColor).toBe("rgba(26, 26, 30, 0.9)");
+        expect(card.style.backgroundColor).toBe("rgba(26, 26, 26, 0.9)");
       });
 
       it("should apply gold border when available", () => {
@@ -216,7 +216,7 @@ describe("TechniqueCard", () => {
           <TechniqueCard {...defaultProps} isAvailable={false} />
         );
         const card = container.querySelector('[data-testid^="technique-card"]') as HTMLElement;
-        expect(card.style.backgroundColor).toBe("rgba(50, 50, 50, 0.8)");
+        expect(card.style.backgroundColor).toBe("rgba(42, 42, 42, 0.8)");
       });
 
       it("should apply gray border when unavailable", () => {

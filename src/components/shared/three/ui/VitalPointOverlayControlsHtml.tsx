@@ -90,17 +90,17 @@ const colorToHex = (color: number): string => {
 const getSeverityColor = (severity: VitalPointSeverity): string => {
   switch (severity) {
     case VitalPointSeverity.LETHAL:
-      return "#ff0000"; // Red
+      return colorToHex(KOREAN_COLORS.NEGATIVE_RED);
     case VitalPointSeverity.CRITICAL:
-      return "#ff6600"; // Orange
+      return colorToHex(KOREAN_COLORS.HEALTH_LOW);
     case VitalPointSeverity.MAJOR:
-      return "#ffaa00"; // Gold
+      return colorToHex(KOREAN_COLORS.ACCENT_GOLD);
     case VitalPointSeverity.MODERATE:
-      return "#ffd700"; // Yellow
+      return colorToHex(KOREAN_COLORS.TRIGRAM_GEON_PRIMARY);
     case VitalPointSeverity.MINOR:
-      return "#00ff88"; // Green
+      return colorToHex(KOREAN_COLORS.POSITIVE_GREEN);
     default:
-      return "#00ffff"; // Cyan
+      return colorToHex(KOREAN_COLORS.NEON_CYAN);
   }
 };
 
@@ -253,7 +253,7 @@ export const VitalPointOverlayControlsHtml: React.FC<
           borderRadius: "12px",
           padding: isMobile ? "12px" : "16px",
           fontFamily: FONT_FAMILY.KOREAN,
-          color: "#ffffff",
+          color: colorToHex(KOREAN_COLORS.TEXT_PRIMARY),
           boxShadow: `0 0 30px ${colorToHex(
             KOREAN_COLORS.PRIMARY_CYAN
           )}40, inset 0 0 20px ${colorToHex(
@@ -306,7 +306,7 @@ export const VitalPointOverlayControlsHtml: React.FC<
               border: `2px solid ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
               borderRadius: "6px",
               padding: "8px 14px",
-              color: "#ffffff",
+              color: colorToHex(KOREAN_COLORS.TEXT_PRIMARY),
               fontSize,
               cursor: "pointer",
               transition: "all 0.2s ease",
@@ -352,7 +352,7 @@ export const VitalPointOverlayControlsHtml: React.FC<
                   : colorToHex(KOREAN_COLORS.PRIMARY_CYAN)
               }`,
               borderRadius: "8px",
-              color: visible ? "#1a1a1a" : "#ffffff",
+              color: visible ? colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM) : colorToHex(KOREAN_COLORS.TEXT_PRIMARY),
               fontSize: isMobile ? 13 : 15,
               fontWeight: "bold",
               cursor: "pointer",
@@ -421,7 +421,7 @@ export const VitalPointOverlayControlsHtml: React.FC<
                         border: `2px solid ${severityColor}`,
                         borderRadius: "6px",
                         padding: "6px 12px",
-                        color: "#ffffff",
+                        color: colorToHex(KOREAN_COLORS.TEXT_PRIMARY),
                         fontSize: smallFontSize,
                         cursor: "pointer",
                         opacity: isActive ? 1 : 0.6,
@@ -488,7 +488,7 @@ export const VitalPointOverlayControlsHtml: React.FC<
                         )}`,
                         borderRadius: "6px",
                         padding: "6px 12px",
-                        color: "#ffffff",
+                        color: colorToHex(KOREAN_COLORS.TEXT_PRIMARY),
                         fontSize: smallFontSize,
                         cursor: "pointer",
                         opacity: isActive ? 1 : 0.6,
@@ -548,7 +548,7 @@ export const VitalPointOverlayControlsHtml: React.FC<
                     )}40`,
                     borderRadius: "8px",
                     padding: "0 40px 0 14px", // Add right padding for clear button
-                    color: "#ffffff",
+                    color: colorToHex(KOREAN_COLORS.TEXT_PRIMARY),
                     fontSize,
                     fontFamily: FONT_FAMILY.KOREAN,
                     transition: "all 0.2s ease",
