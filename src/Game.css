@@ -105,10 +105,10 @@ canvas:focus {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary-cyan) 40%, transparent);
   }
   70% {
-    box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-primary-cyan) 0%, transparent);
+    box-shadow: 0 0 0 10px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary-cyan) 0%, transparent);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 
