@@ -352,7 +352,7 @@ export const VitalPointOverlayControlsHtml: React.FC<
                   : colorToHex(KOREAN_COLORS.PRIMARY_CYAN)
               }`,
               borderRadius: "8px",
-              color: visible ? colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM) : colorToHex(KOREAN_COLORS.TEXT_PRIMARY),
+              color: visible ? colorToHex(KOREAN_COLORS.KOREAN_BLACK) : colorToHex(KOREAN_COLORS.TEXT_PRIMARY),
               fontSize: isMobile ? 13 : 15,
               fontWeight: "bold",
               cursor: "pointer",
