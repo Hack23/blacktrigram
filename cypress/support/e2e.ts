@@ -163,17 +163,16 @@ afterEach(() => {
 /// <reference path="./commands.ts" />
 
 // Global error handler.
-// IMPORTANT: `return false` is required for Cypress's internal error recovery
-// during support file initialization. Without it, webpack compilation warnings
-// in the support modules prevent custom commands from registering.
-// Returning false prevents Cypress from failing the test, allowing initialization
-// to complete despite non-critical errors during module loading.
+// IMPORTANT: This handler MUST throw errors, not swallow them.
+// Returning false from Cypress.on("fail") silently swallows ALL test failures,
+// making every test appear to pass regardless of assertion results.
+// This was the root cause of e2e tests completing too quickly — no test could
+// ever fail because errors were being silently caught and discarded.
 //
-// The previous infinite-hang issue (cypress/downloads/downloads.html reload loop)
-// was caused by afterEach hooks throwing errors that were swallowed. The fix is
-// NOT to change this handler, but to ensure all afterEach hooks are resilient
-// (no hard assertions, wrapped in try/catch, conditional DOM checks only).
+// The afterEach hooks above are designed to be resilient (no hard assertions,
+// try/catch guards, conditional DOM checks) so they won't cause cascading
+// failures when this handler properly propagates errors.
 Cypress.on("fail", (err, runnable) => {
   console.error(`Cypress test failed [${runnable.title}]:`, err.message);
-  return false;
+  throw err;
 });

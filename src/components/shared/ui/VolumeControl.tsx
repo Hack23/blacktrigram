@@ -186,7 +186,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
             background: isMuted
               ? hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT)
               : `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
-            color: "white",
+            color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
             border: "none",
             padding: "6px 12px",
             borderRadius: "6px",
@@ -297,7 +297,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
           background: isMuted
             ? hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT)
             : `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
-          color: "white",
+          color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
           border: "none",
           padding: "8px 16px",
           borderRadius: "8px",
