@@ -6,6 +6,7 @@
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
@@ -57,7 +58,7 @@
   "keywords": [
     "korean-martial-arts",
     "combat-simulator",
-    "three-js",
+    "threejs",
     "react",
     "game-engine",
     "trigram",
@@ -67,7 +68,17 @@
     "animation-system",
     "3d-combat",
     "i-ching",
-    "typescript"
+    "typescript",
+    "webgl",
+    "react-three-fiber",
+    "gamedev",
+    "fighting-game",
+    "martial-arts",
+    "game-ai",
+    "physics-engine",
+    "state-machine",
+    "cyberpunk",
+    "korean"
   ],
   "author": "Hack23 AB",
   "license": "Apache-2.0",
@@ -171,6 +182,14 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "three": "^0.183.0"
+  },
+  "peerDependenciesMeta": {
+    "@react-three/postprocessing": {
+      "optional": true
+    },
+    "postprocessing": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@aws-sdk/client-bedrock-runtime": "3.1024.0",
