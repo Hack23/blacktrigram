@@ -15,10 +15,10 @@ body {
   font-family: var(--font-korean);
   background: linear-gradient(
     135deg,
-    var(--korean-bg-dark) 0%,
-    var(--korean-bg-medium) 100%
+    var(--color-bg-dark) 0%,
+    var(--color-bg-medium) 100%
   );
-  color: var(--korean-text-primary);
+  color: var(--color-text-primary);
   overflow: hidden;
   user-select: none;
 }
@@ -31,8 +31,8 @@ body {
   align-items: center;
   background: radial-gradient(
     ellipse at center,
-    var(--korean-bg-medium) 0%,
-    var(--korean-bg-dark) 100%
+    var(--color-bg-medium) 0%,
+    var(--color-bg-dark) 100%
   );
 }
 
@@ -40,7 +40,7 @@ body {
 .korean-text {
   font-family: var(--font-korean);
   font-weight: 400;
-  text-shadow: 0 0 8px var(--korean-glow);
+  text-shadow: 0 0 8px var(--color-korean-east);
   letter-spacing: 0.02em;
 }
 
@@ -50,18 +50,18 @@ body {
   font-size: 3rem;
   background: linear-gradient(
     45deg,
-    var(--korean-primary),
-    var(--korean-accent)
+    var(--color-accent-cyan),
+    var(--color-warning)
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 0 20px var(--korean-primary);
+  text-shadow: 0 0 20px var(--color-accent-cyan);
 }
 
 .cyber-text {
   font-family: var(--font-cyber);
-  color: var(--korean-primary);
+  color: var(--color-accent-cyan);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   text-shadow: 0 0 10px currentColor;
@@ -69,15 +69,15 @@ body {
 
 /* Cyberpunk UI Elements */
 .cyberpunk-border {
-  border: 2px solid var(--korean-primary);
+  border: 2px solid var(--color-accent-cyan);
   border-image: linear-gradient(
       45deg,
-      var(--korean-primary),
-      var(--korean-accent),
-      var(--korean-primary)
+      var(--color-accent-cyan),
+      var(--color-warning),
+      var(--color-accent-cyan)
     )
     1;
-  box-shadow: 0 0 10px var(--korean-primary),
+  box-shadow: 0 0 10px var(--color-accent-cyan),
     inset 0 0 10px rgba(0, 212, 255, 0.1);
 }
 
@@ -87,8 +87,8 @@ body {
     rgba(0, 212, 255, 0.1),
     rgba(255, 183, 0, 0.1)
   );
-  border: 1px solid var(--korean-primary);
-  color: var(--korean-text-primary);
+  border: 1px solid var(--color-accent-cyan);
+  color: var(--color-text-primary);
   padding: 0.8rem 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -104,7 +104,7 @@ body {
     rgba(0, 212, 255, 0.2),
     rgba(255, 183, 0, 0.2)
   );
-  box-shadow: 0 0 20px var(--korean-primary);
+  box-shadow: 0 0 20px var(--color-accent-cyan);
   transform: translateY(-2px);
 }
 
@@ -140,12 +140,12 @@ body {
     transparent 100%
   );
   padding: 1rem;
-  border-bottom: 1px solid var(--korean-primary);
+  border-bottom: 1px solid var(--color-accent-cyan);
 }
 
 .health-bar {
-  background: var(--korean-bg-dark);
-  border: 1px solid var(--korean-primary);
+  background: var(--color-bg-dark);
+  border: 1px solid var(--color-accent-cyan);
   height: 8px;
   border-radius: 4px;
   overflow: hidden;
@@ -155,9 +155,9 @@ body {
 .health-bar-fill {
   background: linear-gradient(
     90deg,
-    var(--korean-danger) 0%,
-    var(--korean-accent) 50%,
-    var(--korean-glow) 100%
+    var(--color-danger) 0%,
+    var(--color-warning) 50%,
+    var(--color-korean-east) 100%
   );
   height: 100%;
   transition: width 0.3s ease;
@@ -168,10 +168,10 @@ body {
 @keyframes korean-glow {
   0%,
   100% {
-    text-shadow: 0 0 5px var(--korean-glow);
+    text-shadow: 0 0 5px var(--color-korean-east);
   }
   50% {
-    text-shadow: 0 0 20px var(--korean-glow);
+    text-shadow: 0 0 20px var(--color-korean-east);
   }
 }
 
@@ -254,8 +254,8 @@ body {
 
 /* Loading and Error States */
 .loading-spinner {
-  border: 2px solid var(--korean-bg-medium);
-  border-top: 2px solid var(--korean-primary);
+  border: 2px solid var(--color-bg-medium);
+  border-top: 2px solid var(--color-accent-cyan);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -273,9 +273,9 @@ body {
 }
 
 .error-message {
-  color: var(--korean-danger);
+  color: var(--color-danger);
   background: rgba(255, 51, 102, 0.1);
-  border: 1px solid var(--korean-danger);
+  border: 1px solid var(--color-danger);
   padding: 1rem;
   border-radius: 4px;
   margin: 1rem 0;
@@ -713,7 +713,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: var(--primary-cyan);
+  color: var(--color-primary-cyan);
 }
 
 .error-screen {

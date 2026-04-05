@@ -9,7 +9,7 @@
   height: 40px;
   border: 2px solid rgba(255, 255, 255, 0.8);
   border-radius: 8px;
-  color: #ffffff;
+  color: var(--color-text-primary);
   font-weight: bold;
   cursor: pointer;
   display: flex;
@@ -20,11 +20,11 @@
 }
 
 .training-button-start {
-  background: #00ff88;
+  background: var(--color-success);
 }
 
 .training-button-stop {
-  background: #ff4444;
+  background: var(--color-korean-south);
 }
 
 .training-button:hover {
@@ -40,24 +40,24 @@
   padding: 10px;
   cursor: pointer;
   text-align: left;
-  color: #ffffff;
+  color: var(--color-text-primary);
   transition: all 0.2s ease;
 }
 
 .mode-button.selected {
   background: rgba(0, 255, 255, 0.25);
-  border-color: #00ffff;
+  border-color: var(--color-primary-cyan);
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
 }
 
 .mode-button:not(.selected):hover {
   background: rgba(64, 64, 64, 0.7);
-  border-color: #00ffff;
+  border-color: var(--color-primary-cyan);
   transform: scale(1.02);
 }
 
 .mode-button:focus-visible {
-  outline: 2px solid #00ffff;
+  outline: 2px solid var(--color-primary-cyan);
   outline-offset: 2px;
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.8);
 }
@@ -70,7 +70,7 @@
   padding: 8px;
   cursor: pointer;
   text-align: left;
-  color: #ffffff;
+  color: var(--color-text-primary);
   transition: all 0.2s ease;
 }
 
@@ -99,9 +99,9 @@
 
 .training-feedback {
   background: rgba(0, 0, 0, 0.9);
-  border: 3px solid #ffd700;
+  border: 3px solid var(--color-primary-gold);
   border-radius: 16px;
-  color: #ffd700;
+  color: var(--color-primary-gold);
   text-align: center;
   box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
   animation: feedbackPulse 0.4s ease-out;
@@ -134,7 +134,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #00ff88;
+  background: var(--color-success);
 }
 
 .status-indicator.active {
@@ -142,5 +142,5 @@
 }
 
 .status-indicator.inactive {
-  background: #888888;
+  background: var(--color-gray-500);
 }
