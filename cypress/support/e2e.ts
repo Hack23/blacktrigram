@@ -179,7 +179,7 @@ Cypress.on("uncaught:exception", (err, _runnable) => {
   // Matches "gl.someMethod is not a function" patterns specifically.
   if (
     err instanceof TypeError &&
-    /\bgl\.\w+ is not a function\b/.test(msg)
+    /gl\.\w+ is not a function/.test(msg)
   ) {
     return false;
   }

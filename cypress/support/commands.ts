@@ -464,7 +464,7 @@ function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unkno
     sampleCoverage: () => {},
     frontFace: () => {},
     cullFace: () => {},
-    getShaderPrecisionFormat: () => ({
+    getShaderPrecisionFormat: (_shaderType: number, _precisionType: number) => ({
       rangeMin: 127,
       rangeMax: 127,
       precision: 23,
