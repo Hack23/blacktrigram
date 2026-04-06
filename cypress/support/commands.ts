@@ -760,9 +760,11 @@ Cypress.Commands.add(
         const raw = $el.attr("aria-valuenow");
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect(raw, `aria-valuenow on [${testId}]`).to.exist;
-        const val = parseFloat(String(raw));
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        expect(val, `aria-valuenow parseable on [${testId}]`).to.not.be.NaN;
+        expect(
+          parseFloat(String(raw)),
+          `aria-valuenow parseable on [${testId}]`
+        ).to.not.be.NaN;
       })
       .then(($healthBar) => {
         const currentHealth = parseFloat(
