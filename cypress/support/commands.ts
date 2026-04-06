@@ -464,7 +464,43 @@ function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unkno
     LOW_FLOAT: 0x8df0,
 
     // --- WebGL methods ---
-    getExtension: () => null,
+    getExtension: (name: string) => {
+      // Return mock extension objects for extensions Three.js / drei require
+      if (name === "ANGLE_instanced_arrays") {
+        return {
+          drawArraysInstancedANGLE: () => {},
+          drawElementsInstancedANGLE: () => {},
+          vertexAttribDivisorANGLE: () => {},
+          VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE: 0x88fe,
+        };
+      }
+      if (name === "OES_vertex_array_object") {
+        return {
+          createVertexArrayOES: () => ({}),
+          bindVertexArrayOES: () => {},
+          deleteVertexArrayOES: () => {},
+          isVertexArrayOES: () => false,
+          VERTEX_ARRAY_BINDING_OES: 0x85b5,
+        };
+      }
+      if (name === "OES_texture_float" || name === "OES_texture_half_float") {
+        return { HALF_FLOAT_OES: 0x8d61 };
+      }
+      if (name === "OES_standard_derivatives") {
+        return { FRAGMENT_SHADER_DERIVATIVE_HINT_OES: 0x8b8b };
+      }
+      if (name === "OES_element_index_uint") return {};
+      if (name === "EXT_blend_minmax") return { MIN_EXT: 0x8007, MAX_EXT: 0x8008 };
+      if (name === "WEBGL_depth_texture") return { UNSIGNED_INT_24_8_WEBGL: 0x84fa };
+      if (name === "EXT_texture_filter_anisotropic") {
+        return {
+          MAX_TEXTURE_MAX_ANISOTROPY_EXT: 0x84ff,
+          TEXTURE_MAX_ANISOTROPY_EXT: 0x84fe,
+        };
+      }
+      // Return null for unknown/unsupported extensions
+      return null;
+    },
     getParameter: (param: number) => {
       if (param === 0x1f00) return "Mock WebGL Implementation"; // GL_VENDOR
       if (param === 0x1f01) return "Mock Renderer"; // GL_RENDERER

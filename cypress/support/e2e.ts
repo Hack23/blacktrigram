@@ -175,6 +175,13 @@ Cypress.on("uncaught:exception", (err, _runnable) => {
   ) {
     return false;
   }
+  // WebGL extension errors thrown by Three.js / drei when extensions are missing
+  if (
+    msg.includes("not supported") &&
+    (msg.includes("ANGLE_") || msg.includes("OES_") || msg.includes("EXT_") || msg.includes("WEBGL_"))
+  ) {
+    return false;
+  }
   // WebGL mock stub TypeErrors — Three.js calling GL methods not in the mock.
   // Matches "gl.someMethod is not a function" patterns specifically.
   // NOTE: We check err.name instead of instanceof TypeError because the error
