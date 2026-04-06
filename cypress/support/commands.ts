@@ -378,162 +378,136 @@ Cypress.Commands.add(
 // Store a flag to track if WebGL mocking has been applied
 let isWebGLMocked = false;
 
+/**
+ * Shared WebGL mock context factory — single implementation used by both
+ * the `mockWebGL` command and `visitWithWebGLMock`'s `onBeforeLoad`.
+ * Returns a comprehensive mock WebGL context compatible with Three.js / R3F.
+ */
+function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unknown> {
+  return {
+    canvas,
+    drawingBufferWidth: canvas.width || 800,
+    drawingBufferHeight: canvas.height || 600,
+    getExtension: () => null,
+    getParameter: (param: number) => {
+      if (param === 0x1f00) return "Mock WebGL Implementation"; // GL_VENDOR
+      if (param === 0x1f01) return "Mock Renderer"; // GL_RENDERER
+      if (param === 0x1f02) return "WebGL 1.0"; // GL_VERSION
+      return null;
+    },
+    createShader: () => ({}),
+    createProgram: () => ({}),
+    createBuffer: () => ({}),
+    createTexture: () => ({}),
+    createFramebuffer: () => ({}),
+    createRenderbuffer: () => ({}),
+    bindBuffer: () => {},
+    bindTexture: () => {},
+    bindFramebuffer: () => {},
+    bindRenderbuffer: () => {},
+    useProgram: () => {},
+    enableVertexAttribArray: () => {},
+    vertexAttribPointer: () => {},
+    drawArrays: () => {},
+    drawElements: () => {},
+    clear: () => {},
+    clearColor: () => {},
+    clearDepth: () => {},
+    enable: () => {},
+    disable: () => {},
+    depthFunc: () => {},
+    depthMask: () => {},
+    blendFunc: () => {},
+    blendEquation: () => {},
+    viewport: () => {},
+    scissor: () => {},
+    shaderSource: () => {},
+    compileShader: () => {},
+    attachShader: () => {},
+    linkProgram: () => {},
+    getProgramParameter: () => true,
+    getShaderParameter: () => true,
+    getUniformLocation: () => ({}),
+    getAttribLocation: () => 0,
+    uniform1i: () => {},
+    uniform1f: () => {},
+    uniform2f: () => {},
+    uniform3f: () => {},
+    uniform4f: () => {},
+    uniformMatrix4fv: () => {},
+    activeTexture: () => {},
+    texImage2D: () => {},
+    texParameteri: () => {},
+    pixelStorei: () => {},
+    bufferData: () => {},
+    framebufferTexture2D: () => {},
+    renderbufferStorage: () => {},
+    framebufferRenderbuffer: () => {},
+    checkFramebufferStatus: () => 0x8cd5, // FRAMEBUFFER_COMPLETE
+    deleteShader: () => {},
+    deleteProgram: () => {},
+    deleteBuffer: () => {},
+    deleteTexture: () => {},
+    deleteFramebuffer: () => {},
+    deleteRenderbuffer: () => {},
+    generateMipmap: () => {},
+    isContextLost: () => false,
+    getError: () => 0,
+    flush: () => {},
+    finish: () => {},
+    colorMask: () => {},
+    stencilFunc: () => {},
+    stencilOp: () => {},
+    stencilMask: () => {},
+    lineWidth: () => {},
+    polygonOffset: () => {},
+    sampleCoverage: () => {},
+    frontFace: () => {},
+    cullFace: () => {},
+    drawingBufferColorSpace: "srgb",
+    unpackColorSpace: "srgb",
+  };
+}
+
+/**
+ * Patch `HTMLCanvasElement.prototype.getContext` on the given window so that
+ * requests for "webgl" / "webgl2" return the shared mock context.
+ */
+function applyWebGLMock(win: Cypress.AUTWindow): void {
+  const proto = win.HTMLCanvasElement.prototype;
+  const originalGetContext = proto.getContext;
+  (proto as any).getContext = function (
+    type: string,
+    ...args: any[]
+  ) {
+    if (type === "webgl" || type === "webgl2") {
+      return createMockWebGLContext(this as HTMLCanvasElement);
+    }
+    return originalGetContext.call(this, type, ...args);
+  };
+}
+
 // Enhanced WebGL mocking for better compatibility with Three.js
 Cypress.Commands.add("mockWebGL", () => {
   if (isWebGLMocked) return;
-
   cy.window().then((win) => {
-    // Mock WebGL context creation for Three.js compatibility
-    const originalGetContext = win.HTMLCanvasElement.prototype.getContext;
-    (win.HTMLCanvasElement.prototype as any).getContext = function (
-      type: string,
-      ...args: any[]
-    ) {
-      if (type === "webgl" || type === "webgl2") {
-        // Return a more complete mock WebGL context for Three.js
-        return {
-          canvas: this,
-          drawingBufferWidth: this.width || 800,
-          drawingBufferHeight: this.height || 600,
-          getExtension: () => null,
-          getParameter: (param: any) => {
-            // Return reasonable defaults for common parameters
-            if (param === 0x1f00) return "Mock WebGL Implementation"; // GL_VENDOR
-            if (param === 0x1f01) return "Mock Renderer"; // GL_RENDERER
-            if (param === 0x1f02) return "WebGL 1.0"; // GL_VERSION
-            return null;
-          },
-          createShader: () => ({}),
-          createProgram: () => ({}),
-          createBuffer: () => ({}),
-          createTexture: () => ({}),
-          bindBuffer: () => {},
-          bindTexture: () => {},
-          useProgram: () => {},
-          enableVertexAttribArray: () => {},
-          vertexAttribPointer: () => {},
-          drawArrays: () => {},
-          drawElements: () => {},
-          clear: () => {},
-          clearColor: () => {},
-          enable: () => {},
-          disable: () => {},
-          blendFunc: () => {},
-          viewport: () => {},
-          // Add more methods as needed by Three.js
-        };
-      }
-      return originalGetContext.call(this, type, ...args);
-    };
+    applyWebGLMock(win);
   });
-
   isWebGLMocked = true;
 });
 
-// Enhanced visit with comprehensive error handling
+// Enhanced visit with comprehensive error handling.
+// Note: uncaught:exception handling is registered ONCE globally in e2e.ts
+// to avoid accumulating duplicate handlers across tests.
 Cypress.Commands.add(
   "visitWithWebGLMock",
   (url: string, options?: Partial<Cypress.VisitOptions>) => {
-    // Note: uncaught:exception handling is registered ONCE globally in e2e.ts
-    // to avoid accumulating duplicate handlers across tests.
-
     cy.visit(url, {
       timeout: 20000,
       ...options,
       onBeforeLoad: (win) => {
-        // Apply WebGL mock to the NEW window before page renders
-        const originalGetContext = win.HTMLCanvasElement.prototype.getContext;
-        (win.HTMLCanvasElement.prototype as any).getContext = function (
-          type: string,
-          ...args: any[]
-        ) {
-          if (type === "webgl" || type === "webgl2") {
-            return {
-              canvas: this,
-              drawingBufferWidth: this.width || 800,
-              drawingBufferHeight: this.height || 600,
-              getExtension: () => null,
-              getParameter: (param: any) => {
-                if (param === 0x1f00) return "Mock WebGL Implementation";
-                if (param === 0x1f01) return "Mock Renderer";
-                if (param === 0x1f02) return "WebGL 1.0";
-                return null;
-              },
-              createShader: () => ({}),
-              createProgram: () => ({}),
-              createBuffer: () => ({}),
-              createTexture: () => ({}),
-              createFramebuffer: () => ({}),
-              createRenderbuffer: () => ({}),
-              bindBuffer: () => {},
-              bindTexture: () => {},
-              bindFramebuffer: () => {},
-              bindRenderbuffer: () => {},
-              useProgram: () => {},
-              enableVertexAttribArray: () => {},
-              vertexAttribPointer: () => {},
-              drawArrays: () => {},
-              drawElements: () => {},
-              clear: () => {},
-              clearColor: () => {},
-              clearDepth: () => {},
-              enable: () => {},
-              disable: () => {},
-              depthFunc: () => {},
-              depthMask: () => {},
-              blendFunc: () => {},
-              blendEquation: () => {},
-              viewport: () => {},
-              scissor: () => {},
-              shaderSource: () => {},
-              compileShader: () => {},
-              attachShader: () => {},
-              linkProgram: () => {},
-              getProgramParameter: () => true,
-              getShaderParameter: () => true,
-              getUniformLocation: () => ({}),
-              getAttribLocation: () => 0,
-              uniform1i: () => {},
-              uniform1f: () => {},
-              uniform2f: () => {},
-              uniform3f: () => {},
-              uniform4f: () => {},
-              uniformMatrix4fv: () => {},
-              activeTexture: () => {},
-              texImage2D: () => {},
-              texParameteri: () => {},
-              pixelStorei: () => {},
-              bufferData: () => {},
-              framebufferTexture2D: () => {},
-              renderbufferStorage: () => {},
-              framebufferRenderbuffer: () => {},
-              checkFramebufferStatus: () => 0x8cd5, // FRAMEBUFFER_COMPLETE
-              deleteShader: () => {},
-              deleteProgram: () => {},
-              deleteBuffer: () => {},
-              deleteTexture: () => {},
-              deleteFramebuffer: () => {},
-              deleteRenderbuffer: () => {},
-              generateMipmap: () => {},
-              isContextLost: () => false,
-              getError: () => 0,
-              flush: () => {},
-              finish: () => {},
-              colorMask: () => {},
-              stencilFunc: () => {},
-              stencilOp: () => {},
-              stencilMask: () => {},
-              lineWidth: () => {},
-              polygonOffset: () => {},
-              sampleCoverage: () => {},
-              frontFace: () => {},
-              cullFace: () => {},
-              drawingBufferColorSpace: "srgb",
-              unpackColorSpace: "srgb",
-            };
-          }
-          return originalGetContext.call(this, type, ...args);
-        };
+        // Apply the shared WebGL mock to the NEW window before page renders
+        applyWebGLMock(win);
 
         // Disable audio autoplay restrictions
         Object.defineProperty(win.navigator, "userActivation", {
