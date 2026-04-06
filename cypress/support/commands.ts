@@ -903,12 +903,19 @@ Cypress.Commands.add(
         }
 
         // Capture first snapshot
-        const imgData1 = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        // Capture first snapshot — sample a 20x20 region at the center to
+        // keep the comparison lightweight on large canvases.
+        const cx = Math.floor(canvas.width / 2);
+        const cy_ = Math.floor(canvas.height / 2);
+        const sampleSize = Math.min(20, canvas.width, canvas.height);
+        const x0 = Math.max(0, cx - Math.floor(sampleSize / 2));
+        const y0 = Math.max(0, cy_ - Math.floor(sampleSize / 2));
+        const imgData1 = ctx.getImageData(x0, y0, sampleSize, sampleSize);
         const snapshot1 = new Uint8Array(imgData1.data);
 
         // Wait a short interval for rendering to advance, then compare
         cy.wait(200).then(() => {
-          const imgData2 = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const imgData2 = ctx.getImageData(x0, y0, sampleSize, sampleSize);
           let diffCount = 0;
           for (let i = 0; i < snapshot1.length; i++) {
             if (snapshot1[i] !== imgData2.data[i]) {
@@ -924,6 +931,10 @@ Cypress.Commands.add(
               `⚠️ Three.js canvas present but only ${diffCount} pixel diffs (threshold: ${minPixelChange}) — may be static or mocked`
             );
           }
+          expect(
+            diffCount,
+            `Expected active Three.js rendering to produce at least ${minPixelChange} pixel diffs, but detected ${diffCount}`
+          ).to.be.gte(minPixelChange);
         });
       });
   }
