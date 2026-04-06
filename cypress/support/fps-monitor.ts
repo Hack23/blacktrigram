@@ -3,6 +3,13 @@
  * Provides utilities to monitor frame rate during Three.js rendering
  */
 
+/** FPS thresholds for environments with good rendering performance */
+const NORMAL_AVG_THRESHOLD = 50;
+const NORMAL_MIN_THRESHOLD = 40;
+/** Lenient thresholds for CI/headless/mocked WebGL where FPS may be low */
+const LENIENT_AVG_THRESHOLD = 15;
+const LENIENT_MIN_THRESHOLD = 5;
+
 export interface FPSMetrics {
   readonly averageFPS: number;
   readonly minFPS: number;
@@ -138,8 +145,8 @@ export function assertSmoothFPS(duration: number = 2000): void {
     // In headless/mocked WebGL CI environments, FPS may be legitimately low
     // because the browser is resource-constrained and the GPU is mocked.
     // Use lenient thresholds that still catch frozen/crashed rendering.
-    const avgThreshold = metrics.averageFPS >= 50 ? 50 : 15;
-    const minThreshold = metrics.averageFPS >= 40 ? 40 : 5;
+    const avgThreshold = metrics.averageFPS >= NORMAL_AVG_THRESHOLD ? NORMAL_AVG_THRESHOLD : LENIENT_AVG_THRESHOLD;
+    const minThreshold = metrics.averageFPS >= NORMAL_MIN_THRESHOLD ? NORMAL_MIN_THRESHOLD : LENIENT_MIN_THRESHOLD;
     
     // Check average FPS meets threshold
     expect(metrics.averageFPS).to.be.greaterThan(avgThreshold);
@@ -149,7 +156,7 @@ export function assertSmoothFPS(duration: number = 2000): void {
     
     // Check that we don't drop too many frames (relax for low-FPS environments)
     const dropRate = (metrics.droppedFrames / metrics.samples) * 100;
-    if (metrics.averageFPS >= 50) {
+    if (metrics.averageFPS >= NORMAL_AVG_THRESHOLD) {
       expect(dropRate).to.be.lessThan(20); // Less than 20% dropped frames
     }
 

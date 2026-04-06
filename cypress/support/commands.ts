@@ -6,6 +6,11 @@
 // Custom commands for Black Trigram testing
 // ***********************************************
 
+/** Delay before keyboard fallback — allows menu keyboard handler to mount */
+const KEYBOARD_HANDLER_MOUNT_DELAY = 500;
+/** Timeout for detecting screen transitions in slow CI environments */
+const SCREEN_DETECTION_TIMEOUT = 15000;
+
 // Define custom command types
 declare global {
   namespace Cypress {
@@ -240,14 +245,14 @@ Cypress.Commands.add("enterTrainingMode", () => {
       cy.log("✅ Clicked training menu button");
     } else {
       // Wait a moment for menu keyboard handler to mount before sending key
-      cy.wait(500);
+      cy.wait(KEYBOARD_HANDLER_MOUNT_DELAY);
       cy.log("⚡ Using keyboard shortcut '2' for training");
       cy.get("body").focus().type("2");
     }
   });
 
   // Wait for training screen to appear — increase timeout for slow CI
-  cy.get('[data-testid="training-screen-3d"]', { timeout: 15000 }).should("exist");
+  cy.get('[data-testid="training-screen-3d"]', { timeout: SCREEN_DETECTION_TIMEOUT }).should("exist");
   cy.log("✅ Successfully entered training mode");
 });
 
@@ -262,14 +267,14 @@ Cypress.Commands.add("enterCombatMode", () => {
       cy.log("✅ Clicked combat menu button");
     } else {
       // Wait a moment for menu keyboard handler to mount before sending key
-      cy.wait(500);
+      cy.wait(KEYBOARD_HANDLER_MOUNT_DELAY);
       cy.log("⚡ Using keyboard shortcut '1' for combat");
       cy.get("body").type("1");
     }
   });
 
   // Wait for combat screen — increase timeout for slow CI environments
-  cy.get('[data-testid="combat-screen"]', { timeout: 15000 }).should("exist");
+  cy.get('[data-testid="combat-screen"]', { timeout: SCREEN_DETECTION_TIMEOUT }).should("exist");
   cy.log("✅ Successfully entered combat mode");
 });
 
@@ -287,13 +292,13 @@ Cypress.Commands.add(
         cy.get(`[data-testid="${menuTestId}"]`).first().click();
       } else {
         // Wait a moment for menu keyboard handler to mount before sending key
-        cy.wait(500);
+        cy.wait(KEYBOARD_HANDLER_MOUNT_DELAY);
         cy.log(`⚡ Using keyboard shortcut '${fallbackKey}' for ${screenName}`);
         cy.get("body").type(fallbackKey);
       }
     });
 
-    cy.get(`[data-testid="${screenName}-screen"]`, { timeout: 15000 }).should("exist");
+    cy.get(`[data-testid="${screenName}-screen"]`, { timeout: SCREEN_DETECTION_TIMEOUT }).should("exist");
     cy.log(`✅ Successfully navigated to ${screenName}`);
   }
 );
