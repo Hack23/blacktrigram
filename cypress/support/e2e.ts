@@ -13,15 +13,18 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
-import "./commands";
-import "./performance"; // Import performance monitoring
-import "./test-isolation"; // Import test isolation utilities
-import "./resource-monitoring"; // Import resource monitoring utilities
-import "./memory-monitor"; // Import memory monitoring for leak detection
+// Import support modules using require() instead of import for Cypress 15 webpack
+// compatibility. ES module imports of side-effect-only modules (like Cypress command
+// registrations) are tree-shaken by the webpack bundler, causing all custom commands
+// to be undefined. Using require() ensures the modules execute and register commands.
+require("./commands");
+require("./performance");
+require("./test-isolation");
+require("./resource-monitoring");
+require("./memory-monitor");
 
 // Import cypress-wait-until for waitUntil command
-import "cypress-wait-until";
+require("cypress-wait-until");
 
 // Task to silence WebGL warnings
 Cypress.on("window:before:load", (win) => {
@@ -67,8 +70,10 @@ beforeEach(() => {
     }
   });
 
-  // Add WebGL mocking to all tests
-  cy.mockWebGL();
+  // WebGL mocking is handled by visitWithWebGLMock's onBeforeLoad callback,
+  // which applies the mock to the new window before the page renders.
+  // Calling cy.mockWebGL() here would only patch the current (blank) window
+  // which gets replaced by cy.visit().
 
   // Start resource monitoring for leak detection (best-effort; command may
   // not be registered if resource-monitoring.ts fails to load)

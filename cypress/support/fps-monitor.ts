@@ -88,7 +88,7 @@ export function monitorFPS(
 export function assertMinFPS(
   minFPS: number = 30,
   duration: number = 2000
-): Cypress.Chainable<void> {
+): Cypress.Chainable<any> {
   return monitorFPS(duration).then((metrics) => {
     return cy.wrap(null).then(() => {
       cy.task("logPerformance", {
@@ -118,7 +118,7 @@ export function assertMinFPS(
  * Assert that FPS is consistently above 60fps (ideal for 3D games)
  * @param duration Duration to monitor (default 2000ms)
  */
-export function assertSmoothFPS(duration: number = 2000): Cypress.Chainable<void> {
+export function assertSmoothFPS(duration: number = 2000): Cypress.Chainable<any> {
   return monitorFPS(duration, 60).then((metrics) => {
     return cy.wrap(null).then(() => {
       cy.task("logPerformance", {
@@ -164,7 +164,7 @@ export function assertSmoothFPS(duration: number = 2000): Cypress.Chainable<void
  * so the function will log a warning and pass. This is expected behavior.
  * @param duration Duration to monitor (default 1000ms)
  */
-export function assertCanvasRendering(duration: number = 1000): Cypress.Chainable<void> {
+export function assertCanvasRendering(duration: number = 1000): Cypress.Chainable<any> {
   return cy.get("canvas").then(($canvas) => {
     const canvas = $canvas[0] as HTMLCanvasElement;
     
@@ -238,7 +238,7 @@ export function assertCanvasRendering(duration: number = 1000): Cypress.Chainabl
  * Check for memory leaks by monitoring memory usage
  * @param duration Duration to monitor (default 3000ms)
  */
-export function assertNoMemoryLeaks(duration: number = 3000): Cypress.Chainable<void> {
+export function assertNoMemoryLeaks(duration: number = 3000): Cypress.Chainable<any> {
   return cy.window().then((win) => {
     // Check if performance.memory is available (Chrome only)
     const performance = win.performance as any;

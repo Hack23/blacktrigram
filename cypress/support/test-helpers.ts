@@ -23,6 +23,19 @@
  */
 export function setupScreen(screenType?: 'combat' | 'training' | 'controls' | 'philosophy' | 'end'): void {
   cy.visitWithWebGLMock("/", { timeout: 12000 });
+  
+  // Dismiss splash screen if present — it renders before the Three.js canvas
+  cy.get("body").then(($body) => {
+    if ($body.find('[data-testid="splash-start-button"]').length > 0) {
+      cy.get('[data-testid="splash-start-button"]', { timeout: 5000 })
+        .should("be.visible")
+        .click();
+      cy.log("✅ Splash screen dismissed");
+    } else {
+      cy.log("⚡ No splash screen, proceeding directly");
+    }
+  });
+  
   cy.waitForCanvasReady();
   
   if (screenType === 'combat') {

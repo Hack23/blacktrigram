@@ -24,7 +24,7 @@ import {
 import { VitalPointSeverity } from "../../../types/common";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "@/types/constants";
-import { hexColorToCSS } from "@/utils/colorUtils";
+import { hexColorToCSS, hexToRgbaString } from "@/utils/colorUtils";
 import type { BodyRegionFilter } from "../three/effects/VitalPointMarkers3D";
 
 export type { BodyRegionFilter } from "../three/effects/VitalPointMarkers3D";
@@ -349,7 +349,7 @@ export const VitalPointOverlayControlsPure: React.FC<
             boxShadow: visible
               ? `0 4px 16px ${hexColorToCSS(
                   KOREAN_COLORS.ACCENT_GOLD,
-                )}60, inset 0 2px 4px rgba(255,255,255,0.2)`
+                )}60, inset 0 2px 4px ${hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 0.2)}`
               : `0 2px 8px ${hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)}30`,
             textTransform: "uppercase",
             letterSpacing: "0.5px",

@@ -54,6 +54,8 @@ export class ResourceMonitor {
       return;
     }
 
+    const initial = ResourceMonitor.initialResources;
+
     cy.window().then((win) => {
       const currentResources: ResourceSnapshot = {
         audioElements: document.getElementsByTagName("audio").length,
@@ -66,37 +68,37 @@ export class ResourceMonitor {
       const leaks: ResourceLeak[] = [];
 
       // Check for audio element leaks
-      if (currentResources.audioElements > ResourceMonitor.initialResources.audioElements) {
+      if (currentResources.audioElements > initial.audioElements) {
         leaks.push({
           type: "Audio",
           message: `Audio elements leaked: ${
             currentResources.audioElements -
-            ResourceMonitor.initialResources.audioElements
+            initial.audioElements
           }`,
           delta:
             currentResources.audioElements -
-            ResourceMonitor.initialResources.audioElements,
+            initial.audioElements,
         });
       }
 
       // Check for canvas element leaks
-      if (currentResources.canvasElements > ResourceMonitor.initialResources.canvasElements) {
+      if (currentResources.canvasElements > initial.canvasElements) {
         leaks.push({
           type: "Canvas",
           message: `Canvas elements leaked: ${
             currentResources.canvasElements -
-            ResourceMonitor.initialResources.canvasElements
+            initial.canvasElements
           }`,
           delta:
             currentResources.canvasElements -
-            ResourceMonitor.initialResources.canvasElements,
+            initial.canvasElements,
         });
       }
 
       // Check for event listener leaks (configurable threshold)
       const listenerDelta =
         currentResources.eventListenerCount -
-        ResourceMonitor.initialResources.eventListenerCount;
+        initial.eventListenerCount;
       const listenerThreshold =
         (Cypress.env("EVENT_LISTENER_LEAK_THRESHOLD") as number | undefined) ?? 5;
       if (listenerDelta > listenerThreshold) {
@@ -110,7 +112,7 @@ export class ResourceMonitor {
       // Check for memory leaks (configurable threshold)
       const memoryGrowthMB =
         (currentResources.memoryUsage -
-          ResourceMonitor.initialResources.memoryUsage) /
+          initial.memoryUsage) /
         (1024 * 1024);
 
       // Allow configuration via Cypress env
@@ -120,10 +122,10 @@ export class ResourceMonitor {
         (Cypress.env("MEMORY_LEAK_THRESHOLD_PERCENT") as number | undefined) ?? null;
 
       let percentGrowth: number | null = null;
-      if (ResourceMonitor.initialResources.memoryUsage > 0) {
+      if (initial.memoryUsage > 0) {
         percentGrowth =
-          ((currentResources.memoryUsage - ResourceMonitor.initialResources.memoryUsage) /
-            ResourceMonitor.initialResources.memoryUsage) *
+          ((currentResources.memoryUsage - initial.memoryUsage) /
+            initial.memoryUsage) *
           100;
       }
 
@@ -164,7 +166,7 @@ export class ResourceMonitor {
       }
 
       // Log memory usage details
-      const duration = currentResources.timestamp - ResourceMonitor.initialResources.timestamp;
+      const duration = currentResources.timestamp - initial.timestamp;
       cy.log(
         `📊 Test Duration: ${duration}ms, Memory Growth: ${memoryGrowthMB.toFixed(2)}MB`
       );
