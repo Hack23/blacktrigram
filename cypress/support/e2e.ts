@@ -17,13 +17,19 @@
 // compatibility. ES module imports of side-effect-only modules (like Cypress command
 // registrations) are tree-shaken by the webpack bundler, causing all custom commands
 // to be undefined. Using require() ensures the modules execute and register commands.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require("./commands");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require("./performance");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require("./test-isolation");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require("./resource-monitoring");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require("./memory-monitor");
 
 // Import cypress-wait-until for waitUntil command
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require("cypress-wait-until");
 
 // Task to silence WebGL warnings
