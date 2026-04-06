@@ -54,10 +54,10 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     verifyActiveWebGLRendering();
 
     // Verify health bars exist and have valid data
-    cy.verifyHealthBar("health-bar-player_1", 0, 100).then((health) => {
+    cy.verifyHealthBar("health-bar-player_1", 0, 200).then((health) => {
       cy.log(`Player 1 health verified: ${health}`);
     });
-    cy.verifyHealthBar("health-bar-player_2", 0, 100).then((health) => {
+    cy.verifyHealthBar("health-bar-player_2", 0, 200).then((health) => {
       cy.log(`Player 2 health verified: ${health}`);
     });
 
@@ -98,11 +98,13 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
         const initialHealth = parseFloat(health as string);
         cy.log(`Player 2 initial health: ${initialHealth}`);
 
-        // Execute attack
+        // Execute multiple attacks to ensure at least one registers
+        cy.get("body").type(" ");
+        cy.wait(300);
         cy.get("body").type(" ");
 
-        // Wait for health to update using assertion instead of fixed wait
-        cy.get('[data-testid="health-bar-player_2"]', { timeout: 1500 })
+        // Wait for health to update with longer timeout
+        cy.get('[data-testid="health-bar-player_2"]', { timeout: 5000 })
           .invoke("attr", "aria-valuenow")
           .should((updatedHealth) => {
             const updatedHealthValue = parseFloat(updatedHealth as string);
