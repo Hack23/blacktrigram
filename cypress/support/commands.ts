@@ -698,8 +698,7 @@ function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unkno
         if (/^[A-Z0-9_]+$/.test(prop)) {
           return 0;
         }
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        return () => {};
+        return () => { /* no-op stub for unknown WebGL methods */ };
       }
       return undefined;
     },
