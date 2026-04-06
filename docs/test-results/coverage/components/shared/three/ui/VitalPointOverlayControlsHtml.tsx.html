@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">3.12% </span>
+                <span class="strong">2.12% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/96</span>
+                <span class='fraction'>2/94</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/39</span>
+                <span class='fraction'>0/38</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">3.22% </span>
+                <span class="strong">2.19% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/93</span>
+                <span class='fraction'>2/91</span>
             </div>
         
             
@@ -837,10 +837,7 @@
 <a name='L772'></a><a href='#L772'>772</a>
 <a name='L773'></a><a href='#L773'>773</a>
 <a name='L774'></a><a href='#L774'>774</a>
-<a name='L775'></a><a href='#L775'>775</a>
-<a name='L776'></a><a href='#L776'>776</a>
-<a name='L777'></a><a href='#L777'>777</a>
-<a name='L778'></a><a href='#L778'>778</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L775'></a><a href='#L775'>775</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -921,9 +918,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1640,6 +1634,7 @@ import {
 } from "../../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPointSeverity } from "../../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 import type { BodyRegionFilter } from "../effects/VitalPointMarkers3D";
 &nbsp;
 export type { BodyRegionFilter } from "../effects/VitalPointMarkers3D";
@@ -1699,27 +1694,23 @@ export interface VitalPointOverlayControlsProps {
 /**
  * Convert numeric color to CSS hex string
  */
-const <span class="fstat-no" title="function not covered" >colorToHex = (c</span>olor: number): string =&gt; {
-<span class="cstat-no" title="statement not covered" >  return `#${color.toString(16).padStart(6, "0")}`;</span>
-};
-&nbsp;
 /**
  * Get color for severity level
  */
 const <span class="fstat-no" title="function not covered" >getSeverityColor = (s</span>everity: VitalPointSeverity): string =&gt; {
 <span class="cstat-no" title="statement not covered" >  switch (severity) {</span>
     case VitalPointSeverity.LETHAL:
-<span class="cstat-no" title="statement not covered" >      return "#ff0000"; // Red</span>
+<span class="cstat-no" title="statement not covered" >      return hexColorToCSS(KOREAN_COLORS.NEGATIVE_RED);</span>
     case VitalPointSeverity.CRITICAL:
-<span class="cstat-no" title="statement not covered" >      return "#ff6600"; // Orange</span>
+<span class="cstat-no" title="statement not covered" >      return hexColorToCSS(KOREAN_COLORS.HEALTH_LOW);</span>
     case VitalPointSeverity.MAJOR:
-<span class="cstat-no" title="statement not covered" >      return "#ffaa00"; // Gold</span>
+<span class="cstat-no" title="statement not covered" >      return hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD);</span>
     case VitalPointSeverity.MODERATE:
-<span class="cstat-no" title="statement not covered" >      return "#ffd700"; // Yellow</span>
+<span class="cstat-no" title="statement not covered" >      return hexColorToCSS(KOREAN_COLORS.TRIGRAM_GEON_PRIMARY);</span>
     case VitalPointSeverity.MINOR:
-<span class="cstat-no" title="statement not covered" >      return "#00ff88"; // Green</span>
+<span class="cstat-no" title="statement not covered" >      return hexColorToCSS(KOREAN_COLORS.POSITIVE_GREEN);</span>
     default:
-<span class="cstat-no" title="statement not covered" >      return "#00ffff"; // Cyan</span>
+<span class="cstat-no" title="statement not covered" >      return hexColorToCSS(KOREAN_COLORS.NEON_CYAN);</span>
   }
 };
 &nbsp;
@@ -1867,15 +1858,15 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
           right: finalPosition.right,
           bottom: finalPosition.bottom,
           width: panelWidth,
-          background: `${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)}f0`,
-          border: `2px solid ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
+          background: `${hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK)}f0`,
+          border: `2px solid ${hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)}`,
           borderRadius: "12px",
           padding: isMobile ? "12px" : "16px",
           fontFamily: FONT_FAMILY.KOREAN,
-          color: "#ffffff",
-          boxShadow: `0 0 30px ${colorToHex(
+          color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
+          boxShadow: `0 0 30px ${hexColorToCSS(
             KOREAN_COLORS.PRIMARY_CYAN
-          )}40, inset 0 0 20px ${colorToHex(
+          )}40, inset 0 0 20px ${hexColorToCSS(
             KOREAN_COLORS.UI_BACKGROUND_DARK
           )}80`,
           transition: "all 0.3s ease",
@@ -1892,14 +1883,14 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
             alignItems: "center",
             marginBottom: "12px",
             paddingBottom: "12px",
-            borderBottom: `1px solid ${colorToHex(
+            borderBottom: `1px solid ${hexColorToCSS(
               KOREAN_COLORS.PRIMARY_CYAN
             )}40`,
-            background: `linear-gradient(90deg, ${colorToHex(
+            background: `linear-gradient(90deg, ${hexColorToCSS(
               KOREAN_COLORS.UI_BACKGROUND_DARK
-            )}00 0%, ${colorToHex(
+            )}00 0%, ${hexColorToCSS(
               KOREAN_COLORS.PRIMARY_CYAN
-            )}10 50%, ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)}00 100%)`,
+            )}10 50%, ${hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK)}00 100%)`,
           }}
         &gt;
           &lt;div&gt;
@@ -1909,7 +1900,7 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
             &lt;div
               style={{
                 fontSize: smallFontSize,
-                color: colorToHex(KOREAN_COLORS.TEXT_SECONDARY),
+                color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
                 marginTop: "2px",
               }}
             &gt;
@@ -1919,29 +1910,29 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
           &lt;button
 <span class="fstat-no" title="function not covered" >            onClick={() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etExpanded(!expanded)}</span>
             style={{
-              background: `linear-gradient(135deg, ${colorToHex(
+              background: `linear-gradient(135deg, ${hexColorToCSS(
                 KOREAN_COLORS.UI_BACKGROUND_MEDIUM
-              )} 0%, ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)} 100%)`,
-              border: `2px solid ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
+              )} 0%, ${hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK)} 100%)`,
+              border: `2px solid ${hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)}`,
               borderRadius: "6px",
               padding: "8px 14px",
-              color: "#ffffff",
+              color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
               fontSize,
               cursor: "pointer",
               transition: "all 0.2s ease",
-              boxShadow: `0 2px 8px ${colorToHex(
+              boxShadow: `0 2px 8px ${hexColorToCSS(
                 KOREAN_COLORS.PRIMARY_CYAN
               )}30`,
             }}
 <span class="fstat-no" title="function not covered" >            onMouseEnter={(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >              e.currentTarget.style.transform = "scale(1.05)";</span>
-<span class="cstat-no" title="statement not covered" >              e.currentTarget.style.boxShadow = `0 4px 12px ${colorToHex(</span>
+<span class="cstat-no" title="statement not covered" >              e.currentTarget.style.boxShadow = `0 4px 12px ${hexColorToCSS(</span>
                 KOREAN_COLORS.PRIMARY_CYAN
               )}50`;
             }}
 <span class="fstat-no" title="function not covered" >            onMouseLeave={(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >              e.currentTarget.style.transform = "scale(1)";</span>
-<span class="cstat-no" title="statement not covered" >              e.currentTarget.style.boxShadow = `0 2px 8px ${colorToHex(</span>
+<span class="cstat-no" title="statement not covered" >              e.currentTarget.style.boxShadow = `0 2px 8px ${hexColorToCSS(</span>
                 KOREAN_COLORS.PRIMARY_CYAN
               )}30`;
             }}
@@ -1959,42 +1950,42 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
               width: "100%",
               height: buttonHeight,
               background: visible
-                ? `linear-gradient(135deg, ${colorToHex(
+                ? `linear-gradient(135deg, ${hexColorToCSS(
                     KOREAN_COLORS.ACCENT_GOLD
-                  )} 0%, ${colorToHex(KOREAN_COLORS.SECONDARY_YELLOW)} 100%)`
-                : `linear-gradient(135deg, ${colorToHex(
+                  )} 0%, ${hexColorToCSS(KOREAN_COLORS.SECONDARY_YELLOW)} 100%)`
+                : `linear-gradient(135deg, ${hexColorToCSS(
                     KOREAN_COLORS.UI_BACKGROUND_MEDIUM
-                  )} 0%, ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)} 100%)`,
+                  )} 0%, ${hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK)} 100%)`,
               border: `2px solid ${
                 visible
-                  ? colorToHex(KOREAN_COLORS.ACCENT_GOLD)
-                  : colorToHex(KOREAN_COLORS.PRIMARY_CYAN)
+                  ? hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD)
+                  : hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)
               }`,
               borderRadius: "8px",
-              color: visible ? "#1a1a1a" : "#ffffff",
+              color: visible ? hexColorToCSS(KOREAN_COLORS.KOREAN_BLACK) : hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
               fontSize: isMobile ? 13 : 15,
               fontWeight: "bold",
               cursor: "pointer",
               transition: "all 0.3s ease",
               boxShadow: visible
-                ? `0 4px 16px ${colorToHex(
+                ? `0 4px 16px ${hexColorToCSS(
                     KOREAN_COLORS.ACCENT_GOLD
-                  )}60, inset 0 2px 4px rgba(255,255,255,0.2)`
-                : `0 2px 8px ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}30`,
+                  )}60, inset 0 2px 4px ${hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 0.2)}`
+                : `0 2px 8px ${hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)}30`,
               textTransform: "uppercase",
               letterSpacing: "0.5px",
             }}
 <span class="fstat-no" title="function not covered" >            onMouseEnter={(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >              e.currentTarget.style.transform = "translateY(-2px)";</span>
 <span class="cstat-no" title="statement not covered" >              e.currentTarget.style.boxShadow = visible</span>
-                ? `0 6px 20px ${colorToHex(KOREAN_COLORS.ACCENT_GOLD)}80`
-                : `0 4px 12px ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}50`;
+                ? `0 6px 20px ${hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD)}80`
+                : `0 4px 12px ${hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)}50`;
             }}
 <span class="fstat-no" title="function not covered" >            onMouseLeave={(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >              e.currentTarget.style.transform = "translateY(0)";</span>
 <span class="cstat-no" title="statement not covered" >              e.currentTarget.style.boxShadow = visible</span>
-                ? `0 4px 16px ${colorToHex(KOREAN_COLORS.ACCENT_GOLD)}60`
-                : `0 2px 8px ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}30`;
+                ? `0 4px 16px ${hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD)}60`
+                : `0 2px 8px ${hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)}30`;
             }}
             data-testid="toggle-visibility-button"
           &gt;
@@ -2011,7 +2002,7 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                 style={{
                   fontSize,
                   marginBottom: "8px",
-                  color: colorToHex(KOREAN_COLORS.ACCENT_CYAN),
+                  color: hexColorToCSS(KOREAN_COLORS.ACCENT_CYAN),
                   fontWeight: "600",
                   textTransform: "uppercase",
                   letterSpacing: "1px",
@@ -2036,11 +2027,11 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                       style={{
                         background: isActive
                           ? `linear-gradient(135deg, ${severityColor} 0%, ${severityColor}cc 100%)`
-                          : `${colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`,
+                          : `${hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`,
                         border: `2px solid ${severityColor}`,
                         borderRadius: "6px",
                         padding: "6px 12px",
-                        color: "#ffffff",
+                        color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
                         fontSize: smallFontSize,
                         cursor: "pointer",
                         opacity: isActive ? 1 : 0.6,
@@ -2073,7 +2064,7 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                 style={{
                   fontSize,
                   marginBottom: "8px",
-                  color: colorToHex(KOREAN_COLORS.ACCENT_CYAN),
+                  color: hexColorToCSS(KOREAN_COLORS.ACCENT_CYAN),
                   fontWeight: "600",
                   textTransform: "uppercase",
                   letterSpacing: "1px",
@@ -2096,25 +2087,25 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
 <span class="fstat-no" title="function not covered" >                      onClick={() =&gt; <span class="cstat-no" title="statement not covered" >o</span>nRegionFilterChange(option.value)}</span>
                       style={{
                         background: isActive
-                          ? `linear-gradient(135deg, ${colorToHex(
+                          ? `linear-gradient(135deg, ${hexColorToCSS(
                               KOREAN_COLORS.PRIMARY_CYAN
-                            )} 0%, ${colorToHex(
+                            )} 0%, ${hexColorToCSS(
                               KOREAN_COLORS.ACCENT_BLUE
                             )} 100%)`
-                          : `${colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`,
-                        border: `2px solid ${colorToHex(
+                          : `${hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`,
+                        border: `2px solid ${hexColorToCSS(
                           KOREAN_COLORS.PRIMARY_CYAN
                         )}`,
                         borderRadius: "6px",
                         padding: "6px 12px",
-                        color: "#ffffff",
+                        color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
                         fontSize: smallFontSize,
                         cursor: "pointer",
                         opacity: isActive ? 1 : 0.6,
                         transition: "all 0.2s ease",
                         fontWeight: isActive ? "bold" : "normal",
                         boxShadow: isActive
-                          ? `0 2px 8px ${colorToHex(
+                          ? `0 2px 8px ${hexColorToCSS(
                               KOREAN_COLORS.PRIMARY_CYAN
                             )}50`
                           : "none",
@@ -2142,7 +2133,7 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                 style={{
                   fontSize,
                   marginBottom: "8px",
-                  color: colorToHex(KOREAN_COLORS.ACCENT_CYAN),
+                  color: hexColorToCSS(KOREAN_COLORS.ACCENT_CYAN),
                   fontWeight: "600",
                   textTransform: "uppercase",
                   letterSpacing: "1px",
@@ -2159,30 +2150,30 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                   style={{
                     width: "100%",
                     height: buttonHeight,
-                    background: `${colorToHex(
+                    background: `${hexColorToCSS(
                       KOREAN_COLORS.UI_BACKGROUND_MEDIUM
                     )}`,
-                    border: `2px solid ${colorToHex(
+                    border: `2px solid ${hexColorToCSS(
                       KOREAN_COLORS.PRIMARY_CYAN
                     )}40`,
                     borderRadius: "8px",
                     padding: "0 40px 0 14px", // Add right padding for clear button
-                    color: "#ffffff",
+                    color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
                     fontSize,
                     fontFamily: FONT_FAMILY.KOREAN,
                     transition: "all 0.2s ease",
                     outline: "none",
                   }}
 <span class="fstat-no" title="function not covered" >                  onFocus={(e</span>) =&gt; {
-<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.borderColor = colorToHex(</span>
+<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.borderColor = hexColorToCSS(</span>
                       KOREAN_COLORS.PRIMARY_CYAN
                     );
-<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.boxShadow = `0 0 12px ${colorToHex(</span>
+<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.boxShadow = `0 0 12px ${hexColorToCSS(</span>
                       KOREAN_COLORS.PRIMARY_CYAN
                     )}40`;
                   }}
 <span class="fstat-no" title="function not covered" >                  onBlur={(e</span>) =&gt; {
-<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.borderColor = `${colorToHex(</span>
+<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.borderColor = `${hexColorToCSS(</span>
                       KOREAN_COLORS.PRIMARY_CYAN
                     )}40`;
 <span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.boxShadow = "none";</span>
@@ -2200,7 +2191,7 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                       transform: "translateY(-50%)",
                       background: "transparent",
                       border: "none",
-                      color: colorToHex(KOREAN_COLORS.TEXT_SECONDARY),
+                      color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
                       cursor: "pointer",
                       fontSize: "16px",
                       padding: "4px",
@@ -2211,15 +2202,15 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                       transition: "all 0.2s ease",
                     }}
 <span class="fstat-no" title="function not covered" >                    onMouseEnter={(e</span>) =&gt; {
-<span class="cstat-no" title="statement not covered" >                      e.currentTarget.style.color = colorToHex(</span>
+<span class="cstat-no" title="statement not covered" >                      e.currentTarget.style.color = hexColorToCSS(</span>
                         KOREAN_COLORS.ACCENT_RED
                       );
-<span class="cstat-no" title="statement not covered" >                      e.currentTarget.style.background = `${colorToHex(</span>
+<span class="cstat-no" title="statement not covered" >                      e.currentTarget.style.background = `${hexColorToCSS(</span>
                         KOREAN_COLORS.UI_BACKGROUND_MEDIUM
                       )}`;
                     }}
 <span class="fstat-no" title="function not covered" >                    onMouseLeave={(e</span>) =&gt; {
-<span class="cstat-no" title="statement not covered" >                      e.currentTarget.style.color = colorToHex(</span>
+<span class="cstat-no" title="statement not covered" >                      e.currentTarget.style.color = hexColorToCSS(</span>
                         KOREAN_COLORS.TEXT_SECONDARY
                       );
 <span class="cstat-no" title="statement not covered" >                      e.currentTarget.style.background = "transparent";</span>
@@ -2239,7 +2230,7 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                 style={{
                   fontSize,
                   marginBottom: "8px",
-                  color: colorToHex(KOREAN_COLORS.ACCENT_CYAN),
+                  color: hexColorToCSS(KOREAN_COLORS.ACCENT_CYAN),
                   fontWeight: "600",
                   textTransform: "uppercase",
                   letterSpacing: "1px",
@@ -2265,7 +2256,7 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                     style={{
                       width: "16px",
                       height: "16px",
-                      accentColor: colorToHex(KOREAN_COLORS.PRIMARY_CYAN),
+                      accentColor: hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN),
                     }}
                     data-testid="show-labels-checkbox"
                   /&gt;
@@ -2286,7 +2277,7 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                     style={{
                       width: "16px",
                       height: "16px",
-                      accentColor: colorToHex(KOREAN_COLORS.PRIMARY_CYAN),
+                      accentColor: hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN),
                     }}
                     data-testid="animated-checkbox"
                   /&gt;
@@ -2309,27 +2300,27 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                   style={{
                     width: "100%",
                     height: buttonHeight - 4,
-                    background: `${colorToHex(
+                    background: `${hexColorToCSS(
                       KOREAN_COLORS.UI_BACKGROUND_MEDIUM
                     )}`,
-                    border: `2px solid ${colorToHex(
+                    border: `2px solid ${hexColorToCSS(
                       KOREAN_COLORS.ACCENT_ORANGE
                     )}`,
                     borderRadius: "6px",
-                    color: colorToHex(KOREAN_COLORS.ACCENT_ORANGE),
+                    color: hexColorToCSS(KOREAN_COLORS.ACCENT_ORANGE),
                     fontSize: smallFontSize,
                     cursor: "pointer",
                     transition: "all 0.2s ease",
                     fontWeight: "bold",
                   }}
 <span class="fstat-no" title="function not covered" >                  onMouseEnter={(e</span>) =&gt; {
-<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.background = `${colorToHex(</span>
+<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.background = `${hexColorToCSS(</span>
                       KOREAN_COLORS.ACCENT_ORANGE
                     )}20`;
 <span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.transform = "translateY(-1px)";</span>
                   }}
 <span class="fstat-no" title="function not covered" >                  onMouseLeave={(e</span>) =&gt; {
-<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.background = `${colorToHex(</span>
+<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.background = `${hexColorToCSS(</span>
                       KOREAN_COLORS.UI_BACKGROUND_MEDIUM
                     )}`;
 <span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.transform = "translateY(0)";</span>
@@ -2347,7 +2338,7 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
                 style={{
                   fontSize,
                   marginBottom: "6px",
-                  color: colorToHex(KOREAN_COLORS.ACCENT_CYAN),
+                  color: hexColorToCSS(KOREAN_COLORS.ACCENT_CYAN),
                 }}
               &gt;
                 크기 | Scale: {scale.toFixed(1)}x
@@ -2361,7 +2352,7 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
 <span class="fstat-no" title="function not covered" >                onChange={(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >onScaleChange(parseFloat(e.target.value))}</span>
                 style={{
                   width: "100%",
-                  accentColor: colorToHex(KOREAN_COLORS.PRIMARY_CYAN),
+                  accentColor: hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN),
                 }}
                 data-testid="scale-slider"
               /&gt;
@@ -2372,11 +2363,11 @@ export const <span class="fstat-no" title="function not covered" >VitalPointOver
               style={{
                 marginTop: "12px",
                 paddingTop: "12px",
-                borderTop: `1px solid ${colorToHex(
+                borderTop: `1px solid ${hexColorToCSS(
                   KOREAN_COLORS.PRIMARY_CYAN
                 )}44`,
                 fontSize: smallFontSize,
-                color: colorToHex(KOREAN_COLORS.TEXT_SECONDARY),
+                color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
               }}
             &gt;
               &lt;div&gt;
@@ -2401,7 +2392,7 @@ export default VitalPointOverlayControlsHtml;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-05T02:11:40.429Z
+                at 2026-04-06T23:09:03.159Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

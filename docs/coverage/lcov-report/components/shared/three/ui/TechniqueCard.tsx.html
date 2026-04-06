@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.02% </span>
+                <span class="strong">93.65% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>63/67</span>
+                <span class='fraction'>59/63</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95% </span>
+                <span class="strong">94.87% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>76/80</span>
+                <span class='fraction'>74/78</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.44% </span>
+                <span class="strong">92.72% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>57/61</span>
+                <span class='fraction'>51/55</span>
             </div>
         
             
@@ -496,14 +496,8 @@
 <a name='L431'></a><a href='#L431'>431</a>
 <a name='L432'></a><a href='#L432'>432</a>
 <a name='L433'></a><a href='#L433'>433</a>
-<a name='L434'></a><a href='#L434'>434</a>
-<a name='L435'></a><a href='#L435'>435</a>
-<a name='L436'></a><a href='#L436'>436</a>
-<a name='L437'></a><a href='#L437'>437</a>
-<a name='L438'></a><a href='#L438'>438</a>
-<a name='L439'></a><a href='#L439'>439</a>
-<a name='L440'></a><a href='#L440'>440</a>
-<a name='L441'></a><a href='#L441'>441</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L434'></a><a href='#L434'>434</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -675,19 +669,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1258x</span>
-<span class="cline-any cline-yes">746x</span>
-<span class="cline-any cline-yes">716x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1258x</span>
-<span class="cline-any cline-yes">746x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1258x</span>
-<span class="cline-any cline-yes">746x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -961,6 +947,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Technique } from "../../../../types";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 import { triggerHaptic } from "../../../../utils/haptics";
 import { PlayerArchetype, TrigramStance } from "../../../../types/common";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
@@ -1101,45 +1088,37 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
 &nbsp;
   // Card background color based on state
   const backgroundColor = useMemo(() =&gt; {
-    if (!isAvailable) return "rgba(50, 50, 50, 0.8)";
-    if (isSelected) return `rgba(0, 255, 255, 0.3)`;
-    return "rgba(26, 26, 30, 0.9)";
+    if (!isAvailable) return hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.8);
+    if (isSelected) return hexToRgbaString(KOREAN_COLORS.NEON_CYAN, 0.3);
+    return hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9);
   }, [isAvailable, isSelected]);
 &nbsp;
   // Border color based on state
   const borderColor = useMemo(() =&gt; {
-    if (!isAvailable) return "#666";
-    if (isSelected) return KOREAN_COLORS.PRIMARY_CYAN;
-    return KOREAN_COLORS.ACCENT_GOLD;
+    if (!isAvailable) return hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT);
+    if (isSelected) return hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN);
+    return hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD);
   }, [isAvailable, isSelected]);
 &nbsp;
-  // Convert color to hex string helper
-  const borderColorHex = useMemo(() =&gt; {
-    if (typeof borderColor === "number") {
-      return `#${borderColor.toString(16).padStart(6, "0")}`;
-    }
-    return borderColor;
-  }, [borderColor]);
-&nbsp;
-  // Helper for converting KOREAN_COLORS to hex
+  // Pre-computed hex color strings for styling
   const primaryCyanHex = useMemo(
-    () =&gt; `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+    () =&gt; hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN),
     []
   );
   const accentGoldHex = useMemo(
-    () =&gt; `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+    () =&gt; hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD),
     []
   );
 &nbsp;
   // Border glow effect for selected card
   const boxShadow = useMemo(() =&gt; {
     if (isSelected &amp;&amp; isAvailable) {
-      return `0 0 15px rgba(0, 255, 255, 0.8), 0 0 25px rgba(0, 255, 255, 0.5)`;
+      return `0 0 15px ${hexToRgbaString(KOREAN_COLORS.NEON_CYAN, 0.8)}, 0 0 25px ${hexToRgbaString(KOREAN_COLORS.NEON_CYAN, 0.5)}`;
     }
     if (isAvailable) {
-      return `0 0 10px rgba(255, 170, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.5)`;
+      return `0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3)}, 0 2px 8px ${hexToRgbaString(KOREAN_COLORS.BLACK, 0.5)}`;
     }
-    return "0 2px 8px rgba(0, 0, 0, 0.5)";
+    return `0 2px 8px ${hexToRgbaString(KOREAN_COLORS.BLACK, 0.5)}`;
   }, [isSelected, isAvailable]);
 &nbsp;
   // Animation class based on availability state
@@ -1172,7 +1151,7 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
         width: `${cardSize.width}px`,
         height: `${cardSize.height}px`,
         backgroundColor,
-        border: `2px solid ${borderColorHex}`,
+        border: `2px solid ${borderColor}`,
         borderRadius: "8px",
         boxShadow,
         cursor: isAvailable ? "pointer" : "not-allowed",
@@ -1217,15 +1196,15 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
           right: "4px",
           width: `${cardSize.shortcutSize}px`,
           height: `${cardSize.shortcutSize}px`,
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
-          border: "1px solid #888",
+          backgroundColor: hexToRgbaString(KOREAN_COLORS.BLACK, 0.7),
+          border: `1px solid ${hexColorToCSS(KOREAN_COLORS.UI_GRAY)}`,
           borderRadius: "4px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontSize: `${cardSize.fontSize}px`,
           fontWeight: "bold",
-          color: isAvailable ? "#fff" : "#666",
+          color: isAvailable ? hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY) : hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT),
         }}
       &gt;
         {keyboardShortcut}
@@ -1236,7 +1215,7 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
         style={{
           fontSize: `${cardSize.fontSize}px`,
           fontWeight: "bold",
-          color: isAvailable ? accentGoldHex : "#888",
+          color: isAvailable ? accentGoldHex : hexColorToCSS(KOREAN_COLORS.UI_GRAY),
           textAlign: "center",
           marginTop: "20px",
           lineHeight: "1.2",
@@ -1249,7 +1228,7 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
       &lt;div
         style={{
           fontSize: `${cardSize.fontSize - 2}px`,
-          color: isAvailable ? "#ccc" : "#666",
+          color: isAvailable ? hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) : hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT),
           textAlign: "center",
           marginTop: "2px",
           lineHeight: "1.1",
@@ -1273,7 +1252,7 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
             display: "flex",
             alignItems: "center",
             gap: "2px",
-            color: isAvailable ? "#0f0" : "#666",
+            color: isAvailable ? hexColorToCSS(KOREAN_COLORS.POSITIVE_GREEN) : hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT),
           }}
         &gt;
           &lt;span&gt;⚡&lt;/span&gt;
@@ -1286,7 +1265,7 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
             display: "flex",
             alignItems: "center",
             gap: "2px",
-            color: isAvailable ? "#0ff" : "#666",
+            color: isAvailable ? hexColorToCSS(KOREAN_COLORS.NEON_CYAN) : hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT),
           }}
         &gt;
           &lt;span&gt;氣&lt;/span&gt;
@@ -1303,14 +1282,14 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            backgroundColor: hexToRgbaString(KOREAN_COLORS.BLACK, 0.7),
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             borderRadius: "6px",
             fontSize: `${cardSize.shortcutSize}px`,
             fontWeight: "bold",
-            color: "#f00",
+            color: hexColorToCSS(KOREAN_COLORS.NEGATIVE_RED),
           }}
         &gt;
           {cooldownText}
@@ -1330,11 +1309,11 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
             minWidth: "200px",
             maxWidth: "300px",
             padding: "10px",
-            backgroundColor: "rgba(10, 10, 15, 0.95)",
+            backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
             border: `2px solid ${primaryCyanHex}`,
             borderRadius: "8px",
             fontSize: "12px",
-            color: "#fff",
+            color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
             zIndex: 1000,
             pointerEvents: "none",
             fontFamily: FONT_FAMILY.KOREAN,
@@ -1354,10 +1333,10 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
           &gt;
             {technique.description.korean}
           &lt;/div&gt;
-          &lt;div style={{ fontSize: "11px", lineHeight: "1.4", color: "#ccc" }}&gt;
+          &lt;div style={{ fontSize: "11px", lineHeight: "1.4", color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}&gt;
             {technique.description.english}
           &lt;/div&gt;
-          &lt;div style={{ marginTop: "8px", fontSize: "10px", color: "#aaa" }}&gt;
+          &lt;div style={{ marginTop: "8px", fontSize: "10px", color: hexColorToCSS(KOREAN_COLORS.TEXT_TERTIARY) }}&gt;
             &lt;div&gt;
               Damage: {technique.damage.min}-{technique.damage.max}
             &lt;/div&gt;
@@ -1370,7 +1349,7 @@ export const TechniqueCard: React.FC&lt;TechniqueCardProps&gt; = ({
                 &lt;div style={{ marginTop: "4px", color: primaryCyanHex, fontWeight: "bold" }}&gt;
                   Reach: {reachInfo.maxReach}cm
                 &lt;/div&gt;
-                &lt;div style={{ fontSize: "9px", color: "#999" }}&gt;
+                &lt;div style={{ fontSize: "9px", color: hexColorToCSS(KOREAN_COLORS.UI_GRAY) }}&gt;
                   {reachInfo.bodyPart}
                 &lt;/div&gt;
               &lt;/&gt;
@@ -1390,7 +1369,7 @@ export default TechniqueCard;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-05T02:11:40.887Z
+                at 2026-04-06T23:09:03.597Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
