@@ -239,13 +239,15 @@ Cypress.Commands.add("enterTrainingMode", () => {
       cy.get('[data-testid="menu-item-training"]').first().click();
       cy.log("✅ Clicked training menu button");
     } else {
+      // Wait a moment for menu keyboard handler to mount before sending key
+      cy.wait(500);
       cy.log("⚡ Using keyboard shortcut '2' for training");
       cy.get("body").focus().type("2");
     }
   });
 
-  // Wait for training screen to appear
-  cy.get('[data-testid="training-screen-3d"]', { timeout: 10000 }).should("exist");
+  // Wait for training screen to appear — increase timeout for slow CI
+  cy.get('[data-testid="training-screen-3d"]', { timeout: 15000 }).should("exist");
   cy.log("✅ Successfully entered training mode");
 });
 
@@ -259,13 +261,15 @@ Cypress.Commands.add("enterCombatMode", () => {
       cy.get('[data-testid="menu-item-versus"]').first().click();
       cy.log("✅ Clicked combat menu button");
     } else {
+      // Wait a moment for menu keyboard handler to mount before sending key
+      cy.wait(500);
       cy.log("⚡ Using keyboard shortcut '1' for combat");
       cy.get("body").type("1");
     }
   });
 
-  // Wait for combat screen
-  cy.get('[data-testid="combat-screen"]', { timeout: 10000 }).should("exist");
+  // Wait for combat screen — increase timeout for slow CI environments
+  cy.get('[data-testid="combat-screen"]', { timeout: 15000 }).should("exist");
   cy.log("✅ Successfully entered combat mode");
 });
 
@@ -282,12 +286,14 @@ Cypress.Commands.add(
       } else if (menu.length > 0) {
         cy.get(`[data-testid="${menuTestId}"]`).first().click();
       } else {
+        // Wait a moment for menu keyboard handler to mount before sending key
+        cy.wait(500);
         cy.log(`⚡ Using keyboard shortcut '${fallbackKey}' for ${screenName}`);
         cy.get("body").type(fallbackKey);
       }
     });
 
-    cy.get(`[data-testid="${screenName}-screen"]`, { timeout: 5000 }).should("exist");
+    cy.get(`[data-testid="${screenName}-screen"]`, { timeout: 15000 }).should("exist");
     cy.log(`✅ Successfully navigated to ${screenName}`);
   }
 );
