@@ -21,7 +21,8 @@ import {
   Technique,
   TrigramStance,
 } from "../../../../types";
-import { FONT_FAMILY } from "../../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
 import * as haptics from "../../../../utils/haptics";
 import { AttackAnimationType } from "../../../../types/skeletal";
 
@@ -181,7 +182,7 @@ describe("TechniqueCard", () => {
           <TechniqueCard {...defaultProps} isAvailable={true} />
         );
         const card = container.querySelector('[data-testid^="technique-card"]') as HTMLElement;
-        expect(card.style.backgroundColor).toBe("rgba(26, 26, 30, 0.9)");
+        expect(card.style.backgroundColor).toBe(hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9));
       });
 
       it("should apply gold border when available", () => {
@@ -216,7 +217,7 @@ describe("TechniqueCard", () => {
           <TechniqueCard {...defaultProps} isAvailable={false} />
         );
         const card = container.querySelector('[data-testid^="technique-card"]') as HTMLElement;
-        expect(card.style.backgroundColor).toBe("rgba(50, 50, 50, 0.8)");
+        expect(card.style.backgroundColor).toBe(hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.8));
       });
 
       it("should apply gray border when unavailable", () => {

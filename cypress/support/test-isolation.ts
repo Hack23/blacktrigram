@@ -41,8 +41,8 @@ export class TestIsolation {
         localStorage: localStorageCopy,
         sessionStorage: sessionStorageCopy,
         location: win.location.href,
-        gameState: (win as unknown as { __gameState?: unknown }).__gameState
-          ? { ...(win as unknown as { __gameState: unknown }).__gameState }
+        gameState: (win as unknown as { __gameState?: Record<string, unknown> }).__gameState
+          ? { ...(win as unknown as { __gameState: Record<string, unknown> }).__gameState }
           : null,
       };
     });

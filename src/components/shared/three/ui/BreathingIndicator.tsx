@@ -16,7 +16,7 @@ import {
   createBreathingIndicator,
 } from "../../../../systems/breathing";
 import { PlayerState } from "../../../../systems/player";
-import { FONT_FAMILY } from "../../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import "./BreathingIndicator.css";
 
@@ -79,7 +79,7 @@ export const BreathingIndicator: React.FC<BreathingIndicatorProps> = ({
         alignItems: "center",
         gap: isMobile ? "6px" : "8px",
         padding,
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        backgroundColor: hexToRgbaString(KOREAN_COLORS.BLACK, 0.7),
         borderRadius: "8px",
         border: `2px solid ${hexToRgbaString(breathingState.color, breathingState.opacity)}`,
         boxShadow: `0 0 10px ${hexToRgbaString(breathingState.color, 0.5)}`,
@@ -130,8 +130,8 @@ export const BreathingIndicator: React.FC<BreathingIndicatorProps> = ({
               fontSize: `${fontSize - 2}px`,
               fontFamily: FONT_FAMILY.KOREAN,
               color: breathingState.isRecovering
-                ? hexToRgbaString(0x00ff00, 0.8)
-                : hexToRgbaString(0xffffff, 0.6),
+                ? hexToRgbaString(KOREAN_COLORS.POSITIVE_GREEN, 0.8)
+                : hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 0.6),
               whiteSpace: "nowrap",
             }}
           >

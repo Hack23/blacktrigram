@@ -4,7 +4,7 @@ import {
   cleanupThreeJSResources,
   forceMemoryCleanup,
   verifyCombatScreenReady,
-  verifyCanvasVisible,
+  verifyCanvasExists,
   changeStance,
   waitForTransition
 } from "../../support/test-helpers";
@@ -48,7 +48,7 @@ describe("Mobile Performance Optimization (Target: 45s)", () => {
     // ============================================================
     cy.log("1️⃣ Verifying combat on mobile viewport (375x667)");
     verifyCombatScreenReady();
-    verifyCanvasVisible();
+    verifyCanvasExists();
 
     // ============================================================
     // 2. 30-Second Combat Session with Actions

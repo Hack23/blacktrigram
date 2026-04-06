@@ -50,11 +50,11 @@ const BODY_PART_NAMES: Record<BodyPart, { korean: string; english: string }> = {
  * Get health bar color based on health percentage
  */
 const getHealthColor = (health: number): number => {
-  if (health >= 80) return 0x00ff00; // Green
-  if (health >= 60) return 0xffd700; // Yellow
-  if (health >= 40) return 0xffa500; // Orange
-  if (health >= 20) return 0xff6b6b; // Red
-  return 0x8b0000; // Dark red
+  if (health >= 80) return KOREAN_COLORS.HEALTH_FULL;
+  if (health >= 60) return KOREAN_COLORS.ACCENT_GOLD;
+  if (health >= 40) return KOREAN_COLORS.WARNING_ORANGE;
+  if (health >= 20) return KOREAN_COLORS.PAIN_INDICATOR;
+  return KOREAN_COLORS.NEGATIVE_RED_DARK;
 };
 
 /**

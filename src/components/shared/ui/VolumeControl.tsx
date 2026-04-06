@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { KOREAN_COLORS } from "@/types/constants";
-import { hexToRgbaString, toHex } from "../../../utils/colorUtils";
+import { hexColorToCSS, hexToRgbaString, toHex } from "../../../utils/colorUtils";
 
 export interface VolumeControlProps {
   readonly position?:
@@ -146,7 +146,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
 
   const labelStyle = useMemo(
     (): React.CSSProperties => ({
-      color: "#ffffff",
+      color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
       fontSize: compact ? "11px" : "12px",
       fontWeight: "bold",
       minWidth: compact ? "40px" : "50px",
@@ -184,9 +184,9 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
           aria-label={isMuted ? "Unmute audio" : "Mute audio"}
           style={{
             background: isMuted
-              ? "#666666"
+              ? hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT)
               : `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
-            color: "white",
+            color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
             border: "none",
             padding: "6px 12px",
             borderRadius: "6px",
@@ -295,9 +295,9 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
         aria-label={isMuted ? "Unmute audio" : "Mute audio"}
         style={{
           background: isMuted
-            ? "#666666"
+            ? hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT)
             : `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
-          color: "white",
+          color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
           border: "none",
           padding: "8px 16px",
           borderRadius: "8px",
@@ -317,7 +317,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
         style={{
           color: audio.isAudioReady
             ? `#${toHex(KOREAN_COLORS.ACCENT_GOLD)}`
-            : "#999",
+            : hexColorToCSS(KOREAN_COLORS.UI_GRAY),
           fontSize: "10px",
           marginTop: "4px",
           textAlign: "center",

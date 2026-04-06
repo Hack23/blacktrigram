@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "@/types/constants";
-import { toHex } from "../../../utils/colorUtils";
+import { hexColorToCSS, toHex } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 
 // Declare global APP_VERSION constant (injected by build process)
@@ -70,8 +70,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        background: "linear-gradient(180deg, #0a0f12 0%, #1a1a2e 100%)",
-        color: "#fff",
+        background: `linear-gradient(180deg, ${hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK)} 0%, ${hexColorToCSS(KOREAN_COLORS.ARENA_BACKGROUND)} 100%)`,
+        color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
         fontFamily: FONT_FAMILY.CYBER,
         position: "relative",
         overflow: "hidden",
@@ -154,7 +154,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         <p
           style={{
             fontSize: `${layoutCalculation.bodyFontSize}px`,
-            color: "#aaa",
+            color: hexColorToCSS(KOREAN_COLORS.TEXT_TERTIARY),
             marginTop: "20px",
             letterSpacing: "1px",
           }}
@@ -179,9 +179,9 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
           fontSize: `${layoutCalculation.buttonFontSize}px`,
           fontFamily: FONT_FAMILY.CYBER,
           fontWeight: 700,
-          color: isLoading ? "#666" : "#000",
+          color: isLoading ? hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT) : hexColorToCSS(KOREAN_COLORS.BLACK),
           background: isLoading
-            ? "#333"
+            ? hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_LIGHT)
             : `linear-gradient(135deg, #${HEX_COLORS.PRIMARY_CYAN} 0%, #${HEX_COLORS.ACCENT_GOLD} 100%)`,
           border: "none",
           borderRadius: "8px",
@@ -219,7 +219,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
         style={{
           marginTop: "40px",
           textAlign: "center",
-          color: "#888",
+          color: hexColorToCSS(KOREAN_COLORS.UI_GRAY),
           fontSize: `${layoutCalculation.instructionsFontSize}px`,
           maxWidth: "600px",
           padding: "0 20px",
@@ -242,7 +242,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
           position: "absolute",
           bottom: "20px",
           right: "20px",
-          color: "#555",
+          color: hexColorToCSS(KOREAN_COLORS.UI_STEEL_GRAY),
           fontSize: "10px",
           zIndex: 1,
         }}

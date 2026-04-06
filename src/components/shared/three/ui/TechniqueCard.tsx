@@ -16,6 +16,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Technique } from "../../../../types";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 import { triggerHaptic } from "../../../../utils/haptics";
 import { PlayerArchetype, TrigramStance } from "../../../../types/common";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
@@ -156,45 +157,37 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
 
   // Card background color based on state
   const backgroundColor = useMemo(() => {
-    if (!isAvailable) return "rgba(50, 50, 50, 0.8)";
-    if (isSelected) return `rgba(0, 255, 255, 0.3)`;
-    return "rgba(26, 26, 30, 0.9)";
+    if (!isAvailable) return hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.8);
+    if (isSelected) return hexToRgbaString(KOREAN_COLORS.NEON_CYAN, 0.3);
+    return hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9);
   }, [isAvailable, isSelected]);
 
   // Border color based on state
   const borderColor = useMemo(() => {
-    if (!isAvailable) return "#666";
-    if (isSelected) return KOREAN_COLORS.PRIMARY_CYAN;
-    return KOREAN_COLORS.ACCENT_GOLD;
+    if (!isAvailable) return hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT);
+    if (isSelected) return hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN);
+    return hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD);
   }, [isAvailable, isSelected]);
 
-  // Convert color to hex string helper
-  const borderColorHex = useMemo(() => {
-    if (typeof borderColor === "number") {
-      return `#${borderColor.toString(16).padStart(6, "0")}`;
-    }
-    return borderColor;
-  }, [borderColor]);
-
-  // Helper for converting KOREAN_COLORS to hex
+  // Pre-computed hex color strings for styling
   const primaryCyanHex = useMemo(
-    () => `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+    () => hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN),
     []
   );
   const accentGoldHex = useMemo(
-    () => `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+    () => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD),
     []
   );
 
   // Border glow effect for selected card
   const boxShadow = useMemo(() => {
     if (isSelected && isAvailable) {
-      return `0 0 15px rgba(0, 255, 255, 0.8), 0 0 25px rgba(0, 255, 255, 0.5)`;
+      return `0 0 15px ${hexToRgbaString(KOREAN_COLORS.NEON_CYAN, 0.8)}, 0 0 25px ${hexToRgbaString(KOREAN_COLORS.NEON_CYAN, 0.5)}`;
     }
     if (isAvailable) {
-      return `0 0 10px rgba(255, 170, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.5)`;
+      return `0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3)}, 0 2px 8px ${hexToRgbaString(KOREAN_COLORS.BLACK, 0.5)}`;
     }
-    return "0 2px 8px rgba(0, 0, 0, 0.5)";
+    return `0 2px 8px ${hexToRgbaString(KOREAN_COLORS.BLACK, 0.5)}`;
   }, [isSelected, isAvailable]);
 
   // Animation class based on availability state
@@ -227,7 +220,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
         width: `${cardSize.width}px`,
         height: `${cardSize.height}px`,
         backgroundColor,
-        border: `2px solid ${borderColorHex}`,
+        border: `2px solid ${borderColor}`,
         borderRadius: "8px",
         boxShadow,
         cursor: isAvailable ? "pointer" : "not-allowed",
@@ -272,15 +265,15 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
           right: "4px",
           width: `${cardSize.shortcutSize}px`,
           height: `${cardSize.shortcutSize}px`,
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
-          border: "1px solid #888",
+          backgroundColor: hexToRgbaString(KOREAN_COLORS.BLACK, 0.7),
+          border: `1px solid ${hexColorToCSS(KOREAN_COLORS.UI_GRAY)}`,
           borderRadius: "4px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontSize: `${cardSize.fontSize}px`,
           fontWeight: "bold",
-          color: isAvailable ? "#fff" : "#666",
+          color: isAvailable ? hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY) : hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT),
         }}
       >
         {keyboardShortcut}
@@ -291,7 +284,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
         style={{
           fontSize: `${cardSize.fontSize}px`,
           fontWeight: "bold",
-          color: isAvailable ? accentGoldHex : "#888",
+          color: isAvailable ? accentGoldHex : hexColorToCSS(KOREAN_COLORS.UI_GRAY),
           textAlign: "center",
           marginTop: "20px",
           lineHeight: "1.2",
@@ -304,7 +297,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
       <div
         style={{
           fontSize: `${cardSize.fontSize - 2}px`,
-          color: isAvailable ? "#ccc" : "#666",
+          color: isAvailable ? hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) : hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT),
           textAlign: "center",
           marginTop: "2px",
           lineHeight: "1.1",
@@ -328,7 +321,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
             display: "flex",
             alignItems: "center",
             gap: "2px",
-            color: isAvailable ? "#0f0" : "#666",
+            color: isAvailable ? hexColorToCSS(KOREAN_COLORS.POSITIVE_GREEN) : hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT),
           }}
         >
           <span>⚡</span>
@@ -341,7 +334,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
             display: "flex",
             alignItems: "center",
             gap: "2px",
-            color: isAvailable ? "#0ff" : "#666",
+            color: isAvailable ? hexColorToCSS(KOREAN_COLORS.NEON_CYAN) : hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT),
           }}
         >
           <span>氣</span>
@@ -358,14 +351,14 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            backgroundColor: hexToRgbaString(KOREAN_COLORS.BLACK, 0.7),
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             borderRadius: "6px",
             fontSize: `${cardSize.shortcutSize}px`,
             fontWeight: "bold",
-            color: "#f00",
+            color: hexColorToCSS(KOREAN_COLORS.NEGATIVE_RED),
           }}
         >
           {cooldownText}
@@ -385,11 +378,11 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
             minWidth: "200px",
             maxWidth: "300px",
             padding: "10px",
-            backgroundColor: "rgba(10, 10, 15, 0.95)",
+            backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
             border: `2px solid ${primaryCyanHex}`,
             borderRadius: "8px",
             fontSize: "12px",
-            color: "#fff",
+            color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
             zIndex: 1000,
             pointerEvents: "none",
             fontFamily: FONT_FAMILY.KOREAN,
@@ -409,10 +402,10 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
           >
             {technique.description.korean}
           </div>
-          <div style={{ fontSize: "11px", lineHeight: "1.4", color: "#ccc" }}>
+          <div style={{ fontSize: "11px", lineHeight: "1.4", color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>
             {technique.description.english}
           </div>
-          <div style={{ marginTop: "8px", fontSize: "10px", color: "#aaa" }}>
+          <div style={{ marginTop: "8px", fontSize: "10px", color: hexColorToCSS(KOREAN_COLORS.TEXT_TERTIARY) }}>
             <div>
               Damage: {technique.damage.min}-{technique.damage.max}
             </div>
@@ -425,7 +418,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
                 <div style={{ marginTop: "4px", color: primaryCyanHex, fontWeight: "bold" }}>
                   Reach: {reachInfo.maxReach}cm
                 </div>
-                <div style={{ fontSize: "9px", color: "#999" }}>
+                <div style={{ fontSize: "9px", color: hexColorToCSS(KOREAN_COLORS.UI_GRAY) }}>
                   {reachInfo.bodyPart}
                 </div>
               </>

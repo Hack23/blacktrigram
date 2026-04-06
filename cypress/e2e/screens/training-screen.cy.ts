@@ -112,7 +112,7 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       cy.get("body").type(" ");
 
       // Verify training screen still exists after action
-      cy.get('[data-testid="training-screen"]', { timeout: 1000 }).should(
+      cy.get('[data-testid="training-screen-3d"]', { timeout: 1000 }).should(
         "exist",
       );
 

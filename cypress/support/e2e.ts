@@ -13,15 +13,24 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
-import "./commands";
-import "./performance"; // Import performance monitoring
-import "./test-isolation"; // Import test isolation utilities
-import "./resource-monitoring"; // Import resource monitoring utilities
-import "./memory-monitor"; // Import memory monitoring for leak detection
+// Import support modules using require() instead of import for Cypress 15 webpack
+// compatibility. ES module imports of side-effect-only modules (like Cypress command
+// registrations) are tree-shaken by the webpack bundler, causing all custom commands
+// to be undefined. Using require() ensures the modules execute and register commands.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require("./commands");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require("./performance");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require("./test-isolation");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require("./resource-monitoring");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require("./memory-monitor");
 
 // Import cypress-wait-until for waitUntil command
-import "cypress-wait-until";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require("cypress-wait-until");
 
 // Task to silence WebGL warnings
 Cypress.on("window:before:load", (win) => {
@@ -67,8 +76,10 @@ beforeEach(() => {
     }
   });
 
-  // Add WebGL mocking to all tests
-  cy.mockWebGL();
+  // WebGL mocking is handled by visitWithWebGLMock's onBeforeLoad callback,
+  // which applies the mock to the new window before the page renders.
+  // Calling cy.mockWebGL() here would only patch the current (blank) window
+  // which gets replaced by cy.visit().
 
   // Start resource monitoring for leak detection (best-effort; command may
   // not be registered if resource-monitoring.ts fails to load)
@@ -133,12 +144,76 @@ Cypress.on("test:before:run", () => {
 });
 
 // Global error handling for Black Trigram
+// Narrow patterns: only ignore specific, known WebGL/audio/Three.js errors.
+// Broad patterns like "is not a function" or "Cannot read properties" are NOT
+// included so genuine app regressions still fail the test run.
 Cypress.on("uncaught:exception", (err, _runnable) => {
-  // Ignore specific Korean martial arts related errors that are non-critical
+  const msg = err.message;
+  // Audio loading/playback failures (non-critical in headless)
   if (
-    err.message.includes("Failed to load audio") ||
-    err.message.includes("WebGL context") ||
-    err.message.includes("PixiJS")
+    msg.includes("Failed to load audio") ||
+    msg.includes("no supported source was found") ||
+    msg.includes("play() request was interrupted") ||
+    msg.includes("The play() request was interrupted") ||
+    msg.includes("NotAllowedError") ||
+    msg.includes("NotSupportedError")
+  ) {
+    return false;
+  }
+  // WebGL context creation failures (headless Chrome without GPU)
+  if (
+    msg.includes("WebGL context") ||
+    msg.includes("Failed to create WebGL context") ||
+    msg.includes("CONTEXT_LOST_WEBGL")
+  ) {
+    return false;
+  }
+  // Three.js / R3F renderer initialisation errors tied to missing GL
+  if (
+    (msg.includes("THREE") || msg.includes("R3F")) &&
+    (msg.includes("renderer") || msg.includes("WebGL") || msg.includes("getContext"))
+  ) {
+    return false;
+  }
+  // WebGL extension errors thrown by Three.js / drei when extensions are missing
+  if (
+    msg.includes("not supported") &&
+    (msg.includes("ANGLE_") || msg.includes("OES_") || msg.includes("EXT_") || msg.includes("WEBGL_"))
+  ) {
+    return false;
+  }
+  // WebGL mock stub TypeErrors — Three.js calling GL methods not in the mock.
+  // Matches "gl.someMethod is not a function" patterns specifically.
+  // NOTE: We check err.name instead of instanceof TypeError because the error
+  // may originate from the AUT iframe (different window → different TypeError
+  // constructor), causing instanceof to fail across frame boundaries.
+  if (
+    err.name === "TypeError" &&
+    (
+      /gl\.\w+ is not a function/.test(msg) ||
+      (msg.includes("is not a function") && err.stack?.includes("three"))
+    )
+  ) {
+    return false;
+  }
+  // Three.js WebGL init errors from mock context — properties the mock doesn't
+  // cover cause "Cannot read properties of null/undefined" inside Three.js.
+  if (
+    err.name === "TypeError" &&
+    err.stack?.includes("three") &&
+    (msg.includes("Cannot read properties of null") ||
+     msg.includes("Cannot read properties of undefined"))
+  ) {
+    return false;
+  }
+  // PixiJS errors (non-critical)
+  if (msg.includes("PixiJS")) {
+    return false;
+  }
+  // Network errors on media assets
+  if (
+    (msg.includes("NetworkError") || msg.includes("AbortError")) &&
+    (msg.includes("audio") || msg.includes("load"))
   ) {
     return false;
   }
@@ -163,17 +238,16 @@ afterEach(() => {
 /// <reference path="./commands.ts" />
 
 // Global error handler.
-// IMPORTANT: `return false` is required for Cypress's internal error recovery
-// during support file initialization. Without it, webpack compilation warnings
-// in the support modules prevent custom commands from registering.
-// Returning false prevents Cypress from failing the test, allowing initialization
-// to complete despite non-critical errors during module loading.
+// IMPORTANT: This handler MUST throw errors, not swallow them.
+// Returning false from Cypress.on("fail") silently swallows ALL test failures,
+// making every test appear to pass regardless of assertion results.
+// This was the root cause of e2e tests completing too quickly — no test could
+// ever fail because errors were being silently caught and discarded.
 //
-// The previous infinite-hang issue (cypress/downloads/downloads.html reload loop)
-// was caused by afterEach hooks throwing errors that were swallowed. The fix is
-// NOT to change this handler, but to ensure all afterEach hooks are resilient
-// (no hard assertions, wrapped in try/catch, conditional DOM checks only).
+// The afterEach hooks above are designed to be resilient (no hard assertions,
+// try/catch guards, conditional DOM checks) so they won't cause cascading
+// failures when this handler properly propagates errors.
 Cypress.on("fail", (err, runnable) => {
   console.error(`Cypress test failed [${runnable.title}]:`, err.message);
-  return false;
+  throw err;
 });
