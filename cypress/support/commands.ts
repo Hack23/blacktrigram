@@ -906,10 +906,10 @@ Cypress.Commands.add(
         // Capture first snapshot — sample a 20x20 region at the center to
         // keep the comparison lightweight on large canvases.
         const cx = Math.floor(canvas.width / 2);
-        const cy_ = Math.floor(canvas.height / 2);
+        const centerY = Math.floor(canvas.height / 2);
         const sampleSize = Math.min(20, canvas.width, canvas.height);
         const x0 = Math.max(0, cx - Math.floor(sampleSize / 2));
-        const y0 = Math.max(0, cy_ - Math.floor(sampleSize / 2));
+        const y0 = Math.max(0, centerY - Math.floor(sampleSize / 2));
         const imgData1 = ctx.getImageData(x0, y0, sampleSize, sampleSize);
         const snapshot1 = new Uint8Array(imgData1.data);
 

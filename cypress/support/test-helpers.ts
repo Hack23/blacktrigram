@@ -293,6 +293,7 @@ export function verifyCombatHUD(): void {
  */
 export function testAllTrigramStances(verifyCallback?: (stanceNum: number, stanceName: string) => void): void {
   const stanceNames = ["geon", "tae", "li", "jin", "son", "gam", "gan", "gon"];
+  const stanceSelector = '[data-testid="stance-indicator-player_1"]';
   
   // Use Cypress-aware iteration to respect the command queue
   Cypress._.times(8, (index: number) => {
@@ -303,8 +304,8 @@ export function testAllTrigramStances(verifyCallback?: (stanceNum: number, stanc
     // Wait for stance indicator to update — conditional because Html overlays
     // may not mount in mocked WebGL environments
     cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="stance-indicator-player_1"]').length > 0) {
-        cy.get('[data-testid="stance-indicator-player_1"]', { timeout: 1000 })
+      if ($body.find(stanceSelector).length > 0) {
+        cy.get(stanceSelector, { timeout: 1000 })
           .should("contain", stanceNames[index]);
       } else {
         cy.wait(200);
@@ -331,6 +332,7 @@ export function testAllTrigramStances(verifyCallback?: (stanceNum: number, stanc
  */
 export function changeStance(stanceNumber: number, stanceName?: string): void {
   const stanceNames = ["geon", "tae", "li", "jin", "son", "gam", "gan", "gon"];
+  const stanceSelector = '[data-testid="stance-indicator-player_1"]';
   
   cy.get("body").type(stanceNumber.toString());
   
@@ -338,8 +340,8 @@ export function changeStance(stanceNumber: number, stanceName?: string): void {
   // may not mount in mocked WebGL environments
   if (stanceNumber >= 1 && stanceNumber <= 8) {
     cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="stance-indicator-player_1"]').length > 0) {
-        cy.get('[data-testid="stance-indicator-player_1"]', { timeout: 1000 })
+      if ($body.find(stanceSelector).length > 0) {
+        cy.get(stanceSelector, { timeout: 1000 })
           .should('contain', stanceNames[stanceNumber - 1]);
       } else {
         cy.wait(200);
