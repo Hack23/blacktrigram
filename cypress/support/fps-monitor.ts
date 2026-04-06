@@ -3,6 +3,8 @@
  * Provides utilities to monitor frame rate during Three.js rendering
  */
 
+import { isRunningInCI } from "./commands";
+
 /** FPS thresholds for environments with good rendering performance */
 const NORMAL_AVG_THRESHOLD = 50;
 const NORMAL_MIN_THRESHOLD = 40;
@@ -146,9 +148,7 @@ export function assertSmoothFPS(duration: number = 2000): void {
     // because the browser is resource-constrained and the GPU is mocked.
     // Select thresholds based on environment signals — NOT measured FPS — to
     // avoid circular logic that masks real performance regressions.
-    const isHeadless = Cypress.browser?.isHeadless === true;
-    const isCI = Cypress.env("CI") === true || Cypress.env("CI") === "true" || !!Cypress.env("GITHUB_ACTIONS");
-    const useLenient = isHeadless || isCI;
+    const useLenient = isRunningInCI();
     
     const avgThreshold = useLenient ? LENIENT_AVG_THRESHOLD : NORMAL_AVG_THRESHOLD;
     const minThreshold = useLenient ? LENIENT_MIN_THRESHOLD : NORMAL_MIN_THRESHOLD;

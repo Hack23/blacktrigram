@@ -11,6 +11,16 @@ const KEYBOARD_HANDLER_MOUNT_DELAY = 1000;
 /** Timeout for detecting screen transitions in slow CI environments */
 const SCREEN_DETECTION_TIMEOUT = 20000;
 
+/**
+ * Detect whether tests are running in a CI or headless environment.
+ * Used to relax assertions that depend on GPU rendering (pixel diffs, FPS).
+ */
+export function isRunningInCI(): boolean {
+  const isHeadless = Cypress.browser?.isHeadless === true;
+  const isCI = Cypress.env("CI") === true || Cypress.env("CI") === "true" || !!Cypress.env("GITHUB_ACTIONS");
+  return isHeadless || isCI;
+}
+
 // Define custom command types
 declare global {
   namespace Cypress {
@@ -977,9 +987,7 @@ Cypress.Commands.add(
           // Only hard-assert pixel diff in non-headless, non-CI environments
           // where the GPU can actively render. In headless/CI the scene may be
           // legitimately static even though the canvas exists and has a 2D ctx.
-          const isHeadless = Cypress.browser?.isHeadless === true;
-          const isCI = Cypress.env("CI") === true || Cypress.env("CI") === "true" || !!Cypress.env("GITHUB_ACTIONS");
-          if (!isHeadless && !isCI) {
+          if (!isRunningInCI()) {
             expect(
               diffCount,
               `Expected active Three.js rendering to produce at least ${minPixelChange} pixel diffs, but detected ${diffCount}`
