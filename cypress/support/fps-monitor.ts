@@ -88,8 +88,8 @@ export function monitorFPS(
 export function assertMinFPS(
   minFPS: number = 30,
   duration: number = 2000
-): Cypress.Chainable<void> {
-  return (monitorFPS(duration) as Cypress.Chainable<any>).then((metrics: FPSMetrics) => {
+): void {
+  monitorFPS(duration).then((metrics) => {
     cy.task("logPerformance", {
       name: "FPS Monitoring",
       duration,
@@ -116,8 +116,8 @@ export function assertMinFPS(
  * Assert that FPS is consistently above 60fps (ideal for 3D games)
  * @param duration Duration to monitor (default 2000ms)
  */
-export function assertSmoothFPS(duration: number = 2000): Cypress.Chainable<void> {
-  return (monitorFPS(duration, 60) as Cypress.Chainable<any>).then((metrics: FPSMetrics) => {
+export function assertSmoothFPS(duration: number = 2000): void {
+  monitorFPS(duration, 60).then((metrics) => {
     cy.task("logPerformance", {
       name: "Smooth FPS Check",
       duration,
@@ -160,8 +160,8 @@ export function assertSmoothFPS(duration: number = 2000): Cypress.Chainable<void
  * so the function will log a warning and pass. This is expected behavior.
  * @param duration Duration to monitor (default 1000ms)
  */
-export function assertCanvasRendering(duration: number = 1000): Cypress.Chainable<void> {
-  return cy.get("canvas").then(($canvas) => {
+export function assertCanvasRendering(duration: number = 1000): void {
+  cy.get("canvas").then(($canvas) => {
     const canvas = $canvas[0] as HTMLCanvasElement;
     
     return cy.window().then((_win) => {
@@ -234,21 +234,22 @@ export function assertCanvasRendering(duration: number = 1000): Cypress.Chainabl
  * Check for memory leaks by monitoring memory usage
  * @param duration Duration to monitor (default 3000ms)
  */
-export function assertNoMemoryLeaks(duration: number = 3000): Cypress.Chainable<void> {
-  return (cy.window() as Cypress.Chainable<any>).then((win: Window) => {
+export function assertNoMemoryLeaks(duration: number = 3000): void {
+  cy.window().then((win) => {
     // Check if performance.memory is available (Chrome only)
-    const performance = win.performance as any;
+    const perf = win.performance as Performance & { memory?: { usedJSHeapSize: number } };
     
-    if (!performance.memory) {
+    if (!perf.memory) {
       cy.log("⚠️ Memory monitoring not available (Chrome only)");
       return;
     }
 
-    const initialMemory = performance.memory.usedJSHeapSize;
+    const memory = perf.memory;
+    const initialMemory = memory.usedJSHeapSize;
     cy.log(`Initial memory: ${(initialMemory / 1024 / 1024).toFixed(2)} MB`);
 
-    return cy.wait(duration).then(() => {
-      const finalMemory = performance.memory.usedJSHeapSize;
+    cy.wait(duration).then(() => {
+      const finalMemory = memory.usedJSHeapSize;
       const memoryIncrease = finalMemory - initialMemory;
       const increasePercent = (memoryIncrease / initialMemory) * 100;
 

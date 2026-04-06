@@ -143,25 +143,25 @@ declare global {
        * @param minFPS Minimum acceptable FPS (default 30)
        * @param duration Duration to monitor (default 2000ms)
        */
-      assertMinFPS(minFPS?: number, duration?: number): Chainable<void>;
+      assertMinFPS(minFPS?: number, duration?: number): void;
 
       /**
        * Assert that FPS is consistently above 60fps (ideal for 3D games)
        * @param duration Duration to monitor (default 2000ms)
        */
-      assertSmoothFPS(duration?: number): Chainable<void>;
+      assertSmoothFPS(duration?: number): void;
 
       /**
        * Monitor Canvas rendering and detect if it's frozen
        * @param duration Duration to monitor (default 1000ms)
        */
-      assertCanvasRendering(duration?: number): Chainable<void>;
+      assertCanvasRendering(duration?: number): void;
 
       /**
        * Check for memory leaks by monitoring memory usage
        * @param duration Duration to monitor (default 3000ms)
        */
-      assertNoMemoryLeaks(duration?: number): Chainable<void>;
+      assertNoMemoryLeaks(duration?: number): void;
 
       /**
        * Verify Three.js Canvas is actively rendering
