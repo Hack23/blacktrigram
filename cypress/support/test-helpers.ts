@@ -174,13 +174,19 @@ export function logMemoryUsage(testName: string): void {
  * Verify canvas exists (visibility is conditional in headless/mocked WebGL)
  */
 export function verifyCanvasVisible(): void {
-  cy.get("body").then(($body) => {
-    if ($body.find("canvas").length > 0) {
-      cy.log("✅ Canvas rendering available");
-    } else {
-      cy.log("⚠️ Canvas not available — DOM overlay tests only");
-    }
-  });
+  cy.get("canvas")
+    .should("exist")
+    .then(($canvas) => {
+      const canvas = $canvas[0];
+      const rect = canvas.getBoundingClientRect();
+      const isVisible = Cypress.dom.isVisible($canvas);
+
+      if (isVisible && rect.width > 0 && rect.height > 0) {
+        cy.log(`✅ Canvas rendering available (${rect.width}x${rect.height})`);
+      } else {
+        cy.log(`⚠️ Canvas exists but is not visibly rendered (${rect.width}x${rect.height}) — headless/mocked WebGL`);
+      }
+    });
 }
 
 /**

@@ -212,15 +212,15 @@ Cypress.Commands.add("waitForCanvasReady", () => {
           });
           cy.wait(300);
           cy.log("✅ Canvas ready (3D rendering available)");
+          // Only mark as ready when canvas was actually found and verified
+          cy.window().then((w) => {
+            (w as any).__canvasReady = true;
+          });
         } else {
           cy.log("⚠️ Canvas not available — testing DOM overlays only");
           cy.wait(500);
+          // Do NOT cache readiness — canvas may appear later after rendering
         }
-      });
-
-      // Mark as ready for future calls
-      cy.window().then((w) => {
-        (w as any).__canvasReady = true;
       });
     } else {
       cy.log("⚡ Canvas already ready (cached), skipping wait");
@@ -434,36 +434,8 @@ Cypress.Commands.add("mockWebGL", () => {
 Cypress.Commands.add(
   "visitWithWebGLMock",
   (url: string, options?: Partial<Cypress.VisitOptions>) => {
-    // Enhanced error handling for audio and WebGL
-    cy.on("uncaught:exception", (err) => {
-      const ignoredErrors = [
-        "Failed to load",
-        "no supported source",
-        "play() request was interrupted",
-        "WebGL",
-        "Three.js",
-        "three",
-        "audio",
-        "NetworkError",
-        "AbortError",
-        "NotAllowedError",
-        "NotSupportedError",
-        "getContext",
-        "renderer",
-        "gl.",
-        "R3F",
-      ];
-
-      const shouldIgnore = ignoredErrors.some((pattern) =>
-        err.message.includes(pattern)
-      );
-
-      if (shouldIgnore) {
-        console.warn("Ignoring non-critical error:", err.message);
-        return false;
-      }
-      return true;
-    });
+    // Note: uncaught:exception handling is registered ONCE globally in e2e.ts
+    // to avoid accumulating duplicate handlers across tests.
 
     cy.visit(url, {
       timeout: 20000,

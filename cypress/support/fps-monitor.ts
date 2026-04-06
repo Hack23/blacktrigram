@@ -244,12 +244,15 @@ export function assertNoMemoryLeaks(duration: number = 3000): void {
       return;
     }
 
-    const memory = perf.memory;
-    const initialMemory = memory.usedJSHeapSize;
+    const initialMemory = perf.memory.usedJSHeapSize;
     cy.log(`Initial memory: ${(initialMemory / 1024 / 1024).toFixed(2)} MB`);
 
-    cy.wait(duration).then(() => {
-      const finalMemory = memory.usedJSHeapSize;
+    // Re-read memory from window after wait — performance.memory values
+    // update in place but the object reference may not be stable across GC cycles.
+    cy.wait(duration);
+    cy.window().then((win2) => {
+      const perf2 = win2.performance as Performance & { memory?: { usedJSHeapSize: number } };
+      const finalMemory = perf2.memory ? perf2.memory.usedJSHeapSize : initialMemory;
       const memoryIncrease = finalMemory - initialMemory;
       const increasePercent = (memoryIncrease / initialMemory) * 100;
 

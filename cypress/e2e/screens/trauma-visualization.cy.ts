@@ -164,8 +164,12 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
     
     cy.verifyHealthBar("health-bar-player_2", 0, 200).then((health) => {
       cy.log(`Player 2 health after stress test: ${health}`);
-      // Opponent should have taken damage
-      expect(health).to.be.lessThan(100);
+      // Opponent should have taken damage — compare against their max (aria-valuemax)
+      // rather than a hardcoded 100, since archetypes have baseHealth 80-120
+      cy.get('[data-testid="health-bar-player_2"]').invoke("attr", "aria-valuemax").then((max) => {
+        const maxHealth = Number(max) || 200;
+        expect(health).to.be.lessThan(maxHealth);
+      });
     });
 
     cy.log("✅ Stress test completed - system remains stable");

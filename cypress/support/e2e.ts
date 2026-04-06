@@ -144,12 +144,45 @@ Cypress.on("test:before:run", () => {
 });
 
 // Global error handling for Black Trigram
+// Narrow patterns: only ignore specific, known WebGL/audio/Three.js errors.
+// Broad patterns like "is not a function" or "Cannot read properties" are NOT
+// included so genuine app regressions still fail the test run.
 Cypress.on("uncaught:exception", (err, _runnable) => {
-  // Ignore specific Korean martial arts related errors that are non-critical
+  const msg = err.message;
+  // Audio loading/playback failures (non-critical in headless)
   if (
-    err.message.includes("Failed to load audio") ||
-    err.message.includes("WebGL context") ||
-    err.message.includes("PixiJS")
+    msg.includes("Failed to load audio") ||
+    msg.includes("no supported source was found") ||
+    msg.includes("play() request was interrupted") ||
+    msg.includes("The play() request was interrupted") ||
+    msg.includes("NotAllowedError") ||
+    msg.includes("NotSupportedError")
+  ) {
+    return false;
+  }
+  // WebGL context creation failures (headless Chrome without GPU)
+  if (
+    msg.includes("WebGL context") ||
+    msg.includes("Failed to create WebGL context") ||
+    msg.includes("CONTEXT_LOST_WEBGL")
+  ) {
+    return false;
+  }
+  // Three.js / R3F renderer initialisation errors tied to missing GL
+  if (
+    (msg.includes("THREE") || msg.includes("R3F")) &&
+    (msg.includes("renderer") || msg.includes("WebGL") || msg.includes("getContext"))
+  ) {
+    return false;
+  }
+  // PixiJS errors (non-critical)
+  if (msg.includes("PixiJS")) {
+    return false;
+  }
+  // Network errors on media assets
+  if (
+    (msg.includes("NetworkError") || msg.includes("AbortError")) &&
+    (msg.includes("audio") || msg.includes("load"))
   ) {
     return false;
   }
