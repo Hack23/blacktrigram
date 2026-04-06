@@ -88,29 +88,27 @@ export function monitorFPS(
 export function assertMinFPS(
   minFPS: number = 30,
   duration: number = 2000
-): Cypress.Chainable<any> {
-  return monitorFPS(duration).then((metrics) => {
-    return cy.wrap(null).then(() => {
-      cy.task("logPerformance", {
-        name: "FPS Monitoring",
-        duration,
-        metrics: {
-          average: metrics.averageFPS.toFixed(2),
-          min: metrics.minFPS.toFixed(2),
-          max: metrics.maxFPS.toFixed(2),
-          dropped: metrics.droppedFrames,
-        },
-      });
-
-      expect(metrics.averageFPS).to.be.greaterThan(minFPS);
-      expect(metrics.minFPS).to.be.greaterThan(minFPS * 0.7); // Allow 30% drop
-
-      cy.log(
-        `✅ FPS Performance: Avg ${metrics.averageFPS.toFixed(2)} ` +
-        `(Min: ${metrics.minFPS.toFixed(2)}, Max: ${metrics.maxFPS.toFixed(2)}, ` +
-        `Dropped: ${metrics.droppedFrames}/${metrics.samples})`
-      );
+): Cypress.Chainable<void> {
+  return (monitorFPS(duration) as Cypress.Chainable<any>).then((metrics: FPSMetrics) => {
+    cy.task("logPerformance", {
+      name: "FPS Monitoring",
+      duration,
+      metrics: {
+        average: metrics.averageFPS.toFixed(2),
+        min: metrics.minFPS.toFixed(2),
+        max: metrics.maxFPS.toFixed(2),
+        dropped: metrics.droppedFrames,
+      },
     });
+
+    expect(metrics.averageFPS).to.be.greaterThan(minFPS);
+    expect(metrics.minFPS).to.be.greaterThan(minFPS * 0.7); // Allow 30% drop
+
+    cy.log(
+      `✅ FPS Performance: Avg ${metrics.averageFPS.toFixed(2)} ` +
+      `(Min: ${metrics.minFPS.toFixed(2)}, Max: ${metrics.maxFPS.toFixed(2)}, ` +
+      `Dropped: ${metrics.droppedFrames}/${metrics.samples})`
+    );
   });
 }
 
@@ -118,42 +116,40 @@ export function assertMinFPS(
  * Assert that FPS is consistently above 60fps (ideal for 3D games)
  * @param duration Duration to monitor (default 2000ms)
  */
-export function assertSmoothFPS(duration: number = 2000): Cypress.Chainable<any> {
-  return monitorFPS(duration, 60).then((metrics) => {
-    return cy.wrap(null).then(() => {
-      cy.task("logPerformance", {
-        name: "Smooth FPS Check",
-        duration,
-        metrics: {
-          average: metrics.averageFPS.toFixed(2),
-          min: metrics.minFPS.toFixed(2),
-          max: metrics.maxFPS.toFixed(2),
-          dropped: metrics.droppedFrames,
-        },
-      });
-
-      // Check average FPS is above 50 (allowing some margin)
-      expect(metrics.averageFPS).to.be.greaterThan(50);
-      
-      // Check minimum FPS doesn't drop too low
-      expect(metrics.minFPS).to.be.greaterThan(40);
-      
-      // Check that we don't drop too many frames
-      const dropRate = (metrics.droppedFrames / metrics.samples) * 100;
-      expect(dropRate).to.be.lessThan(20); // Less than 20% dropped frames
-
-      if (metrics.averageFPS >= 55 && dropRate < 10) {
-        cy.log(
-          `✅ Excellent FPS Performance: ${metrics.averageFPS.toFixed(2)} FPS ` +
-          `(${dropRate.toFixed(1)}% frame drops)`
-        );
-      } else {
-        cy.log(
-          `⚠️ Acceptable FPS Performance: ${metrics.averageFPS.toFixed(2)} FPS ` +
-          `(${dropRate.toFixed(1)}% frame drops)`
-        );
-      }
+export function assertSmoothFPS(duration: number = 2000): Cypress.Chainable<void> {
+  return (monitorFPS(duration, 60) as Cypress.Chainable<any>).then((metrics: FPSMetrics) => {
+    cy.task("logPerformance", {
+      name: "Smooth FPS Check",
+      duration,
+      metrics: {
+        average: metrics.averageFPS.toFixed(2),
+        min: metrics.minFPS.toFixed(2),
+        max: metrics.maxFPS.toFixed(2),
+        dropped: metrics.droppedFrames,
+      },
     });
+
+    // Check average FPS is above 50 (allowing some margin)
+    expect(metrics.averageFPS).to.be.greaterThan(50);
+    
+    // Check minimum FPS doesn't drop too low
+    expect(metrics.minFPS).to.be.greaterThan(40);
+    
+    // Check that we don't drop too many frames
+    const dropRate = (metrics.droppedFrames / metrics.samples) * 100;
+    expect(dropRate).to.be.lessThan(20); // Less than 20% dropped frames
+
+    if (metrics.averageFPS >= 55 && dropRate < 10) {
+      cy.log(
+        `✅ Excellent FPS Performance: ${metrics.averageFPS.toFixed(2)} FPS ` +
+        `(${dropRate.toFixed(1)}% frame drops)`
+      );
+    } else {
+      cy.log(
+        `⚠️ Acceptable FPS Performance: ${metrics.averageFPS.toFixed(2)} FPS ` +
+        `(${dropRate.toFixed(1)}% frame drops)`
+      );
+    }
   });
 }
 
@@ -164,7 +160,7 @@ export function assertSmoothFPS(duration: number = 2000): Cypress.Chainable<any>
  * so the function will log a warning and pass. This is expected behavior.
  * @param duration Duration to monitor (default 1000ms)
  */
-export function assertCanvasRendering(duration: number = 1000): Cypress.Chainable<any> {
+export function assertCanvasRendering(duration: number = 1000): Cypress.Chainable<void> {
   return cy.get("canvas").then(($canvas) => {
     const canvas = $canvas[0] as HTMLCanvasElement;
     
@@ -238,8 +234,8 @@ export function assertCanvasRendering(duration: number = 1000): Cypress.Chainabl
  * Check for memory leaks by monitoring memory usage
  * @param duration Duration to monitor (default 3000ms)
  */
-export function assertNoMemoryLeaks(duration: number = 3000): Cypress.Chainable<any> {
-  return cy.window().then((win) => {
+export function assertNoMemoryLeaks(duration: number = 3000): Cypress.Chainable<void> {
+  return (cy.window() as Cypress.Chainable<any>).then((win: Window) => {
     // Check if performance.memory is available (Chrome only)
     const performance = win.performance as any;
     

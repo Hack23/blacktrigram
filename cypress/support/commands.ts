@@ -473,8 +473,6 @@ Cypress.Commands.add(
         "NotAllowedError",
         "NotSupportedError",
         "getContext",
-        "is not a function",
-        "Cannot read properties of",
         "renderer",
         "gl.",
         "R3F",
@@ -873,21 +871,19 @@ Cypress.Commands.add(
       .get(`[data-testid="${testId}"]`, { timeout: 5000 })
       .should("exist")
       .then(($healthBar) => {
-        // Get health from data attributes
+        // HealthBar exposes health via ARIA attributes, not data-* attributes
         const currentHealth = parseFloat(
-          $healthBar.attr("data-current") || "0"
+          $healthBar.attr("aria-valuenow") || "0"
         );
-        const maxHealth = parseFloat($healthBar.attr("data-max") || "100");
-        const percentage = parseFloat(
-          $healthBar.attr("data-percentage") || "0"
+        const maxHealth = parseFloat(
+          $healthBar.attr("aria-valuemax") || "100"
         );
+        const percentage = Math.round((currentHealth / maxHealth) * 100);
 
-        // Use console.log for immediate feedback within callback
         console.log(
           `Health Bar [${testId}]: ${currentHealth}/${maxHealth} (${percentage}%)`
         );
 
-        // Verify health is within expected range if provided
         if (expectedMin !== undefined) {
           expect(currentHealth).to.be.at.least(
             expectedMin,
@@ -901,13 +897,6 @@ Cypress.Commands.add(
             `Health should be at most ${expectedMax}`
           );
         }
-
-        // Verify percentage matches current/max ratio
-        const calculatedPercentage = Math.round((currentHealth / maxHealth) * 100);
-        expect(
-          Math.abs(percentage - calculatedPercentage),
-          `Health percentage should match calculated value (displayed ${percentage}% vs calculated ${calculatedPercentage}%)`
-        ).to.be.at.most(1);
 
         return cy.wrap(currentHealth);
       });

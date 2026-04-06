@@ -93,7 +93,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // Capture initial health of player 2 (opponent)
     cy.get('[data-testid="health-bar-player_2"]', { timeout: 5000 })
       .should("exist")
-      .invoke("attr", "data-current")
+      .invoke("attr", "aria-valuenow")
       .then((health) => {
         const initialHealth = parseFloat(health as string);
         cy.log(`Player 2 initial health: ${initialHealth}`);
@@ -103,7 +103,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
         // Wait for health to update using assertion instead of fixed wait
         cy.get('[data-testid="health-bar-player_2"]', { timeout: 1500 })
-          .invoke("attr", "data-current")
+          .invoke("attr", "aria-valuenow")
           .should((updatedHealth) => {
             const updatedHealthValue = parseFloat(updatedHealth as string);
             expect(
@@ -122,7 +122,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Second attack with verification
     cy.get('[data-testid="health-bar-player_2"]')
-      .invoke("attr", "data-current")
+      .invoke("attr", "aria-valuenow")
       .then((health) => {
         const beforeAttack = parseFloat(health as string);
 
@@ -130,7 +130,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
         // Wait for health to update using assertion
         cy.get('[data-testid="health-bar-player_2"]', { timeout: 1500 })
-          .invoke("attr", "data-current")
+          .invoke("attr", "aria-valuenow")
           .should((updatedHealth) => {
             const updatedHealthValue = parseFloat(updatedHealth as string);
             expect(
@@ -150,7 +150,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.get("body").then(($body) => {
       if ($body.find('[data-testid="attack-button"]').length > 0) {
         cy.get('[data-testid="health-bar-player_2"]')
-          .invoke("attr", "data-current")
+          .invoke("attr", "aria-valuenow")
           .then((health) => {
             const before = parseFloat(health as string);
 
@@ -158,7 +158,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
             // Wait for health to update using assertion
             cy.get('[data-testid="health-bar-player_2"]', { timeout: 1500 })
-              .invoke("attr", "data-current")
+              .invoke("attr", "aria-valuenow")
               .should((updatedHealth) => {
                 const updatedHealthValue = parseFloat(updatedHealth as string);
                 expect(
