@@ -464,6 +464,14 @@ function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unkno
     sampleCoverage: () => {},
     frontFace: () => {},
     cullFace: () => {},
+    getShaderPrecisionFormat: () => ({
+      rangeMin: 127,
+      rangeMax: 127,
+      precision: 23,
+    }),
+    getShaderInfoLog: () => "",
+    getProgramInfoLog: () => "",
+    getSupportedExtensions: () => [],
     drawingBufferColorSpace: "srgb",
     unpackColorSpace: "srgb",
   };

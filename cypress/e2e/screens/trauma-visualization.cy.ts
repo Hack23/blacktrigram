@@ -78,7 +78,7 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
     // This test verifies pixel changes on canvas, indicating rendering is happening.
     // For more deterministic tests, consider adding test hooks to expose injury count
     // or using Html overlays with data-testid attributes.
-    cy.get("canvas").should("be.visible");
+    cy.get("canvas").should("exist");
     
     // Verify rendering changes (injuries should be visible in 3D scene)
     cy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 20 });

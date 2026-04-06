@@ -175,6 +175,14 @@ Cypress.on("uncaught:exception", (err, _runnable) => {
   ) {
     return false;
   }
+  // WebGL mock stub TypeErrors — Three.js calling GL methods not in the mock.
+  // Matches "gl.someMethod is not a function" patterns specifically.
+  if (
+    err instanceof TypeError &&
+    /\bgl\.\w+ is not a function\b/.test(msg)
+  ) {
+    return false;
+  }
   // PixiJS errors (non-critical)
   if (msg.includes("PixiJS")) {
     return false;

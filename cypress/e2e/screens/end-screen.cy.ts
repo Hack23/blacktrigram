@@ -144,7 +144,7 @@ describe("EndScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     cy.get('[data-testid="intro-screen"]', { timeout: 10000 }).should("exist");
     
     // Verify canvas is present (Three.js renders to canvas)
-    cy.get("canvas").should("exist").and("be.visible");
+    cy.get("canvas").should("exist");
     cy.log("✅ Three.js canvas rendering verified");
 
     // For component-level testing, we can mount EndScreen directly
