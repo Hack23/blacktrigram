@@ -144,9 +144,14 @@ export function assertSmoothFPS(duration: number = 2000): void {
 
     // In headless/mocked WebGL CI environments, FPS may be legitimately low
     // because the browser is resource-constrained and the GPU is mocked.
-    // Use lenient thresholds that still catch frozen/crashed rendering.
-    const avgThreshold = metrics.averageFPS >= NORMAL_AVG_THRESHOLD ? NORMAL_AVG_THRESHOLD : LENIENT_AVG_THRESHOLD;
-    const minThreshold = metrics.averageFPS >= NORMAL_MIN_THRESHOLD ? NORMAL_MIN_THRESHOLD : LENIENT_MIN_THRESHOLD;
+    // Select thresholds based on environment signals — NOT measured FPS — to
+    // avoid circular logic that masks real performance regressions.
+    const isHeadless = Cypress.browser?.isHeadless === true;
+    const isCI = Cypress.env("CI") === true || Cypress.env("CI") === "true" || !!Cypress.env("GITHUB_ACTIONS");
+    const useLenient = isHeadless || isCI;
+    
+    const avgThreshold = useLenient ? LENIENT_AVG_THRESHOLD : NORMAL_AVG_THRESHOLD;
+    const minThreshold = useLenient ? LENIENT_MIN_THRESHOLD : NORMAL_MIN_THRESHOLD;
     
     // Check average FPS meets threshold
     expect(metrics.averageFPS).to.be.greaterThan(avgThreshold);
@@ -154,9 +159,9 @@ export function assertSmoothFPS(duration: number = 2000): void {
     // Check minimum FPS doesn't drop to zero
     expect(metrics.minFPS).to.be.greaterThan(minThreshold);
     
-    // Check that we don't drop too many frames (relax for low-FPS environments)
+    // Check that we don't drop too many frames (relax for CI/headless environments)
     const dropRate = (metrics.droppedFrames / metrics.samples) * 100;
-    if (metrics.averageFPS >= NORMAL_AVG_THRESHOLD) {
+    if (!useLenient) {
       expect(dropRate).to.be.lessThan(20); // Less than 20% dropped frames
     }
 

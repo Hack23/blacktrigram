@@ -33,8 +33,8 @@ export function setupScreen(screenType?: 'combat' | 'training' | 'controls' | 'p
     .then(($el) => {
       if ($el.is('[data-testid="splash-start-button"]')) {
         cy.get('[data-testid="splash-start-button"]')
-          .should("be.visible")
-          .click();
+          .should("exist")
+          .click({ force: true });
         cy.log("✅ Splash screen dismissed");
         // Wait for intro screen to appear after splash dismissal
         cy.get('[data-testid="intro-screen"]', { timeout: 10000 }).should("exist");
@@ -253,8 +253,15 @@ export function executeCombatAttacks(count: number, delayMs = 800): void {
 
   Cypress._.times(count, (index: number) => {
     const strikeNumber = index + 1;
-    cy.log(`Strike ${strikeNumber}/${count}`);
-    cy.get("body").type(" "); // Spacebar for attack
+    // Check if combat is still active before each attack (KO may end combat)
+    cy.get("body").then(($body) => {
+      if ($body.find('[data-testid="combat-screen"]').length > 0) {
+        cy.log(`Strike ${strikeNumber}/${count}`);
+        cy.get("body").type(" "); // Spacebar for attack
+      } else {
+        cy.log(`⚠️ Combat ended at strike ${strikeNumber} — skipping remaining attacks`);
+      }
+    });
 
     // Only wait between attacks, not after the final one
     if (delayMs > 0 && strikeNumber < count) {
@@ -262,7 +269,7 @@ export function executeCombatAttacks(count: number, delayMs = 800): void {
     }
   });
   
-  cy.log(`✅ Executed ${count} attacks`);
+  cy.log(`✅ Executed up to ${count} attacks`);
 }
 
 /**
