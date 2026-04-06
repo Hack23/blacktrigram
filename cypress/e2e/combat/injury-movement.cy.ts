@@ -211,6 +211,7 @@ describe("Injury Movement System - E2E Test (Target: 2-3 min)", () => {
 
     // Verify app is still functional (combat screen OR end screen)
     cy.get("canvas").should("exist");
+    cy.get('[data-testid="combat-screen"], [data-testid="end-screen-3d"]').should("exist");
     
     cy.log("✅ Injury movement integration test completed successfully");
   });

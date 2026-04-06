@@ -68,17 +68,19 @@ export function teardownScreen(): void {
 }
 
 /**
- * Get keyboard shortcut for screen navigation
+ * Get keyboard shortcut for screen navigation.
+ * Uses letter shortcuts from IntroScreen3D (window keydown handler) which are
+ * NOT inside Html overlays and therefore work reliably in headless/mocked WebGL.
  */
 function getScreenShortcutKey(screen: string): string {
   const shortcuts: Record<string, string> = {
-    'combat': '1',
-    'training': '2',
-    'controls': '3',
-    'philosophy': '4',
-    'end': '5'
+    'combat': 'v',
+    'training': 't',
+    'controls': 'c',
+    'philosophy': 'p',
+    'end': 'v'  // end screen is reached through combat
   };
-  return shortcuts[screen] || '1';
+  return shortcuts[screen] || 'v';
 }
 
 // ============================================================
@@ -173,7 +175,7 @@ export function logMemoryUsage(testName: string): void {
 /**
  * Verify canvas exists (visibility is conditional in headless/mocked WebGL)
  */
-export function verifyCanvasVisible(): void {
+export function verifyCanvasExists(): void {
   cy.get("canvas")
     .should("exist")
     .then(($canvas) => {
@@ -216,7 +218,7 @@ export function verifyCanvasWithDimensions(minWidth = 100, minHeight = 100): voi
  * only verifies the canvas element exists and logs a warning otherwise.
  * For pixel-level rendering verification, use `cy.verifyThreeJSRendering()`.
  */
-export function verifyActiveWebGLRendering(): void {
+export function verifyCanvasPresent(): void {
   cy.get("body").then(($body) => {
     if ($body.find("canvas").length > 0) {
       cy.log("✅ Canvas exists — WebGL rendering assumed active");
@@ -236,7 +238,7 @@ export function verifyActiveWebGLRendering(): void {
 export function verifyCombatScreenReady(): void {
   cy.get('[data-testid="combat-screen"]').should("exist");
   cy.log("✅ Combat screen loaded");
-  verifyCanvasVisible();
+  verifyCanvasExists();
 }
 
 /**
@@ -512,7 +514,7 @@ export function verifyMultipleElements(testIds: string[]): void {
 export function verifyTrainingScreenReady(): void {
   cy.get('[data-testid="training-screen-3d"]', { timeout: 10000 }).should("exist");
   cy.log("✅ Training screen loaded");
-  verifyCanvasVisible();
+  verifyCanvasExists();
 }
 
 /**
@@ -547,7 +549,7 @@ export function verifyFPSRange(minFPS = 30, maxFPS = 60): void {
 export function verifyResponsiveViewport(width: number, height: number): void {
   cy.viewport(width, height);
   cy.wait(500); // Wait for layout adjustment
-  verifyCanvasVisible();
+  verifyCanvasExists();
   cy.log(`✅ Responsive viewport verified: ${width}x${height}`);
 }
 

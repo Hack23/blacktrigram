@@ -5,7 +5,7 @@ import {
   forceMemoryCleanup,
   verifyCombatScreenReady,
   verifyCombatHUD,
-  verifyActiveWebGLRendering,
+  verifyCanvasPresent,
   testAllTrigramStances
 } from "../../support/test-helpers";
 
@@ -51,7 +51,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     verifyCombatHUD();
 
     // Verify Three.js Canvas is actively rendering (not frozen/blank)
-    verifyActiveWebGLRendering();
+    verifyCanvasPresent();
 
     // Verify health bars exist and have valid data (conditional — Html overlays may not mount in mocked WebGL)
     cy.get("body").then(($body) => {

@@ -4,7 +4,7 @@ import {
   cleanupThreeJSResources,
   forceMemoryCleanup,
   verifyScreenElement,
-  verifyCanvasVisible
+  verifyCanvasExists
 } from "../../support/test-helpers";
 
 /**
@@ -44,7 +44,7 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     cy.log("1️⃣ Verifying Philosophy Screen Rendering");
 
     verifyScreenElement('philosophy-screen', true);
-    verifyCanvasVisible();
+    verifyCanvasExists();
 
     // ============================================================
     // 2. Verify Philosophy Content (30s)

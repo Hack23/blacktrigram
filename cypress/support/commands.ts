@@ -6,20 +6,12 @@
 // Custom commands for Black Trigram testing
 // ***********************************************
 
+import { isRunningInCI } from "./env";
+
 /** Delay before keyboard fallback — allows menu keyboard handler to mount */
 const KEYBOARD_HANDLER_MOUNT_DELAY = 1000;
 /** Timeout for detecting screen transitions in slow CI environments */
 const SCREEN_DETECTION_TIMEOUT = 20000;
-
-/**
- * Detect whether tests are running in a CI or headless environment.
- * Used to relax assertions that depend on GPU rendering (pixel diffs, FPS).
- */
-export function isRunningInCI(): boolean {
-  const isHeadless = Cypress.browser?.isHeadless === true;
-  const isCI = Cypress.env("CI") === true || Cypress.env("CI") === "true" || !!Cypress.env("GITHUB_ACTIONS");
-  return isHeadless || isCI;
-}
 
 // Define custom command types
 declare global {
@@ -158,25 +150,25 @@ declare global {
        * @param minFPS Minimum acceptable FPS (default 30)
        * @param duration Duration to monitor (default 2000ms)
        */
-      assertMinFPS(minFPS?: number, duration?: number): void;
+      assertMinFPS(minFPS?: number, duration?: number): Chainable<void>;
 
       /**
        * Assert that FPS is consistently above 60fps (ideal for 3D games)
        * @param duration Duration to monitor (default 2000ms)
        */
-      assertSmoothFPS(duration?: number): void;
+      assertSmoothFPS(duration?: number): Chainable<void>;
 
       /**
        * Monitor Canvas rendering and detect if it's frozen
        * @param duration Duration to monitor (default 1000ms)
        */
-      assertCanvasRendering(duration?: number): void;
+      assertCanvasRendering(duration?: number): Chainable<void>;
 
       /**
        * Check for memory leaks by monitoring memory usage
        * @param duration Duration to monitor (default 3000ms)
        */
-      assertNoMemoryLeaks(duration?: number): void;
+      assertNoMemoryLeaks(duration?: number): Chainable<void>;
 
       /**
        * Verify Three.js Canvas is actively rendering
@@ -264,10 +256,11 @@ Cypress.Commands.add("enterTrainingMode", () => {
         cy.get('[data-testid="menu-item-training"]').first().click({ force: true });
         cy.log("✅ Force-clicked training menu button (not visible)");
       } else {
-        // Wait a moment for menu keyboard handler to mount before sending key
+        // Wait a moment for keyboard handler to mount, then use IntroScreen3D
+        // letter shortcut which is NOT inside an Html overlay
         cy.wait(KEYBOARD_HANDLER_MOUNT_DELAY);
-        cy.log("⚡ Using keyboard shortcut '2' for training");
-        cy.get("body").focus().type("2");
+        cy.log("⚡ Using keyboard shortcut 't' for training");
+        cy.get("body").focus().type("t");
       }
     }
   });
@@ -293,10 +286,11 @@ Cypress.Commands.add("enterCombatMode", () => {
         cy.get('[data-testid="menu-item-versus"]').first().click({ force: true });
         cy.log("✅ Force-clicked combat menu button (not visible)");
       } else {
-        // Wait a moment for menu keyboard handler to mount before sending key
+        // Wait a moment for keyboard handler to mount, then use IntroScreen3D
+        // letter shortcut which is NOT inside an Html overlay
         cy.wait(KEYBOARD_HANDLER_MOUNT_DELAY);
-        cy.log("⚡ Using keyboard shortcut '1' for combat");
-        cy.get("body").type("1");
+        cy.log("⚡ Using keyboard shortcut 'v' for combat");
+        cy.get("body").type("v");
       }
     }
   });

@@ -4,7 +4,7 @@ import {
   cleanupThreeJSResources,
   forceMemoryCleanup,
   verifyScreenElement,
-  verifyCanvasVisible
+  verifyCanvasExists
 } from "../../support/test-helpers";
 
 /**
@@ -43,7 +43,7 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     cy.log("1️⃣ Verifying Controls Screen Rendering");
 
     verifyScreenElement('controls-screen', true);
-    verifyCanvasVisible();
+    verifyCanvasExists();
 
     // ============================================================
     // 2. Verify Control Categories (30s)

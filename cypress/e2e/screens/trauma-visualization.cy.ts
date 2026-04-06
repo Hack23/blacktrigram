@@ -4,7 +4,7 @@ import {
   cleanupThreeJSResources,
   forceMemoryCleanup,
   verifyCombatScreenReady,
-  verifyActiveWebGLRendering,
+  verifyCanvasPresent,
   waitForTransition
 } from "../../support/test-helpers";
 
@@ -42,7 +42,7 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
     // ============================================================
     cy.log("1️⃣ Verifying Combat Screen Rendering");
     verifyCombatScreenReady();
-    verifyActiveWebGLRendering();
+    verifyCanvasPresent();
     cy.log("✅ Combat screen and Three.js rendering verified");
 
     // ============================================================

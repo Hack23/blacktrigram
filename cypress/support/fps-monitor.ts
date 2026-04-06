@@ -3,7 +3,7 @@
  * Provides utilities to monitor frame rate during Three.js rendering
  */
 
-import { isRunningInCI } from "./commands";
+import { isRunningInCI } from "./env";
 
 /** FPS thresholds for environments with good rendering performance */
 const NORMAL_AVG_THRESHOLD = 50;
