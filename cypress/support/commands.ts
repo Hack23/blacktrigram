@@ -384,16 +384,105 @@ let isWebGLMocked = false;
  * Returns a comprehensive mock WebGL context compatible with Three.js / R3F.
  */
 function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unknown> {
-  return {
+  const ctx: Record<string, unknown> = {
     canvas,
     drawingBufferWidth: canvas.width || 800,
     drawingBufferHeight: canvas.height || 600,
+
+    // --- WebGL constants needed by Three.js ---
+    // Three.js accesses gl.VERSION, gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS, etc.
+    // as properties on the context object.
+    VENDOR: 0x1f00,
+    RENDERER: 0x1f01,
+    VERSION: 0x1f02,
+    MAX_COMBINED_TEXTURE_IMAGE_UNITS: 0x8b4d,
+    MAX_TEXTURE_SIZE: 0x0d33,
+    MAX_CUBE_MAP_TEXTURE_SIZE: 0x851c,
+    MAX_RENDERBUFFER_SIZE: 0x84e8,
+    MAX_TEXTURE_IMAGE_UNITS: 0x8872,
+    MAX_VERTEX_TEXTURE_IMAGE_UNITS: 0x8b4c,
+    MAX_VERTEX_ATTRIBS: 0x8869,
+    MAX_VARYING_VECTORS: 0x8dfc,
+    MAX_VERTEX_UNIFORM_VECTORS: 0x8dfb,
+    MAX_FRAGMENT_UNIFORM_VECTORS: 0x8dfd,
+    MAX_VIEWPORT_DIMS: 0x0d3a,
+    SCISSOR_BOX: 0x0c10,
+    VIEWPORT: 0x0ba2,
+    DEPTH_TEST: 0x0b71,
+    STENCIL_TEST: 0x0b90,
+    BLEND: 0x0be2,
+    CULL_FACE: 0x0b44,
+    SCISSOR_TEST: 0x0c11,
+    COLOR_ATTACHMENT0: 0x8ce0,
+    FRAMEBUFFER_COMPLETE: 0x8cd5,
+    TEXTURE_2D: 0x0de1,
+    TEXTURE_CUBE_MAP: 0x8513,
+    ARRAY_BUFFER: 0x8892,
+    ELEMENT_ARRAY_BUFFER: 0x8893,
+    STATIC_DRAW: 0x88e4,
+    DYNAMIC_DRAW: 0x88e8,
+    FRAGMENT_SHADER: 0x8b30,
+    VERTEX_SHADER: 0x8b31,
+    COMPILE_STATUS: 0x8b81,
+    LINK_STATUS: 0x8b82,
+    FLOAT: 0x1406,
+    UNSIGNED_BYTE: 0x1401,
+    UNSIGNED_SHORT: 0x1403,
+    RGBA: 0x1908,
+    RGB: 0x1907,
+    TRIANGLES: 0x0004,
+    TRIANGLE_STRIP: 0x0005,
+    LINES: 0x0001,
+    POINTS: 0x0000,
+    NEAREST: 0x2600,
+    LINEAR: 0x2601,
+    TEXTURE_MIN_FILTER: 0x2801,
+    TEXTURE_MAG_FILTER: 0x2800,
+    TEXTURE_WRAP_S: 0x2802,
+    TEXTURE_WRAP_T: 0x2803,
+    CLAMP_TO_EDGE: 0x812f,
+    REPEAT: 0x2901,
+    UNPACK_FLIP_Y_WEBGL: 0x9240,
+    UNPACK_PREMULTIPLY_ALPHA_WEBGL: 0x9241,
+    UNPACK_COLORSPACE_CONVERSION_WEBGL: 0x9243,
+    NONE: 0,
+    BACK: 0x0405,
+    FRONT: 0x0404,
+    CCW: 0x0901,
+    CW: 0x0900,
+    LESS: 0x0201,
+    LEQUAL: 0x0203,
+    ALWAYS: 0x0207,
+    NEVER: 0x0200,
+    ONE: 1,
+    ZERO: 0,
+    SRC_ALPHA: 0x0302,
+    ONE_MINUS_SRC_ALPHA: 0x0303,
+    FUNC_ADD: 0x8006,
+    HIGH_FLOAT: 0x8df2,
+    MEDIUM_FLOAT: 0x8df1,
+    LOW_FLOAT: 0x8df0,
+
+    // --- WebGL methods ---
     getExtension: () => null,
     getParameter: (param: number) => {
       if (param === 0x1f00) return "Mock WebGL Implementation"; // GL_VENDOR
       if (param === 0x1f01) return "Mock Renderer"; // GL_RENDERER
       if (param === 0x1f02) return "WebGL 1.0"; // GL_VERSION
-      return null;
+      if (param === 0x8b4d) return 16; // MAX_COMBINED_TEXTURE_IMAGE_UNITS
+      if (param === 0x0d33) return 4096; // MAX_TEXTURE_SIZE
+      if (param === 0x851c) return 4096; // MAX_CUBE_MAP_TEXTURE_SIZE
+      if (param === 0x84e8) return 4096; // MAX_RENDERBUFFER_SIZE
+      if (param === 0x8872) return 16; // MAX_TEXTURE_IMAGE_UNITS
+      if (param === 0x8b4c) return 16; // MAX_VERTEX_TEXTURE_IMAGE_UNITS
+      if (param === 0x8869) return 16; // MAX_VERTEX_ATTRIBS
+      if (param === 0x8dfc) return 16; // MAX_VARYING_VECTORS
+      if (param === 0x8dfb) return 256; // MAX_VERTEX_UNIFORM_VECTORS
+      if (param === 0x8dfd) return 256; // MAX_FRAGMENT_UNIFORM_VECTORS
+      if (param === 0x0d3a) return new Int32Array([4096, 4096]); // MAX_VIEWPORT_DIMS
+      if (param === 0x0c10) return new Int32Array([0, 0, canvas.width || 800, canvas.height || 600]); // SCISSOR_BOX
+      if (param === 0x0ba2) return new Int32Array([0, 0, canvas.width || 800, canvas.height || 600]); // VIEWPORT
+      return 0;
     },
     createShader: () => ({}),
     createProgram: () => ({}),
@@ -407,24 +496,30 @@ function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unkno
     bindRenderbuffer: () => {},
     useProgram: () => {},
     enableVertexAttribArray: () => {},
+    disableVertexAttribArray: () => {},
     vertexAttribPointer: () => {},
     drawArrays: () => {},
     drawElements: () => {},
     clear: () => {},
     clearColor: () => {},
     clearDepth: () => {},
+    clearStencil: () => {},
     enable: () => {},
     disable: () => {},
     depthFunc: () => {},
     depthMask: () => {},
     blendFunc: () => {},
+    blendFuncSeparate: () => {},
     blendEquation: () => {},
+    blendEquationSeparate: () => {},
     viewport: () => {},
     scissor: () => {},
     shaderSource: () => {},
     compileShader: () => {},
     attachShader: () => {},
+    detachShader: () => {},
     linkProgram: () => {},
+    validateProgram: () => {},
     getProgramParameter: () => true,
     getShaderParameter: () => true,
     getUniformLocation: () => ({}),
@@ -432,14 +527,32 @@ function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unkno
     uniform1i: () => {},
     uniform1f: () => {},
     uniform2f: () => {},
+    uniform2fv: () => {},
     uniform3f: () => {},
+    uniform3fv: () => {},
     uniform4f: () => {},
+    uniform4fv: () => {},
+    uniform1iv: () => {},
+    uniform2iv: () => {},
+    uniform3iv: () => {},
+    uniform4iv: () => {},
+    uniformMatrix2fv: () => {},
+    uniformMatrix3fv: () => {},
     uniformMatrix4fv: () => {},
     activeTexture: () => {},
     texImage2D: () => {},
+    texSubImage2D: () => {},
+    texImage3D: () => {},
+    texSubImage3D: () => {},
+    texStorage2D: () => {},
+    texStorage3D: () => {},
+    compressedTexImage2D: () => {},
+    compressedTexSubImage2D: () => {},
     texParameteri: () => {},
+    texParameterf: () => {},
     pixelStorei: () => {},
     bufferData: () => {},
+    bufferSubData: () => {},
     framebufferTexture2D: () => {},
     renderbufferStorage: () => {},
     framebufferRenderbuffer: () => {},
@@ -457,13 +570,20 @@ function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unkno
     finish: () => {},
     colorMask: () => {},
     stencilFunc: () => {},
+    stencilFuncSeparate: () => {},
     stencilOp: () => {},
+    stencilOpSeparate: () => {},
     stencilMask: () => {},
+    stencilMaskSeparate: () => {},
     lineWidth: () => {},
     polygonOffset: () => {},
     sampleCoverage: () => {},
     frontFace: () => {},
     cullFace: () => {},
+    hint: () => {},
+    isEnabled: () => false,
+    drawBuffers: () => {},
+    readPixels: () => {},
     getShaderPrecisionFormat: (_shaderType: number, _precisionType: number) => ({
       rangeMin: 127,
       rangeMax: 127,
@@ -471,10 +591,39 @@ function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unkno
     }),
     getShaderInfoLog: () => "",
     getProgramInfoLog: () => "",
+    getShaderSource: () => "",
+    getActiveAttrib: () => ({ name: "a", type: 0x1406, size: 1 }),
+    getActiveUniform: () => ({ name: "u", type: 0x1406, size: 1 }),
     getSupportedExtensions: () => [],
+    getContextAttributes: () => ({
+      alpha: true,
+      antialias: true,
+      depth: true,
+      failIfMajorPerformanceCaveat: false,
+      premultipliedAlpha: true,
+      preserveDrawingBuffer: false,
+      stencil: false,
+    }),
     drawingBufferColorSpace: "srgb",
     unpackColorSpace: "srgb",
   };
+
+  // Wrap in a Proxy so any WebGL method/property not explicitly defined above
+  // returns a silent no-op function instead of undefined.  This prevents
+  // "gl.XYZ is not a function" TypeErrors from Three.js / R3F init without
+  // needing to enumerate every WebGL2 method by name.
+  return new Proxy(ctx, {
+    get(target, prop, receiver) {
+      const value = Reflect.get(target, prop, receiver);
+      if (value !== undefined) return value;
+      // Return no-op function for missing methods; return 0 for unknown numeric props
+      if (typeof prop === "string") {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        return () => {};
+      }
+      return undefined;
+    },
+  });
 }
 
 /**

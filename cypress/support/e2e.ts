@@ -177,9 +177,25 @@ Cypress.on("uncaught:exception", (err, _runnable) => {
   }
   // WebGL mock stub TypeErrors — Three.js calling GL methods not in the mock.
   // Matches "gl.someMethod is not a function" patterns specifically.
+  // NOTE: We check err.name instead of instanceof TypeError because the error
+  // may originate from the AUT iframe (different window → different TypeError
+  // constructor), causing instanceof to fail across frame boundaries.
   if (
-    err instanceof TypeError &&
-    /gl\.\w+ is not a function/.test(msg)
+    err.name === "TypeError" &&
+    (
+      /gl\.\w+ is not a function/.test(msg) ||
+      (msg.includes("is not a function") && err.stack?.includes("three"))
+    )
+  ) {
+    return false;
+  }
+  // Three.js WebGL init errors from mock context — properties the mock doesn't
+  // cover cause "Cannot read properties of null/undefined" inside Three.js.
+  if (
+    err.name === "TypeError" &&
+    err.stack?.includes("three") &&
+    (msg.includes("Cannot read properties of null") ||
+     msg.includes("Cannot read properties of undefined"))
   ) {
     return false;
   }
