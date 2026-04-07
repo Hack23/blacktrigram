@@ -63,7 +63,7 @@ As of Q1 2026, Black Trigram has reached production-ready quality across all maj
 - **Korean localization**: ~80% complete (target: 100%)
 - **Mobile performance**: Currently 55fps+ on mobile hardware; must reach 60fps sustained for v1.0 release (see Release Criteria below)
 - **Documentation**: User manual and API docs in progress
-- **Technical debt**: ~27 TODO/FIXME comments to resolve (tracked in [game-status.md](game-status.md#️-technical-debt--outstanding-work-q1-2026))
+- **Technical debt**: ~27 TODO/FIXME comments to resolve (tracked in [game-status.md](game-status.md#-technical-debt--outstanding-work-q1-2026))
 
 ### Implementation Maturity Assessment
 
@@ -115,14 +115,14 @@ graph TD
 - [x] ✅ Body part health system (8 parts tracked)
 - [x] ✅ Enhanced anatomical zones with polygon detection
 - [x] ✅ Visual feedback system (damage numbers, hit effects, combo counter)
-- [x] ✅ Combat realism systems 100% — 13/13 complete
+- [x] ✅ Combat realism systems feature-complete — 13/13 systems implemented
   - [x] Pain response system (100% production-ready)
   - [x] Consciousness levels (100% production-ready)
-  - [x] Breathing disruption (95% full integration with UI)
-  - [x] Trauma visualization (90% per-player injury tracking)
-  - [x] Injury-based movement (60% dynamic speed modifiers)
-  - [x] Bone impact audio (80% anatomical region detection)
-  - [x] Grappling system (95% 4 animation states, visual feedback)
+  - [x] Breathing disruption (95% integration depth: full UI integration)
+  - [x] Trauma visualization (90% integration depth: per-player injury tracking)
+  - [x] Injury-based movement (60% integration depth: dynamic speed modifiers)
+  - [x] Bone impact audio (80% integration depth: anatomical region detection)
+  - [x] Grappling system (95% integration depth: 4 animation states, visual feedback)
   - [x] Limb exposure/counter-attacks (100% AI integration, 132 tests)
 - [x] ✅ Training mode with TrainingScreen3D (15+ sub-components, HUD layout, footwork drills)
 - [x] ✅ EndScreen with combat statistics and rematch/training navigation
