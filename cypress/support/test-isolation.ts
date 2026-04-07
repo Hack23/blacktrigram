@@ -163,6 +163,26 @@ export class TestIsolation {
   }
 
   /**
+   * Lightweight Three.js cleanup that is safe to call before navigation.
+   *
+   * Destructive browser-level cleanup (WebGL context loss, audio/PixiJS
+   * teardown, perf entry clearing, gc) is handled by the global afterEach
+   * in e2e.ts via `cy.forceResourceCleanup()`.
+   */
+  static cleanupThreeJS(): void {
+    cy.window().then((win) => {
+      try {
+        const winAny = win as Window & { testData?: unknown };
+        if (winAny.testData) {
+          delete winAny.testData;
+        }
+      } catch {
+        // Non-critical
+      }
+    });
+  }
+
+  /**
    * Cleans up PixiJS resources
    */
   static cleanupPixi(): void {
@@ -189,11 +209,13 @@ export class TestIsolation {
   }
 
   /**
-   * Complete cleanup - audio, PixiJS, and state
+   * Lightweight cleanup: clears test globals and resets application state.
+   *
+   * Destructive browser-level cleanup (WebGL, audio, gc) is handled by the
+   * global afterEach in e2e.ts via `cy.forceResourceCleanup()`.
    */
   static cleanupAll(): void {
-    TestIsolation.cleanupAudio();
-    TestIsolation.cleanupPixi();
+    TestIsolation.cleanupThreeJS();
     TestIsolation.resetToCleanState();
   }
 }

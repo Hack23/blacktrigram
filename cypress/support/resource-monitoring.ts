@@ -31,8 +31,8 @@ export class ResourceMonitor {
   static startMonitoring(): void {
     cy.window().then((win) => {
       ResourceMonitor.initialResources = {
-        audioElements: document.getElementsByTagName("audio").length,
-        canvasElements: document.getElementsByTagName("canvas").length,
+        audioElements: win.document.getElementsByTagName("audio").length,
+        canvasElements: win.document.getElementsByTagName("canvas").length,
         eventListenerCount: ResourceMonitor.countEventListeners(win),
         memoryUsage: ResourceMonitor.getMemoryUsage(win),
         timestamp: Date.now(),
@@ -58,8 +58,8 @@ export class ResourceMonitor {
 
     cy.window().then((win) => {
       const currentResources: ResourceSnapshot = {
-        audioElements: document.getElementsByTagName("audio").length,
-        canvasElements: document.getElementsByTagName("canvas").length,
+        audioElements: win.document.getElementsByTagName("audio").length,
+        canvasElements: win.document.getElementsByTagName("canvas").length,
         eventListenerCount: ResourceMonitor.countEventListeners(win),
         memoryUsage: ResourceMonitor.getMemoryUsage(win),
         timestamp: Date.now(),
@@ -116,8 +116,11 @@ export class ResourceMonitor {
         (1024 * 1024);
 
       // Allow configuration via Cypress env
+      // Default 100MB — Three.js 3D scenes naturally allocate 40-200MB for
+      // geometries, materials, textures and render targets.  The old 10MB
+      // threshold triggered on every single test, producing only noise.
       const thresholdMB =
-        (Cypress.env("MEMORY_LEAK_THRESHOLD_MB") as number | undefined) ?? 10;
+        (Cypress.env("MEMORY_LEAK_THRESHOLD_MB") as number | undefined) ?? 100;
       const thresholdPercent =
         (Cypress.env("MEMORY_LEAK_THRESHOLD_PERCENT") as number | undefined) ?? null;
 
@@ -221,8 +224,8 @@ export class ResourceMonitor {
    */
   static logResourceReport(): void {
     cy.window().then((win) => {
-      const audioCount = document.getElementsByTagName("audio").length;
-      const canvasCount = document.getElementsByTagName("canvas").length;
+      const audioCount = win.document.getElementsByTagName("audio").length;
+      const canvasCount = win.document.getElementsByTagName("canvas").length;
       const listenerCount = ResourceMonitor.countEventListeners(win);
       const memoryMB = ResourceMonitor.getMemoryUsage(win) / (1024 * 1024);
 
@@ -245,8 +248,8 @@ export class ResourceMonitor {
    */
   static forceCleanup(): void {
     cy.window().then((win) => {
-      // Clean up audio elements
-      const audioElements = document.getElementsByTagName("audio");
+      // Clean up audio elements (use win.document to target AUT, not spec runner)
+      const audioElements = win.document.getElementsByTagName("audio");
       Array.from(audioElements).forEach((audio) => {
         try {
           audio.pause();
@@ -255,6 +258,25 @@ export class ResourceMonitor {
           audio.remove();
         } catch (error) {
           cy.log("Warning: Failed to clean up audio element", error);
+        }
+      });
+
+      // Clean up Three.js / WebGL resources
+      // R3F Canvas creates WebGL contexts — request browsers to free GPU memory
+      const canvasElements = win.document.getElementsByTagName("canvas");
+      Array.from(canvasElements).forEach((canvas) => {
+        try {
+          const gl =
+            canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+          if (gl) {
+            // WEBGL_lose_context tells the browser it can free GPU resources
+            const ext = gl.getExtension("WEBGL_lose_context");
+            if (ext) {
+              ext.loseContext();
+            }
+          }
+        } catch {
+          // Ignore — context may already be lost or unavailable
         }
       });
 
@@ -275,6 +297,31 @@ export class ResourceMonitor {
           delete pixiWin.__pixiApp;
         } catch (error) {
           cy.log("Warning: Failed to clean up PixiJS", error);
+        }
+      }
+
+      // Clear performance entries before GC so freed memory is reflected
+      try {
+        if (win.performance?.clearResourceTimings) {
+          win.performance.clearResourceTimings();
+        }
+        if (win.performance?.clearMarks) {
+          win.performance.clearMarks();
+        }
+        if (win.performance?.clearMeasures) {
+          win.performance.clearMeasures();
+        }
+      } catch {
+        // Non-critical
+      }
+
+      // Request garbage collection if exposed (requires --expose-gc flag)
+      const gcWin = win as Window & { gc?: () => void };
+      if (gcWin.gc) {
+        try {
+          gcWin.gc();
+        } catch {
+          // gc not available — non-critical
         }
       }
 

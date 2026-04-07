@@ -88,58 +88,42 @@ function getScreenShortcutKey(screen: string): string {
 // ============================================================
 
 /**
- * Attempts to cleanup Three.js resources and hint at garbage collection.
- * 
- * NOTE: This function provides best-effort cleanup by requesting the browser's
- * garbage collector to run (if exposed). It does NOT directly dispose Three.js
- * resources as that requires application-specific cleanup logic that should be
- * implemented within the application itself.
- * 
- * For comprehensive cleanup, the application should implement its own cleanup
- * function that properly disposes geometries, materials, textures, and removes
- * event listeners. This helper simply provides a GC hint to help free memory.
+ * Lightweight Three.js resource cleanup that is safe to call **before**
+ * teardownScreen() / cy.returnToIntro().
+ *
+ * Only clears test-specific data and large globals that are no longer
+ * needed. Destructive browser-level cleanup (WebGL context loss,
+ * audio/PixiJS teardown, perf entry clearing, gc) is handled by the
+ * global afterEach in e2e.ts via `cy.forceResourceCleanup()`, which
+ * runs *after* all spec-level afterEach hooks.
  */
 export function cleanupThreeJSResources(): void {
   cy.window().then((win) => {
     try {
-      cy.log("🧹 Requesting memory cleanup...");
-      
-      // Hint at garbage collection (only works if browser exposes gc)
-      if ((win as any).gc) {
-        (win as any).gc();
-        cy.log("✅ Garbage collection requested");
-      } else {
-        cy.log("ℹ️ Garbage collection not available (this is normal)");
+      const winAny = win as Window & { testData?: unknown };
+      if (winAny.testData) {
+        delete winAny.testData;
       }
-      
-      // NOTE: We intentionally avoid cloning/replacing canvas elements.
-      // Replacing canvas nodes can invalidate references held by Three.js
-      // and Cypress, causing rendering or test instability. Application-specific
-      // cleanup should be handled by the application's own cleanup logic.
-    } catch (error) {
-      cy.log(`⚠️ Cleanup error (non-critical): ${error}`);
+    } catch {
+      // Non-critical
     }
   });
 }
 
 /**
- * Force memory cleanup and garbage collection
+ * Force cleanup of large test globals.
+ *
+ * GC and perf-entry clearing are intentionally omitted here — the
+ * centralized `cy.forceResourceCleanup()` in the global afterEach
+ * handles them after all spec-level hooks have finished.
  */
 export function forceMemoryCleanup(): void {
   cy.window().then((win) => {
     try {
-      // Clear any large data structures
-      if ((win as any).testData) {
-        delete (win as any).testData;
+      const winAny = win as Window & { testData?: unknown };
+      if (winAny.testData) {
+        delete winAny.testData;
       }
-      
-      // Request garbage collection if available
-      if ((win as any).gc) {
-        (win as any).gc();
-        cy.log("✅ Forced garbage collection");
-      }
-      
-      // Note: Cleanup happens asynchronously; no wait needed
     } catch (error) {
       cy.log(`⚠️ Memory cleanup error (non-critical): ${error}`);
     }

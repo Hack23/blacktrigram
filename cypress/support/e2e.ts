@@ -106,35 +106,9 @@ afterEach(function () {
     duration: testDuration,
   });
 
-  // Force cleanup of any remaining resources
-  cy.window({ log: false }).then((win) => {
-    try {
-      // Stop any running audio
-      const audioElements = document.getElementsByTagName("audio");
-      Array.from(audioElements).forEach((audio) => {
-        audio.pause();
-        audio.remove();
-      });
-
-      // Clear PixiJS resources
-      const pixiWin = win as Window & {
-        PIXI?: unknown;
-        __pixiApp?: {
-          destroy: (
-            removeView: boolean,
-            options?: { children?: boolean; texture?: boolean }
-          ) => void;
-        };
-      };
-
-      if (pixiWin.PIXI && pixiWin.__pixiApp) {
-        pixiWin.__pixiApp.destroy(true, { children: true, texture: true });
-        delete pixiWin.__pixiApp;
-      }
-    } catch {
-      // Ignore synchronous DOM/resource cleanup errors
-    }
-  });
+  // Force cleanup of remaining resources via ResourceMonitor (audio, WebGL, PixiJS,
+  // performance entries, gc). All cleanup is centralized in forceCleanup().
+  try { cy.forceResourceCleanup(); } catch { /* command may not be registered */ }
 });
 
 // Improve visual test feedback
@@ -218,19 +192,6 @@ Cypress.on("uncaught:exception", (err, _runnable) => {
     return false;
   }
   return true;
-});
-
-// Performance logging for CI
-afterEach(() => {
-  cy.window({ log: false }).then((win) => {
-    try {
-      if (win.performance?.clearMarks) {
-        win.performance.clearMarks();
-      }
-    } catch {
-      // Ignore — performance cleanup is non-critical
-    }
-  });
 });
 
 // Import custom commands with type support
