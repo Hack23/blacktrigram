@@ -196,7 +196,7 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
           <div
             style={{
               fontSize: isSelected ? "16px" : "14px",
-              color: "#ffffff",
+              color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
               textShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)}`,
               fontWeight: "bold",
               whiteSpace: "nowrap",
