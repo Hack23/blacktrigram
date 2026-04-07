@@ -42,8 +42,8 @@
  * |---------------------|----------|----------------|---------|------------|
  * | Small Phone (≤375)  | ≤375px   | ~120-150px     | ~50px   | ~90px      |
  * | Mobile (≤768)       | ≤768px   | ~180-200px     | ~60px   | ~110px     |
- * | Tablet (768-1024)   | 768-1024 | ~220-260px     | ~65px   | ~120px     |
- * | Desktop (≥1024)     | ≥1024px  | ~260-300px     | ~70px   | ~130px     |
+ * | Tablet (768-1199)   | 768-1199 | ~220-260px     | ~65px   | ~120px     |
+ * | Desktop (≥1200)     | ≥1200px  | ~260-300px     | ~70px   | ~130px     |
  * | 4K (≥1920)          | ≥1920px  | ~300-400px     | ~80px   | ~140px     |
  *
  * Width/height values are passed by the parent screen and scaled via
@@ -137,7 +137,11 @@ export const BaseHUDContainer: React.FC<BaseHUDContainerProps> = ({
   // Safe area note: left/right HUD panels use left:0 / right:0 positioning.
   // On landscape mobile devices with notches, the parent screen should
   // account for env(safe-area-inset-left) / env(safe-area-inset-right) when
-  // calculating the width/topOffset props passed to this component.
+  // calculating the width props passed to this component. Horizontal safe
+  // area insets affect left/right panel widths and horizontal offsets, not
+  // topOffset (which is purely vertical). For portrait notch/status-bar
+  // avoidance, the parent should incorporate layout.safeArea.top into the
+  // topOffset calculation.
   const containerStyle = React.useMemo<React.CSSProperties>(() => {
     const baseStyle: React.CSSProperties = {
       position: "absolute",

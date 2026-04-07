@@ -488,14 +488,8 @@ body {
   color: #ffffff;
   font-family: "Noto Sans KR", Arial, sans-serif;
   overflow: hidden;
-}
-
-/* Game container - used by App.tsx for the main active game wrapper.
- * Replaces inline styles for consistent design-system approach.
- * Note: width, height, and overflow are already set by the .app class.
- * This class adds outline:none needed for the focusable game container.
- */
-.game-container {
+  /* Remove focus outline when the app container is focused via tabIndex.
+   * The game container is made focusable for keyboard input capture. */
   outline: none;
 }
 

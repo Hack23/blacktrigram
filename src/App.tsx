@@ -564,7 +564,7 @@ function App() {
 
   return (
     <div
-      className="app game-container"
+      className="app"
       tabIndex={0}
       ref={containerRef}
       data-testid="app-container"
