@@ -123,6 +123,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
       textSecondary: `#${theme.colors.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
       accentGold: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
       accentCyan: `#${theme.colors.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+      koreanBlack: `#${theme.colors.KOREAN_BLACK.toString(16).padStart(6, "0")}`,
     }),
     [theme],
   );
@@ -514,7 +515,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                         justifyContent: "center",
                         fontSize: isMobile ? "14px" : "16px",
                         fontWeight: "bold",
-                        color: "#000",
+                        color: colors.koreanBlack,
                       }}
                     >
                       {key}
