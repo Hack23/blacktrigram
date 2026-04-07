@@ -458,9 +458,9 @@ export interface Injury {
 
 ### **Muscle Tension System from src/types/muscle.ts**
 
-The muscle system provides realistic body tension visualization during combat, with 24 anatomically-positioned muscle groups that flex up to +30% during technique execution.
+The muscle system provides realistic body tension visualization during combat, with 29 anatomically-positioned muscle groups that flex up to +30% during technique execution.
 
-#### `MuscleGroupName` - 24 Anatomical Muscle Groups
+#### `MuscleGroupName` - 29 Anatomical Muscle Groups
 
 ```typescript
 // src/types/muscle.ts

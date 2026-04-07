@@ -65,7 +65,7 @@ flowchart TD
     SelectArchetype -->|조직폭력배 Organized Crime| Combat
 
     Training --> TrainingFlow[🥋 Training Flow<br/>See Training Mode Flowchart]
-    Tutorial --> TutorialFlow[📚 Tutorial Flow]
+    Tutorial --> TutorialGuide[📚 Guided Tutorial<br/>기초 안내 Basic Guidance]
 
     Combat[⚔️ Combat Screen] --> Round{Round Start}
     Round --> Fight[Active Combat]

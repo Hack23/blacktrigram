@@ -415,48 +415,60 @@ stateDiagram-v2
 
     state Alert {
         [*] --> FullCapacity
-        FullCapacity: 의식 명확 (Clear Consciousness)
-        FullCapacity: Full combat ability
-        FullCapacity: Normal reaction speed
-        FullCapacity: All techniques available
     }
+
+    note right of FullCapacity
+        의식 명확 (Clear Consciousness)
+        Full combat ability
+        Normal reaction speed
+        All techniques available
+    end note
 
     Alert --> Dazed: Head Hit / VP Strike\nConsciousness 60-80%
 
     state Dazed {
         [*] --> ReducedCapacity
-        ReducedCapacity: 멍함 (Dazed State)
-        ReducedCapacity: Slowed reaction (-20%)
-        ReducedCapacity: Reduced accuracy (-15%)
-        ReducedCapacity: Visual blur effect
-        ReducedCapacity: Head movement: SHAKE
     }
+
+    note right of ReducedCapacity
+        멍함 (Dazed State)
+        Slowed reaction (-20%)
+        Reduced accuracy (-15%)
+        Visual blur effect
+        Head movement: SHAKE
+    end note
 
     Dazed --> Alert: Recovery Timer\n+ No Further Hits
     Dazed --> Stunned: Additional Head Hit\nConsciousness 30-60%
 
     state Stunned {
         [*] --> SeverelyImpaired
-        SeverelyImpaired: 기절 (Stunned State)
-        SeverelyImpaired: Cannot attack
-        SeverelyImpaired: Minimal defense (-50%)
-        SeverelyImpaired: Muscle tension spikes
-        SeverelyImpaired: Facial expression: PAINED
-        SeverelyImpaired: Stagger animation active
     }
+
+    note right of SeverelyImpaired
+        기절 (Stunned State)
+        Cannot attack
+        Minimal defense (-50%)
+        Muscle tension spikes
+        Facial expression: PAINED
+        Stagger animation active
+    end note
 
     Stunned --> Dazed: Recovery Timer\n+ No Further Hits
     Stunned --> Unconscious: Critical Hit / VP Lethal\nConsciousness ≤ 0%
 
     state Unconscious {
         [*] --> KnockedOut
-        KnockedOut: 의식 상실 (Unconscious)
-        KnockedOut: Cannot act
-        KnockedOut: Head movement: DROP
-        KnockedOut: Facial expression: DEFEATED
-        KnockedOut: Eye openness: 0.0
-        KnockedOut: Muscle relaxation: Full
     }
+
+    note right of KnockedOut
+        의식 상실 (Unconscious)
+        Cannot act
+        Head movement: DROP
+        Facial expression: DEFEATED
+        Eye openness: 0.0
+        Muscle relaxation: Full
+    end note
 
     Unconscious --> [*]: Round End (KO)
 
