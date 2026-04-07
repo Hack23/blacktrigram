@@ -8,6 +8,7 @@
  */
 
 import React, { useMemo } from "react";
+import { KOREAN_COLORS } from "../../../../types/constants/colors";
 import { filterKeysByCategory, KEYBOARD_LAYOUT, type KeyData } from "../constants/ControlsConstants";
 import { Key3D } from "./Key3D";
 
@@ -94,7 +95,7 @@ export const VisualKeyboard3D: React.FC<VisualKeyboard3DProps> = ({
       >
         <planeGeometry args={[12, 6]} />
         <meshStandardMaterial
-          color={0x1a1a2e}
+          color={KOREAN_COLORS.ARENA_BACKGROUND}
           metalness={0.8}
           roughness={0.3}
           opacity={0.9}
@@ -104,7 +105,7 @@ export const VisualKeyboard3D: React.FC<VisualKeyboard3DProps> = ({
 
       {/* Grid helper for visual reference (subtle) */}
       <gridHelper
-        args={[12, 20, 0x333333, 0x222222]}
+        args={[12, 20, KOREAN_COLORS.UI_STEEL_GRAY_DARK, KOREAN_COLORS.UI_BACKGROUND_MEDIUM]}
         position={[0, 0, -0.19]}
         rotation={[0, 0, 0]}
       />

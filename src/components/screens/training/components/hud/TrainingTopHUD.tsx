@@ -213,7 +213,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
             padding: `${SPACING.xxs} ${SPACING.xs}`,
             background: HUD_STYLE.background,
             border: BORDERS.muted,
-            borderRadius: SPACING.xxs,
+            borderRadius: BORDER_RADIUS.sm,
             fontSize: TYPOGRAPHY.caption.fontSize,
             fontFamily: TYPOGRAPHY.caption.fontFamily,
             color: HIERARCHY.accent.color,

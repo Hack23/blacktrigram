@@ -157,8 +157,8 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
         borderRadius: "12px",
         padding: isMobile ? "10px" : "12px",
         fontFamily: FONT_FAMILY.KOREAN,
-        color: "#ffffff",
-        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
+        color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
+        boxShadow: `0 4px 20px ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.5)}`,
       }}
       data-testid="footwork-drills-html"
     >
@@ -286,7 +286,7 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
                   color: 
                     isActive && index === currentStep
                       ? hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1)
-                      : "#ffffff",
+                      : hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
                   border: `1px solid ${hexToRgbaString(
                     isActive && index === currentStep
                       ? KOREAN_COLORS.PRIMARY_CYAN
@@ -334,7 +334,7 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
           background: isActive
             ? hexToRgbaString(KOREAN_COLORS.ACCENT_RED, 0.9)
             : hexToRgbaString(KOREAN_COLORS.ACCENT_GREEN, 0.9),
-          color: "#ffffff",
+          color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
           border: "none",
           borderRadius: "8px",
           cursor: "pointer",
