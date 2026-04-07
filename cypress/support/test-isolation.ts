@@ -163,27 +163,18 @@ export class TestIsolation {
   }
 
   /**
-   * Cleans up Three.js / WebGL resources by losing canvas contexts
-   * so the browser can reclaim GPU memory.
+   * Cleans up Three.js / WebGL resources by delegating to the centralized
+   * ResourceMonitor.forceCleanup() (registered as cy.forceResourceCleanup()).
+   *
+   * This is destructive — the renderer cannot recover without a full
+   * re-init or page reload. Only call during post-test teardown.
    */
   static cleanupThreeJS(): void {
-    cy.document().then((doc) => {
-      const canvasElements = doc.getElementsByTagName("canvas");
-      Array.from(canvasElements).forEach((canvas) => {
-        try {
-          const gl =
-            canvas.getContext("webgl2") ?? canvas.getContext("webgl");
-          if (gl) {
-            const ext = gl.getExtension("WEBGL_lose_context");
-            if (ext) {
-              ext.loseContext();
-            }
-          }
-        } catch {
-          // Context may already be lost — non-critical
-        }
-      });
-    });
+    try {
+      cy.forceResourceCleanup();
+    } catch {
+      // Command may not be registered yet — non-critical
+    }
   }
 
   /**
@@ -213,12 +204,12 @@ export class TestIsolation {
   }
 
   /**
-   * Complete cleanup - audio, Three.js, PixiJS, and state
+   * Complete cleanup — delegates to the centralized ResourceMonitor.forceCleanup()
+   * (via cleanupThreeJS) which handles audio, WebGL, PixiJS, perf entries, and gc,
+   * then resets application state.
    */
   static cleanupAll(): void {
-    TestIsolation.cleanupAudio();
     TestIsolation.cleanupThreeJS();
-    TestIsolation.cleanupPixi();
     TestIsolation.resetToCleanState();
   }
 }

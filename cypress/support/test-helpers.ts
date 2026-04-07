@@ -90,69 +90,20 @@ function getScreenShortcutKey(screen: string): string {
 /**
  * Attempts to cleanup Three.js resources and hint at garbage collection.
  *
- * Walks the DOM for canvas elements, loses their WebGL contexts (which tells
- * the browser it can free GPU memory), clears performance entries, and
- * requests garbage collection (only works with --expose-gc Chrome flag).
+ * Delegates to the centralized `cy.forceResourceCleanup()` command
+ * (backed by {@link ResourceMonitor.forceCleanup}) which handles WebGL
+ * context loss, audio/PixiJS teardown, performance entry clearing, and
+ * garbage collection in the correct order.
  *
- * NOTE: This is a best-effort helper. Proper resource disposal (geometries,
- * materials, textures) happens inside the React component tree when the
- * Canvas unmounts.  This function covers browser-level cleanup that the
- * React tree cannot reach.
+ * NOTE: This is destructive — the renderer cannot recover without a full
+ * re-init or page reload. Only call during post-test teardown.
  */
 export function cleanupThreeJSResources(): void {
-  cy.window().then((win) => {
-    try {
-      cy.log("🧹 Requesting Three.js / WebGL memory cleanup...");
-
-      // 1. Lose WebGL contexts so the browser can reclaim GPU memory.
-      //    This is destructive — the renderer cannot recover without a full
-      //    re-init or page reload. Only call during post-test teardown.
-      const canvases = win.document.getElementsByTagName("canvas");
-      let lostCount = 0;
-      Array.from(canvases).forEach((canvas) => {
-        try {
-          const gl =
-            canvas.getContext("webgl2") ?? canvas.getContext("webgl");
-          if (gl) {
-            const ext = gl.getExtension("WEBGL_lose_context");
-            if (ext) {
-              ext.loseContext();
-              lostCount++;
-            }
-          }
-        } catch {
-          // Context may already be lost — not an error
-        }
-      });
-      if (lostCount > 0) {
-        cy.log(`✅ Lost ${lostCount} WebGL context(s)`);
-      }
-
-      // 2. Clear performance entries to free associated memory
-      try {
-        if (win.performance?.clearResourceTimings) {
-          win.performance.clearResourceTimings();
-        }
-        if (win.performance?.clearMarks) {
-          win.performance.clearMarks();
-        }
-        if (win.performance?.clearMeasures) {
-          win.performance.clearMeasures();
-        }
-      } catch {
-        // Non-critical
-      }
-
-      // 3. Hint at garbage collection (requires --expose-gc flag)
-      const gcWin = win as Window & { gc?: () => void };
-      if (gcWin.gc) {
-        gcWin.gc();
-        cy.log("✅ Garbage collection requested");
-      }
-    } catch (error) {
-      cy.log(`⚠️ Cleanup error (non-critical): ${error}`);
-    }
-  });
+  try {
+    cy.forceResourceCleanup();
+  } catch {
+    // Command may not be registered yet — non-critical
+  }
 }
 
 /**
