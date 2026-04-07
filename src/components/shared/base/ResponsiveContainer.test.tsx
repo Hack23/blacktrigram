@@ -5,7 +5,7 @@
  */
 
 import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { ResponsiveContainer } from "./ResponsiveContainer";
 
@@ -451,6 +451,86 @@ describe("ResponsiveContainer", () => {
       expect(getByText("Child 1")).toBeTruthy();
       expect(getByText("Child 2")).toBeTruthy();
       expect(getByText("Child 3")).toBeTruthy();
+    });
+  });
+
+  describe("componentName prop", () => {
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("should accept componentName without affecting rendering", () => {
+      const { container } = render(
+        <ResponsiveContainer
+          position={{ base: { x: 50, y: 25 } }}
+          containerWidth={1200}
+          componentName="TestComponent"
+          data-testid="named-container"
+        >
+          <div>Content</div>
+        </ResponsiveContainer>
+      );
+
+      const element = container.querySelector('[data-testid="named-container"]') as HTMLElement;
+      expect(element).toBeTruthy();
+
+      const computedStyle = window.getComputedStyle(element);
+      expect(computedStyle.left).toBe("50px");
+      expect(computedStyle.top).toBe("25px");
+    });
+
+    it("should include componentName in dev-mode alignment warning", () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = "development";
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      try {
+        render(
+          <ResponsiveContainer
+            position={{ base: { x: 0, y: 0 } }}
+            containerWidth={800}
+            horizontalAlign="center"
+            componentName="CombatLeftHUD"
+            data-testid="warn-container"
+          >
+            <div>Content</div>
+          </ResponsiveContainer>
+        );
+
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("ResponsiveContainer [CombatLeftHUD]")
+        );
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    });
+
+    it("should use default prefix when componentName is not provided", () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = "development";
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      try {
+        render(
+          <ResponsiveContainer
+            position={{ base: { x: 0, y: 0 } }}
+            containerWidth={800}
+            horizontalAlign="center"
+            data-testid="warn-container-default"
+          >
+            <div>Content</div>
+          </ResponsiveContainer>
+        );
+
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("ResponsiveContainer:")
+        );
+        // Should NOT contain bracket notation when no componentName
+        const callArg = warnSpy.mock.calls[0]?.[0] as string;
+        expect(callArg).not.toContain("[");
+      } finally {
+        process.env.NODE_ENV = originalNodeEnv;
+      }
     });
   });
 });

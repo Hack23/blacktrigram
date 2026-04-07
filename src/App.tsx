@@ -567,12 +567,6 @@ function App() {
       className="app"
       tabIndex={0}
       ref={containerRef}
-      style={{
-        outline: "none",
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-      }}
       data-testid="app-container"
     >
       {/* All screens now use Three.js or pure React/HTML */}
