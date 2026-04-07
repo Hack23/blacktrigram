@@ -1,5 +1,5 @@
 /**
- * CombatScreen3D - Three.js-based combat screen
+ * CombatScreen3D - Three.js-based combat screen (Black Trigram 흑괘)
  *
  * Maintains all existing combat logic and state management
  * Uses Html overlays for UI and 3D meshes for game objects
@@ -2585,7 +2585,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         width: `${width}px`,
         height: `${height}px`,
         position: "relative",
-        backgroundColor: "#0a0a0a",
+        backgroundColor: toHexColor(KOREAN_COLORS.UI_BACKGROUND_DARK),
         overflow: "hidden", // Prevent content from extending beyond container
       }}
       data-testid="combat-screen"

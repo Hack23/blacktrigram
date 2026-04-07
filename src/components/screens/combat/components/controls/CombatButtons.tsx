@@ -9,7 +9,7 @@
  * @korean 전투버튼
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { BaseButtonOverlayHtml } from "../../../../shared/base/BaseButtonOverlayHtml";
@@ -45,12 +45,17 @@ export const CombatReturnToMenuButton: React.FC<
 > = ({ onClick, onMouseEnter, isMobile }) => {
   const theme = useKoreanTheme({ variant: "primary", size: "md", isMobile });
 
+  const containerStyle = useMemo(() => ({
+    background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85),
+    border: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.8)}`,
+  }), [theme.colors.UI_BACKGROUND_DARK, theme.colors.PRIMARY_CYAN]);
+
   return (
     <div
       style={{
         textAlign: "center",
-        background: "rgba(10, 10, 15, 0.85)",
-        border: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.8)}`,
+        background: containerStyle.background,
+        border: containerStyle.border,
         borderRadius: "8px",
         padding: isMobile ? "6px 10px" : "8px 12px",
       }}

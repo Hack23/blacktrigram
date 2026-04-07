@@ -18,7 +18,7 @@
  * Refactored to use useKoreanTheme for consistent theming
  */
 
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import React, { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import { useAudio } from "../../../../../audio/AudioProvider";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
@@ -56,6 +56,12 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
 }) => {
   const audio = useAudio();
   const theme = useKoreanTheme({ variant: "primary", size: "lg", isMobile });
+  const themeColors = useMemo(() => ({
+    overlayBg: hexToRgbaString(theme.colors.BLACK_SOLID, 0.85),
+    accentGold: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+    accentGoldGlow: hexToRgbaString(theme.colors.ACCENT_GOLD, 0.6),
+    textSecondary: hexToRgbaString(theme.colors.TEXT_SECONDARY, 0.8),
+  }), [theme.colors.BLACK_SOLID, theme.colors.ACCENT_GOLD, theme.colors.TEXT_SECONDARY]);
   const [activeSubmenu, setActiveSubmenu] = useState<
     "controls" | "settings" | null
   >(null);
@@ -181,7 +187,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: hexToRgbaString(theme.colors.BLACK_SOLID, 0.85),
+          backgroundColor: themeColors.overlayBg,
           backdropFilter: "blur(8px)",
           zIndex: 1000,
           pointerEvents: "auto",
@@ -193,14 +199,11 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
           data-testid="pause-title"
           style={{
             fontSize: isMobile ? "48px" : "72px",
-            color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+            color: themeColors.accentGold,
             fontFamily: theme.fontFamily.KOREAN,
             fontWeight: "bold",
             margin: `0 0 ${isMobile ? "40px" : "60px"} 0`,
-            textShadow: `0 0 30px ${hexToRgbaString(
-              theme.colors.ACCENT_GOLD,
-              0.6
-            )}`,
+            textShadow: `0 0 30px ${themeColors.accentGoldGlow}`,
             textAlign: "center",
           }}
         >
@@ -243,7 +246,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
           style={{
             marginTop: isMobile ? "40px" : "60px",
             fontSize: isMobile ? "12px" : "14px",
-            color: hexToRgbaString(theme.colors.TEXT_SECONDARY, 0.8),
+            color: themeColors.textSecondary,
             fontFamily: theme.fontFamily.KOREAN,
             textAlign: "center",
           }}
