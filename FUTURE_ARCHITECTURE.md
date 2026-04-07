@@ -61,7 +61,7 @@ As of Q1 2026, Black Trigram has reached production-ready quality across all maj
 
 - **Test coverage**: 73.17% measured overall line coverage (target: 80%+; see [game-status.md](game-status.md#-testing--quality-metrics))
 - **Korean localization**: ~80% complete (target: 100%)
-- **Mobile performance**: 55fps+ achieved and accepted for v1.0 release on mobile hardware; 60fps sustained remains the post-v1.0 optimization target
+- **Mobile performance**: Currently 55fps+ on mobile hardware; must reach 60fps sustained for v1.0 release (see Release Criteria below)
 - **Documentation**: User manual and API docs in progress
 - **Technical debt**: ~27 TODO/FIXME comments to resolve (tracked in [game-status.md](game-status.md#️-technical-debt--outstanding-work-q1-2026))
 
