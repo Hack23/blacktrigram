@@ -23,6 +23,14 @@ Black Trigram (흑괘) is a frontend-only Korean martial arts combat simulator w
 - ✅ **Session-Only Storage**: No backend persistence (browser session state)
 - ✅ **Functional Design**: Pure functions and immutable state updates
 
+**Data Model Sections:**
+- [Core Type System](#core-type-system) — Entity relationships and base interfaces
+- [TypeScript Interface Examples](#typescript-interface-examples) — Key interface definitions
+- [Advanced Type Definitions](#advanced-type-definitions) — Facial, injury, muscle, and clothing types
+- [Type Organization Guide](#type-organization-guide) — Where to find and add types
+- [Skeletal Animation Data Model](#skeletal-animation-data-model) — 28-bone skeletal hierarchy
+- Cross-reference: [State Diagrams](STATEDIAGRAM.md) for state transitions, [Flowcharts](FLOWCHART.md) for process flows
+
 ---
 
 ## 📐 Core Type System
@@ -330,6 +338,345 @@ function updatePlayerHealth(
   };
 }
 ```
+
+---
+
+## 🎨 Advanced Type Definitions
+
+The following type definitions cover specialized subsystems for realistic combat visualization. These types are defined in dedicated files under `src/types/` and provide strict TypeScript interfaces for facial animation, injury tracking, muscle tension, and clothing systems.
+
+### **Facial Animation System from src/types/facial.ts**
+
+The facial animation system provides realistic emotion and damage feedback during combat, with smooth expression transitions and eye tracking.
+
+#### `FacialExpression` - Expression States
+
+```typescript
+// src/types/facial.ts
+export enum FacialExpression {
+  NEUTRAL = "neutral",       // 평온 - Calm, ready state
+  FOCUSED = "focused",       // 집중 - Concentrated, ready to attack
+  PAINED = "pained",         // 고통 - Pain response after hit
+  EXHAUSTED = "exhausted",   // 지침 - Low stamina, heavy breathing
+  VICTORIOUS = "victorious", // 승리 - Brief satisfaction after successful strike
+  DEFEATED = "defeated",     // 패배 - Knocked out, unconscious
+}
+```
+
+#### `FacialDamageState` - Damage Tracking
+
+```typescript
+// src/types/facial.ts
+export interface FacialDamageState {
+  readonly leftEyeSwelling: number;    // 0-1, 0=none, 1=fully swollen
+  readonly rightEyeSwelling: number;   // 0-1
+  readonly mouthBleeding: number;      // 0-1, lip bleeding intensity
+  readonly noseBleeding: number;       // 0-1
+  readonly leftCheekBruise: number;    // 0-1
+  readonly rightCheekBruise: number;   // 0-1
+  readonly foreheadBruise: number;     // 0-1, forehead bruise/cut
+  readonly jawBruise: number;          // 0-1
+  readonly totalFacialDamage: number;  // 0-100, cumulative
+}
+```
+
+#### `ExpressionState` - Transition Management
+
+```typescript
+// src/types/facial.ts
+export interface ExpressionState {
+  readonly expression: FacialExpression;
+  readonly intensity: number;                      // 0-1, degree of expression
+  readonly transitionTime: number;                 // Seconds to transition
+  readonly previousExpression?: FacialExpression;  // For blending
+  readonly transitionProgress?: number;            // 0-1, transition progress
+}
+```
+
+#### `HeadMovementType` - Combat Reactions
+
+```typescript
+// src/types/facial.ts
+export enum HeadMovementType {
+  RECOIL = "recoil",  // Head snaps back when hit
+  NOD = "nod",        // Slight nod forward during attack
+  TILT = "tilt",      // Head tilts to avoid strike
+  TURN = "turn",      // Head turns to track opponent
+  SHAKE = "shake",    // Head shakes when stunned
+  DROP = "drop",      // Head drops when defeated
+}
+```
+
+#### `EyeTrackingState` - Opponent Tracking
+
+```typescript
+// src/types/facial.ts
+export interface EyeTrackingState {
+  readonly targetPosition: THREE.Vector3;   // Opponent position
+  readonly lookDirection: THREE.Vector3;    // Current look direction
+  readonly pupilOffset: { x: number; y: number }; // -1 to 1 per axis
+  readonly trackingSpeed: number;           // Smoothing factor
+  readonly enabled: boolean;               // Whether tracking is active
+}
+```
+
+---
+
+### **Injury Tracking System from src/types/injury.ts**
+
+The injury system tracks localized trauma for visualization, separating system logic from UI components.
+
+#### `InjuryType` - Injury Classification
+
+```typescript
+// src/types/injury.ts
+export enum InjuryType {
+  BRUISE = "bruise",         // Blunt force trauma (부상)
+  CUT = "cut",               // Sharp weapon/strike (베임)
+  LACERATION = "laceration", // Deep cut with blood trail (열상)
+  FRACTURE = "fracture",     // Bone damage indicator (골절)
+}
+```
+
+#### `Injury` - Individual Injury Data
+
+```typescript
+// src/types/injury.ts
+export interface Injury {
+  readonly id: string;                            // Unique identifier
+  readonly region: BodyRegion;                    // Body region affected
+  readonly type: InjuryType;                      // Type of injury
+  readonly position: [number, number, number];    // [x, y, z] relative to character
+  readonly severity: number;                      // 0.0 to 1.0
+  readonly hitCount: number;                      // Hits to same location (progressive bruising)
+  readonly timestamp: number;                     // Creation timestamp
+  readonly playerId?: string | number;            // Optional player ID
+}
+```
+
+---
+
+### **Muscle Tension System from src/types/muscle.ts**
+
+The muscle system provides realistic body tension visualization during combat, with 29 anatomically-positioned muscle groups that flex up to +30% during technique execution.
+
+#### `MuscleGroupName` - 29 Anatomical Muscle Groups
+
+```typescript
+// src/types/muscle.ts
+export type MuscleGroupName =
+  // Shoulders (2)
+  | "SHOULDER_L" | "SHOULDER_R"
+  // Arms (6)
+  | "BICEP_L" | "BICEP_R" | "TRICEP_L" | "TRICEP_R" | "FOREARM_L" | "FOREARM_R"
+  // Torso Front (5)
+  | "PECTORALS" | "CORE" | "ABS" | "OBLIQUES" | "LOWER_ABS"
+  // Torso Back (6)
+  | "LAT_L" | "LAT_R" | "TRAPEZIUS" | "RHOMBOID" | "ERECTOR_SPINAE_L" | "ERECTOR_SPINAE_R"
+  // Hips (2)
+  | "HIP_FLEXOR_L" | "HIP_FLEXOR_R"
+  // Legs (8)
+  | "QUAD_L" | "QUAD_R" | "HAMSTRING_L" | "HAMSTRING_R"
+  | "CALF_L" | "CALF_R" | "GLUTE_L" | "GLUTE_R";
+```
+
+#### `MuscleGroup` - Anatomical Definition
+
+```typescript
+// src/types/muscle.ts
+export interface MuscleGroup {
+  readonly name: MuscleGroupName;
+  readonly baseScale: THREE.Vector3;           // Scale when relaxed
+  readonly maxFlexScale: THREE.Vector3;        // Max scale when flexed (+30%)
+  readonly position: THREE.Vector3;            // Position relative to character
+  readonly geometryParams: {
+    readonly radius: number;
+    readonly length: number;
+    readonly capSegments: number;
+    readonly radialSegments: number;
+  };
+  readonly korean: string;                     // Korean name (한글)
+  readonly english: string;                    // English name
+}
+```
+
+#### `MuscleActivationState` - Real-Time Tension
+
+```typescript
+// src/types/muscle.ts
+// Note: tension, targetTension, and isShaking are intentionally mutable
+// for 60fps performance (avoiding object allocation per frame)
+export interface MuscleActivationState {
+  readonly muscleGroup: MuscleGroupName;
+  tension: number;         // 0.0 = relaxed, 1.0 = maximum flex
+  targetTension: number;   // Target for smooth transitions
+  isShaking: boolean;      // Exhaustion shaking effect
+}
+```
+
+#### `MuscleSystemConfig` - Performance Configuration
+
+```typescript
+// src/types/muscle.ts
+export interface MuscleSystemConfig {
+  readonly maxFrameTime: number;           // Frame budget (default: 3ms)
+  readonly muscleCount: number;            // Groups to render (default: 20)
+  readonly useInstancing: boolean;         // GPU instancing optimization
+  readonly relaxationDelay: number;        // Post-technique relaxation (0.3s)
+  readonly exhaustionThreshold: number;    // Stamina % for exhaustion (20%)
+  readonly shakeFrequency: number;         // Hz when exhausted (20Hz)
+  readonly shakeAmplitude: number;         // Radians (0.02)
+  readonly activationSpeed: number;        // Activation transition speed (5.0)
+  readonly relaxationSpeed: number;        // Relaxation transition speed (3.0)
+  readonly shakingTensionThreshold: number; // Min tension for shaking (0.3)
+}
+```
+
+---
+
+### **Clothing System from src/types/clothing.ts**
+
+The clothing system provides visual distinction for the five player archetypes with culturally-appropriate garments, materials, and cyberpunk Korean aesthetic.
+
+#### `ClothingType` / `ClothingMaterial` / `ClothingFit` - Classification Types
+
+```typescript
+// src/types/clothing.ts
+export type ClothingType =
+  | "torso" | "pants" | "belt" | "boots"
+  | "gloves" | "headgear" | "vest" | "accessory";
+
+export type ClothingMaterial =
+  | "fabric"     // Traditional cloth (dobok, hanbok)
+  | "leather"    // Leather gear
+  | "tactical"   // Modern tactical fabric
+  | "synthetic"  // Synthetic materials
+  | "armored"    // Armored plating
+  | "cybernetic"; // Tech-enhanced materials
+
+export type ClothingFit = "tight" | "fitted" | "loose" | "oversized";
+```
+
+#### `ClothingItem` - Individual Clothing Configuration
+
+```typescript
+// src/types/clothing.ts
+export interface ClothingItem {
+  readonly id: string;
+  readonly nameKorean: string;             // 한글이름
+  readonly nameEnglish: string;            // English name
+  readonly type: ClothingType;
+  readonly material: ClothingMaterial;
+  readonly fit: ClothingFit;
+  readonly colorPrimary: number;           // Primary color (hex)
+  readonly colorSecondary?: number;        // Accent color (hex)
+  readonly colorEmissive?: number;         // Glow effect color
+  readonly emissiveIntensity?: number;     // 0-1
+  readonly metalness?: number;             // 0-1
+  readonly roughness?: number;             // 0-1
+  readonly scaleMultiplier?: number;       // Body proportion scale
+  readonly attachedBones: string[];        // Skeletal attachment points
+  readonly castShadow?: boolean;
+  readonly receiveShadow?: boolean;
+}
+```
+
+#### `ClothingSet` - Complete Archetype Wardrobe
+
+```typescript
+// src/types/clothing.ts
+export interface ClothingSet {
+  readonly archetype: PlayerArchetype;
+  readonly nameKorean: string;
+  readonly nameEnglish: string;
+  readonly descriptionKorean: string;
+  readonly descriptionEnglish: string;
+  readonly items: readonly ClothingItem[];
+  readonly themeColors: {
+    readonly primary: number;
+    readonly secondary: number;
+    readonly accent: number;
+  };
+}
+```
+
+#### `ClothingLODSettings` - Level-of-Detail Performance
+
+```typescript
+// src/types/clothing.ts
+export interface ClothingLODSettings {
+  readonly enableLOD: boolean;
+  readonly distances: readonly [number, number, number]; // [near, medium, far]
+  readonly highDetailSegments: number;
+  readonly mediumDetailSegments: number;
+  readonly lowDetailSegments: number;
+}
+```
+
+---
+
+## 📂 Type Organization Guide
+
+Black Trigram types are organized across multiple directories based on their domain scope. This guide helps developers locate the correct type file for any given concern.
+
+### **Type File Locations**
+
+| Directory | Purpose | Key Files |
+| --- | --- | --- |
+| `src/types/` | Base game types and shared interfaces | `common.ts`, `facial.ts`, `injury.ts`, `muscle.ts`, `clothing.ts`, `skeletal.ts` |
+| `src/types/constants/` | Design tokens and UI constants | `colors.ts`, `typography.ts`, `layout.ts`, `designSystem.ts`, `ui.ts`, `animations.ts`, `performance.ts` |
+| `src/systems/player.ts` | Player state, attributes, and match statistics | `PlayerState`, `PlayerMatchStats`, `BodyPartHealth` |
+| `src/systems/types.ts` | Cross-system shared types | `StatusEffect`, `HitEffect`, `PlayerArchetypeData`, `EffectIntensity` |
+| `src/systems/combat/types.ts` | Combat result and game state | `CombatResult`, `RoundResult`, `MatchStatistics`, `GameState` |
+| `src/systems/bodypart/types.ts` | Body part health tracking | `BodyPart` enum, `BodyPartHealth`, `BodyPartMaxHealth` |
+| `src/systems/vitalpoint/types.ts` | Vital point targeting and techniques | `KoreanTechnique`, `VitalPointHitResult`, `DamageResult` |
+| `src/systems/ai/types.ts` | AI combat decisions | `AIActionType`, `AIDecision`, `VulnerabilityContext`, `CombatContext` |
+| `src/systems/trigram/types.ts` | Stance laterality and parsing | `StanceLaterality`, `StanceWithSide`, `parseStanceWithSide()` |
+
+### **Type Hierarchy**
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
+flowchart TD
+    Base[src/types/common.ts<br/>Base Enums & Interfaces<br/>PlayerArchetype, TrigramStance,<br/>CombatState, KoreanText] --> Player[src/systems/player.ts<br/>PlayerState, PlayerMatchStats]
+    Base --> Combat[src/systems/combat/types.ts<br/>CombatResult, GameState]
+    Base --> VP[src/systems/vitalpoint/types.ts<br/>KoreanTechnique, VitalPointHitResult]
+    Base --> Shared[src/systems/types.ts<br/>StatusEffect, HitEffect]
+
+    Shared --> Combat
+    Shared --> VP
+    Player --> Combat
+
+    Base --> Facial[src/types/facial.ts<br/>FacialExpression, FacialDamageState]
+    Base --> Injury[src/types/injury.ts<br/>InjuryType, Injury]
+    Base --> Muscle[src/types/muscle.ts<br/>MuscleGroupName, MuscleGroup]
+    Base --> Clothing[src/types/clothing.ts<br/>ClothingItem, ClothingSet]
+    Base --> Skeletal[src/types/skeletal.ts<br/>Bone, SkeletonConfig]
+
+    VP --> AI[src/systems/ai/types.ts<br/>AIDecision, VulnerabilityContext]
+    Base --> BodyPart[src/systems/bodypart/types.ts<br/>BodyPart, BodyPartHealth]
+    Base --> Trigram[src/systems/trigram/types.ts<br/>StanceLaterality, StanceWithSide]
+
+    Constants[src/types/constants/<br/>Design Tokens<br/>Colors, Typography, Layout] -.->|UI styling| Base
+
+    style Base fill:#2979FF,stroke:#0D47A1,color:#fff
+    style Player fill:#00C853,stroke:#00796B,color:#fff
+    style Combat fill:#FF3D00,stroke:#BF360C,color:#fff
+    style VP fill:#FFD600,stroke:#F57F17,color:#000
+    style Shared fill:#9C27B0,stroke:#6A1B9A,color:#fff
+    style Constants fill:#9E9E9E,stroke:#616161,color:#fff
+```
+
+### **When to Add New Types**
+
+| Type Scope | Add To | Example |
+| --- | --- | --- |
+| Core game enums/interfaces | `src/types/common.ts` | New `CombatState` variant |
+| Visualization-specific types | `src/types/{domain}.ts` | New facial expression |
+| Combat result/game flow types | `src/systems/combat/types.ts` | New round result field |
+| Player state attributes | `src/systems/player.ts` | New player stat |
+| AI behavior types | `src/systems/ai/types.ts` | New AI action type |
+| Design tokens / UI constants | `src/types/constants/` | New color theme |
 
 ---
 
