@@ -52,7 +52,7 @@ As of Q1 2026, Black Trigram has reached production-ready quality across all maj
 | **Combat Realism** | 13/13 systems (pain, consciousness, breathing, trauma, etc.) | ✅ Complete | `src/systems/combat/`, `src/systems/breathing/`, `src/systems/movement/` |
 | **Audio System** | Howler.js with bone impact audio & spatial feedback | ✅ Complete | `src/systems/audio/`, `src/audio/` |
 | **AI System** | Counter-attack integration with limb exposure detection | ✅ Complete | `src/systems/ai/` |
-| **Custom Hooks** | 42 hooks for combat, player, scene, and UI management | ✅ Complete | `src/hooks/` |
+| **Custom Hooks** | 19 exported hook modules (19 `use*.ts` implementation files) for combat, player, scene, and UI management | ✅ Complete | `src/hooks/` |
 | **Design System** | 60+ `KOREAN_COLORS` constants, typography, responsive layouts | ✅ Complete | `src/types/constants/` |
 | **Visual Feedback** | Damage numbers, hit effects, combo counter, limb exposure HUD | ✅ Complete | `src/systems/effects.ts` |
 | **6 Complete Screens** | Intro, Combat, Training, EndScreen, Controls, Philosophy | ✅ Complete | `src/components/screens/` |
