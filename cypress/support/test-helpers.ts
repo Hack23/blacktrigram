@@ -89,33 +89,66 @@ function getScreenShortcutKey(screen: string): string {
 
 /**
  * Attempts to cleanup Three.js resources and hint at garbage collection.
- * 
- * NOTE: This function provides best-effort cleanup by requesting the browser's
- * garbage collector to run (if exposed). It does NOT directly dispose Three.js
- * resources as that requires application-specific cleanup logic that should be
- * implemented within the application itself.
- * 
- * For comprehensive cleanup, the application should implement its own cleanup
- * function that properly disposes geometries, materials, textures, and removes
- * event listeners. This helper simply provides a GC hint to help free memory.
+ *
+ * Walks the DOM for canvas elements, loses their WebGL contexts (which tells
+ * the browser it can free GPU memory), clears performance entries, and
+ * requests garbage collection (only works with --expose-gc Chrome flag).
+ *
+ * NOTE: This is a best-effort helper. Proper resource disposal (geometries,
+ * materials, textures) happens inside the React component tree when the
+ * Canvas unmounts.  This function covers browser-level cleanup that the
+ * React tree cannot reach.
  */
 export function cleanupThreeJSResources(): void {
   cy.window().then((win) => {
     try {
-      cy.log("🧹 Requesting memory cleanup...");
-      
-      // Hint at garbage collection (only works if browser exposes gc)
-      if ((win as any).gc) {
-        (win as any).gc();
-        cy.log("✅ Garbage collection requested");
-      } else {
-        cy.log("ℹ️ Garbage collection not available (this is normal)");
+      cy.log("🧹 Requesting Three.js / WebGL memory cleanup...");
+
+      // 1. Lose WebGL contexts so the browser can reclaim GPU memory.
+      //    R3F's Canvas will re-create a context on the next render cycle
+      //    if the component is still mounted.
+      const canvases = win.document.getElementsByTagName("canvas");
+      let lostCount = 0;
+      Array.from(canvases).forEach((canvas) => {
+        try {
+          const gl =
+            canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+          if (gl) {
+            const ext = gl.getExtension("WEBGL_lose_context");
+            if (ext) {
+              ext.loseContext();
+              lostCount++;
+            }
+          }
+        } catch {
+          // Context may already be lost — not an error
+        }
+      });
+      if (lostCount > 0) {
+        cy.log(`✅ Lost ${lostCount} WebGL context(s)`);
       }
-      
-      // NOTE: We intentionally avoid cloning/replacing canvas elements.
-      // Replacing canvas nodes can invalidate references held by Three.js
-      // and Cypress, causing rendering or test instability. Application-specific
-      // cleanup should be handled by the application's own cleanup logic.
+
+      // 2. Clear performance entries to free associated memory
+      try {
+        if (win.performance?.clearResourceTimings) {
+          win.performance.clearResourceTimings();
+        }
+        if (win.performance?.clearMarks) {
+          win.performance.clearMarks();
+        }
+        if (win.performance?.clearMeasures) {
+          win.performance.clearMeasures();
+        }
+      } catch {
+        // Non-critical
+      }
+
+      // 3. Hint at garbage collection (requires --expose-gc flag)
+      const gcWin = win as Window & { gc?: () => void };
+      if (gcWin.gc) {
+        gcWin.gc();
+        cy.log("✅ Garbage collection requested");
+      }
     } catch (error) {
       cy.log(`⚠️ Cleanup error (non-critical): ${error}`);
     }
@@ -129,17 +162,19 @@ export function forceMemoryCleanup(): void {
   cy.window().then((win) => {
     try {
       // Clear any large data structures
-      if ((win as any).testData) {
-        delete (win as any).testData;
+      const winAny = win as Window & {
+        testData?: unknown;
+        gc?: () => void;
+      };
+      if (winAny.testData) {
+        delete winAny.testData;
       }
-      
+
       // Request garbage collection if available
-      if ((win as any).gc) {
-        (win as any).gc();
+      if (winAny.gc) {
+        winAny.gc();
         cy.log("✅ Forced garbage collection");
       }
-      
-      // Note: Cleanup happens asynchronously; no wait needed
     } catch (error) {
       cy.log(`⚠️ Memory cleanup error (non-critical): ${error}`);
     }

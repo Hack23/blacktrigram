@@ -22,7 +22,7 @@ interface MemorySnapshot {
 class MemoryMonitor {
   private snapshots: MemorySnapshot[] = [];
   private readonly WARNING_THRESHOLD = 80; // Warn at 80% memory usage
-  private readonly LEAK_THRESHOLD_MB = 50; // Warn if growth > 50MB between tests
+  private readonly LEAK_THRESHOLD_MB = 100; // Warn if growth > 100MB between tests (Three.js scenes use 40-200MB normally)
 
   /**
    * Take a memory snapshot

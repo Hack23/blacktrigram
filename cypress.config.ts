@@ -20,7 +20,7 @@ export default defineConfig({
   screenshotsFolder: REPORTS.screenshots,
   videosFolder: REPORTS.videos,
   experimentalMemoryManagement: true,
-  numTestsKeptInMemory: 3, // Reduced from 5 for better memory management
+  numTestsKeptInMemory: 1, // Keep only 1 test in memory — Three.js scenes are large
   video: true, // Video recording enabled; videos are only saved for failed tests
   videoCompression: 50, // Optimized for faster encoding (larger files, but faster CI) - increased from 25
   screenshotOnRunFailure: true,
@@ -109,7 +109,7 @@ export default defineConfig({
           launchOptions.args.push("--enable-webgl2-compute-context"); // Enable WebGL2 compute features
 
           // Memory optimization for Three.js scenes
-          launchOptions.args.push("--js-flags=--max-old-space-size=4096"); // 4GB heap for Node.js
+          launchOptions.args.push("--js-flags=--max-old-space-size=4096 --expose-gc"); // 4GB heap + expose gc() for cleanup helpers
           launchOptions.args.push("--disable-software-rasterizer"); // Use hardware-accelerated rasterization when possible
 
           // Reduce logging noise

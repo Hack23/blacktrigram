@@ -116,8 +116,11 @@ export class ResourceMonitor {
         (1024 * 1024);
 
       // Allow configuration via Cypress env
+      // Default 100MB — Three.js 3D scenes naturally allocate 40-200MB for
+      // geometries, materials, textures and render targets.  The old 10MB
+      // threshold triggered on every single test, producing only noise.
       const thresholdMB =
-        (Cypress.env("MEMORY_LEAK_THRESHOLD_MB") as number | undefined) ?? 10;
+        (Cypress.env("MEMORY_LEAK_THRESHOLD_MB") as number | undefined) ?? 100;
       const thresholdPercent =
         (Cypress.env("MEMORY_LEAK_THRESHOLD_PERCENT") as number | undefined) ?? null;
 
@@ -258,6 +261,25 @@ export class ResourceMonitor {
         }
       });
 
+      // Clean up Three.js / WebGL resources
+      // R3F Canvas creates WebGL contexts — request browsers to free GPU memory
+      const canvasElements = document.getElementsByTagName("canvas");
+      Array.from(canvasElements).forEach((canvas) => {
+        try {
+          const gl =
+            canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+          if (gl) {
+            // WEBGL_lose_context tells the browser it can free GPU resources
+            const ext = gl.getExtension("WEBGL_lose_context");
+            if (ext) {
+              ext.loseContext();
+            }
+          }
+        } catch {
+          // Ignore — context may already be lost or unavailable
+        }
+      });
+
       // Clean up PixiJS if present
       const pixiWin = win as Window & {
         PIXI?: unknown;
@@ -275,6 +297,16 @@ export class ResourceMonitor {
           delete pixiWin.__pixiApp;
         } catch (error) {
           cy.log("Warning: Failed to clean up PixiJS", error);
+        }
+      }
+
+      // Request garbage collection if exposed (requires --expose-gc flag)
+      const gcWin = win as Window & { gc?: () => void };
+      if (gcWin.gc) {
+        try {
+          gcWin.gc();
+        } catch {
+          // gc not available — non-critical
         }
       }
 

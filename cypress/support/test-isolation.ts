@@ -163,6 +163,30 @@ export class TestIsolation {
   }
 
   /**
+   * Cleans up Three.js / WebGL resources by losing canvas contexts
+   * so the browser can reclaim GPU memory.
+   */
+  static cleanupThreeJS(): void {
+    cy.document().then((doc) => {
+      const canvasElements = doc.getElementsByTagName("canvas");
+      Array.from(canvasElements).forEach((canvas) => {
+        try {
+          const gl =
+            canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+          if (gl) {
+            const ext = gl.getExtension("WEBGL_lose_context");
+            if (ext) {
+              ext.loseContext();
+            }
+          }
+        } catch {
+          // Context may already be lost — non-critical
+        }
+      });
+    });
+  }
+
+  /**
    * Cleans up PixiJS resources
    */
   static cleanupPixi(): void {
@@ -189,10 +213,11 @@ export class TestIsolation {
   }
 
   /**
-   * Complete cleanup - audio, PixiJS, and state
+   * Complete cleanup - audio, Three.js, PixiJS, and state
    */
   static cleanupAll(): void {
     TestIsolation.cleanupAudio();
+    TestIsolation.cleanupThreeJS();
     TestIsolation.cleanupPixi();
     TestIsolation.resetToCleanState();
   }
