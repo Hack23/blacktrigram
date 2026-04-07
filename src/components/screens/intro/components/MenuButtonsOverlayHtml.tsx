@@ -107,6 +107,9 @@ export const MenuButtons: React.FC<MenuButtonsProps> = ({
       ),
       buttonHoveredBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8),
       buttonDefaultBorder: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
+      textSelected: `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(6, "0")}`,
+      textHovered: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+      textDefault: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
     }),
     [],
   );
@@ -187,19 +190,10 @@ export const MenuButtons: React.FC<MenuButtonsProps> = ({
               height: `${buttonHeight}px`,
               // Menu-specific color, background, and border
               color: isSelected
-                ? `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(
-                    6,
-                    "0",
-                  )}`
+                ? colors.textSelected
                 : isHovered
-                  ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
-                      6,
-                      "0",
-                    )}`
-                  : `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
-                      6,
-                      "0",
-                    )}`,
+                  ? colors.textHovered
+                  : colors.textDefault,
               background: isSelected
                 ? colors.buttonSelectedBg
                 : isHovered

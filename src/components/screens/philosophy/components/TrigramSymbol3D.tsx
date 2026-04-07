@@ -98,6 +98,7 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
       glowColor: isSelected
         ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`
         : `#${baseColor.toString(16).padStart(6, "0")}`,
+      textPrimary: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
     };
   }, [trigram.theme.primary, isSelected, isHovered]);
 
@@ -196,7 +197,7 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
           <div
             style={{
               fontSize: isSelected ? "16px" : "14px",
-              color: "#ffffff",
+              color: materialConfig.textPrimary,
               textShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)}`,
               fontWeight: "bold",
               whiteSpace: "nowrap",
