@@ -106,65 +106,18 @@ afterEach(function () {
     duration: testDuration,
   });
 
-  // Force cleanup of any remaining resources
+  // Force cleanup of remaining resources via ResourceMonitor (audio, WebGL, PixiJS, gc).
+  // This reuses the centralized cleanup helper instead of duplicating its logic.
+  try { cy.forceResourceCleanup(); } catch { /* command may not be registered */ }
+
+  // Extra cleanup unique to this hook: clear performance entries
   cy.window({ log: false }).then((win) => {
     try {
-      // Stop any running audio
-      const audioElements = document.getElementsByTagName("audio");
-      Array.from(audioElements).forEach((audio) => {
-        audio.pause();
-        audio.remove();
-      });
-
-      // Lose WebGL contexts so the browser can reclaim GPU memory
-      const canvasElements = document.getElementsByTagName("canvas");
-      Array.from(canvasElements).forEach((canvas) => {
-        try {
-          const gl =
-            canvas.getContext("webgl2") ?? canvas.getContext("webgl");
-          if (gl) {
-            const ext = gl.getExtension("WEBGL_lose_context");
-            if (ext) {
-              ext.loseContext();
-            }
-          }
-        } catch {
-          // Context may already be lost
-        }
-      });
-
-      // Clear PixiJS resources
-      const pixiWin = win as Window & {
-        PIXI?: unknown;
-        __pixiApp?: {
-          destroy: (
-            removeView: boolean,
-            options?: { children?: boolean; texture?: boolean }
-          ) => void;
-        };
-      };
-
-      if (pixiWin.PIXI && pixiWin.__pixiApp) {
-        pixiWin.__pixiApp.destroy(true, { children: true, texture: true });
-        delete pixiWin.__pixiApp;
-      }
-
-      // Clear performance entries to reduce retained memory
-      try {
-        if (win.performance?.clearResourceTimings) {
-          win.performance.clearResourceTimings();
-        }
-      } catch {
-        // Non-critical
-      }
-
-      // Request garbage collection if exposed
-      const gcWin = win as Window & { gc?: () => void };
-      if (gcWin.gc) {
-        gcWin.gc();
+      if (win.performance?.clearResourceTimings) {
+        win.performance.clearResourceTimings();
       }
     } catch {
-      // Ignore synchronous DOM/resource cleanup errors
+      // Non-critical
     }
   });
 });

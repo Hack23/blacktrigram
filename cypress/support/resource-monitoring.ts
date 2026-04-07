@@ -31,8 +31,8 @@ export class ResourceMonitor {
   static startMonitoring(): void {
     cy.window().then((win) => {
       ResourceMonitor.initialResources = {
-        audioElements: document.getElementsByTagName("audio").length,
-        canvasElements: document.getElementsByTagName("canvas").length,
+        audioElements: win.document.getElementsByTagName("audio").length,
+        canvasElements: win.document.getElementsByTagName("canvas").length,
         eventListenerCount: ResourceMonitor.countEventListeners(win),
         memoryUsage: ResourceMonitor.getMemoryUsage(win),
         timestamp: Date.now(),
@@ -58,8 +58,8 @@ export class ResourceMonitor {
 
     cy.window().then((win) => {
       const currentResources: ResourceSnapshot = {
-        audioElements: document.getElementsByTagName("audio").length,
-        canvasElements: document.getElementsByTagName("canvas").length,
+        audioElements: win.document.getElementsByTagName("audio").length,
+        canvasElements: win.document.getElementsByTagName("canvas").length,
         eventListenerCount: ResourceMonitor.countEventListeners(win),
         memoryUsage: ResourceMonitor.getMemoryUsage(win),
         timestamp: Date.now(),
@@ -224,8 +224,8 @@ export class ResourceMonitor {
    */
   static logResourceReport(): void {
     cy.window().then((win) => {
-      const audioCount = document.getElementsByTagName("audio").length;
-      const canvasCount = document.getElementsByTagName("canvas").length;
+      const audioCount = win.document.getElementsByTagName("audio").length;
+      const canvasCount = win.document.getElementsByTagName("canvas").length;
       const listenerCount = ResourceMonitor.countEventListeners(win);
       const memoryMB = ResourceMonitor.getMemoryUsage(win) / (1024 * 1024);
 
@@ -248,8 +248,8 @@ export class ResourceMonitor {
    */
   static forceCleanup(): void {
     cy.window().then((win) => {
-      // Clean up audio elements
-      const audioElements = document.getElementsByTagName("audio");
+      // Clean up audio elements (use win.document to target AUT, not spec runner)
+      const audioElements = win.document.getElementsByTagName("audio");
       Array.from(audioElements).forEach((audio) => {
         try {
           audio.pause();
@@ -263,7 +263,7 @@ export class ResourceMonitor {
 
       // Clean up Three.js / WebGL resources
       // R3F Canvas creates WebGL contexts — request browsers to free GPU memory
-      const canvasElements = document.getElementsByTagName("canvas");
+      const canvasElements = win.document.getElementsByTagName("canvas");
       Array.from(canvasElements).forEach((canvas) => {
         try {
           const gl =
