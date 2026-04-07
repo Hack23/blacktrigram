@@ -471,7 +471,7 @@ export type MuscleGroupName =
   | "BICEP_L" | "BICEP_R" | "TRICEP_L" | "TRICEP_R" | "FOREARM_L" | "FOREARM_R"
   // Torso Front (5)
   | "PECTORALS" | "CORE" | "ABS" | "OBLIQUES" | "LOWER_ABS"
-  // Torso Back (5)
+  // Torso Back (6)
   | "LAT_L" | "LAT_R" | "TRAPEZIUS" | "RHOMBOID" | "ERECTOR_SPINAE_L" | "ERECTOR_SPINAE_R"
   // Hips (2)
   | "HIP_FLEXOR_L" | "HIP_FLEXOR_R"
@@ -504,6 +504,8 @@ export interface MuscleGroup {
 
 ```typescript
 // src/types/muscle.ts
+// Note: tension, targetTension, and isShaking are intentionally mutable
+// for 60fps performance (avoiding object allocation per frame)
 export interface MuscleActivationState {
   readonly muscleGroup: MuscleGroupName;
   tension: number;         // 0.0 = relaxed, 1.0 = maximum flex

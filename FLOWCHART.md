@@ -25,7 +25,7 @@ This document provides comprehensive flowcharts for Black Trigram (흑괘), docu
 - [Rematch Flow](#rematch-flow) — Post-match rematch and archetype re-selection
 - [Combat Round Flow](#combat-round-flow) — Round initialization through completion
 - [Attack Resolution Flow](#attack-resolution-flow) — Damage calculation pipeline
-- [Vital Point Strike Flow](#vital-point-strike-flow-70-targets) — VP targeting mechanics
+- [Vital Point Strike Flow](#vital-point-strike-resolution-70-targets) — VP targeting mechanics
 - Cross-reference: [State Diagrams](STATEDIAGRAM.md) for state transitions, [Data Model](DATA_MODEL.md) for type definitions
 
 ---
