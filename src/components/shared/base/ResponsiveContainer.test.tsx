@@ -453,4 +453,26 @@ describe("ResponsiveContainer", () => {
       expect(getByText("Child 3")).toBeTruthy();
     });
   });
+
+  describe("componentName prop", () => {
+    it("should accept componentName without affecting rendering", () => {
+      const { container } = render(
+        <ResponsiveContainer
+          position={{ base: { x: 50, y: 25 } }}
+          containerWidth={1200}
+          componentName="TestComponent"
+          data-testid="named-container"
+        >
+          <div>Content</div>
+        </ResponsiveContainer>
+      );
+
+      const element = container.querySelector('[data-testid="named-container"]') as HTMLElement;
+      expect(element).toBeTruthy();
+
+      const computedStyle = window.getComputedStyle(element);
+      expect(computedStyle.left).toBe("50px");
+      expect(computedStyle.top).toBe("25px");
+    });
+  });
 });

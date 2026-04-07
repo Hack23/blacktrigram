@@ -380,6 +380,11 @@ body {
 }
 
 /* Korean typography support */
+/* NOTE: overflow: hidden on body prevents the page itself from scrolling.
+ * This is intentional for a full-screen game. Individual screens that need
+ * scrollable content (Philosophy, Controls) use internal scrollable containers
+ * with overflowY: "auto" on their content areas, which works correctly
+ * because the content div has a fixed height within the viewport. */
 body {
   font-family: "Noto Sans KR", sans-serif;
   margin: 0;
@@ -482,6 +487,18 @@ body {
   background: linear-gradient(135deg, #000a12 0%, #001a25 100%);
   color: #ffffff;
   font-family: "Noto Sans KR", Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Game container - used by App.tsx for the main active game wrapper.
+ * Replaces inline styles for consistent design-system approach.
+ * Ensures full-viewport coverage with no overflow at all resolutions:
+ * - 375px (iPhone SE) through 3840px (4K desktop)
+ */
+.game-container {
+  outline: none;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 }
 
