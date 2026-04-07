@@ -492,14 +492,11 @@ body {
 
 /* Game container - used by App.tsx for the main active game wrapper.
  * Replaces inline styles for consistent design-system approach.
- * Ensures full-viewport coverage with no overflow at all resolutions:
- * - 375px (iPhone SE) through 3840px (4K desktop)
+ * Note: width, height, and overflow are already set by the .app class.
+ * This class adds outline:none needed for the focusable game container.
  */
 .game-container {
   outline: none;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
 }
 
 .app-header {
