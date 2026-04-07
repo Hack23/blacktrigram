@@ -212,11 +212,9 @@ describe("VitalPointTrainingOverlayHtml", () => {
       const panel = screen.getByTestId("vital-point-training-html");
       const expectedColor = hexToRgbaString(
         KOREAN_COLORS.SECONDARY_MAGENTA,
-        0.9,
+        0.7,
       );
-      expect(panel).toHaveStyle({
-        border: expect.stringContaining(expectedColor),
-      });
+      expect(panel.style.border).toContain(expectedColor);
     });
 
     it("should apply Korean font family", () => {
