@@ -10,6 +10,46 @@
  * - Pointer events handling
  * - Backdrop blur effects
  *
+ * ## Z-Index Stacking Order (Combat HUD Layers)
+ *
+ * The combat screen renders multiple overlapping HUD panels. The stacking
+ * order is managed by the Z_INDEX constants from LayoutTypes.ts:
+ *
+ * | Layer               | Z-Index | Description                        |
+ * |---------------------|---------|------------------------------------|
+ * | BACKGROUND          |    0    | 3D scene background                |
+ * | ARENA               |   10    | Combat arena mesh                  |
+ * | PLAYERS             |   20    | Character models                   |
+ * | EFFECTS             |   30    | Particles and VFX                  |
+ * | HUD_BACKGROUND      |   40    | HUD panel backgrounds              |
+ * | HUD (default)       |   50    | Left/Right/Top/Bottom HUD panels   |
+ * | TECHNIQUE_BAR       |   55    | Technique bar overlay              |
+ * | HUD_OVERLAY         |   60    | PlayerStateOverlay and sub-HUDs    |
+ * | MOBILE_CONTROLS     |  100    | Touch controls on mobile           |
+ * | MODAL               |  200    | Modal dialogs                      |
+ * | TOOLTIP             |  300    | Tooltips and hints                 |
+ * | PAUSE_MENU          | 1000    | Pause menu overlay                 |
+ * | LOADING             | 2000    | Loading screens                    |
+ * | DEBUG               | 9000    | Performance debug overlay          |
+ *
+ * All BaseHUDContainer instances default to Z_INDEX.HUD (50). Parent
+ * screens can override via the `zIndex` prop when a different layer
+ * is needed (e.g., overlays at HUD_OVERLAY = 60).
+ *
+ * ## Viewport Breakpoints (Expected HUD Sizes)
+ *
+ * | Viewport            | Width    | Left/Right HUD | Top HUD | Bottom HUD |
+ * |---------------------|----------|----------------|---------|------------|
+ * | Small Phone (≤375)  | ≤375px   | ~120-150px     | ~50px   | ~90px      |
+ * | Mobile (<768)       | <768px   | ~180-200px     | ~60px   | ~110px     |
+ * | Tablet (768-1199)   | 768-1199 | ~220-260px     | ~65px   | ~120px     |
+ * | Desktop (≥1200)     | ≥1200px  | ~260-300px     | ~70px   | ~130px     |
+ * | 4K (≥1920)          | ≥1920px  | ~300-400px     | ~80px   | ~140px     |
+ *
+ * Width/height values are passed by the parent screen and scaled via
+ * positionScale multipliers. This table documents the expected ranges
+ * produced by CombatScreen3D and TrainingScreen3D layout calculations.
+ *
  * @module components/shared/ui
  * @korean 기본HUD컨테이너 - 공통 패턴을 가진 재사용 가능한 HUD 컨테이너
  */
@@ -87,6 +127,23 @@ export const BaseHUDContainer: React.FC<BaseHUDContainerProps> = ({
 }) => {
   // Calculate position-specific styles
   // Using KOREAN_COLORS directly for stable memoization instead of useKoreanTheme
+  //
+  // Z-index stacking: defaults to Z_INDEX.HUD (50). Combat screen layers
+  // are ordered as: HUD_BACKGROUND (40) < HUD (50) < TECHNIQUE_BAR (55) < HUD_OVERLAY (60).
+  // Left/Right/Top/Bottom HUDs all share the same z-index (HUD = 50) and
+  // rely on DOM order for overlap resolution. The PlayerStateOverlay sits
+  // at HUD_OVERLAY (60) to appear above all HUD panels.
+  //
+  // Safe area note: left/right HUD panels are anchored to the viewport edge
+  // with left: 0 / right: 0. Reducing the width prop alone will not move a
+  // panel out of a landscape notch or horizontal safe-area cutout. If the
+  // parent needs to avoid env(safe-area-inset-left) /
+  // env(safe-area-inset-right), it should also provide a horizontal offset
+  // via the existing style prop (for example, left/right or horizontal
+  // padding) in addition to any width adjustments. Horizontal safe-area
+  // insets affect left/right panel widths and offsets, not topOffset (which
+  // is purely vertical). For portrait notch/status-bar avoidance, the parent
+  // should incorporate layout.safeArea.top into the topOffset calculation.
   const containerStyle = React.useMemo<React.CSSProperties>(() => {
     const baseStyle: React.CSSProperties = {
       position: "absolute",

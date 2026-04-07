@@ -380,6 +380,11 @@ body {
 }
 
 /* Korean typography support */
+/* NOTE: overflow: hidden on body prevents the page itself from scrolling.
+ * This is intentional for a full-screen game. Individual screens that need
+ * scrollable content (Philosophy, Controls) use internal scrollable containers
+ * with overflowY: "auto" on their content areas, which works correctly
+ * because the content div has a fixed height within the viewport. */
 body {
   font-family: "Noto Sans KR", sans-serif;
   margin: 0;
@@ -483,6 +488,9 @@ body {
   color: #ffffff;
   font-family: "Noto Sans KR", Arial, sans-serif;
   overflow: hidden;
+  /* Remove focus outline when the app container is focused via tabIndex.
+   * The game container is made focusable for keyboard input capture. */
+  outline: none;
 }
 
 .app-header {

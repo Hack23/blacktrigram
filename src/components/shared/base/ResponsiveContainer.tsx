@@ -98,6 +98,13 @@ export interface ResponsiveContainerProps {
 
   /** Data test ID for testing */
   readonly "data-testid"?: string;
+
+  /**
+   * Optional component name for development-mode debug warnings.
+   * When provided, console warnings include this name for easier debugging.
+   * @example "CombatLeftHUD"
+   */
+  readonly componentName?: string;
 }
 
 /**
@@ -163,6 +170,7 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
   useSafeArea = false,
   safeAreaEdge,
   "data-testid": dataTestId,
+  componentName,
 }) => {
   // Calculate position based on grid or responsive config
   const calculatedPosition = useMemo(() => {
@@ -177,15 +185,18 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
 
     // Development-mode validation: warn if alignment props are used without dimensions
     if (process.env.NODE_ENV === 'development') {
+      const prefix = componentName
+        ? `ResponsiveContainer [${componentName}]`
+        : 'ResponsiveContainer';
       if (horizontalAlign && !elementWidth) {
         console.warn(
-          `ResponsiveContainer: horizontalAlign="${horizontalAlign}" requires elementWidth to work. ` +
+          `${prefix}: horizontalAlign="${horizontalAlign}" requires elementWidth to work. ` +
           `Alignment will be ignored. Consider using CSS flexbox instead (display: flex, justifyContent: ${horizontalAlign === 'left' ? 'flex-start' : horizontalAlign === 'right' ? 'flex-end' : 'center'}).`
         );
       }
       if (verticalAlign && !elementHeight) {
         console.warn(
-          `ResponsiveContainer: verticalAlign="${verticalAlign}" requires elementHeight to work. ` +
+          `${prefix}: verticalAlign="${verticalAlign}" requires elementHeight to work. ` +
           `Alignment will be ignored. Consider using CSS flexbox instead (display: flex, alignItems: ${verticalAlign === 'top' ? 'flex-start' : verticalAlign === 'bottom' ? 'flex-end' : 'center'}).`
         );
       }
@@ -256,6 +267,7 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
     margin,
     useSafeArea,
     safeAreaEdge,
+    componentName,
   ]);
 
   // Combine calculated position with provided styles
