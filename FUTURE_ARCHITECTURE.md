@@ -35,6 +35,8 @@ This document outlines the evolutionary architecture roadmap for Black Trigram, 
 
 ### Overall Status: 9.4/10 — Production-Ready
 
+> Rating methodology: Weighted average across all system categories as documented in [game-status.md](game-status.md#-executive-summary).
+
 As of Q1 2026, Black Trigram has reached production-ready quality across all major systems. The project has evolved from its initial foundation into a comprehensive Korean martial arts combat simulator with authentic vital point targeting, realistic physics, and deep cultural integration.
 
 #### ✅ Completed Systems (Production-Ready)
@@ -57,11 +59,11 @@ As of Q1 2026, Black Trigram has reached production-ready quality across all maj
 
 #### ⚠️ Remaining Work for v1.0
 
-- **Test coverage**: 75%+ overall (target: 80%+)
+- **Test coverage**: 75%+ line coverage overall (target: 80%+; see [game-status.md](game-status.md#-testing--quality-metrics))
 - **Korean localization**: ~80% complete (target: 100%)
 - **Mobile performance**: 55fps+ achieved (target: 60fps sustained)
 - **Documentation**: User manual and API docs in progress
-- **Technical debt**: 27 TODO/FIXME comments to resolve
+- **Technical debt**: ~27 TODO/FIXME comments to resolve (tracked in [game-status.md](game-status.md#️-technical-debt--outstanding-work-q1-2026))
 
 ### Implementation Maturity Assessment
 
@@ -126,7 +128,7 @@ graph TD
 - [x] ✅ EndScreen with combat statistics and rematch/training navigation
 - [ ] ⚠️ Korean localization 100% (currently ~80%)
 - [ ] ⚠️ Test coverage 80%+ (currently 75%+)
-- [ ] ⚠️ 60fps on all target platforms (desktop ✅ 60fps, mobile ✅ 55fps+ — needs final optimization)
+- [ ] ⚠️ 60fps on all target platforms (desktop ✅ 60fps, mobile 55fps+ — needs final optimization to 60fps)
 
 **Nice-to-Have Features**:
 - [ ] Backend for save persistence (IndexedDB fallback)
@@ -135,7 +137,7 @@ graph TD
 - [ ] Leaderboards and achievements
 
 **Release Criteria**:
-- Overall quality: 9.0/10 minimum (currently 9.4/10 ✅)
+- Overall quality: 9.0/10 minimum (currently 9.4/10 per [game-status.md](game-status.md#-executive-summary) ✅)
 - Zero critical bugs
 - Performance: 60fps sustained on desktop ✅, 55fps+ on mobile ✅
 - Documentation: Complete user manual and API docs
