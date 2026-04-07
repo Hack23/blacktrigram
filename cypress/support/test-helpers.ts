@@ -88,43 +88,41 @@ function getScreenShortcutKey(screen: string): string {
 // ============================================================
 
 /**
- * Attempts to cleanup Three.js resources and hint at garbage collection.
+ * Lightweight Three.js resource cleanup that is safe to call **before**
+ * teardownScreen() / cy.returnToIntro().
  *
- * Delegates to the centralized `cy.forceResourceCleanup()` command
- * (backed by {@link ResourceMonitor.forceCleanup}) which handles WebGL
- * context loss, audio/PixiJS teardown, performance entry clearing, and
- * garbage collection in the correct order.
- *
- * NOTE: This is destructive — the renderer cannot recover without a full
- * re-init or page reload. Only call during post-test teardown.
+ * Only clears test-specific data and large globals that are no longer
+ * needed. Destructive browser-level cleanup (WebGL context loss,
+ * audio/PixiJS teardown, perf entry clearing, gc) is handled by the
+ * global afterEach in e2e.ts via `cy.forceResourceCleanup()`, which
+ * runs *after* all spec-level afterEach hooks.
  */
 export function cleanupThreeJSResources(): void {
-  try {
-    cy.forceResourceCleanup();
-  } catch {
-    // Command may not be registered yet — non-critical
-  }
+  cy.window().then((win) => {
+    try {
+      const winAny = win as Window & { testData?: unknown };
+      if (winAny.testData) {
+        delete winAny.testData;
+      }
+    } catch {
+      // Non-critical
+    }
+  });
 }
 
 /**
- * Force memory cleanup and garbage collection
+ * Force cleanup of large test globals.
+ *
+ * GC and perf-entry clearing are intentionally omitted here — the
+ * centralized `cy.forceResourceCleanup()` in the global afterEach
+ * handles them after all spec-level hooks have finished.
  */
 export function forceMemoryCleanup(): void {
   cy.window().then((win) => {
     try {
-      // Clear any large data structures
-      const winAny = win as Window & {
-        testData?: unknown;
-        gc?: () => void;
-      };
+      const winAny = win as Window & { testData?: unknown };
       if (winAny.testData) {
         delete winAny.testData;
-      }
-
-      // Request garbage collection if available
-      if (winAny.gc) {
-        winAny.gc();
-        cy.log("✅ Forced garbage collection");
       }
     } catch (error) {
       cy.log(`⚠️ Memory cleanup error (non-critical): ${error}`);

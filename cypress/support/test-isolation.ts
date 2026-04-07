@@ -163,18 +163,23 @@ export class TestIsolation {
   }
 
   /**
-   * Cleans up Three.js / WebGL resources by delegating to the centralized
-   * ResourceMonitor.forceCleanup() (registered as cy.forceResourceCleanup()).
+   * Lightweight Three.js cleanup that is safe to call before navigation.
    *
-   * This is destructive — the renderer cannot recover without a full
-   * re-init or page reload. Only call during post-test teardown.
+   * Destructive browser-level cleanup (WebGL context loss, audio/PixiJS
+   * teardown, perf entry clearing, gc) is handled by the global afterEach
+   * in e2e.ts via `cy.forceResourceCleanup()`.
    */
   static cleanupThreeJS(): void {
-    try {
-      cy.forceResourceCleanup();
-    } catch {
-      // Command may not be registered yet — non-critical
-    }
+    cy.window().then((win) => {
+      try {
+        const winAny = win as Window & { testData?: unknown };
+        if (winAny.testData) {
+          delete winAny.testData;
+        }
+      } catch {
+        // Non-critical
+      }
+    });
   }
 
   /**
@@ -204,9 +209,10 @@ export class TestIsolation {
   }
 
   /**
-   * Complete cleanup — delegates to the centralized ResourceMonitor.forceCleanup()
-   * (via cleanupThreeJS) which handles audio, WebGL, PixiJS, perf entries, and gc,
-   * then resets application state.
+   * Lightweight cleanup: clears test globals and resets application state.
+   *
+   * Destructive browser-level cleanup (WebGL, audio, gc) is handled by the
+   * global afterEach in e2e.ts via `cy.forceResourceCleanup()`.
    */
   static cleanupAll(): void {
     TestIsolation.cleanupThreeJS();
