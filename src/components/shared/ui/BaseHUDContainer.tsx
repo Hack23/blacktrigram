@@ -41,7 +41,7 @@
  * | Viewport            | Width    | Left/Right HUD | Top HUD | Bottom HUD |
  * |---------------------|----------|----------------|---------|------------|
  * | Small Phone (≤375)  | ≤375px   | ~120-150px     | ~50px   | ~90px      |
- * | Mobile (≤768)       | ≤768px   | ~180-200px     | ~60px   | ~110px     |
+ * | Mobile (<768)       | <768px   | ~180-200px     | ~60px   | ~110px     |
  * | Tablet (768-1199)   | 768-1199 | ~220-260px     | ~65px   | ~120px     |
  * | Desktop (≥1200)     | ≥1200px  | ~260-300px     | ~70px   | ~130px     |
  * | 4K (≥1920)          | ≥1920px  | ~300-400px     | ~80px   | ~140px     |
@@ -134,14 +134,16 @@ export const BaseHUDContainer: React.FC<BaseHUDContainerProps> = ({
   // rely on DOM order for overlap resolution. The PlayerStateOverlay sits
   // at HUD_OVERLAY (60) to appear above all HUD panels.
   //
-  // Safe area note: left/right HUD panels use left:0 / right:0 positioning.
-  // On landscape mobile devices with notches, the parent screen should
-  // account for env(safe-area-inset-left) / env(safe-area-inset-right) when
-  // calculating the width props passed to this component. Horizontal safe
-  // area insets affect left/right panel widths and horizontal offsets, not
-  // topOffset (which is purely vertical). For portrait notch/status-bar
-  // avoidance, the parent should incorporate layout.safeArea.top into the
-  // topOffset calculation.
+  // Safe area note: left/right HUD panels are anchored to the viewport edge
+  // with left: 0 / right: 0. Reducing the width prop alone will not move a
+  // panel out of a landscape notch or horizontal safe-area cutout. If the
+  // parent needs to avoid env(safe-area-inset-left) /
+  // env(safe-area-inset-right), it should also provide a horizontal offset
+  // via the existing style prop (for example, left/right or horizontal
+  // padding) in addition to any width adjustments. Horizontal safe-area
+  // insets affect left/right panel widths and offsets, not topOffset (which
+  // is purely vertical). For portrait notch/status-bar avoidance, the parent
+  // should incorporate layout.safeArea.top into the topOffset calculation.
   const containerStyle = React.useMemo<React.CSSProperties>(() => {
     const baseStyle: React.CSSProperties = {
       position: "absolute",
