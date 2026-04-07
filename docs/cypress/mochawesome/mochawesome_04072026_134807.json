@@ -1,0 +1,149 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-04-07T13:46:56.206Z",
+    "end": "2026-04-07T13:48:07.811Z",
+    "duration": 71605,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "7cfe878c-9826-436b-a07c-f07931cfb8e2",
+      "title": "",
+      "fullFile": "cypress/e2e/combat/balance-system.cy.ts",
+      "file": "cypress/e2e/combat/balance-system.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "256286a7-5fad-47a1-bfa3-4e671202e434",
+          "title": "Balance/Vulnerability System - E2E Test (Target: 3-4 min)",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should display balance indicator and react to stance transitions",
+              "fullTitle": "Balance/Vulnerability System - E2E Test (Target: 3-4 min) should display balance indicator and react to stance transitions",
+              "timedOut": null,
+              "duration": 34397,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing Balance System - Stance Transitions\");\n// ============================================================\n// 1. Verify Combat Screen is Ready (10s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Combat Screen is Ready\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.verifyCombatScreenReady)();\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.waitForTransition)(1000);\n// ============================================================\n// 2. Check Initial Balance State (10s)\n// ============================================================\ncy.log(\"2️⃣ Checking Initial Balance State\");\n// Assert that balance indicator overlay is present (when integrated)\ncy.get(\"body\").then(($body) => {\n    const hasBalanceOverlay = $body.find('[data-testid=\"balance-indicator-overlay\"]').length > 0;\n    const hasBalanceText = $body.text().includes(\"균형\") ||\n        $body.text().includes(\"Balance\");\n    if (hasBalanceOverlay) {\n        cy.log(\"✅ Balance indicator overlay found (component integrated)\");\n        cy.get('[data-testid=\"balance-indicator-overlay\"]').should(\"exist\");\n    }\n    else if (hasBalanceText) {\n        cy.log(\"✅ Balance text found in UI\");\n    }\n    else {\n        cy.log(\"ℹ️ Balance indicator not integrated yet - skipping assertion\");\n    }\n});\n// ============================================================\n// 3. Test Stance Transition Vulnerability (30s)\n// ============================================================\ncy.log(\"3️⃣ Testing Stance Transition Vulnerability\");\ncy.log(\"📊 Initial state recorded\");\n// Perform rapid stance changes to trigger vulnerability\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.changeStance)(1, \"Geon (Heaven)\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.waitForTransition)(200);\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.changeStance)(2, \"Tae (Lake) - transition started\");\n// Assert vulnerability indicator appears during 0.5s window (conditional on integration)\n// The indicator should appear immediately during transition when integrated\ncy.get(\"body\", { timeout: 1000 }).then(($body) => {\n    const hasVulnerabilityOverlay = $body.find('[data-testid=\"vulnerability-indicator-overlay\"]').length > 0;\n    const hasVulnerableText = $body.text().includes(\"취약\") ||\n        $body.text().includes(\"Vulnerable\");\n    if (hasVulnerabilityOverlay) {\n        // When the vulnerability overlay is integrated, require the text to be present\n        cy.wrap(hasVulnerableText).should(\"be.true\");\n        cy.log(\"✅ Vulnerability indicator text displayed during stance transition\");\n    }\n    else if (hasVulnerableText) {\n        // Vulnerability text present without dedicated overlay - likely legacy integration\n        cy.log(\"ℹ️ Vulnerability text present during stance transition (no dedicated overlay found)\");\n    }\n    else {\n        // Overlay/text not integrated yet - keep test non-blocking until runtime integration lands\n        cy.log(\"ℹ️ Vulnerability indicator overlay not integrated yet - skipping assertion\");\n    }\n});\ncy.wait(200);\ncy.get(\"body\").type(\"3\");\ncy.wait(200);\ncy.log(\"✅ Changed to Li stance (Fire)\");\n// Verify vulnerability indicator was present during transition\ncy.log(\"✅ Transition vulnerability window validated\");\ncy.wait(600); // Wait for vulnerability window to close (>500ms)\ncy.log(\"✅ Vulnerability window closed\");\n// ============================================================\n// 4. Test Rapid Stance Change Penalty (30s)\n// ============================================================\ncy.log(\"4️⃣ Testing Rapid Stance Change Penalty\");\n// Perform >2 stance changes within 3 seconds\ncy.get(\"body\").type(\"4\"); // Jin\ncy.wait(500);\ncy.get(\"body\").type(\"5\"); // Son (Wind)\ncy.wait(500);\ncy.get(\"body\").type(\"6\"); // Gam (Water)\ncy.wait(500);\ncy.log(\"✅ Executed 3 rapid stance changes\");\n// Check for penalty indicator\ncy.get(\"body\").then(($body) => {\n    const hasPenaltyText = $body.text().includes(\"급속변경\") ||\n        $body.text().includes(\"Rapid Change\") ||\n        $body.text().includes(\"벌칙\") ||\n        $body.text().includes(\"Penalty\");\n    if (hasPenaltyText) {\n        cy.log(\"✅ Rapid change penalty indicator detected\");\n    }\n    else {\n        cy.log(\"⚠️ Penalty indicator may be internal or not visible\");\n    }\n});\ncy.wait(2500); // Wait for penalty to expire (2s duration + buffer)\ncy.log(\"✅ Penalty duration expired\");\n// ============================================================\n// 5. Test Leg Damage Affects Balance (40s)\n// ============================================================\ncy.log(\"5️⃣ Testing Leg Damage Balance Modifier\");\n// Target opponent's legs with low attacks\n// Switch to Earth stance (Gon) for sweep techniques\ncy.get(\"body\").type(\"8\"); // Gon (Earth)\ncy.wait(500);\ncy.log(\"✅ Switched to Gon stance (Earth) for leg sweeps\");\n// Execute low attacks targeting legs\nfor (let i = 0; i < 4; i++) {\n    cy.get(\"body\").type(\" \"); // Spacebar for attack\n    cy.wait(800);\n}\ncy.log(\"✅ Executed 4 leg sweep attacks\");\n// Check balance state change\ncy.get(\"body\").then(($body) => {\n    const hasBalanceWarning = $body.text().includes(\"불안정\") ||\n        $body.text().includes(\"Unsteady\") ||\n        $body.text().includes(\"균형상실\") ||\n        $body.text().includes(\"Off-Balance\");\n    if (hasBalanceWarning) {\n        cy.log(\"✅ Balance state deteriorated after leg damage\");\n    }\n});\n// ============================================================\n// 6. Test Knockback Resistance by Stance (30s)\n// ============================================================\ncy.log(\"6️⃣ Testing Knockback Resistance (Stance-based)\");\n// Test defensive stance (Mountain = Gan, stance 7)\ncy.get(\"body\").type(\"7\"); // Gan (Mountain)\ncy.wait(500);\ncy.log(\"✅ Switched to Gan stance (Mountain) - High knockback resistance\");\n// Receive attack in defensive stance\ncy.get(\"body\").type(\" \");\ncy.wait(1000);\ncy.log(\"📊 Received attack in defensive stance\");\n// Switch to offensive stance (Heaven = Geon, stance 1)\ncy.get(\"body\").type(\"1\"); // Geon (Heaven)\ncy.wait(500);\ncy.log(\"✅ Switched to Geon stance (Heaven) - Low knockback resistance\");\n// Receive attack in offensive stance\ncy.get(\"body\").type(\" \");\ncy.wait(1000);\ncy.log(\"📊 Received attack in offensive stance\");\n// Note: Actual knockback difference would need combat log analysis\ncy.log(\"ℹ️ Knockback resistance varies by stance (internal mechanic)\");\n// ============================================================\n// 7. Test Balance Recovery Over Time (20s)\n// ============================================================\ncy.log(\"7️⃣ Testing Balance Recovery Mechanics\");\n// Stop attacking and wait for balance to recover\ncy.wait(3000);\ncy.log(\"⏳ Waiting for balance recovery...\");\ncy.get(\"body\").then(($body) => {\n    const hasRecoveredBalance = $body.text().includes(\"안정\") ||\n        $body.text().includes(\"Stable\");\n    if (hasRecoveredBalance) {\n        cy.log(\"✅ Balance recovered to stable state\");\n    }\n    else {\n        cy.log(\"ℹ️ Balance recovery in progress\");\n    }\n});\n// ============================================================\n// 8. Verify Visual Feedback (20s)\n// ============================================================\ncy.log(\"8️⃣ Verifying Visual Feedback\");\n// Check for bilingual Korean-English text\ncy.get(\"body\").then(($body) => {\n    const hasKoreanText = $body.text().includes(\"균형\");\n    const hasEnglishText = $body.text().includes(\"Balance\");\n    if (hasKoreanText && hasEnglishText) {\n        cy.log(\"✅ Bilingual balance indicators present\");\n    }\n});\n// Check for color-coded indicators\ncy.log(\"✅ Checking color-coded balance states\");\n// Green (Stable), Yellow (Unsteady), Orange (Off-Balance), Red (Falling)\n// ============================================================\n// 9. Test Vulnerability During Transition (20s)\n// ============================================================\ncy.log(\"9️⃣ Testing Vulnerability During Active Transition\");\n// Start a stance change and immediately check for vulnerability\ncy.get(\"body\").type(\"2\"); // Start transition to Tae\ncy.wait(100); // Mid-transition (~100ms into 500ms window)\ncy.get(\"body\").then(($body) => {\n    const isVulnerable = $body.text().includes(\"취약\") ||\n        $body.text().includes(\"Vulnerable\");\n    if (isVulnerable) {\n        cy.log(\"✅ Vulnerability detected mid-transition\");\n    }\n});\ncy.wait(500); // Complete transition\ncy.log(\"✅ Transition completed\");\n// ============================================================\n// 10. Test Combined Vulnerabilities (20s)\n// ============================================================\ncy.log(\"🔟 Testing Combined Vulnerability Multipliers\");\n// Create scenario with multiple vulnerability factors:\n// 1. Low balance state\n// 2. Stance transition\n// 3. Rapid change penalty\n// Reduce balance with leg attacks\ncy.get(\"body\").type(\"8\"); // Earth stance\ncy.wait(300);\ncy.get(\"body\").type(\" \");\ncy.wait(800);\ncy.get(\"body\").type(\" \");\ncy.wait(800);\n// Trigger rapid changes\ncy.get(\"body\").type(\"1\");\ncy.wait(200);\ncy.get(\"body\").type(\"3\");\ncy.wait(200);\ncy.get(\"body\").type(\"5\");\ncy.wait(200);\ncy.log(\"✅ Created combined vulnerability scenario\");\n// Check for multiple vulnerability indicators\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    const vulnerabilityCount = (bodyText.includes(\"취약\") || bodyText.includes(\"Vulnerable\") ? 1 : 0) +\n        (bodyText.includes(\"급속변경\") || bodyText.includes(\"Rapid Change\") ? 1 : 0) +\n        (bodyText.includes(\"균형상실\") || bodyText.includes(\"Off-Balance\") ? 1 : 0);\n    cy.log(`📊 Vulnerability indicators detected: ${vulnerabilityCount}`);\n});\n// ============================================================\n// Test Complete\n// ============================================================\ncy.log(\"✅ Balance/Vulnerability System E2E Test Complete\");",
+              "err": {},
+              "uuid": "f1889a73-e8ef-454b-8729-f6ecbb43d328",
+              "parentUUID": "256286a7-5fad-47a1-bfa3-4e671202e434",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should maintain 60fps performance during balance updates",
+              "fullTitle": "Balance/Vulnerability System - E2E Test (Target: 3-4 min) should maintain 60fps performance during balance updates",
+              "timedOut": null,
+              "duration": 16538,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing Balance System - Performance\");\n// ============================================================\n// Performance Test (30s)\n// ============================================================\ncy.log(\"⚡ Testing 60fps Performance with Active Balance System\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.wait(1000);\n// Perform rapid stance changes to stress-test the system\ncy.log(\"🔄 Triggering rapid stance changes\");\nfor (let i = 0; i < 10; i++) {\n    cy.get(\"body\").type(String((i % 8) + 1));\n    cy.wait(300);\n}\n// Measure FPS during the stance changes and balance updates\ncy.assertSmoothFPS(3000);\ncy.log(\"✅ Performance test complete\");",
+              "err": {},
+              "uuid": "e1d3e55e-8e00-415a-8a21-c70ce15bb52d",
+              "parentUUID": "256286a7-5fad-47a1-bfa3-4e671202e434",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should handle edge cases gracefully",
+              "fullTitle": "Balance/Vulnerability System - E2E Test (Target: 3-4 min) should handle edge cases gracefully",
+              "timedOut": null,
+              "duration": 18494,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing Balance System - Edge Cases\");\n// ============================================================\n// Edge Case Tests (40s)\n// ============================================================\ncy.log(\"🔧 Testing Edge Cases\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.wait(1000);\n// Test 1: Rapid successive transitions\ncy.log(\"Test 1: Rapid successive stance changes\");\nfor (let i = 0; i < 8; i++) {\n    cy.get(\"body\").type(String((i % 8) + 1));\n    cy.wait(100); // Very rapid\n}\ncy.wait(1000);\ncy.log(\"✅ Handled rapid transitions\");\n// Test 2: Transition during attack\ncy.log(\"Test 2: Stance change during attack animation\");\ncy.get(\"body\").type(\" \"); // Start attack\ncy.wait(100);\ncy.get(\"body\").type(\"2\"); // Change stance mid-attack\ncy.wait(1000);\ncy.log(\"✅ Handled transition during attack\");\n// Test 3: Multiple simultaneous systems\ncy.log(\"Test 3: Balance + Stamina + Breathing systems active\");\n// Execute attacks to trigger multiple systems\nfor (let i = 0; i < 5; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(500);\n}\ncy.wait(1000);\ncy.log(\"✅ Multiple systems handled simultaneously\");\ncy.log(\"✅ Edge case tests complete\");",
+              "err": {},
+              "uuid": "58c65169-566f-4d93-bbeb-bf6249686b4d",
+              "parentUUID": "256286a7-5fad-47a1-bfa3-4e671202e434",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "f1889a73-e8ef-454b-8729-f6ecbb43d328",
+            "e1d3e55e-8e00-415a-8a21-c70ce15bb52d",
+            "58c65169-566f-4d93-bbeb-bf6249686b4d"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 69429,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "build/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
