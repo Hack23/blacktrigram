@@ -105,8 +105,8 @@ export function cleanupThreeJSResources(): void {
       cy.log("🧹 Requesting Three.js / WebGL memory cleanup...");
 
       // 1. Lose WebGL contexts so the browser can reclaim GPU memory.
-      //    R3F's Canvas will re-create a context on the next render cycle
-      //    if the component is still mounted.
+      //    This is destructive — the renderer cannot recover without a full
+      //    re-init or page reload. Only call during post-test teardown.
       const canvases = win.document.getElementsByTagName("canvas");
       let lostCount = 0;
       Array.from(canvases).forEach((canvas) => {

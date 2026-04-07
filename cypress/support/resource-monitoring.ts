@@ -300,6 +300,21 @@ export class ResourceMonitor {
         }
       }
 
+      // Clear performance entries before GC so freed memory is reflected
+      try {
+        if (win.performance?.clearResourceTimings) {
+          win.performance.clearResourceTimings();
+        }
+        if (win.performance?.clearMarks) {
+          win.performance.clearMarks();
+        }
+        if (win.performance?.clearMeasures) {
+          win.performance.clearMeasures();
+        }
+      } catch {
+        // Non-critical
+      }
+
       // Request garbage collection if exposed (requires --expose-gc flag)
       const gcWin = win as Window & { gc?: () => void };
       if (gcWin.gc) {

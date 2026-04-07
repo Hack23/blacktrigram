@@ -106,26 +106,9 @@ afterEach(function () {
     duration: testDuration,
   });
 
-  // Force cleanup of remaining resources via ResourceMonitor (audio, WebGL, PixiJS, gc).
-  // This reuses the centralized cleanup helper instead of duplicating its logic.
+  // Force cleanup of remaining resources via ResourceMonitor (audio, WebGL, PixiJS,
+  // performance entries, gc). All cleanup is centralized in forceCleanup().
   try { cy.forceResourceCleanup(); } catch { /* command may not be registered */ }
-
-  // Extra cleanup unique to this hook: clear performance entries
-  cy.window({ log: false }).then((win) => {
-    try {
-      if (win.performance?.clearResourceTimings) {
-        win.performance.clearResourceTimings();
-      }
-      if (win.performance?.clearMarks) {
-        win.performance.clearMarks();
-      }
-      if (win.performance?.clearMeasures) {
-        win.performance.clearMeasures();
-      }
-    } catch {
-      // Non-critical
-    }
-  });
 });
 
 // Improve visual test feedback
