@@ -116,6 +116,12 @@ afterEach(function () {
       if (win.performance?.clearResourceTimings) {
         win.performance.clearResourceTimings();
       }
+      if (win.performance?.clearMarks) {
+        win.performance.clearMarks();
+      }
+      if (win.performance?.clearMeasures) {
+        win.performance.clearMeasures();
+      }
     } catch {
       // Non-critical
     }
