@@ -258,14 +258,16 @@ const MobileTimer: React.FC<MobileTimerProps> = ({
  *
  * Landscape Safe Area Notes:
  * - In landscape on notched devices (iPhone X+), the left and right health
- *   bars use `layout.spacing.md` inset from their respective edges. The
- *   `useResponsiveLayout` hook accounts for safe area insets via
- *   `layout.safeArea.top` for vertical offset. On landscape, the notch is
- *   on the left or right side. The health bars position using `[side]:
- *   layout.spacing.md` which provides adequate clearance for most devices.
- *   If tighter notch avoidance is needed, consumers should pass
- *   env(safe-area-inset-left) / env(safe-area-inset-right) as additional
- *   offset via CSS or the parent container.
+ *   bars are currently anchored using `layout.spacing.md` from their
+ *   respective edges.
+ * - The `useResponsiveLayout` hook provides safe-area values, and this
+ *   component uses `layout.safeArea.top` for vertical offset.
+ * - However, the current health bar positioning does not directly apply
+ *   `layout.safeArea.left` / `layout.safeArea.right` for horizontal notch or
+ *   cutout avoidance in landscape mode.
+ * - Consumers that require landscape horizontal safe-area protection should
+ *   add `env(safe-area-inset-left)` / `env(safe-area-inset-right)` via CSS
+ *   or ensure the parent container applies equivalent horizontal offsets.
  *
  * @example
  * ```tsx
