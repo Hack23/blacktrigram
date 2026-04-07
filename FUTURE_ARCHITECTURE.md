@@ -43,8 +43,8 @@ As of Q1 2026, Black Trigram has reached production-ready quality across all maj
 
 | System | Metric | Status | Key Files |
 |--------|--------|--------|-----------|
-| **TSX Components** | 185 non-test components across 6 screens | ✅ Complete | `src/components/screens/` |
-| **Combat Engine** | 52KB `CombatSystem.ts` with full combat orchestration | ✅ Complete | `src/systems/CombatSystem.ts` |
+| **TSX Components** | 183 screen component files across 6 screens | ✅ Complete | `src/components/screens/` |
+| **Combat Engine** | 1641-line `CombatSystem.ts` with full combat orchestration | ✅ Complete | `src/systems/CombatSystem.ts` |
 | **Vital Point System** | 70/70 points with Korean names & TCM meridians | ✅ Complete | `src/systems/VitalPointSystem.ts`, `docs/vital-points/` |
 | **Trigram Stances** | 8/8 stances with I Ching philosophy (건, 태, 리, 진, 손, 감, 간, 곤) | ✅ Complete | `src/systems/TrigramSystem.ts` |
 | **Player Archetypes** | 5/5 implemented (무사, 암살자, 해커, 정보요원, 조직폭력배) | ✅ Complete | `src/types/` |
@@ -59,9 +59,9 @@ As of Q1 2026, Black Trigram has reached production-ready quality across all maj
 
 #### ⚠️ Remaining Work for v1.0
 
-- **Test coverage**: 75%+ line coverage overall (target: 80%+; see [game-status.md](game-status.md#-testing--quality-metrics))
+- **Test coverage**: 73.17% measured overall line coverage (target: 80%+; see [game-status.md](game-status.md#-testing--quality-metrics))
 - **Korean localization**: ~80% complete (target: 100%)
-- **Mobile performance**: 55fps+ achieved (target: 60fps sustained)
+- **Mobile performance**: 55fps+ achieved and accepted for v1.0 release on mobile hardware; 60fps sustained remains the post-v1.0 optimization target
 - **Documentation**: User manual and API docs in progress
 - **Technical debt**: ~27 TODO/FIXME comments to resolve (tracked in [game-status.md](game-status.md#️-technical-debt--outstanding-work-q1-2026))
 
@@ -72,8 +72,8 @@ graph TD
     A[Black Trigram Q1 2026] --> B[✅ Production-Ready Systems]
     A --> C[⚠️ Polish & Optimization]
 
-    B --> B1[185 TSX Components]
-    B --> B2[52KB Combat Engine]
+    B --> B1[183 Screen Components]
+    B --> B2[1641-Line Combat Engine]
     B --> B3[70/70 Vital Points]
     B --> B4[13/13 Combat Realism Systems]
     B --> B5[8/8 Trigram Stances]
@@ -81,7 +81,7 @@ graph TD
     B --> B7[28-Bone Skeletal Animation]
     B --> B8[AI Counter-Attack System]
 
-    C --> C1[Test Coverage 75% → 80%+]
+    C --> C1[Test Coverage 73.17% → 80%+]
     C --> C2[Korean Localization 80% → 100%]
     C --> C3[Mobile 55fps → 60fps]
     C --> C4[Technical Debt Cleanup]
@@ -127,7 +127,7 @@ graph TD
 - [x] ✅ Training mode with TrainingScreen3D (15+ sub-components, HUD layout, footwork drills)
 - [x] ✅ EndScreen with combat statistics and rematch/training navigation
 - [ ] ⚠️ Korean localization 100% (currently ~80%)
-- [ ] ⚠️ Test coverage 80%+ (currently 75%+)
+- [ ] ⚠️ Test coverage 80%+ (currently 73.17%)
 - [ ] ⚠️ 60fps on all target platforms (desktop ✅ 60fps, mobile 55fps+ — needs final optimization to 60fps)
 
 **Nice-to-Have Features**:
@@ -139,9 +139,9 @@ graph TD
 **Release Criteria**:
 - Overall quality: 9.0/10 minimum (currently 9.4/10 per [game-status.md](game-status.md#-executive-summary) ✅)
 - Zero critical bugs
-- Performance: 60fps sustained on desktop ✅, 55fps+ on mobile ✅
+- Performance: 60fps sustained on all target platforms (desktop ✅, mobile currently 55fps+ — must reach 60fps for v1.0)
 - Documentation: Complete user manual and API docs
-- Test coverage: 80%+ overall (currently 75%+)
+- Test coverage: 80%+ overall (currently 73.17%)
 
 ### 🚀 Post-1.0 Roadmap (v1.1-v1.9, 2026-2027)
 
