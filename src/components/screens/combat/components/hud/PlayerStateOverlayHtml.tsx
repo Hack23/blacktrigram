@@ -101,7 +101,7 @@ export const PlayerStateOverlayHtml = React.memo<PlayerStateOverlayProps>(
     isMobile,
   }) => {
     return (
-      <div data-testid="player-state-overlay">
+      <div data-testid="player-state-overlay" style={{ display: 'contents' }}>
         {/* Pain vignette - shows when pain >= 5 (see PainVignette.tsx) */}
         <PainVignette pain={pain} isMobile={isMobile} />
 

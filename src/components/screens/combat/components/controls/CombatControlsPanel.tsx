@@ -15,6 +15,9 @@ import React from "react";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 
+/** Ratio of screen height used for message log max height */
+const MESSAGE_LOG_HEIGHT_RATIO = 0.18;
+
 export interface CombatControlsPanelProps {
   /** Combat message log (most recent messages) */
   readonly combatMessages: readonly string[];
@@ -88,7 +91,7 @@ export const CombatControlsPanel: React.FC<CombatControlsPanelProps> = ({
           padding: "10px",
           color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
           fontFamily: theme.fontFamily.KOREAN,
-          maxHeight: height ? `${Math.round(height * 0.18)}px` : "18vh",
+          maxHeight: height ? `${Math.round(height * MESSAGE_LOG_HEIGHT_RATIO)}px` : "18vh",
           overflow: "auto",
         }}
       >
