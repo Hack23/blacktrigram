@@ -18,6 +18,16 @@
 
 This document provides comprehensive flowcharts for Black Trigram (흑괘), documenting all major user flows, game processes, and system interactions. The flows use Korean cyberpunk color scheme consistent with the game's aesthetic.
 
+**Flowchart Index:**
+- [Main User Flow](#main-user-flow) — Complete game navigation from launch to combat
+- [Training Mode Flow](#training-mode-flow) — Practice modes, drills, and feedback
+- [Pause Menu Flow](#pause-menu-flow) — In-combat pause navigation and settings
+- [Rematch Flow](#rematch-flow) — Post-match rematch and archetype re-selection
+- [Combat Round Flow](#combat-round-flow) — Round initialization through completion
+- [Attack Resolution Flow](#attack-resolution-flow) — Damage calculation pipeline
+- [Vital Point Strike Flow](#vital-point-strike-flow-70-targets) — VP targeting mechanics
+- Cross-reference: [State Diagrams](STATEDIAGRAM.md) for state transitions, [Data Model](DATA_MODEL.md) for type definitions
+
 ---
 
 ## 🎮 User Journey Flows
@@ -54,11 +64,14 @@ flowchart TD
     SelectArchetype -->|정보요원 Intelligence| Combat
     SelectArchetype -->|조직폭력배 Organized Crime| Combat
 
-    Training --> TrainingFlow[Training Flow]
-    Tutorial --> TutorialFlow[Tutorial Flow]
+    Training --> TrainingFlow[🥋 Training Flow<br/>See Training Mode Flowchart]
+    Tutorial --> TutorialFlow[📚 Tutorial Flow]
 
     Combat[⚔️ Combat Screen] --> Round{Round Start}
     Round --> Fight[Active Combat]
+
+    Fight -->|Pause| PauseMenu[⏸️ Pause Menu<br/>See Pause Menu Flow]
+    PauseMenu -->|Resume| Fight
 
     Fight --> HitCheck{Attack Lands?}
     HitCheck -->|Yes| VPCheck{Vital Point<br/>Hit?}
@@ -81,8 +94,11 @@ flowchart TD
     MatchCheck -->|Victory| Victory[🏆 Victory Screen]
     MatchCheck -->|Defeat| Defeat[💀 Defeat Screen]
 
-    Victory --> Menu
-    Defeat --> Menu
+    Victory --> PostMatch{Post-Match}
+    Defeat --> PostMatch
+    PostMatch -->|Return to Menu| Menu
+    PostMatch -->|Rematch| RematchFlow[🔄 Rematch Flow<br/>See Rematch Flowchart]
+    RematchFlow --> Round
 
     style Start fill:#2979FF,stroke:#0D47A1,color:#fff
     style Intro fill:#00C853,stroke:#00796B,color:#fff
@@ -91,6 +107,159 @@ flowchart TD
     style Victory fill:#00C853,stroke:#00796B,color:#fff
     style Defeat fill:#9E9E9E,stroke:#616161,color:#fff
     style Exit fill:#9C27B0,stroke:#6A1B9A,color:#fff
+    style PauseMenu fill:#9C27B0,stroke:#6A1B9A,color:#fff
+    style TrainingFlow fill:#00C853,stroke:#00796B,color:#fff
+    style RematchFlow fill:#FFD600,stroke:#F57F17,color:#000
+```
+
+---
+
+### **Training Mode Flow**
+
+Training mode provides structured practice modes for mastering vital points, trigram stances, and footwork techniques. Based on the actual `TrainingScreen3D` component implementation.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#2979FF','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
+flowchart TD
+    Enter([🥋 Enter Training Mode]) --> TrainingMenu[Training Menu<br/>Select Practice Mode]
+
+    TrainingMenu --> ModeSelect{Choose Mode}
+
+    ModeSelect -->|Free Practice| FreePractice[🥊 Free Practice<br/>자유 연습<br/>Open Sparring with Dummy]
+    ModeSelect -->|Vital Point Drill| VPDrill[🎯 Vital Point Drill<br/>급소 훈련<br/>Target 70 Vital Points]
+    ModeSelect -->|Footwork Drill| FootworkDrill[👣 Footwork Drill<br/>발놀림 훈련<br/>Movement & Positioning]
+    ModeSelect -->|Anatomy Study| AnatomyStudy[🔬 Anatomy Study<br/>해부학 학습<br/>Body System Visualization]
+
+    FreePractice --> SelectArchetype{Select Archetype<br/>for Dummy}
+    SelectArchetype -->|무사 Musa| ActiveTraining
+    SelectArchetype -->|암살자 Amsalja| ActiveTraining
+    SelectArchetype -->|해커 Hacker| ActiveTraining
+    SelectArchetype -->|정보요원 Intelligence| ActiveTraining
+    SelectArchetype -->|조직폭력배 Crime| ActiveTraining
+
+    VPDrill --> SelectVPFilter{VP Overlay Filters}
+    SelectVPFilter -->|By Severity| FilterSeverity[Filter: Minor → Lethal<br/>5 Severity Levels]
+    SelectVPFilter -->|By Region| FilterRegion[Filter: Head/Torso/Arms/Legs<br/>8 Body Regions]
+    SelectVPFilter -->|Search| FilterSearch[Search by Name<br/>Korean or English]
+    FilterSeverity --> ActiveTraining
+    FilterRegion --> ActiveTraining
+    FilterSearch --> ActiveTraining
+
+    FootworkDrill --> ActiveTraining[⚡ Active Training<br/>활성 훈련]
+    AnatomyStudy --> AnatomyView[🔬 Anatomy Overlay<br/>Layer Visualization<br/>Skeletal/Muscle/VP]
+    AnatomyView --> ActiveTraining
+
+    ActiveTraining --> TrainingLoop{Training Action}
+    TrainingLoop -->|Attack| ExecuteAttack[Execute Technique<br/>28-Bone Animation<br/>Hand Pose Selection]
+    TrainingLoop -->|Stance Change| ChangeStance[Change Trigram Stance<br/>8 Stances Available]
+    TrainingLoop -->|Toggle Overlay| ToggleVP[Toggle VP Overlay<br/>V Key Shortcut]
+    TrainingLoop -->|Adjust Scale| AdjustScale[Adjust View Scale<br/>Default: 1.2x]
+
+    ExecuteAttack --> Feedback[📊 Feedback Display<br/>Hit Location<br/>Damage Calculation<br/>VP Hit Result]
+    ChangeStance --> Feedback
+    Feedback --> StatsUpdate[📈 Stats Update<br/>Hits Landed<br/>VP Accuracy<br/>Technique Mastery]
+    StatsUpdate --> TrainingLoop
+
+    ToggleVP --> TrainingLoop
+    AdjustScale --> TrainingLoop
+
+    TrainingLoop -->|Return| TrainingMenu
+    TrainingMenu -->|Exit| Exit([🏠 Return to Main Menu])
+
+    style Enter fill:#00C853,stroke:#00796B,color:#fff
+    style ActiveTraining fill:#2979FF,stroke:#0D47A1,color:#fff
+    style Feedback fill:#FFD600,stroke:#F57F17,color:#000
+    style StatsUpdate fill:#9C27B0,stroke:#6A1B9A,color:#fff
+    style Exit fill:#9E9E9E,stroke:#616161,color:#fff
+    style VPDrill fill:#FF3D00,stroke:#BF360C,color:#fff
+```
+
+---
+
+### **Pause Menu Flow**
+
+The pause menu provides access to game controls, settings adjustments, and navigation options during combat. Based on the actual `PauseMenu.tsx` and `usePauseMenu.ts` hook implementation.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#9C27B0','primaryTextColor':'#fff','primaryBorderColor':'#6A1B9A','lineColor':'#FFD600','secondaryColor':'#2979FF','tertiaryColor':'#FF3D00'}}}%%
+flowchart TD
+    Combat([⚔️ Active Combat]) -->|Escape Key / Pause Button| PauseTriggered[⏸️ Pause Triggered<br/>Combat Frozen]
+
+    PauseTriggered --> PauseMenu[Pause Menu<br/>일시정지 메뉴<br/>Cyberpunk Korean UI]
+
+    PauseMenu --> MenuItem{Menu Selection}
+
+    MenuItem -->|▶️ 계속 Resume| Resume[Resume Combat<br/>Restore Combat State]
+    MenuItem -->|🔄 재시작 Restart| ConfirmRestart{Confirm Restart?<br/>재시작 확인}
+    MenuItem -->|🎮 조작법 Controls| ControlsGuide[Controls Guide<br/>조작법 안내<br/>Keyboard + Gamepad]
+    MenuItem -->|⚙️ 설정 Settings| QuickSettings[Quick Settings<br/>설정 조정]
+    MenuItem -->|🏠 메인 메뉴 Return| ConfirmQuit{Confirm Quit?<br/>메인 메뉴 확인}
+
+    ConfirmRestart -->|Yes| RestartMatch[🔄 Restart Match<br/>Reset Round State<br/>Reset Player Health]
+    ConfirmRestart -->|No| PauseMenu
+
+    ControlsGuide --> BackToPause1[Back to Pause Menu]
+    BackToPause1 --> PauseMenu
+
+    QuickSettings --> SettingsOptions{Settings Category}
+    SettingsOptions -->|🔊 Audio| AudioSettings[Audio Settings<br/>Volume Control]
+    SettingsOptions -->|🖥️ Display| DisplaySettings[Display Settings<br/>Visual Options]
+    SettingsOptions -->|♿ Accessibility| AccessSettings[Accessibility<br/>접근성 설정]
+    AudioSettings --> BackToPause2[Back to Pause Menu]
+    DisplaySettings --> BackToPause2
+    AccessSettings --> BackToPause2
+    BackToPause2 --> PauseMenu
+
+    ConfirmQuit -->|Yes| MainMenu([🏠 Return to Main Menu])
+    ConfirmQuit -->|No| PauseMenu
+
+    Resume --> Combat2([⚔️ Resume Combat<br/>60fps Restored])
+    RestartMatch --> Combat3([⚔️ New Match<br/>Round 1 Start])
+
+    style PauseTriggered fill:#9C27B0,stroke:#6A1B9A,color:#fff
+    style PauseMenu fill:#9C27B0,stroke:#6A1B9A,color:#fff
+    style Resume fill:#00C853,stroke:#00796B,color:#fff
+    style MainMenu fill:#2979FF,stroke:#0D47A1,color:#fff
+    style ControlsGuide fill:#FFD600,stroke:#F57F17,color:#000
+    style QuickSettings fill:#FFD600,stroke:#F57F17,color:#000
+    style RestartMatch fill:#FF3D00,stroke:#BF360C,color:#fff
+```
+
+---
+
+### **Rematch Flow**
+
+After a match ends (Victory or Defeat), the rematch flow allows players to start a new match while preserving or changing archetype selection.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FFD600','primaryTextColor':'#000','primaryBorderColor':'#F57F17','lineColor':'#FF3D00','secondaryColor':'#2979FF','tertiaryColor':'#00C853'}}}%%
+flowchart TD
+    MatchEnd([🏆 Match End<br/>Victory / Defeat Screen]) --> PostMatch{Post-Match Choice}
+
+    PostMatch -->|Rematch| RematchDecision{Same Archetypes?}
+    PostMatch -->|Return to Menu| MainMenu([🏠 Main Menu])
+
+    RematchDecision -->|Yes - Quick Rematch| QuickRematch[⚡ Quick Rematch<br/>Same Archetypes<br/>Reset Health/Ki/Stamina<br/>Reset Round Count]
+    RematchDecision -->|No - Change Setup| ChangeSetup[👤 Return to<br/>Character Select<br/>New Archetype Choice]
+
+    QuickRematch --> ResetState[Reset Combat State<br/>Clear Status Effects<br/>Reset Body Part HP<br/>Reset VP State<br/>Reset Consciousness]
+
+    ChangeSetup --> SelectArchetype{Choose New Archetype}
+    SelectArchetype -->|무사 Musa| ResetState
+    SelectArchetype -->|암살자 Amsalja| ResetState
+    SelectArchetype -->|해커 Hacker| ResetState
+    SelectArchetype -->|정보요원 Intelligence| ResetState
+    SelectArchetype -->|조직폭력배 Crime| ResetState
+
+    ResetState --> NewMatch[Initialize New Match<br/>Load 3D Assets<br/>28-Bone Skeleton Setup<br/>Reset Timer]
+    NewMatch --> Countdown[3... 2... 1...<br/>건 Heaven Stance]
+    Countdown --> Fight([⚔️ FIGHT!<br/>New Match Begins])
+
+    style MatchEnd fill:#FFD600,stroke:#F57F17,color:#000
+    style QuickRematch fill:#00C853,stroke:#00796B,color:#fff
+    style ChangeSetup fill:#2979FF,stroke:#0D47A1,color:#fff
+    style Fight fill:#FF3D00,stroke:#BF360C,color:#fff
+    style MainMenu fill:#9E9E9E,stroke:#616161,color:#fff
 ```
 
 ---

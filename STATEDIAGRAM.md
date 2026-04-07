@@ -18,6 +18,15 @@
 
 This document provides comprehensive state machine diagrams for Black Trigram (흑괘), documenting all game states, combat states, and their valid transitions. State diagrams use Korean cyberpunk color scheme consistent with the game's aesthetic.
 
+**State Diagram Index:**
+- [Top-Level Game States](#top-level-game-states) — Main game state machine
+- [Combat Round States](#combat-round-states-70-vital-points--28-bone-animation) — Round lifecycle
+- [Active Combat Sub-States](#active-combat-sub-states-expanded) — Expanded fighting mechanics
+- [Grappling State Transitions](#grappling-state-transitions) — Close-range grappling system
+- [Consciousness Degradation States](#consciousness-degradation-states) — Alert → Dazed → Stunned → Unconscious
+- [Player Combat States](#player-combat-states-5-archetypes--skeletal-system) — Archetype-specific states
+- Cross-reference: [Flowcharts](FLOWCHART.md) for process flows, [Data Model](DATA_MODEL.md) for type definitions, [Combat Architecture](COMBAT_ARCHITECTURE.md) for implementation details
+
 ---
 
 ## 🎮 Main Game State Machine
@@ -201,6 +210,282 @@ stateDiagram-v2
         Requires precise timing
         Advanced technique mastery
         Stance-dependent options
+    end note
+```
+
+---
+
+### **Active Combat Sub-States (Expanded)**
+
+Expands the `Fighting` state from the Combat Round States diagram into detailed sub-states covering all combat actions, hit results, and state transitions.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FF3D00','primaryTextColor':'#fff','primaryBorderColor':'#BF360C','lineColor':'#FFD600','secondaryColor':'#00C853','tertiaryColor':'#2979FF'}}}%%
+stateDiagram-v2
+    [*] --> Standing: Round Start
+
+    state Standing {
+        [*] --> Idle
+        Idle --> Attacking: Attack Input (Space)
+        Idle --> Blocking: Block Input (Shift)
+        Idle --> StanceChanging: Stance Input (1-8)
+        Idle --> Moving: Movement (WASD)
+    }
+
+    state Attacking {
+        [*] --> ValidateAttack
+        ValidateAttack --> ExecuteTechnique: Ki + Stamina OK
+        ValidateAttack --> AttackFailed: Insufficient Resources
+        ExecuteTechnique --> SkeletalAnimation: Play 28-Bone Animation
+        SkeletalAnimation --> HitboxActive: Activate Hit Detection
+        HitboxActive --> AttackResult: Polygon Collision Check
+        AttackFailed --> Standing: Return to Idle
+    }
+
+    state AttackResult {
+        [*] --> CheckHit
+        CheckHit --> Hit: Target In Range
+        CheckHit --> Miss: Target Out of Range
+        CheckHit --> Blocked: Opponent Blocking
+        CheckHit --> Countered: Opponent Counter Window
+    }
+
+    Hit --> DamageApplied: Calculate Damage
+    Miss --> AttackRecovery: Recovery Period
+    Blocked --> AttackRecovery: Pushback + Recovery
+    Countered --> TakingDamage: Counter Damage (1.5x)
+
+    state DamageApplied {
+        [*] --> CheckVitalPoint
+        CheckVitalPoint --> VPHit: VP Detected (70 targets)
+        CheckVitalPoint --> RegularHit: No VP Hit
+        VPHit --> ApplyVPEffects: 5 Severity Levels\n7 Anatomical Categories
+        RegularHit --> ApplyBaseDamage: Standard Damage
+        ApplyVPEffects --> ConsciousnessCheck
+        ApplyBaseDamage --> ConsciousnessCheck
+    }
+
+    ConsciousnessCheck --> Standing: Conscious → Continue
+    ConsciousnessCheck --> KOState: Health ≤ 0 or\nConsciousness ≤ 0
+
+    state Blocking {
+        [*] --> BlockActive
+        BlockActive --> PerfectBlock: Perfect Timing (0.2-0.5s)
+        BlockActive --> NormalBlock: Standard Block
+        PerfectBlock --> CounterWindow: Counter Opportunity
+        NormalBlock --> Standing: Block Window Ends
+    }
+
+    CounterWindow --> CounterAttack: Counter Input
+    CounterWindow --> Standing: Window Expires
+    CounterAttack --> DamageApplied: 1.5x Bonus Damage
+
+    state TakingDamage {
+        [*] --> ApplyHitDamage
+        ApplyHitDamage --> UpdateBodyParts: Localized Damage (8 parts)
+        UpdateBodyParts --> UpdateMuscleTension: Visual Feedback
+        UpdateMuscleTension --> ConsciousnessCheck
+    }
+
+    AttackRecovery --> Standing: Recovery Complete
+
+    state StanceChanging {
+        [*] --> ValidateStance
+        ValidateStance --> ConsumeResources: Valid Trigram
+        ConsumeResources --> TransitionAnimation: Update 28 Bones
+        TransitionAnimation --> Standing: New Stance Active
+    }
+
+    state Moving {
+        [*] --> CheckLegHealth
+        CheckLegHealth --> NormalSpeed: Legs Healthy
+        CheckLegHealth --> ReducedSpeed: Leg Injured
+        CheckLegHealth --> CrawlSpeed: Both Legs Injured
+        NormalSpeed --> Standing: Movement Complete
+        ReducedSpeed --> Standing: Movement Complete
+        CrawlSpeed --> Standing: Movement Complete
+    }
+
+    KOState --> [*]: Round End
+
+    note right of Attacking
+        Technique selection based on:
+        - Current trigram stance
+        - Available Ki/Stamina
+        - 7 hand poses (HandPoseType)
+        - Opponent distance
+    end note
+
+    note right of DamageApplied
+        Damage calculation includes:
+        - Base technique damage
+        - Stance modifier
+        - Body part vulnerability
+        - Critical hit chance
+        - VP severity multiplier
+    end note
+```
+
+---
+
+### **Grappling State Transitions**
+
+Details the four grappling engagement states that occur during close-range combat, based on `COMBAT_ARCHITECTURE.md` grappling system.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#9C27B0','primaryTextColor':'#fff','primaryBorderColor':'#6A1B9A','lineColor':'#FFD600','secondaryColor':'#FF3D00','tertiaryColor':'#00C853'}}}%%
+stateDiagram-v2
+    [*] --> Standing: Normal Combat
+
+    Standing --> GrapplingEngaged: Close Range + Grapple Input
+
+    state GrapplingEngaged {
+        [*] --> Clinch: Initial Engagement
+
+        state Clinch {
+            [*] --> ClinchActive
+            ClinchActive --> UpperBodyControl: Dominate Position
+            ClinchActive --> LowerBodyControl: Underhook
+        }
+
+        Clinch --> ThrowAttempt: Throw Input
+        Clinch --> Escape: Break Free (Stamina Check)
+        Clinch --> GroundControl: Takedown Success
+
+        state ThrowAttempt {
+            [*] --> InitiateThrow
+            InitiateThrow --> ThrowSuccess: Technique + Balance
+            InitiateThrow --> ThrowFailed: Opponent Defense
+            ThrowFailed --> Clinch: Return to Clinch
+        }
+
+        ThrowSuccess --> GroundControl: Ground Position
+
+        state GroundControl {
+            [*] --> DominantPosition
+            DominantPosition --> GroundStrike: Strike from Ground
+            DominantPosition --> Submission: Submission Attempt
+            GroundStrike --> DominantPosition: Continue Control
+            Submission --> SubmissionLock: Lock Applied
+            SubmissionLock --> KO: Opponent Taps/KO
+        }
+
+        state Escape {
+            [*] --> AttemptBreak
+            AttemptBreak --> BreakFree: Stamina > Threshold
+            AttemptBreak --> EscapeFailed: Stamina Depleted
+            EscapeFailed --> Clinch: Remain in Clinch
+        }
+
+        GroundControl --> Escape: Opponent Escape Attempt
+    }
+
+    Escape --> Standing: Break Free Success
+    BreakFree --> Standing: Return to Standing
+    KO --> [*]: Knockout / Submission
+
+    note right of Clinch
+        Clinch mechanics:
+        - grappleControl attribute
+        - Balance affects throw success
+        - Stamina drain per frame
+        - Position advantage scoring
+    end note
+
+    note right of GroundControl
+        Ground combat:
+        - Position hierarchy
+        - Ground strikes available
+        - Submission techniques
+        - Escape difficulty scales
+          with stamina depletion
+    end note
+```
+
+---
+
+### **Consciousness Degradation States**
+
+Models the four-level consciousness system that tracks a fighter's mental state during combat, from fully alert to unconscious knockout.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FF3D00','primaryTextColor':'#fff','primaryBorderColor':'#BF360C','lineColor':'#FFD600','secondaryColor':'#9C27B0','tertiaryColor':'#00C853'}}}%%
+stateDiagram-v2
+    [*] --> Alert: Combat Start (100% Consciousness)
+
+    state Alert {
+        [*] --> FullCapacity
+        FullCapacity: 의식 명확 (Clear Consciousness)
+        FullCapacity: Full combat ability
+        FullCapacity: Normal reaction speed
+        FullCapacity: All techniques available
+    }
+
+    Alert --> Dazed: Head Hit / VP Strike\nConsciousness 60-80%
+
+    state Dazed {
+        [*] --> ReducedCapacity
+        ReducedCapacity: 멍함 (Dazed State)
+        ReducedCapacity: Slowed reaction (-20%)
+        ReducedCapacity: Reduced accuracy (-15%)
+        ReducedCapacity: Visual blur effect
+        ReducedCapacity: Head movement: SHAKE
+    }
+
+    Dazed --> Alert: Recovery Timer\n+ No Further Hits
+    Dazed --> Stunned: Additional Head Hit\nConsciousness 30-60%
+
+    state Stunned {
+        [*] --> SeverelyImpaired
+        SeverelyImpaired: 기절 (Stunned State)
+        SeverelyImpaired: Cannot attack
+        SeverelyImpaired: Minimal defense (-50%)
+        SeverelyImpaired: Muscle tension spikes
+        SeverelyImpaired: Facial expression: PAINED
+        SeverelyImpaired: Stagger animation active
+    }
+
+    Stunned --> Dazed: Recovery Timer\n+ No Further Hits
+    Stunned --> Unconscious: Critical Hit / VP Lethal\nConsciousness ≤ 0%
+
+    state Unconscious {
+        [*] --> KnockedOut
+        KnockedOut: 의식 상실 (Unconscious)
+        KnockedOut: Cannot act
+        KnockedOut: Head movement: DROP
+        KnockedOut: Facial expression: DEFEATED
+        KnockedOut: Eye openness: 0.0
+        KnockedOut: Muscle relaxation: Full
+    }
+
+    Unconscious --> [*]: Round End (KO)
+
+    note right of Alert
+        Consciousness: 80-100%
+        All combat abilities active
+        Full technique roster
+        Normal movement speed
+    end note
+
+    note right of Dazed
+        Consciousness: 60-80%
+        Recovery possible with time
+        Reduced combat effectiveness
+        Visual/audio feedback to player
+    end note
+
+    note right of Stunned
+        Consciousness: 30-60%
+        Vulnerable to follow-up
+        Limited defensive options
+        High risk of knockout
+    end note
+
+    note right of Unconscious
+        Consciousness: 0%
+        Immediate round end
+        KO victory for opponent
+        Full facial/body response
     end note
 ```
 
