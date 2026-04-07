@@ -20,6 +20,8 @@ export interface CombatControlsPanelProps {
   readonly combatMessages: readonly string[];
   /** Whether to use mobile-optimized sizing */
   readonly isMobile: boolean;
+  /** Screen height for responsive sizing */
+  readonly height?: number;
 }
 
 /**
@@ -38,8 +40,10 @@ export interface CombatControlsPanelProps {
 export const CombatControlsPanel: React.FC<CombatControlsPanelProps> = ({
   combatMessages,
   isMobile,
+  height,
 }) => {
   const theme = useKoreanTheme({ variant: "primary", size: "sm", isMobile });
+  const panelBackground = hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8);
   
   return (
     <div
@@ -60,7 +64,7 @@ export const CombatControlsPanel: React.FC<CombatControlsPanelProps> = ({
         data-testid="combat-controls-guide"
         style={{
           width: isMobile ? "45%" : "400px",
-          background: "rgba(10, 10, 15, 0.8)",
+          background: panelBackground,
           border: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 1)}`,
           borderRadius: "8px",
           padding: "10px",
@@ -78,13 +82,13 @@ export const CombatControlsPanel: React.FC<CombatControlsPanelProps> = ({
         data-testid="combat-message-log"
         style={{
           width: isMobile ? "45%" : "400px",
-          background: "rgba(10, 10, 15, 0.8)",
+          background: panelBackground,
           border: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 1)}`,
           borderRadius: "8px",
           padding: "10px",
           color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
           fontFamily: theme.fontFamily.KOREAN,
-          maxHeight: "140px",
+          maxHeight: height ? `${Math.round(height * 0.18)}px` : "18vh",
           overflow: "auto",
         }}
       >
