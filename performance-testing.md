@@ -154,6 +154,7 @@ The performance testing framework ensures the application meets both web perform
 ### Key Components
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     A[👨‍💻 Code Changes] --> B[🔨 Build Application]
     B --> C{📦 Bundle Size Check}

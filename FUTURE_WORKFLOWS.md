@@ -584,6 +584,7 @@ _Full future workflow projections and detailed implementation plans will be adde
 ## 📅 Implementation Timeline
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','taskBkgColor':'#2979FF','taskTextColor':'#fff','taskTextDarkColor':'#fff','taskTextOutsideColor':'#000','activeTaskBkgColor':'#00C853','activeTaskBorderColor':'#00796B','doneTaskBkgColor':'#4CAF50','doneTaskBorderColor':'#2E7D32','critBkgColor':'#D32F2F','critBorderColor':'#B71C1C'}}}%%
 gantt
     title Black Trigram CI/CD Evolution Roadmap
     dateFormat YYYY-MM

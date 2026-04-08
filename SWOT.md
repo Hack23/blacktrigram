@@ -134,6 +134,7 @@ quadrantChart
 ### Alternative Network Visualization (Q1 2026 Status)
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "Strengths (Internal, Positive) - Q1 2026"
         S1["🛠️ Zero-Install Web App"]
@@ -357,6 +358,7 @@ graph TD
 | **ISMS Compliance** | 8/10 | ISO 27001, NIST CSF, CIS Controls | SECURITY_ARCHITECTURE.md |
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Q1 2026 Strengths))
     id1(70/70 Vital Points - 100% Complete)
@@ -461,6 +463,7 @@ Black Trigram has established several key strengths that provide a solid foundat
 | **Complex Learning Curve** | Medium | 70 vital points may overwhelm | User feedback | Tutorial improvements Q2 2026 |
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Q1 2026 Weaknesses))
     id1(No Backend - Session-Only Storage)
@@ -553,6 +556,7 @@ Several weaknesses must be addressed to achieve v1.0 production readiness and ma
 | **Korean Wave (한류) Export** | Medium | $12.3B cultural export (8.6% growth) | Ongoing | Cultural partnerships |
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Opportunities))
     id1(AWS Backend Integration v2.0 2028)
@@ -790,6 +794,7 @@ mindmap
 | **Regulatory Changes** | Low | Low | GDPR compliance, privacy-by-design, legal review | Medium |
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Threats))
     id1(AAA Competition)
@@ -1143,6 +1148,7 @@ Based on the SWOT analysis, the following areas require immediate attention for 
 The SWOT analysis reveals that Black Trigram's primary value lies in its educational potential for Korean martial arts:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Educational Strengths"
         A[Authentic Korean Martial Arts Content] --> B[Accessible Web Platform]
@@ -1194,6 +1200,7 @@ Black Trigram should prioritize:
 Based on identified threats, the following mitigation strategies are recommended:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "Technical Risk Mitigation"
         A[CDN Redundancy] --> B[Multiple CDN Providers]

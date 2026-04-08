@@ -173,6 +173,7 @@ Starting with **Node.js 27.x**, the Node.js project is [evolving its release sch
 Following [Hack23 AB's Proactive Runtime Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md#proactive-runtime--operations-management), Black Trigram implements a **current-version-first** approach for optimal security and performance.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','taskBkgColor':'#2979FF','taskTextColor':'#fff','taskTextDarkColor':'#fff','taskTextOutsideColor':'#000','activeTaskBkgColor':'#00C853','activeTaskBorderColor':'#00796B','doneTaskBkgColor':'#4CAF50','doneTaskBorderColor':'#2E7D32','critBkgColor':'#D32F2F','critBorderColor':'#B71C1C'}}}%%
 gantt
     title Node.js Lifecycle & Black Trigram Transition Timeline (Updated Schedule)
     dateFormat YYYY-MM-DD
@@ -382,6 +383,7 @@ flowchart LR
 Real-time monitoring using [endoflife.date](https://endoflife.date/) references and automated tracking:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','taskBkgColor':'#2979FF','taskTextColor':'#fff','taskTextDarkColor':'#fff','taskTextOutsideColor':'#000','activeTaskBkgColor':'#00C853','activeTaskBorderColor':'#00796B','doneTaskBkgColor':'#4CAF50','doneTaskBorderColor':'#2E7D32','critBkgColor':'#D32F2F','critBorderColor':'#B71C1C'}}}%%
 gantt
     title Black Trigram Technology End-of-Life Timeline (2025-2031)
     dateFormat YYYY-MM-DD
@@ -546,18 +548,20 @@ Should EOL conditions trigger migration, the successor platform will maintain **
 ### **📊 Technology Investment Strategy**
 
 ```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#e8f5e9',
-      'primaryTextColor': '#2e7d32',
-      'lineColor': '#4caf50',
-      'secondaryColor': '#e3f2fd',
-      'tertiaryColor': '#fff8e1'
-    }
+%%{init: {
+  "theme": "neutral",
+  "themeVariables": {
+    "quadrant1Fill": "#2E7D32",
+    "quadrant2Fill": "#D32F2F",
+    "quadrant3Fill": "#1565C0",
+    "quadrant4Fill": "#FF9800",
+    "quadrantTitleFill": "#ffffff",
+    "quadrantPointFill": "#ffffff",
+    "quadrantPointTextFill": "#ffffff",
+    "quadrantXAxisTextFill": "#ffffff",
+    "quadrantYAxisTextFill": "#ffffff"
   }
-}%%
+}}%%
 quadrantChart
     title 🎯 Technology Investment vs Migration Complexity
     x-axis Low Migration Complexity --> High Migration Complexity

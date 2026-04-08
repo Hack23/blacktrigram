@@ -81,6 +81,7 @@ This future security architecture is designed to fully implement all controls fr
 **Status**: ✅ Comprehensive Authentication System - AWS Cognito Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "AWS Cognito Authentication Architecture"
         A[👤 Player] -->|"Register/Login"| B[🌐 CloudFront + WAF]
@@ -147,6 +148,7 @@ Black Trigram implements comprehensive authentication using AWS Cognito:
 **Status**: ✅ Comprehensive Auditing System - AWS CloudTrail & Config Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Comprehensive Audit Architecture"
         A[👤 Authenticated User] -->|"Action"| B[🚪 API Gateway]
@@ -210,6 +212,7 @@ Black Trigram implements comprehensive data auditing:
 **Status**: ✅ Comprehensive Session Management - CloudWatch & DynamoDB Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Session & Action Tracking Architecture"
         A[👤 Authenticated User] -->|"Start Session"| B[🔐 Cognito Session]
@@ -272,6 +275,7 @@ Black Trigram implements detailed session and action tracking:
 **Status**: ✅ Advanced Security Monitoring - Multi-Service Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Security Event Monitoring Architecture"
         A[🔐 Authentication Events] --> B[📊 Security Lake]
@@ -342,6 +346,7 @@ Black Trigram implements comprehensive security event monitoring:
 **Status**: ✅ Enterprise Network Security - CloudFront + WAF + VPC Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "Multi-Layer Network Security Architecture"
         A[🌐 Internet] -->|"DNS Query"| B[🛡️ Route53 + DNSSEC]
@@ -447,6 +452,7 @@ DNSLogGroup:
 #### 🌍 Multi-Region S3 Architecture
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "Multi-Region S3 Security Architecture"
         A[🌐 CloudFront] --> B[📦 S3 Primary<br/>US-East-1]
@@ -572,6 +578,7 @@ ResponseHeadersPolicy:
 **Status**: ✅ Multi-Region High Availability - Route53 + Resilience Hub Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "Multi-Region High Availability Architecture"
         A[🌐 Route53 Geo-latency] --> B[🇺🇸 US-East-1<br/>Primary Region]
@@ -652,6 +659,7 @@ Black Trigram implements enterprise-grade high availability:
 **Status**: ✅ Enterprise Data Protection - Multi-Layer Encryption + DLP
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Comprehensive Data Protection Architecture"
         A[🔐 Data at Rest] --> B[🗄️ DynamoDB Encryption]
@@ -732,6 +740,7 @@ Black Trigram implements enterprise-grade data protection:
 **Status**: ✅ Comprehensive AWS Security Services - Full Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "AWS Security Services Integration"
         A[👤 Identity & Access] --> B[🔐 AWS Cognito]
@@ -804,6 +813,7 @@ Black Trigram implements comprehensive AWS security services:
 **Status**: ✅ Complete FSBP Implementation - All Controls Enabled
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "AWS Foundational Security Best Practices Implementation"
         A[⚙️ AWS Config Service] --> B[📋 FSBP Standard]
@@ -885,6 +895,7 @@ Black Trigram implements full AWS Foundational Security Best Practices:
 **Status**: ✅ Advanced Threat Detection - GuardDuty + Detective + Custom Analytics
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Advanced Threat Detection & Investigation"
         A[🛡️ Amazon GuardDuty] --> B[🤖 ML Threat Detection]
@@ -954,6 +965,7 @@ Black Trigram implements advanced threat detection:
 **Status**: ✅ Comprehensive Vulnerability Management - Inspector + Advanced Scanning
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Comprehensive Vulnerability Management"
         A[🔎 Amazon Inspector] --> B[⚙️ Lambda Scanning]
@@ -1024,6 +1036,7 @@ Black Trigram implements comprehensive vulnerability management:
 **Status**: ✅ Advanced Resilience - Resilience Hub + Comprehensive DR
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Advanced Resilience & Operational Readiness"
         A[📊 AWS Resilience Hub] --> B[🎯 RTO/RPO Tracking]
@@ -1102,6 +1115,7 @@ Black Trigram implements advanced resilience and operational readiness:
 **Status**: ✅ Advanced Configuration Management - Config + Security Hub + Custom Rules
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Advanced Configuration & Compliance Management"
         A[⚙️ AWS Config] --> B[📋 Configuration Recording]
@@ -1173,6 +1187,7 @@ Black Trigram implements advanced configuration and compliance management:
 **Status**: ✅ Comprehensive Monitoring - CloudWatch + Security Lake + Custom Analytics
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Comprehensive Monitoring & Analytics"
         A[📈 Amazon CloudWatch] --> B[📊 Metrics & Logs]
@@ -1244,6 +1259,7 @@ Black Trigram implements comprehensive monitoring and analytics:
 **Status**: ✅ Advanced Security Automation - Multi-Service Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Advanced Automated Security Operations"
         A[⏱️ Scheduled Operations] --> B[🔄 Security Patching]
@@ -1315,6 +1331,7 @@ Black Trigram implements advanced automated security operations:
 **Status**: ✅ Comprehensive Application Security - OWASP Top 10 Mitigations
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Comprehensive Application Security Architecture"
         A[👤 User Input] --> B[🔒 Input Validation]
@@ -1378,6 +1395,7 @@ Black Trigram implements comprehensive application security:
 **Status**: ✅ Comprehensive Compliance Framework - Multi-Standard Support
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Comprehensive Compliance Framework"
         A[📋 Compliance Standards] --> B[🔐 AWS Foundational Security Best Practices]
@@ -1427,6 +1445,7 @@ Black Trigram implements a comprehensive compliance framework:
 **Status**: ✅ Comprehensive Defense-in-Depth Strategy - Multi-Layered Security
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Comprehensive Defense-in-Depth Strategy"
         A[🔒 Perimeter Defense] --> B[🛡️ AWS WAF]
@@ -1489,6 +1508,7 @@ Black Trigram implements a comprehensive defense-in-depth strategy:
 **Status**: ✅ Advanced Security Operations - 24/7 Monitoring & Response
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Advanced Security Operations Center"
         A[🕵️ Security Monitoring] --> B[📊 Security Dashboard]

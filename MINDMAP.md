@@ -17,6 +17,7 @@
 ## Korean Martial Arts Core Concepts
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((흑괘 Black Trigram<br/>Korean Combat System))
     🎯 70 Vital Points
@@ -134,6 +135,7 @@ mindmap
 ## Player Archetypes & Combat Styles
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Fighter Archetypes))
     무사 Musa
@@ -201,6 +203,7 @@ mindmap
 ## Eight Trigram Combat System
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Trigram Combat))
     Heaven 건 ☰
@@ -312,6 +315,7 @@ mindmap
 ## Realistic Combat Mechanics
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Combat Realism))
     Health System
@@ -373,6 +377,7 @@ mindmap
 ## Technical Architecture Mapping
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Technical Stack<br/>Three.js + React 19))
     Frontend Framework
@@ -483,6 +488,7 @@ mindmap
 ## Game Modes & Learning Path
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Game Modes))
     해부학 연구 Anatomical Study
@@ -542,6 +548,7 @@ mindmap
 ## Cultural Authenticity Framework
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Cultural Authenticity))
     Korean Language
@@ -591,6 +598,7 @@ mindmap
 ## Development & Quality Assurance
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((Development))
     Code Quality

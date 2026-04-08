@@ -39,6 +39,7 @@ This document defines the future data model for Black Trigram when transitioning
 Black Trigram uses a single DynamoDB table with composite keys for efficient data access and cost optimization.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800'}}}%%
 erDiagram
     PLAYER_TABLE ||--o{ PLAYER_PROFILE : contains
     PLAYER_TABLE ||--o{ GAME_STATE : contains
@@ -47,8 +48,8 @@ erDiagram
     PLAYER_TABLE ||--o{ LEADERBOARD_ENTRY : contains
     
     PLAYER_PROFILE {
-        string PK
-        string SK
+        string partitionKey "PK"
+        string sortKey "SK"
         string userId
         string username
         string email
@@ -61,8 +62,8 @@ erDiagram
     }
     
     GAME_STATE {
-        string PK
-        string SK
+        string partitionKey "PK"
+        string sortKey "SK"
         string userId
         json stanceData
         json vitalPointProgress
@@ -72,16 +73,16 @@ erDiagram
     }
     
     ACHIEVEMENT {
-        string PK
-        string SK
+        string partitionKey "PK"
+        string sortKey "SK"
         string achievementId
         string unlockedAt
         number progress
     }
     
     PURCHASE {
-        string PK
-        string SK
+        string partitionKey "PK"
+        string sortKey "SK"
         string purchaseId
         string stripeSessionId
         number amount
