@@ -1,0 +1,1765 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - region
+    - generic [ref=e3]:
+      - link "Skip to content" [ref=e4] [cursor=pointer]:
+        - /url: "#start-of-content"
+      - banner [ref=e6]:
+        - heading "Navigation Menu" [level=2] [ref=e7]
+        - generic [ref=e8]:
+          - link "Homepage" [ref=e10] [cursor=pointer]:
+            - /url: /
+            - img [ref=e11]
+          - generic [ref=e13]:
+            - navigation "Global" [ref=e16]:
+              - list [ref=e17]:
+                - listitem [ref=e18]:
+                  - button "Platform" [ref=e20] [cursor=pointer]:
+                    - text: Platform
+                    - img [ref=e21]
+                - listitem [ref=e23]:
+                  - button "Solutions" [ref=e25] [cursor=pointer]:
+                    - text: Solutions
+                    - img [ref=e26]
+                - listitem [ref=e28]:
+                  - button "Resources" [ref=e30] [cursor=pointer]:
+                    - text: Resources
+                    - img [ref=e31]
+                - listitem [ref=e33]:
+                  - button "Open Source" [ref=e35] [cursor=pointer]:
+                    - text: Open Source
+                    - img [ref=e36]
+                - listitem [ref=e38]:
+                  - button "Enterprise" [ref=e40] [cursor=pointer]:
+                    - text: Enterprise
+                    - img [ref=e41]
+                - listitem [ref=e43]:
+                  - link "Pricing" [ref=e44] [cursor=pointer]:
+                    - /url: https://github.com/pricing
+                    - generic [ref=e45]: Pricing
+            - generic [ref=e46]:
+              - button "Search or jump to…" [ref=e49] [cursor=pointer]:
+                - img [ref=e51]
+              - link "Sign in" [ref=e54] [cursor=pointer]:
+                - /url: /login?return_to=https%3A%2F%2Fgithub.com%2FHack23%2Fblacktrigram%2Fblob%2Fcopilot%2Fimprove-mermaid-diagrams%2FFLOWCHART.md
+              - link "Sign up" [ref=e55] [cursor=pointer]:
+                - /url: /signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E%2Fblob%2Fshow&source=header-repo&source_repo=Hack23%2Fblacktrigram
+              - button "Appearance settings" [ref=e58] [cursor=pointer]:
+                - img
+    - main [ref=e62]:
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - generic [ref=e66]:
+            - img [ref=e67]
+            - link "Hack23" [ref=e70] [cursor=pointer]:
+              - /url: /Hack23
+            - generic [ref=e71]: /
+            - strong [ref=e72]:
+              - link "blacktrigram" [ref=e73] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram
+            - generic [ref=e74]: Public
+          - generic [ref=e75]:
+            - list:
+              - listitem [ref=e76]:
+                - link "You must be signed in to change notification settings" [ref=e77] [cursor=pointer]:
+                  - /url: /login?return_to=%2FHack23%2Fblacktrigram
+                  - img [ref=e78]
+                  - text: Notifications
+              - listitem [ref=e80]:
+                - link "Fork 2" [ref=e81] [cursor=pointer]:
+                  - /url: /login?return_to=%2FHack23%2Fblacktrigram
+                  - img [ref=e82]
+                  - text: Fork
+                  - generic "2" [ref=e84]
+              - listitem [ref=e85]:
+                - link "You must be signed in to star a repository" [ref=e87] [cursor=pointer]:
+                  - /url: /login?return_to=%2FHack23%2Fblacktrigram
+                  - img [ref=e88]
+                  - text: Star
+                  - generic "6 users starred this repository" [ref=e90]: "6"
+        - navigation "Repository" [ref=e91]:
+          - list [ref=e92]:
+            - listitem [ref=e93]:
+              - link "Code" [ref=e94] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/tree/copilot/improve-mermaid-diagrams
+                - img [ref=e95]
+                - generic [ref=e97]: Code
+            - listitem [ref=e98]:
+              - link "Issues 8" [ref=e99] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/issues
+                - img [ref=e100]
+                - generic [ref=e103]: Issues
+                - generic "8" [ref=e104]
+            - listitem [ref=e105]:
+              - link "Pull requests" [ref=e106] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/pulls
+                - img [ref=e107]
+                - generic [ref=e109]: Pull requests
+            - listitem [ref=e110]:
+              - link "Actions" [ref=e111] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/actions
+                - img [ref=e112]
+                - generic [ref=e114]: Actions
+            - listitem [ref=e115]:
+              - link "Projects" [ref=e116] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/projects
+                - img [ref=e117]
+                - generic [ref=e119]: Projects
+            - listitem [ref=e120]:
+              - link "Security and quality" [ref=e121] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/security
+                - img [ref=e122]
+                - generic [ref=e124]: Security and quality
+            - listitem [ref=e125]:
+              - link "Insights" [ref=e126] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/pulse
+                - img [ref=e127]
+                - generic [ref=e129]: Insights
+      - generic [ref=e137]:
+        - generic [ref=e139]:
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - heading "Collapse file tree" [level=2] [ref=e145]:
+                  - button "Collapse file tree" [expanded] [ref=e146] [cursor=pointer]:
+                    - img [ref=e147]
+                - heading "Files" [level=2] [ref=e150]
+              - generic [ref=e151]:
+                - generic [ref=e153]:
+                  - link "View file on default branch" [ref=e155] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/blob/main/FLOWCHART.md
+                    - img [ref=e156]
+                  - button "copilot/improve-mermaid-diagrams branch" [ref=e159] [cursor=pointer]:
+                    - generic [ref=e160]:
+                      - generic [ref=e162]:
+                        - img [ref=e164]
+                        - generic [ref=e167]: copilot/improve-mermaid-diagrams
+                      - generic:
+                        - img
+                - button "Search this repository (forward slash)" [ref=e169] [cursor=pointer]:
+                  - img [ref=e170]
+            - generic [ref=e173]:
+              - img [ref=e175]
+              - combobox "Go to file" [ref=e177]
+            - navigation "File Tree Navigation" [ref=e183]:
+              - tree "Files" [ref=e185]:
+                - treeitem ".devcontainer" [level=1] [ref=e186]:
+                  - generic [ref=e187] [cursor=pointer]:
+                    - img [ref=e189]
+                    - generic [ref=e191]:
+                      - img [ref=e195]
+                      - generic [ref=e197]: .devcontainer
+                - treeitem ".github" [level=1] [ref=e198]:
+                  - generic [ref=e199] [cursor=pointer]:
+                    - img [ref=e201]
+                    - generic [ref=e203]:
+                      - img [ref=e207]
+                      - generic [ref=e209]: .github
+                - treeitem ".playwright-mcp" [level=1] [ref=e210]:
+                  - generic [ref=e211] [cursor=pointer]:
+                    - img [ref=e213]
+                    - generic [ref=e215]:
+                      - img [ref=e219]
+                      - generic [ref=e221]: .playwright-mcp
+                - treeitem ".vscode" [level=1] [ref=e222]:
+                  - generic [ref=e223] [cursor=pointer]:
+                    - img [ref=e225]
+                    - generic [ref=e227]:
+                      - img [ref=e231]
+                      - generic [ref=e233]: .vscode
+                - treeitem "cypress" [level=1] [ref=e234]:
+                  - generic [ref=e235] [cursor=pointer]:
+                    - img [ref=e237]
+                    - generic [ref=e239]:
+                      - img [ref=e243]
+                      - generic [ref=e245]: cypress
+                - treeitem "docs" [level=1] [ref=e246]:
+                  - generic [ref=e247] [cursor=pointer]:
+                    - img [ref=e249]
+                    - generic [ref=e251]:
+                      - img [ref=e255]
+                      - generic [ref=e257]: docs
+                - treeitem "public" [level=1] [ref=e258]:
+                  - generic [ref=e259] [cursor=pointer]:
+                    - img [ref=e261]
+                    - generic [ref=e263]:
+                      - img [ref=e267]
+                      - generic [ref=e269]: public
+                - treeitem "screenshots" [level=1] [ref=e270]:
+                  - generic [ref=e271] [cursor=pointer]:
+                    - img [ref=e273]
+                    - generic [ref=e275]:
+                      - img [ref=e279]
+                      - generic [ref=e281]: screenshots
+                - treeitem "scripts" [level=1] [ref=e282]:
+                  - generic [ref=e283] [cursor=pointer]:
+                    - img [ref=e285]
+                    - generic [ref=e287]:
+                      - img [ref=e291]
+                      - generic [ref=e293]: scripts
+                - treeitem "src" [level=1] [ref=e294]:
+                  - generic [ref=e295] [cursor=pointer]:
+                    - img [ref=e297]
+                    - generic [ref=e299]:
+                      - img [ref=e303]
+                      - generic [ref=e305]: src
+                - treeitem "vite-plugins" [level=1] [ref=e306]:
+                  - generic [ref=e307] [cursor=pointer]:
+                    - img [ref=e309]
+                    - generic [ref=e311]:
+                      - img [ref=e315]
+                      - generic [ref=e317]: vite-plugins
+                - treeitem ".dependency-cruiser.cjs" [level=1] [ref=e318]:
+                  - generic [ref=e320] [cursor=pointer]:
+                    - img [ref=e323]
+                    - generic [ref=e325]: .dependency-cruiser.cjs
+                - treeitem ".env.production" [level=1] [ref=e326]:
+                  - generic [ref=e328] [cursor=pointer]:
+                    - img [ref=e331]
+                    - generic [ref=e333]: .env.production
+                - treeitem ".gitignore" [level=1] [ref=e334]:
+                  - generic [ref=e336] [cursor=pointer]:
+                    - img [ref=e339]
+                    - generic [ref=e341]: .gitignore
+                - treeitem ".npmignore" [level=1] [ref=e342]:
+                  - generic [ref=e344] [cursor=pointer]:
+                    - img [ref=e347]
+                    - generic [ref=e349]: .npmignore
+                - treeitem ".nvmrc" [level=1] [ref=e350]:
+                  - generic [ref=e352] [cursor=pointer]:
+                    - img [ref=e355]
+                    - generic [ref=e357]: .nvmrc
+                - treeitem "ARCHITECTURE.md" [level=1] [ref=e358]:
+                  - generic [ref=e360] [cursor=pointer]:
+                    - img [ref=e363]
+                    - generic [ref=e365]: ARCHITECTURE.md
+                - treeitem "ART_ASSETS.md" [level=1] [ref=e366]:
+                  - generic [ref=e368] [cursor=pointer]:
+                    - img [ref=e371]
+                    - generic [ref=e373]: ART_ASSETS.md
+                - treeitem "AUDIO_ASSETS.md" [level=1] [ref=e374]:
+                  - generic [ref=e376] [cursor=pointer]:
+                    - img [ref=e379]
+                    - generic [ref=e381]: AUDIO_ASSETS.md
+                - treeitem "BCPPlan.md" [level=1] [ref=e382]:
+                  - generic [ref=e384] [cursor=pointer]:
+                    - img [ref=e387]
+                    - generic [ref=e389]: BCPPlan.md
+                - treeitem "CODEOWNERS" [level=1] [ref=e390]:
+                  - generic [ref=e392] [cursor=pointer]:
+                    - img [ref=e395]
+                    - generic [ref=e397]: CODEOWNERS
+                - treeitem "CODE_OF_CONDUCT.md" [level=1] [ref=e398]:
+                  - generic [ref=e400] [cursor=pointer]:
+                    - img [ref=e403]
+                    - generic [ref=e405]: CODE_OF_CONDUCT.md
+                - treeitem "COMBAT_ARCHITECTURE.md" [level=1] [ref=e406]:
+                  - generic [ref=e408] [cursor=pointer]:
+                    - img [ref=e411]
+                    - generic [ref=e413]: COMBAT_ARCHITECTURE.md
+                - treeitem "CONTRIBUTING.md" [level=1] [ref=e414]:
+                  - generic [ref=e416] [cursor=pointer]:
+                    - img [ref=e419]
+                    - generic [ref=e421]: CONTRIBUTING.md
+                - treeitem "CONTROLS.md" [level=1] [ref=e422]:
+                  - generic [ref=e424] [cursor=pointer]:
+                    - img [ref=e427]
+                    - generic [ref=e429]: CONTROLS.md
+                - treeitem "CRA-ASSESSMENT.md" [level=1] [ref=e430]:
+                  - generic [ref=e432] [cursor=pointer]:
+                    - img [ref=e435]
+                    - generic [ref=e437]: CRA-ASSESSMENT.md
+                - treeitem "DATA_MODEL.md" [level=1] [ref=e438]:
+                  - generic [ref=e440] [cursor=pointer]:
+                    - img [ref=e443]
+                    - generic [ref=e445]: DATA_MODEL.md
+                - treeitem "E2ETestPlan.md" [level=1] [ref=e446]:
+                  - generic [ref=e448] [cursor=pointer]:
+                    - img [ref=e451]
+                    - generic [ref=e453]: E2ETestPlan.md
+                - treeitem "End-of-Life-Strategy.md" [level=1] [ref=e454]:
+                  - generic [ref=e456] [cursor=pointer]:
+                    - img [ref=e459]
+                    - generic [ref=e461]: End-of-Life-Strategy.md
+                - treeitem "FLOWCHART.md" [level=1] [ref=e462]:
+                  - generic [ref=e464] [cursor=pointer]:
+                    - img [ref=e467]
+                    - generic [ref=e469]: FLOWCHART.md
+                - treeitem "FUTURE_ARCHITECTURE.md" [level=1] [ref=e470]:
+                  - generic [ref=e472] [cursor=pointer]:
+                    - img [ref=e475]
+                    - generic [ref=e477]: FUTURE_ARCHITECTURE.md
+                - treeitem "FUTURE_DATA_MODEL.md" [level=1] [ref=e478]:
+                  - generic [ref=e480] [cursor=pointer]:
+                    - img [ref=e483]
+                    - generic [ref=e485]: FUTURE_DATA_MODEL.md
+                - treeitem "FUTURE_FLOWCHART.md" [level=1] [ref=e486]:
+                  - generic [ref=e488] [cursor=pointer]:
+                    - img [ref=e491]
+                    - generic [ref=e493]: FUTURE_FLOWCHART.md
+                - treeitem "FUTURE_MINDMAP.md" [level=1] [ref=e494]:
+                  - generic [ref=e496] [cursor=pointer]:
+                    - img [ref=e499]
+                    - generic [ref=e501]: FUTURE_MINDMAP.md
+                - treeitem "FUTURE_SECURITY_ARCHITECTURE.md" [level=1] [ref=e502]:
+                  - generic [ref=e504] [cursor=pointer]:
+                    - img [ref=e507]
+                    - generic [ref=e509]: FUTURE_SECURITY_ARCHITECTURE.md
+                - treeitem "FUTURE_STATEDIAGRAM.md" [level=1] [ref=e510]:
+                  - generic [ref=e512] [cursor=pointer]:
+                    - img [ref=e515]
+                    - generic [ref=e517]: FUTURE_STATEDIAGRAM.md
+                - treeitem "FUTURE_SWOT.md" [level=1] [ref=e518]:
+                  - generic [ref=e520] [cursor=pointer]:
+                    - img [ref=e523]
+                    - generic [ref=e525]: FUTURE_SWOT.md
+                - treeitem "FUTURE_THREAT_MODEL.md" [level=1] [ref=e526]:
+                  - generic [ref=e528] [cursor=pointer]:
+                    - img [ref=e531]
+                    - generic [ref=e533]: FUTURE_THREAT_MODEL.md
+                - treeitem "FUTURE_WORKFLOWS.md" [level=1] [ref=e534]:
+                  - generic [ref=e536] [cursor=pointer]:
+                    - img [ref=e539]
+                    - generic [ref=e541]: FUTURE_WORKFLOWS.md
+                - treeitem "FinancialSecurityPlan.md" [level=1] [ref=e542]:
+                  - generic [ref=e544] [cursor=pointer]:
+                    - img [ref=e547]
+                    - generic [ref=e549]: FinancialSecurityPlan.md
+                - treeitem "ISMS_REFERENCE_MAPPING.md" [level=1] [ref=e550]:
+                  - generic [ref=e552] [cursor=pointer]:
+                    - img [ref=e555]
+                    - generic [ref=e557]: ISMS_REFERENCE_MAPPING.md
+                - treeitem "LICENSE" [level=1] [ref=e558]:
+                  - generic [ref=e560] [cursor=pointer]:
+                    - img [ref=e563]
+                    - generic [ref=e565]: LICENSE
+                - treeitem "MINDMAP.md" [level=1] [ref=e566]:
+                  - generic [ref=e568] [cursor=pointer]:
+                    - img [ref=e571]
+                    - generic [ref=e573]: MINDMAP.md
+                - treeitem "README.md" [level=1] [ref=e574]:
+                  - generic [ref=e576] [cursor=pointer]:
+                    - img [ref=e579]
+                    - generic [ref=e581]: README.md
+                - treeitem "ROADMAP.md" [level=1] [ref=e582]:
+                  - generic [ref=e584] [cursor=pointer]:
+                    - img [ref=e587]
+                    - generic [ref=e589]: ROADMAP.md
+                - treeitem "SECURITY.md" [level=1] [ref=e590]:
+                  - generic [ref=e592] [cursor=pointer]:
+                    - img [ref=e595]
+                    - generic [ref=e597]: SECURITY.md
+                - treeitem "SECURITY_ARCHITECTURE.md" [level=1] [ref=e598]:
+                  - generic [ref=e600] [cursor=pointer]:
+                    - img [ref=e603]
+                    - generic [ref=e605]: SECURITY_ARCHITECTURE.md
+                - treeitem "STATEDIAGRAM.md" [level=1] [ref=e606]:
+                  - generic [ref=e608] [cursor=pointer]:
+                    - img [ref=e611]
+                    - generic [ref=e613]: STATEDIAGRAM.md
+                - treeitem "SWOT.md" [level=1] [ref=e614]:
+                  - generic [ref=e616] [cursor=pointer]:
+                    - img [ref=e619]
+                    - generic [ref=e621]: SWOT.md
+                - treeitem "THREAT_MODEL.md" [level=1] [ref=e622]:
+                  - generic [ref=e624] [cursor=pointer]:
+                    - img [ref=e627]
+                    - generic [ref=e629]: THREAT_MODEL.md
+                - treeitem "UnitTestPlan.md" [level=1] [ref=e630]:
+                  - generic [ref=e632] [cursor=pointer]:
+                    - img [ref=e635]
+                    - generic [ref=e637]: UnitTestPlan.md
+                - treeitem "VIDEO_ASSETS.md" [level=1] [ref=e638]:
+                  - generic [ref=e640] [cursor=pointer]:
+                    - img [ref=e643]
+                    - generic [ref=e645]: VIDEO_ASSETS.md
+                - treeitem "VISION_2026_2034.md" [level=1] [ref=e646]:
+                  - generic [ref=e648] [cursor=pointer]:
+                    - img [ref=e651]
+                    - generic [ref=e653]: VISION_2026_2034.md
+                - treeitem "WORKFLOWS.md" [level=1] [ref=e654]:
+                  - generic [ref=e656] [cursor=pointer]:
+                    - img [ref=e659]
+                    - generic [ref=e661]: WORKFLOWS.md
+                - treeitem "budget.json" [level=1] [ref=e662]:
+                  - generic [ref=e664] [cursor=pointer]:
+                    - img [ref=e667]
+                    - generic [ref=e669]: budget.json
+                - treeitem "cypress.config.ts" [level=1] [ref=e670]:
+                  - generic [ref=e672] [cursor=pointer]:
+                    - img [ref=e675]
+                    - generic [ref=e677]: cypress.config.ts
+                - treeitem "development.md" [level=1] [ref=e678]:
+                  - generic [ref=e680] [cursor=pointer]:
+                    - img [ref=e683]
+                    - generic [ref=e685]: development.md
+                - treeitem "eslint.config.js" [level=1] [ref=e686]:
+                  - generic [ref=e688] [cursor=pointer]:
+                    - img [ref=e691]
+                    - generic [ref=e693]: eslint.config.js
+                - treeitem "game-design.md" [level=1] [ref=e694]:
+                  - generic [ref=e696] [cursor=pointer]:
+                    - img [ref=e699]
+                    - generic [ref=e701]: game-design.md
+                - treeitem "game-status.md" [level=1] [ref=e702]:
+                  - generic [ref=e704] [cursor=pointer]:
+                    - img [ref=e707]
+                    - generic [ref=e709]: game-status.md
+                - treeitem "generate-sitemaps.js" [level=1] [ref=e710]:
+                  - generic [ref=e712] [cursor=pointer]:
+                    - img [ref=e715]
+                    - generic [ref=e717]: generate-sitemaps.js
+                - treeitem "index.html" [level=1] [ref=e718]:
+                  - generic [ref=e720] [cursor=pointer]:
+                    - img [ref=e723]
+                    - generic [ref=e725]: index.html
+                - treeitem "knip.json" [level=1] [ref=e726]:
+                  - generic [ref=e728] [cursor=pointer]:
+                    - img [ref=e731]
+                    - generic [ref=e733]: knip.json
+                - treeitem "package-lock.json" [level=1] [ref=e734]:
+                  - generic [ref=e736] [cursor=pointer]:
+                    - img [ref=e739]
+                    - generic [ref=e741]: package-lock.json
+                - treeitem "package.json" [level=1] [ref=e742]:
+                  - generic [ref=e744] [cursor=pointer]:
+                    - img [ref=e747]
+                    - generic [ref=e749]: package.json
+                - treeitem "performance-testing.md" [level=1] [ref=e750]:
+                  - generic [ref=e752] [cursor=pointer]:
+                    - img [ref=e755]
+                    - generic [ref=e757]: performance-testing.md
+                - treeitem "restructure-audio.sh" [level=1] [ref=e758]:
+                  - generic [ref=e760] [cursor=pointer]:
+                    - img [ref=e763]
+                    - generic [ref=e765]: restructure-audio.sh
+                - treeitem "tsconfig.app.json" [level=1] [ref=e766]:
+                  - generic [ref=e768] [cursor=pointer]:
+                    - img [ref=e771]
+                    - generic [ref=e773]: tsconfig.app.json
+                - treeitem "tsconfig.json" [level=1] [ref=e774]:
+                  - generic [ref=e776] [cursor=pointer]:
+                    - img [ref=e779]
+                    - generic [ref=e781]: tsconfig.json
+                - treeitem "tsconfig.lib.json" [level=1] [ref=e782]:
+                  - generic [ref=e784] [cursor=pointer]:
+                    - img [ref=e787]
+                    - generic [ref=e789]: tsconfig.lib.json
+                - treeitem "tsconfig.node.json" [level=1] [ref=e790]:
+                  - generic [ref=e792] [cursor=pointer]:
+                    - img [ref=e795]
+                    - generic [ref=e797]: tsconfig.node.json
+                - treeitem "tsconfig.test.json" [level=1] [ref=e798]:
+                  - generic [ref=e800] [cursor=pointer]:
+                    - img [ref=e803]
+                    - generic [ref=e805]: tsconfig.test.json
+                - treeitem "typedoc.json" [level=1] [ref=e806]:
+                  - generic [ref=e808] [cursor=pointer]:
+                    - img [ref=e811]
+                    - generic [ref=e813]: typedoc.json
+                - treeitem "vite.config.ts" [level=1] [ref=e814]:
+                  - generic [ref=e816] [cursor=pointer]:
+                    - img [ref=e819]
+                    - generic [ref=e821]: vite.config.ts
+                - treeitem "vite.lib.config.ts" [level=1] [ref=e822]:
+                  - generic [ref=e824] [cursor=pointer]:
+                    - img [ref=e827]
+                    - generic [ref=e829]: vite.lib.config.ts
+                - treeitem "vitest.config.ts" [level=1] [ref=e830]:
+                  - generic [ref=e832] [cursor=pointer]:
+                    - img [ref=e835]
+                    - generic [ref=e837]: vitest.config.ts
+          - slider "Draggable pane splitter" [ref=e839]
+        - generic [ref=e842]:
+          - generic [ref=e846]:
+            - generic [ref=e848]:
+              - navigation "Breadcrumbs" [ref=e849]:
+                - heading "Breadcrumbs" [level=2] [ref=e850]
+                - list [ref=e851]:
+                  - listitem [ref=e852]:
+                    - link "blacktrigram" [ref=e853] [cursor=pointer]:
+                      - /url: /Hack23/blacktrigram/tree/copilot/improve-mermaid-diagrams
+              - generic [ref=e854]:
+                - text: /
+                - heading "FLOWCHART.md" [level=1] [ref=e855]
+              - button "Copy path" [ref=e856] [cursor=pointer]:
+                - img [ref=e857]
+            - button "More file actions" [ref=e863] [cursor=pointer]:
+              - img [ref=e864]
+          - generic [ref=e866]:
+            - generic [ref=e868]:
+              - heading "Latest commit" [level=2] [ref=e869]
+              - generic [ref=e870]:
+                - generic [ref=e871]:
+                  - generic [ref=e873]:
+                    - img "Copilot" [ref=e874]
+                    - img "pethers" [ref=e875]
+                  - link "commits by Copilot" [ref=e877] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commits?author=Copilot
+                    - text: Copilot
+                  - generic [ref=e878]: and
+                  - link "commits by pethers" [ref=e880] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commits?author=pethers
+                    - text: pethers
+                - generic [ref=e881]:
+                  - 'link "docs: address PR review comments on tutorial flow and state docs" [ref=e884] [cursor=pointer]':
+                    - /url: /Hack23/blacktrigram/commit/1d1ffbe995c0d36d1e15649ed5d8fa60eda71e6c
+                  - button "Open commit details" [ref=e885] [cursor=pointer]:
+                    - img [ref=e886]
+                  - button "success" [ref=e888] [cursor=pointer]:
+                    - img [ref=e889]
+              - generic [ref=e891]:
+                - generic [ref=e893]:
+                  - link "Commit 1d1ffbe" [ref=e894] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commit/1d1ffbe995c0d36d1e15649ed5d8fa60eda71e6c
+                    - text: 1d1ffbe
+                  - text: ·
+                  - generic "Apr 7, 2026, 2:16 AM UTC" [ref=e895]: Apr 7, 20262 days ago
+                - generic [ref=e896]:
+                  - heading "History" [level=2] [ref=e897]
+                  - link "History" [ref=e898] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commits/copilot/improve-mermaid-diagrams/FLOWCHART.md
+                    - generic [ref=e899]:
+                      - generic:
+                        - img
+                      - generic [ref=e900]: History
+            - generic [ref=e902]:
+              - generic [ref=e904]:
+                - heading "File metadata and controls" [level=2] [ref=e905]
+                - list "File view" [ref=e907]:
+                  - listitem [ref=e908]:
+                    - button "Preview" [ref=e909] [cursor=pointer]:
+                      - generic [ref=e911]: Preview
+                  - listitem [ref=e912]:
+                    - button "Code" [ref=e913] [cursor=pointer]:
+                      - generic [ref=e915]: Code
+                  - listitem [ref=e916]:
+                    - button "Blame" [ref=e917] [cursor=pointer]:
+                      - generic [ref=e919]: Blame
+                - generic [ref=e920]:
+                  - generic [ref=e922]:
+                    - link "Raw" [ref=e924] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/blacktrigram/raw/refs/heads/copilot/improve-mermaid-diagrams/FLOWCHART.md
+                      - generic [ref=e926]: Raw
+                    - button "Copy raw file" [ref=e928] [cursor=pointer]:
+                      - img [ref=e929]
+                    - button "Download raw file" [ref=e933] [cursor=pointer]:
+                      - img [ref=e934]
+                  - button "Outline" [ref=e937] [cursor=pointer]:
+                    - img [ref=e938]
+              - region "FLOWCHART.md" [ref=e941]:
+                - article [ref=e943]:
+                  - generic [ref=e944]:
+                    - heading "🔄 Black Trigram (흑괘) Flowcharts" [level=1] [ref=e945]
+                    - 'link "Permalink: 🔄 Black Trigram (흑괘) Flowcharts" [ref=e946] [cursor=pointer]':
+                      - /url: "#-black-trigram-흑괘-flowcharts"
+                      - img [ref=e947]
+                  - paragraph [ref=e949]:
+                    - strong [ref=e950]: "🔐 ISMS Alignment:"
+                    - text: This document follows
+                    - link "Hack23 Secure Development Policy" [ref=e951] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md
+                    - text: architecture documentation requirements.
+                  - generic [ref=e952]:
+                    - heading "📚 Related Documentation" [level=2] [ref=e953]
+                    - 'link "Permalink: 📚 Related Documentation" [ref=e954] [cursor=pointer]':
+                      - /url: "#-related-documentation"
+                      - img [ref=e955]
+                  - table [ref=e958]:
+                    - rowgroup [ref=e959]:
+                      - row "Document Focus Description" [ref=e960]:
+                        - columnheader "Document" [ref=e961]
+                        - columnheader "Focus" [ref=e962]
+                        - columnheader "Description" [ref=e963]
+                    - rowgroup [ref=e964]:
+                      - row "Architecture 🏛️ Structure C4 model showing system components" [ref=e965]:
+                        - cell "Architecture" [ref=e966]:
+                          - link "Architecture" [ref=e967] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/ARCHITECTURE.md
+                        - cell "🏛️ Structure" [ref=e968]
+                        - cell "C4 model showing system components" [ref=e969]
+                      - row "Data Model 📊 Data Type system and data structures" [ref=e970]:
+                        - cell "Data Model" [ref=e971]:
+                          - link "Data Model" [ref=e972] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/DATA_MODEL.md
+                        - cell "📊 Data" [ref=e973]
+                        - cell "Type system and data structures" [ref=e974]
+                      - row "State Diagram 🎮 State Machine Combat and game state transitions" [ref=e975]:
+                        - cell "State Diagram" [ref=e976]:
+                          - link "State Diagram" [ref=e977] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/STATEDIAGRAM.md
+                        - cell "🎮 State Machine" [ref=e978]
+                        - cell "Combat and game state transitions" [ref=e979]
+                      - row "Combat Architecture ⚔️ Combat System Detailed combat mechanics implementation" [ref=e980]:
+                        - cell "Combat Architecture" [ref=e981]:
+                          - link "Combat Architecture" [ref=e982] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/COMBAT_ARCHITECTURE.md
+                        - cell "⚔️ Combat System" [ref=e983]
+                        - cell "Detailed combat mechanics implementation" [ref=e984]
+                      - row "Future Flowchart 🔮 Evolution Planned workflow enhancements" [ref=e985]:
+                        - cell "Future Flowchart" [ref=e986]:
+                          - link "Future Flowchart" [ref=e987] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/FUTURE_FLOWCHART.md
+                        - cell "🔮 Evolution" [ref=e988]
+                        - cell "Planned workflow enhancements" [ref=e989]
+                  - separator [ref=e990]
+                  - generic [ref=e991]:
+                    - heading "🎯 Overview" [level=2] [ref=e992]
+                    - 'link "Permalink: 🎯 Overview" [ref=e993] [cursor=pointer]':
+                      - /url: "#-overview"
+                      - img [ref=e994]
+                  - paragraph [ref=e996]: This document provides comprehensive flowcharts for Black Trigram (흑괘), documenting all major user flows, game processes, and system interactions. The flows use Korean cyberpunk color scheme consistent with the game's aesthetic.
+                  - paragraph [ref=e997]:
+                    - strong [ref=e998]: "Flowchart Index:"
+                  - list [ref=e999]:
+                    - listitem [ref=e1000]:
+                      - link "Main User Flow" [ref=e1001] [cursor=pointer]:
+                        - /url: "#main-user-flow"
+                      - text: — Complete game navigation from launch to combat
+                    - listitem [ref=e1002]:
+                      - link "Training Mode Flow" [ref=e1003] [cursor=pointer]:
+                        - /url: "#training-mode-flow"
+                      - text: — Practice modes, drills, and feedback
+                    - listitem [ref=e1004]:
+                      - link "Pause Menu Flow" [ref=e1005] [cursor=pointer]:
+                        - /url: "#pause-menu-flow"
+                      - text: — In-combat pause navigation and settings
+                    - listitem [ref=e1006]:
+                      - link "Rematch Flow" [ref=e1007] [cursor=pointer]:
+                        - /url: "#rematch-flow"
+                      - text: — Post-match rematch and archetype re-selection
+                    - listitem [ref=e1008]:
+                      - link "Combat Round Flow" [ref=e1009] [cursor=pointer]:
+                        - /url: "#combat-round-flow"
+                      - text: — Round initialization through completion
+                    - listitem [ref=e1010]:
+                      - link "Attack Resolution Flow" [ref=e1011] [cursor=pointer]:
+                        - /url: "#attack-resolution-flow"
+                      - text: — Damage calculation pipeline
+                    - listitem [ref=e1012]:
+                      - link "Vital Point Strike Flow" [ref=e1013] [cursor=pointer]:
+                        - /url: "#vital-point-strike-resolution-70-targets"
+                      - text: — VP targeting mechanics
+                    - listitem [ref=e1014]:
+                      - text: "Cross-reference:"
+                      - link "State Diagrams" [ref=e1015] [cursor=pointer]:
+                        - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/STATEDIAGRAM.md
+                      - text: for state transitions,
+                      - link "Data Model" [ref=e1016] [cursor=pointer]:
+                        - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/DATA_MODEL.md
+                      - text: for type definitions
+                  - separator [ref=e1017]
+                  - generic [ref=e1018]:
+                    - heading "🎮 User Journey Flows" [level=2] [ref=e1019]
+                    - 'link "Permalink: 🎮 User Journey Flows" [ref=e1020] [cursor=pointer]':
+                      - /url: "#-user-journey-flows"
+                      - img [ref=e1021]
+                  - generic [ref=e1023]:
+                    - heading "Main User Flow" [level=3] [ref=e1024]:
+                      - strong [ref=e1025]: Main User Flow
+                    - 'link "Permalink: Main User Flow" [ref=e1026] [cursor=pointer]':
+                      - /url: "#main-user-flow"
+                      - img [ref=e1027]
+                  - region "mermaid rendered output container" [ref=e1029]:
+                    - generic [ref=e1030]:
+                      - generic [ref=e1031]:
+                        - group [ref=e1032]:
+                          - button "Open dialog" [ref=e1033] [cursor=pointer]:
+                            - img [ref=e1034]
+                        - button "Copy mermaid code" [ref=e1036] [cursor=pointer]:
+                          - img [ref=e1037]
+                      - iframe [ref=e1041]:
+                        - generic [active]:
+                          - document [ref=f294e4]:
+                            - generic [ref=f294e6]:
+                              - generic [ref=f294e46]:
+                                - paragraph [ref=f294e52]: Success
+                                - paragraph [ref=f294e58]: Error
+                                - paragraph [ref=f294e64]: Retry
+                                - paragraph [ref=f294e70]: Training
+                                - paragraph [ref=f294e76]: Versus
+                                - paragraph [ref=f294e82]: Tutorial
+                                - paragraph [ref=f294e88]: Philosophy
+                                - paragraph [ref=f294e94]: Controls
+                                - paragraph [ref=f294e100]: Settings
+                                - paragraph [ref=f294e106]: Exit
+                                - paragraph [ref=f294e112]: 무사 Musa
+                                - paragraph [ref=f294e118]: 암살자 Amsalja
+                                - paragraph [ref=f294e124]: 해커 Hacker
+                                - paragraph [ref=f294e130]: 정보요원 Intelligence
+                                - paragraph [ref=f294e136]: 조직폭력배 Organized Crime
+                                - paragraph [ref=f294e142]: Pause
+                                - paragraph [ref=f294e148]: Resume
+                                - paragraph [ref=f294e154]: "Yes"
+                                - paragraph [ref=f294e160]: "No"
+                                - paragraph [ref=f294e166]: "Yes"
+                                - paragraph [ref=f294e172]: "No"
+                                - paragraph [ref=f294e178]: "Yes"
+                                - paragraph [ref=f294e184]: "No"
+                                - paragraph [ref=f294e190]: Time Remaining
+                                - paragraph [ref=f294e196]: Time Up
+                                - paragraph [ref=f294e202]: More Rounds
+                                - paragraph [ref=f294e208]: Victory
+                                - paragraph [ref=f294e214]: Defeat
+                                - paragraph [ref=f294e220]: Return to Menu
+                                - paragraph [ref=f294e226]: Rematch
+                              - generic [ref=f294e227]:
+                                - paragraph [ref=f294e236]: 🎮 Launch Game
+                                - paragraph [ref=f294e243]:
+                                  - text: Loading
+                                  - text: Assets
+                                - paragraph [ref=f294e250]:
+                                  - text: 📺 Intro Screen
+                                  - text: 흑괘 Black Trigram
+                                - paragraph [ref=f294e257]:
+                                  - text: ❌ Error Screen
+                                  - text: Retry/Report
+                                - paragraph [ref=f294e264]: Main Menu
+                                - paragraph [ref=f294e271]: 🥋 Training Mode
+                                - paragraph [ref=f294e278]: 👤 Character Select
+                                - paragraph [ref=f294e285]: 📚 Tutorial Mode
+                                - paragraph [ref=f294e292]: ☯️ Philosophy Mode
+                                - paragraph [ref=f294e299]: 🎮 Controls Guide
+                                - paragraph [ref=f294e306]: ⚙️ Settings
+                                - paragraph [ref=f294e315]: 🚪 Exit Game
+                                - paragraph [ref=f294e322]: Choose Archetype
+                                - paragraph [ref=f294e329]: ⚔️ Combat Screen
+                                - paragraph [ref=f294e336]:
+                                  - text: 🥋 Training Flow
+                                  - text: See Training Mode Flowchart
+                                - paragraph [ref=f294e343]:
+                                  - text: 📚 Guided Tutorial
+                                  - text: 기초 안내 Basic Guidance
+                                - paragraph [ref=f294e350]: Round Start
+                                - paragraph [ref=f294e357]: Active Combat
+                                - paragraph [ref=f294e364]:
+                                  - text: ⏸️ Pause Menu
+                                  - text: See Pause Menu Flow
+                                - paragraph [ref=f294e371]: Attack Lands?
+                                - paragraph [ref=f294e378]:
+                                  - text: Vital Point
+                                  - text: Hit?
+                                - paragraph [ref=f294e385]: Continue?
+                                - paragraph [ref=f294e392]: Apply VP Effects
+                                - paragraph [ref=f294e399]: Regular Damage
+                                - paragraph [ref=f294e406]: Knockout?
+                                - paragraph [ref=f294e413]: Round End
+                                - paragraph [ref=f294e420]:
+                                  - text: Match
+                                  - text: Complete?
+                                - paragraph [ref=f294e427]: 🏆 Victory Screen
+                                - paragraph [ref=f294e434]: 💀 Defeat Screen
+                                - paragraph [ref=f294e441]: Post-Match
+                                - paragraph [ref=f294e448]:
+                                  - text: 🔄 Rematch Flow
+                                  - text: See Rematch Flowchart
+                          - generic [ref=f294e449]:
+                            - button "Zoom in" [ref=f294e450] [cursor=pointer]:
+                              - img [ref=f294e451]
+                            - button "Zoom out" [ref=f294e454] [cursor=pointer]:
+                              - img [ref=f294e455]
+                            - button "Reset view" [ref=f294e458] [cursor=pointer]:
+                              - img [ref=f294e459]
+                            - button "Pan up" [ref=f294e461] [cursor=pointer]:
+                              - img [ref=f294e462]
+                            - button "Pan down" [ref=f294e464] [cursor=pointer]:
+                              - img [ref=f294e465]
+                            - button "Pan left" [ref=f294e467] [cursor=pointer]:
+                              - img [ref=f294e468]
+                            - button "Pan right" [ref=f294e470] [cursor=pointer]:
+                              - img [ref=f294e471]
+                  - separator [ref=e1042]
+                  - generic [ref=e1043]:
+                    - heading "Training Mode Flow" [level=3] [ref=e1044]:
+                      - strong [ref=e1045]: Training Mode Flow
+                    - 'link "Permalink: Training Mode Flow" [ref=e1046] [cursor=pointer]':
+                      - /url: "#training-mode-flow"
+                      - img [ref=e1047]
+                  - paragraph [ref=e1049]:
+                    - text: Training mode provides structured practice modes for mastering vital points, trigram stances, and footwork techniques. Based on the actual
+                    - code [ref=e1050]: TrainingScreen3D
+                    - text: component implementation.
+                  - region "mermaid rendered output container" [ref=e1051]:
+                    - generic [ref=e1052]:
+                      - generic [ref=e1053]:
+                        - group [ref=e1054]:
+                          - button "Open dialog" [ref=e1055] [cursor=pointer]:
+                            - img [ref=e1056]
+                        - button "Copy mermaid code" [ref=e1058] [cursor=pointer]:
+                          - img [ref=e1059]
+                      - iframe [ref=e1063]:
+                        - generic [active]:
+                          - document [ref=f295e4]:
+                            - generic [ref=f295e6]:
+                              - generic [ref=f295e40]:
+                                - paragraph [ref=f295e46]: Free Practice
+                                - paragraph [ref=f295e52]: Vital Point Drill
+                                - paragraph [ref=f295e58]: Footwork Drill
+                                - paragraph [ref=f295e64]: Anatomy Study
+                                - paragraph [ref=f295e70]: 무사 Musa
+                                - paragraph [ref=f295e76]: 암살자 Amsalja
+                                - paragraph [ref=f295e82]: 해커 Hacker
+                                - paragraph [ref=f295e88]: 정보요원 Intelligence
+                                - paragraph [ref=f295e94]: 조직폭력배 Crime
+                                - paragraph [ref=f295e100]: By Severity
+                                - paragraph [ref=f295e106]: By Region
+                                - paragraph [ref=f295e112]: Search
+                                - paragraph [ref=f295e118]: Attack
+                                - paragraph [ref=f295e124]: Stance Change
+                                - paragraph [ref=f295e130]: Toggle Overlay
+                                - paragraph [ref=f295e136]: Adjust Scale
+                                - paragraph [ref=f295e142]: Return
+                                - paragraph [ref=f295e148]: Exit
+                              - generic [ref=f295e149]:
+                                - paragraph [ref=f295e158]: 🥋 Enter Training Mode
+                                - paragraph [ref=f295e165]:
+                                  - text: Training Menu
+                                  - text: Select Practice Mode
+                                - paragraph [ref=f295e172]: Choose Mode
+                                - paragraph [ref=f295e179]:
+                                  - text: 🥊 Free Practice
+                                  - text: 자유 연습
+                                  - text: Open Sparring with Dummy
+                                - paragraph [ref=f295e186]:
+                                  - text: 🎯 Vital Point Drill
+                                  - text: 급소 훈련
+                                  - text: Target 70 Vital Points
+                                - paragraph [ref=f295e193]:
+                                  - text: 👣 Footwork Drill
+                                  - text: 발놀림 훈련
+                                  - text: Movement & Positioning
+                                - paragraph [ref=f295e200]:
+                                  - text: 🔬 Anatomy Study
+                                  - text: 해부학 학습
+                                  - text: Body System Visualization
+                                - paragraph [ref=f295e207]:
+                                  - text: Select Archetype
+                                  - text: for Dummy
+                                - paragraph [ref=f295e214]:
+                                  - text: ⚡ Active Training
+                                  - text: 활성 훈련
+                                - paragraph [ref=f295e221]: VP Overlay Filters
+                                - paragraph [ref=f295e228]:
+                                  - text: "Filter: Minor → Lethal"
+                                  - text: 5 Severity Levels
+                                - paragraph [ref=f295e235]:
+                                  - text: "Filter: Head/Torso/Arms/Legs"
+                                  - text: 8 Body Regions
+                                - paragraph [ref=f295e242]:
+                                  - text: Search by Name
+                                  - text: Korean or English
+                                - paragraph [ref=f295e249]:
+                                  - text: 🔬 Anatomy Overlay
+                                  - text: Layer Visualization
+                                  - text: Skeletal/Muscle/VP
+                                - paragraph [ref=f295e256]: Training Action
+                                - paragraph [ref=f295e263]:
+                                  - text: Execute Technique
+                                  - text: 28-Bone Animation
+                                  - text: Hand Pose Selection
+                                - paragraph [ref=f295e270]:
+                                  - text: Change Trigram Stance
+                                  - text: 8 Stances Available
+                                - paragraph [ref=f295e277]:
+                                  - text: Toggle VP Overlay
+                                  - text: V Key Shortcut
+                                - paragraph [ref=f295e284]:
+                                  - text: Adjust View Scale
+                                  - text: "Default: 1.2x"
+                                - paragraph [ref=f295e291]:
+                                  - text: 📊 Feedback Display
+                                  - text: Hit Location
+                                  - text: Damage Calculation
+                                  - text: VP Hit Result
+                                - paragraph [ref=f295e298]:
+                                  - text: 📈 Stats Update
+                                  - text: Hits Landed
+                                  - text: VP Accuracy
+                                  - text: Technique Mastery
+                                - paragraph [ref=f295e307]: 🏠 Return to Main Menu
+                          - generic [ref=f295e308]:
+                            - button "Zoom in" [ref=f295e309] [cursor=pointer]:
+                              - img [ref=f295e310]
+                            - button "Zoom out" [ref=f295e313] [cursor=pointer]:
+                              - img [ref=f295e314]
+                            - button "Reset view" [ref=f295e317] [cursor=pointer]:
+                              - img [ref=f295e318]
+                            - button "Pan up" [ref=f295e320] [cursor=pointer]:
+                              - img [ref=f295e321]
+                            - button "Pan down" [ref=f295e323] [cursor=pointer]:
+                              - img [ref=f295e324]
+                            - button "Pan left" [ref=f295e326] [cursor=pointer]:
+                              - img [ref=f295e327]
+                            - button "Pan right" [ref=f295e329] [cursor=pointer]:
+                              - img [ref=f295e330]
+                    - generic [ref=e1064]:
+                      - img [ref=e1065]
+                      - generic [ref=e1068]: Loading
+                  - separator [ref=e1069]
+                  - generic [ref=e1070]:
+                    - heading "Pause Menu Flow" [level=3] [ref=e1071]:
+                      - strong [ref=e1072]: Pause Menu Flow
+                    - 'link "Permalink: Pause Menu Flow" [ref=e1073] [cursor=pointer]':
+                      - /url: "#pause-menu-flow"
+                      - img [ref=e1074]
+                  - paragraph [ref=e1076]:
+                    - text: The pause menu provides access to game controls, settings adjustments, and navigation options during combat. Based on the actual
+                    - code [ref=e1077]: PauseMenu.tsx
+                    - text: and
+                    - code [ref=e1078]: usePauseMenu.ts
+                    - text: hook implementation.
+                  - region "mermaid rendered output container" [ref=e1079]:
+                    - generic [ref=e1080]:
+                      - generic [ref=e1081]:
+                        - group [ref=e1082]:
+                          - button "Open dialog" [ref=e1083] [cursor=pointer]:
+                            - img [ref=e1084]
+                        - button "Copy mermaid code" [ref=e1086] [cursor=pointer]:
+                          - img [ref=e1087]
+                      - iframe [ref=e1091]:
+                        - generic [active]:
+                          - document [ref=f296e4]:
+                            - generic [ref=f296e6]:
+                              - generic [ref=f296e29]:
+                                - paragraph [ref=f296e35]: Escape Key / Pause Button
+                                - paragraph [ref=f296e41]: ▶️ 계속 Resume
+                                - paragraph [ref=f296e47]: 🔄 재시작 Restart
+                                - paragraph [ref=f296e53]: 🎮 조작법 Controls
+                                - paragraph [ref=f296e59]: ⚙️ 설정 Settings
+                                - paragraph [ref=f296e65]: 🏠 메인 메뉴 Return
+                                - paragraph [ref=f296e71]: "Yes"
+                                - paragraph [ref=f296e77]: "No"
+                                - paragraph [ref=f296e83]: 🔊 Audio
+                                - paragraph [ref=f296e89]: 🖥️ Display
+                                - paragraph [ref=f296e95]: ♿ Accessibility
+                                - paragraph [ref=f296e101]: "Yes"
+                                - paragraph [ref=f296e107]: "No"
+                              - generic [ref=f296e108]:
+                                - paragraph [ref=f296e117]: ⚔️ Active Combat
+                                - paragraph [ref=f296e124]:
+                                  - text: ⏸️ Pause Triggered
+                                  - text: Combat Frozen
+                                - paragraph [ref=f296e131]:
+                                  - text: Pause Menu
+                                  - text: 일시정지 메뉴
+                                  - text: Cyberpunk Korean UI
+                                - paragraph [ref=f296e138]: Menu Selection
+                                - paragraph [ref=f296e145]:
+                                  - text: Resume Combat
+                                  - text: Restore Combat State
+                                - paragraph [ref=f296e152]:
+                                  - text: Confirm Restart?
+                                  - text: 재시작 확인
+                                - paragraph [ref=f296e159]:
+                                  - text: Controls Guide
+                                  - text: 조작법 안내
+                                  - text: Keyboard + Gamepad
+                                - paragraph [ref=f296e166]:
+                                  - text: Quick Settings
+                                  - text: 설정 조정
+                                - paragraph [ref=f296e173]:
+                                  - text: Confirm Quit?
+                                  - text: 메인 메뉴 확인
+                                - paragraph [ref=f296e180]:
+                                  - text: 🔄 Restart Match
+                                  - text: Reset Round State
+                                  - text: Reset Player Health
+                                - paragraph [ref=f296e187]: Back to Pause Menu
+                                - paragraph [ref=f296e194]: Settings Category
+                                - paragraph [ref=f296e201]:
+                                  - text: Audio Settings
+                                  - text: Volume Control
+                                - paragraph [ref=f296e208]:
+                                  - text: Display Settings
+                                  - text: Visual Options
+                                - paragraph [ref=f296e215]:
+                                  - text: Accessibility
+                                  - text: 접근성 설정
+                                - paragraph [ref=f296e222]: Back to Pause Menu
+                                - paragraph [ref=f296e231]: 🏠 Return to Main Menu
+                                - paragraph [ref=f296e240]:
+                                  - text: ⚔️ Resume Combat
+                                  - text: 60fps Restored
+                                - paragraph [ref=f296e249]:
+                                  - text: ⚔️ New Match
+                                  - text: Round 1 Start
+                          - generic [ref=f296e250]:
+                            - button "Zoom in" [ref=f296e251] [cursor=pointer]:
+                              - img [ref=f296e252]
+                            - button "Zoom out" [ref=f296e255] [cursor=pointer]:
+                              - img [ref=f296e256]
+                            - button "Reset view" [ref=f296e259] [cursor=pointer]:
+                              - img [ref=f296e260]
+                            - button "Pan up" [ref=f296e262] [cursor=pointer]:
+                              - img [ref=f296e263]
+                            - button "Pan down" [ref=f296e265] [cursor=pointer]:
+                              - img [ref=f296e266]
+                            - button "Pan left" [ref=f296e268] [cursor=pointer]:
+                              - img [ref=f296e269]
+                            - button "Pan right" [ref=f296e271] [cursor=pointer]:
+                              - img [ref=f296e272]
+                    - generic [ref=e1092]:
+                      - img [ref=e1093]
+                      - generic [ref=e1096]: Loading
+                  - separator [ref=e1097]
+                  - generic [ref=e1098]:
+                    - heading "Rematch Flow" [level=3] [ref=e1099]:
+                      - strong [ref=e1100]: Rematch Flow
+                    - 'link "Permalink: Rematch Flow" [ref=e1101] [cursor=pointer]':
+                      - /url: "#rematch-flow"
+                      - img [ref=e1102]
+                  - paragraph [ref=e1104]: After a match ends (Victory or Defeat), the rematch flow allows players to start a new match while preserving or changing archetype selection.
+                  - region "mermaid rendered output container" [ref=e1105]:
+                    - generic [ref=e1106]:
+                      - generic [ref=e1107]:
+                        - group [ref=e1108]:
+                          - button "Open dialog" [ref=e1109] [cursor=pointer]:
+                            - img [ref=e1110]
+                        - button "Copy mermaid code" [ref=e1112] [cursor=pointer]:
+                          - img [ref=e1113]
+                      - iframe [ref=e1117]:
+                        - generic [active]:
+                          - document [ref=f297e4]:
+                            - generic [ref=f297e6]:
+                              - generic [ref=f297e20]:
+                                - paragraph [ref=f297e26]: Rematch
+                                - paragraph [ref=f297e32]: Return to Menu
+                                - paragraph [ref=f297e38]: Yes - Quick Rematch
+                                - paragraph [ref=f297e44]: No - Change Setup
+                                - paragraph [ref=f297e50]: 무사 Musa
+                                - paragraph [ref=f297e56]: 암살자 Amsalja
+                                - paragraph [ref=f297e62]: 해커 Hacker
+                                - paragraph [ref=f297e68]: 정보요원 Intelligence
+                                - paragraph [ref=f297e74]: 조직폭력배 Crime
+                              - generic [ref=f297e75]:
+                                - paragraph [ref=f297e84]:
+                                  - text: 🏆 Match End
+                                  - text: Victory / Defeat Screen
+                                - paragraph [ref=f297e91]: Post-Match Choice
+                                - paragraph [ref=f297e98]: Same Archetypes?
+                                - paragraph [ref=f297e107]: 🏠 Main Menu
+                                - paragraph [ref=f297e114]:
+                                  - text: ⚡ Quick Rematch
+                                  - text: Same Archetypes
+                                  - text: Reset Health/Ki/Stamina
+                                  - text: Reset Round Count
+                                - paragraph [ref=f297e121]:
+                                  - text: 👤 Return to
+                                  - text: Character Select
+                                  - text: New Archetype Choice
+                                - paragraph [ref=f297e128]:
+                                  - text: Reset Combat State
+                                  - text: Clear Status Effects
+                                  - text: Reset Body Part HP
+                                  - text: Reset VP State
+                                  - text: Reset Consciousness
+                                - paragraph [ref=f297e135]: Choose New Archetype
+                                - paragraph [ref=f297e142]:
+                                  - text: Initialize New Match
+                                  - text: Load 3D Assets
+                                  - text: 28-Bone Skeleton Setup
+                                  - text: Reset Timer
+                                - paragraph [ref=f297e149]:
+                                  - text: 3... 2... 1...
+                                  - text: 건 Heaven Stance
+                                - paragraph [ref=f297e158]:
+                                  - text: ⚔️ FIGHT!
+                                  - text: New Match Begins
+                          - generic [ref=f297e159]:
+                            - button "Zoom in" [ref=f297e160] [cursor=pointer]:
+                              - img [ref=f297e161]
+                            - button "Zoom out" [ref=f297e164] [cursor=pointer]:
+                              - img [ref=f297e165]
+                            - button "Reset view" [ref=f297e168] [cursor=pointer]:
+                              - img [ref=f297e169]
+                            - button "Pan up" [ref=f297e171] [cursor=pointer]:
+                              - img [ref=f297e172]
+                            - button "Pan down" [ref=f297e174] [cursor=pointer]:
+                              - img [ref=f297e175]
+                            - button "Pan left" [ref=f297e177] [cursor=pointer]:
+                              - img [ref=f297e178]
+                            - button "Pan right" [ref=f297e180] [cursor=pointer]:
+                              - img [ref=f297e181]
+                    - generic [ref=e1118]:
+                      - img [ref=e1119]
+                      - generic [ref=e1122]: Loading
+                  - separator [ref=e1123]
+                  - generic [ref=e1124]:
+                    - heading "⚔️ Combat System Flows" [level=2] [ref=e1125]
+                    - 'link "Permalink: ⚔️ Combat System Flows" [ref=e1126] [cursor=pointer]':
+                      - /url: "#️-combat-system-flows"
+                      - img [ref=e1127]
+                  - generic [ref=e1129]:
+                    - heading "Combat Round Flow" [level=3] [ref=e1130]:
+                      - strong [ref=e1131]: Combat Round Flow
+                    - 'link "Permalink: Combat Round Flow" [ref=e1132] [cursor=pointer]':
+                      - /url: "#combat-round-flow"
+                      - img [ref=e1133]
+                  - region "mermaid rendered output container" [ref=e1135]:
+                    - generic [ref=e1136]:
+                      - generic [ref=e1137]:
+                        - group [ref=e1138]:
+                          - button "Open dialog" [ref=e1139] [cursor=pointer]:
+                            - img [ref=e1140]
+                        - button "Copy mermaid code" [ref=e1142] [cursor=pointer]:
+                          - img [ref=e1143]
+                      - iframe [ref=e1147]:
+                        - generic [active]:
+                          - document [ref=f298e4]:
+                            - generic [ref=f298e6]:
+                              - generic [ref=f298e36]:
+                                - paragraph [ref=f298e42]: Attack Space
+                                - paragraph [ref=f298e48]: Stance 1-8
+                                - paragraph [ref=f298e54]: Block Shift
+                                - paragraph [ref=f298e60]: WASD
+                                - paragraph [ref=f298e66]: "No"
+                                - paragraph [ref=f298e72]: "Yes"
+                                - paragraph [ref=f298e78]: "No"
+                                - paragraph [ref=f298e84]: "Yes"
+                                - paragraph [ref=f298e90]: "No"
+                                - paragraph [ref=f298e96]: "Yes"
+                                - paragraph [ref=f298e102]: "No"
+                                - paragraph [ref=f298e108]: "Yes"
+                                - paragraph [ref=f298e114]: Health ≤ 0
+                                - paragraph [ref=f298e120]: Consciousness ≤ 0
+                                - paragraph [ref=f298e126]: Time Up
+                                - paragraph [ref=f298e132]: Continue
+                                - paragraph [ref=f298e138]: "Yes"
+                                - paragraph [ref=f298e144]: "No"
+                              - generic [ref=f298e145]:
+                                - paragraph [ref=f298e154]: ⏱️ Round Start
+                                - paragraph [ref=f298e161]:
+                                  - text: Initialize Round
+                                  - text: Reset Positions
+                                  - text: 28-Bone Skeleton
+                                  - text: Reset Resources
+                                - paragraph [ref=f298e168]:
+                                  - text: Ready State
+                                  - text: 3...2...1...
+                                  - text: "Stance: 건 Heaven"
+                                - paragraph [ref=f298e175]: 🥊 FIGHT!
+                                - paragraph [ref=f298e182]: Player Input
+                                - paragraph [ref=f298e189]:
+                                  - text: Process Attack
+                                  - text: Check Stance
+                                - paragraph [ref=f298e196]:
+                                  - text: Change Stance
+                                  - text: 8 Trigrams
+                                - paragraph [ref=f298e203]:
+                                  - text: Enter Block State
+                                  - text: Guard Animation
+                                - paragraph [ref=f298e210]:
+                                  - text: Update Position
+                                  - text: Check Leg Damage
+                                - paragraph [ref=f298e217]:
+                                  - text: Valid Stance
+                                  - text: for Technique?
+                                - paragraph [ref=f298e224]:
+                                  - text: Sufficient Ki
+                                  - text: "& Stamina?"
+                                - paragraph [ref=f298e231]:
+                                  - text: Execute Attack
+                                  - text: Skeletal Animation
+                                  - text: Hand Pose
+                                - paragraph [ref=f298e238]:
+                                  - text: Hit Detection
+                                  - text: Polygon-Based
+                                - paragraph [ref=f298e245]:
+                                  - text: Hit Vital Point?
+                                  - text: 70 Targets
+                                - paragraph [ref=f298e252]:
+                                  - text: Base Damage
+                                  - text: Body Part Health
+                                - paragraph [ref=f298e259]:
+                                  - text: Precision Roll
+                                  - text: ≥ VP Threshold?
+                                - paragraph [ref=f298e266]:
+                                  - text: Glancing Hit
+                                  - text: 50% VP Effect
+                                - paragraph [ref=f298e273]:
+                                  - text: Perfect VP Strike!
+                                  - text: Full Multiplier
+                                - paragraph [ref=f298e280]:
+                                  - text: Apply Damage
+                                  - text: Update 8 Body Parts
+                                - paragraph [ref=f298e287]:
+                                  - text: Apply Status Effects
+                                  - text: Pain Response
+                                  - text: Consciousness Level
+                                  - text: Breathing Disruption
+                                - paragraph [ref=f298e294]:
+                                  - text: Update Skeletal Animation
+                                  - text: Muscle Tension
+                                  - text: Injury Feedback
+                                - paragraph [ref=f298e301]:
+                                  - text: Victory
+                                  - text: Condition?
+                                - paragraph [ref=f298e310]: 🏁 Round End
+                                - paragraph [ref=f298e317]:
+                                  - text: Consume Ki/Stamina
+                                  - text: Transition Animation
+                                - paragraph [ref=f298e324]:
+                                  - text: Block State Active
+                                  - text: Reduce Damage 50-80%
+                                  - text: Guard Animation
+                                - paragraph [ref=f298e331]:
+                                  - text: Leg Injury
+                                  - text: Movement Penalty?
+                                - paragraph [ref=f298e338]:
+                                  - text: Reduced Speed
+                                  - text: Balance Loss Risk
+                                - paragraph [ref=f298e345]: Normal Speed
+                          - generic [ref=f298e346]:
+                            - button "Zoom in" [ref=f298e347] [cursor=pointer]:
+                              - img [ref=f298e348]
+                            - button "Zoom out" [ref=f298e351] [cursor=pointer]:
+                              - img [ref=f298e352]
+                            - button "Reset view" [ref=f298e355] [cursor=pointer]:
+                              - img [ref=f298e356]
+                            - button "Pan up" [ref=f298e358] [cursor=pointer]:
+                              - img [ref=f298e359]
+                            - button "Pan down" [ref=f298e361] [cursor=pointer]:
+                              - img [ref=f298e362]
+                            - button "Pan left" [ref=f298e364] [cursor=pointer]:
+                              - img [ref=f298e365]
+                            - button "Pan right" [ref=f298e367] [cursor=pointer]:
+                              - img [ref=f298e368]
+                    - generic [ref=e1148]:
+                      - img [ref=e1149]
+                      - generic [ref=e1152]: Loading
+                  - generic [ref=e1153]:
+                    - heading "Attack Resolution Flow" [level=3] [ref=e1154]:
+                      - strong [ref=e1155]: Attack Resolution Flow
+                    - 'link "Permalink: Attack Resolution Flow" [ref=e1156] [cursor=pointer]':
+                      - /url: "#attack-resolution-flow"
+                      - img [ref=e1157]
+                  - region "mermaid rendered output container" [ref=e1159]:
+                    - generic [ref=e1160]:
+                      - generic [ref=e1161]:
+                        - group [ref=e1162]:
+                          - button "Open dialog" [ref=e1163] [cursor=pointer]:
+                            - img [ref=e1164]
+                        - button "Copy mermaid code" [ref=e1166] [cursor=pointer]:
+                          - img [ref=e1167]
+                      - iframe [ref=e1171]:
+                        - generic [active]:
+                          - document [ref=f299e4]:
+                            - generic [ref=f299e6]:
+                              - generic [ref=f299e26]:
+                                - paragraph [ref=f299e32]: Invalid
+                                - paragraph [ref=f299e38]: Valid
+                                - paragraph [ref=f299e44]: "No"
+                                - paragraph [ref=f299e50]: "Yes"
+                                - paragraph [ref=f299e56]: "Yes"
+                                - paragraph [ref=f299e62]: "No"
+                                - paragraph [ref=f299e68]: "Yes"
+                                - paragraph [ref=f299e74]: "No"
+                                - paragraph [ref=f299e80]: "Yes"
+                                - paragraph [ref=f299e86]: "No"
+                              - generic [ref=f299e87]:
+                                - paragraph [ref=f299e94]: ⚔️ Attack Input
+                                - paragraph [ref=f299e101]: Validate Attack
+                                - paragraph [ref=f299e108]:
+                                  - text: ❌ Cancel Attack
+                                  - text: Play Error SFX
+                                - paragraph [ref=f299e115]: Consume Ki/Stamina
+                                - paragraph [ref=f299e122]: Calculate Hit Box
+                                - paragraph [ref=f299e129]:
+                                  - text: Collision
+                                  - text: Detected?
+                                - paragraph [ref=f299e136]:
+                                  - text: 🌀 Miss
+                                  - text: Play Woosh SFX
+                                - paragraph [ref=f299e143]:
+                                  - text: Defender
+                                  - text: Blocking?
+                                - paragraph [ref=f299e150]:
+                                  - text: Reduce Damage
+                                  - text: 50-80%
+                                - paragraph [ref=f299e157]: Full Damage
+                                - paragraph [ref=f299e164]:
+                                  - text: Calculate Final
+                                  - text: Damage
+                                - paragraph [ref=f299e171]:
+                                  - text: Critical Hit?
+                                  - text: Roll < Crit%
+                                - paragraph [ref=f299e178]:
+                                  - text: ×2 Damage
+                                  - text: ✨ Critical Effect
+                                - paragraph [ref=f299e185]: Normal Damage
+                                - paragraph [ref=f299e192]:
+                                  - text: Vital Point
+                                  - text: Hit?
+                                - paragraph [ref=f299e199]:
+                                  - text: Apply VP
+                                  - text: Multiplier
+                                  - text: 3x-10x
+                                - paragraph [ref=f299e206]:
+                                  - text: Base Damage
+                                  - text: Only
+                                - paragraph [ref=f299e213]:
+                                  - text: Apply Status
+                                  - text: Effects
+                                - paragraph [ref=f299e220]: Update Health
+                                - paragraph [ref=f299e227]:
+                                  - text: Trigger Visual
+                                  - text: Effects
+                                - paragraph [ref=f299e234]:
+                                  - text: Play Audio
+                                  - text: Feedback
+                                - paragraph [ref=f299e241]:
+                                  - text: Update Combat
+                                  - text: Stats
+                                - paragraph [ref=f299e248]: ✅ Attack Complete
+                          - generic [ref=f299e249]:
+                            - button "Zoom in" [ref=f299e250] [cursor=pointer]:
+                              - img [ref=f299e251]
+                            - button "Zoom out" [ref=f299e254] [cursor=pointer]:
+                              - img [ref=f299e255]
+                            - button "Reset view" [ref=f299e258] [cursor=pointer]:
+                              - img [ref=f299e259]
+                            - button "Pan up" [ref=f299e261] [cursor=pointer]:
+                              - img [ref=f299e262]
+                            - button "Pan down" [ref=f299e264] [cursor=pointer]:
+                              - img [ref=f299e265]
+                            - button "Pan left" [ref=f299e267] [cursor=pointer]:
+                              - img [ref=f299e268]
+                            - button "Pan right" [ref=f299e270] [cursor=pointer]:
+                              - img [ref=f299e271]
+                    - generic [ref=e1172]:
+                      - img [ref=e1173]
+                      - generic [ref=e1176]: Loading
+                  - separator [ref=e1177]
+                  - generic [ref=e1178]:
+                    - heading "🎯 Vital Point Targeting Flow" [level=2] [ref=e1179]
+                    - 'link "Permalink: 🎯 Vital Point Targeting Flow" [ref=e1180] [cursor=pointer]':
+                      - /url: "#-vital-point-targeting-flow"
+                      - img [ref=e1181]
+                  - generic [ref=e1183]:
+                    - heading "Vital Point Strike Resolution (70 Targets)" [level=3] [ref=e1184]:
+                      - strong [ref=e1185]: Vital Point Strike Resolution (70 Targets)
+                    - 'link "Permalink: Vital Point Strike Resolution (70 Targets)" [ref=e1186] [cursor=pointer]':
+                      - /url: "#vital-point-strike-resolution-70-targets"
+                      - img [ref=e1187]
+                  - region "mermaid rendered output container" [ref=e1189]:
+                    - generic [ref=e1190]:
+                      - generic [ref=e1191]:
+                        - group [ref=e1192]:
+                          - button "Open dialog" [ref=e1193] [cursor=pointer]:
+                            - img [ref=e1194]
+                        - button "Copy mermaid code" [ref=e1196] [cursor=pointer]:
+                          - img [ref=e1197]
+                      - iframe [ref=e1201]:
+                        
+                    - generic [ref=e1202]:
+                      - img [ref=e1203]
+                      - generic [ref=e1206]: Loading
+                  - separator [ref=e1207]
+                  - generic [ref=e1208]:
+                    - heading "🥋 Training Mode Flow" [level=2] [ref=e1209]
+                    - 'link "Permalink: 🥋 Training Mode Flow" [ref=e1210] [cursor=pointer]':
+                      - /url: "#-training-mode-flow"
+                      - img [ref=e1211]
+                  - generic [ref=e1213]:
+                    - heading "Training Session Flow" [level=3] [ref=e1214]:
+                      - strong [ref=e1215]: Training Session Flow
+                    - 'link "Permalink: Training Session Flow" [ref=e1216] [cursor=pointer]':
+                      - /url: "#training-session-flow"
+                      - img [ref=e1217]
+                  - region "mermaid rendered output container" [ref=e1219]:
+                    - generic [ref=e1220]:
+                      - generic [ref=e1221]:
+                        - group [ref=e1222]:
+                          - button "Open dialog" [ref=e1223] [cursor=pointer]:
+                            - img [ref=e1224]
+                        - button "Copy mermaid code" [ref=e1226] [cursor=pointer]:
+                          - img [ref=e1227]
+                      - iframe [ref=e1231]:
+                        - generic [active]:
+                          - document [ref=f301e4]:
+                            - generic [ref=f301e6]:
+                              - generic [ref=f301e45]:
+                                - paragraph [ref=f301e51]: Vital Points
+                                - paragraph [ref=f301e57]: Stances
+                                - paragraph [ref=f301e63]: Combos
+                                - paragraph [ref=f301e69]: Free Practice
+                                - paragraph [ref=f301e75]: Perfect
+                                - paragraph [ref=f301e81]: Good
+                                - paragraph [ref=f301e87]: Poor
+                                - paragraph [ref=f301e93]: Miss
+                                - paragraph [ref=f301e99]: "Yes"
+                                - paragraph [ref=f301e105]: "No"
+                                - paragraph [ref=f301e111]: Fast
+                                - paragraph [ref=f301e117]: Normal
+                                - paragraph [ref=f301e123]: Slow
+                                - paragraph [ref=f301e129]: "Yes"
+                                - paragraph [ref=f301e135]: "No"
+                                - paragraph [ref=f301e141]: Perfect
+                                - paragraph [ref=f301e147]: Partial
+                                - paragraph [ref=f301e153]: Failed
+                                - paragraph [ref=f301e159]: "Yes"
+                                - paragraph [ref=f301e165]: "No"
+                                - paragraph [ref=f301e171]: "No"
+                                - paragraph [ref=f301e177]: "Yes"
+                              - generic [ref=f301e178]:
+                                - paragraph [ref=f301e187]: 🥋 Training Start
+                                - paragraph [ref=f301e194]: Select Training
+                                - paragraph [ref=f301e201]:
+                                  - text: Vital Point
+                                  - text: Training
+                                - paragraph [ref=f301e208]:
+                                  - text: Trigram Stance
+                                  - text: Training
+                                - paragraph [ref=f301e215]:
+                                  - text: Combo
+                                  - text: Training
+                                - paragraph [ref=f301e222]:
+                                  - text: Free Practice
+                                  - text: Mode
+                                - paragraph [ref=f301e229]:
+                                  - text: Display VP
+                                  - text: Anatomy Model
+                                - paragraph [ref=f301e236]:
+                                  - text: Player Selects
+                                  - text: Target VP
+                                - paragraph [ref=f301e243]: Execute Strike
+                                - paragraph [ref=f301e250]:
+                                  - text: Grade
+                                  - text: Accuracy
+                                - paragraph [ref=f301e257]:
+                                  - text: ⭐ Perfect!
+                                  - text: +100 points
+                                - paragraph [ref=f301e264]:
+                                  - text: ✅ Good
+                                  - text: +50 points
+                                - paragraph [ref=f301e271]:
+                                  - text: ⚠️ Poor
+                                  - text: +10 points
+                                - paragraph [ref=f301e278]:
+                                  - text: ❌ Miss
+                                  - text: 0 points
+                                - paragraph [ref=f301e285]:
+                                  - text: Show Feedback
+                                  - text: "& Statistics"
+                                - paragraph [ref=f301e292]:
+                                  - text: Continue
+                                  - text: Training?
+                                - paragraph [ref=f301e299]:
+                                  - text: Save Progress
+                                  - text: Session Storage
+                                - paragraph [ref=f301e306]:
+                                  - text: Display 8
+                                  - text: Trigram Stances
+                                - paragraph [ref=f301e313]:
+                                  - text: Practice Stance
+                                  - text: Transitions
+                                - paragraph [ref=f301e320]:
+                                  - text: Time Transition
+                                  - text: Speed
+                                - paragraph [ref=f301e327]:
+                                  - text: Grade
+                                  - text: Transition
+                                - paragraph [ref=f301e334]:
+                                  - text: ⚡ Fast!
+                                  - text: < 0.5s
+                                - paragraph [ref=f301e341]:
+                                  - text: ✅ Normal
+                                  - text: 0.5-1s
+                                - paragraph [ref=f301e348]:
+                                  - text: 🐢 Slow
+                                  - text: "> 1s"
+                                - paragraph [ref=f301e355]: Continue?
+                                - paragraph [ref=f301e362]:
+                                  - text: Display Combo
+                                  - text: Sequence
+                                - paragraph [ref=f301e369]:
+                                  - text: Execute Combo
+                                  - text: Steps
+                                - paragraph [ref=f301e376]:
+                                  - text: Combo
+                                  - text: Correct?
+                                - paragraph [ref=f301e383]:
+                                  - text: 🎯 Perfect Combo!
+                                  - text: Max points
+                                - paragraph [ref=f301e390]:
+                                  - text: ⚡ Partial
+                                  - text: Some correct
+                                - paragraph [ref=f301e397]:
+                                  - text: ❌ Failed
+                                  - text: Retry
+                                - paragraph [ref=f301e404]: Continue?
+                                - paragraph [ref=f301e411]:
+                                  - text: Practice Freely
+                                  - text: No Restrictions
+                                - paragraph [ref=f301e418]: Exit?
+                                - paragraph [ref=f301e425]:
+                                  - text: Show Session
+                                  - text: Statistics
+                                - paragraph [ref=f301e434]: 🎓 Training Complete
+                          - generic [ref=f301e435]:
+                            - button "Zoom in" [ref=f301e436] [cursor=pointer]:
+                              - img [ref=f301e437]
+                            - button "Zoom out" [ref=f301e440] [cursor=pointer]:
+                              - img [ref=f301e441]
+                            - button "Reset view" [ref=f301e444] [cursor=pointer]:
+                              - img [ref=f301e445]
+                            - button "Pan up" [ref=f301e447] [cursor=pointer]:
+                              - img [ref=f301e448]
+                            - button "Pan down" [ref=f301e450] [cursor=pointer]:
+                              - img [ref=f301e451]
+                            - button "Pan left" [ref=f301e453] [cursor=pointer]:
+                              - img [ref=f301e454]
+                            - button "Pan right" [ref=f301e456] [cursor=pointer]:
+                              - img [ref=f301e457]
+                    - generic [ref=e1232]:
+                      - img [ref=e1233]
+                      - generic [ref=e1236]: Loading
+                  - separator [ref=e1237]
+                  - generic [ref=e1238]:
+                    - heading "🎵 Audio System Flow" [level=2] [ref=e1239]
+                    - 'link "Permalink: 🎵 Audio System Flow" [ref=e1240] [cursor=pointer]':
+                      - /url: "#-audio-system-flow"
+                      - img [ref=e1241]
+                  - generic [ref=e1243]:
+                    - heading "Audio Feedback Flow" [level=3] [ref=e1244]:
+                      - strong [ref=e1245]: Audio Feedback Flow
+                    - 'link "Permalink: Audio Feedback Flow" [ref=e1246] [cursor=pointer]':
+                      - /url: "#audio-feedback-flow"
+                      - img [ref=e1247]
+                  - region "mermaid rendered output container" [ref=e1249]:
+                    - generic [ref=e1250]:
+                      - generic [ref=e1251]:
+                        - group [ref=e1252]:
+                          - button "Open dialog" [ref=e1253] [cursor=pointer]:
+                            - img [ref=e1254]
+                        - button "Copy mermaid code" [ref=e1256] [cursor=pointer]:
+                          - img [ref=e1257]
+                      - iframe [ref=e1261]:
+                        - generic [active]:
+                          - document [ref=f302e4]:
+                            - generic [ref=f302e6]:
+                              - generic [ref=f302e31]:
+                                - paragraph [ref=f302e37]: Attack
+                                - paragraph [ref=f302e43]: Hit
+                                - paragraph [ref=f302e49]: VP Hit
+                                - paragraph [ref=f302e55]: Block
+                                - paragraph [ref=f302e61]: Stance Change
+                                - paragraph [ref=f302e67]: KO
+                                - paragraph [ref=f302e73]: UI
+                                - paragraph [ref=f302e79]: Muted
+                                - paragraph [ref=f302e85]: Active
+                                - paragraph [ref=f302e91]: "No"
+                                - paragraph [ref=f302e97]: "Yes"
+                                - paragraph [ref=f302e103]: "Yes"
+                                - paragraph [ref=f302e109]: "No"
+                              - generic [ref=f302e110]:
+                                - paragraph [ref=f302e117]: Game Event
+                                - paragraph [ref=f302e124]: Event Type
+                                - paragraph [ref=f302e131]: Attack SFX
+                                - paragraph [ref=f302e138]: Impact SFX
+                                - paragraph [ref=f302e145]: VP Strike SFX
+                                - paragraph [ref=f302e152]: Block SFX
+                                - paragraph [ref=f302e159]: Stance SFX
+                                - paragraph [ref=f302e166]: KO SFX
+                                - paragraph [ref=f302e173]: Menu SFX
+                                - paragraph [ref=f302e180]:
+                                  - text: Check Volume
+                                  - text: Settings
+                                - paragraph [ref=f302e187]: Skip Audio
+                                - paragraph [ref=f302e194]: Load Sound
+                                - paragraph [ref=f302e201]:
+                                  - text: Sound
+                                  - text: Loaded?
+                                - paragraph [ref=f302e208]:
+                                  - text: Load from
+                                  - text: Audio Assets
+                                - paragraph [ref=f302e215]:
+                                  - text: Use Cached
+                                  - text: Sound
+                                - paragraph [ref=f302e222]: Cache Sound
+                                - paragraph [ref=f302e229]: Apply Volume
+                                - paragraph [ref=f302e236]: Play Sound
+                                - paragraph [ref=f302e243]:
+                                  - text: Track Playing
+                                  - text: Sounds
+                                - paragraph [ref=f302e250]:
+                                  - text: Max Sounds
+                                  - text: Exceeded?
+                                - paragraph [ref=f302e257]:
+                                  - text: Stop Oldest
+                                  - text: Sound
+                                - paragraph [ref=f302e264]: Continue
+                                - paragraph [ref=f302e271]: ✅ Audio Complete
+                          - generic [ref=f302e272]:
+                            - button "Zoom in" [ref=f302e273] [cursor=pointer]:
+                              - img [ref=f302e274]
+                            - button "Zoom out" [ref=f302e277] [cursor=pointer]:
+                              - img [ref=f302e278]
+                            - button "Reset view" [ref=f302e281] [cursor=pointer]:
+                              - img [ref=f302e282]
+                            - button "Pan up" [ref=f302e284] [cursor=pointer]:
+                              - img [ref=f302e285]
+                            - button "Pan down" [ref=f302e287] [cursor=pointer]:
+                              - img [ref=f302e288]
+                            - button "Pan left" [ref=f302e290] [cursor=pointer]:
+                              - img [ref=f302e291]
+                            - button "Pan right" [ref=f302e293] [cursor=pointer]:
+                              - img [ref=f302e294]
+                    - generic [ref=e1262]:
+                      - img [ref=e1263]
+                      - generic [ref=e1266]: Loading
+                  - separator [ref=e1267]
+                  - generic [ref=e1268]:
+                    - heading "🔄 State Synchronization Flow" [level=2] [ref=e1269]
+                    - 'link "Permalink: 🔄 State Synchronization Flow" [ref=e1270] [cursor=pointer]':
+                      - /url: "#-state-synchronization-flow"
+                      - img [ref=e1271]
+                  - generic [ref=e1273]:
+                    - heading "State Update Flow" [level=3] [ref=e1274]:
+                      - strong [ref=e1275]: State Update Flow
+                    - 'link "Permalink: State Update Flow" [ref=e1276] [cursor=pointer]':
+                      - /url: "#state-update-flow"
+                      - img [ref=e1277]
+                  - region "mermaid rendered output container" [ref=e1279]:
+                    - generic [ref=e1280]:
+                      - generic [ref=e1281]:
+                        - group [ref=e1282]:
+                          - button "Open dialog" [ref=e1283] [cursor=pointer]:
+                            - img [ref=e1284]
+                        - button "Copy mermaid code" [ref=e1286] [cursor=pointer]:
+                          - img [ref=e1287]
+                      - iframe [ref=e1291]:
+                        - generic [active]:
+                          - document [ref=f303e4]:
+                            - generic [ref=f303e6]:
+                              - generic [ref=f303e20]:
+                                - paragraph [ref=f303e26]: Invalid
+                                - paragraph [ref=f303e32]: Valid
+                                - paragraph [ref=f303e38]: "No"
+                                - paragraph [ref=f303e44]: "Yes"
+                              - generic [ref=f303e45]:
+                                - paragraph [ref=f303e54]: User Input
+                                - paragraph [ref=f303e61]:
+                                  - text: Validate
+                                  - text: Input
+                                - paragraph [ref=f303e68]:
+                                  - text: Reject Input
+                                  - text: Show Error
+                                - paragraph [ref=f303e75]: Process Action
+                                - paragraph [ref=f303e84]: End
+                                - paragraph [ref=f303e91]:
+                                  - text: Calculate New
+                                  - text: State
+                                - paragraph [ref=f303e98]:
+                                  - text: Game Rules
+                                  - text: Valid?
+                                - paragraph [ref=f303e105]:
+                                  - text: Create New
+                                  - text: Immutable State
+                                - paragraph [ref=f303e112]:
+                                  - text: Update React
+                                  - text: State
+                                - paragraph [ref=f303e119]:
+                                  - text: Trigger Side
+                                  - text: Effects
+                                - paragraph [ref=f303e126]: Audio Updates
+                                - paragraph [ref=f303e133]: Visual Updates
+                                - paragraph [ref=f303e140]: UI Updates
+                                - paragraph [ref=f303e147]:
+                                  - text: Synchronize
+                                  - text: All Updates
+                                - paragraph [ref=f303e154]: Render Frame
+                          - generic [ref=f303e155]:
+                            - button "Zoom in" [ref=f303e156] [cursor=pointer]:
+                              - img [ref=f303e157]
+                            - button "Zoom out" [ref=f303e160] [cursor=pointer]:
+                              - img [ref=f303e161]
+                            - button "Reset view" [ref=f303e164] [cursor=pointer]:
+                              - img [ref=f303e165]
+                            - button "Pan up" [ref=f303e167] [cursor=pointer]:
+                              - img [ref=f303e168]
+                            - button "Pan down" [ref=f303e170] [cursor=pointer]:
+                              - img [ref=f303e171]
+                            - button "Pan left" [ref=f303e173] [cursor=pointer]:
+                              - img [ref=f303e174]
+                            - button "Pan right" [ref=f303e176] [cursor=pointer]:
+                              - img [ref=f303e177]
+                    - generic [ref=e1292]:
+                      - img [ref=e1293]
+                      - generic [ref=e1296]: Loading
+                  - separator [ref=e1297]
+                  - generic [ref=e1298]:
+                    - heading "📊 Asset Loading Flow" [level=2] [ref=e1299]
+                    - 'link "Permalink: 📊 Asset Loading Flow" [ref=e1300] [cursor=pointer]':
+                      - /url: "#-asset-loading-flow"
+                      - img [ref=e1301]
+                  - generic [ref=e1303]:
+                    - heading "Game Initialization Flow (Three.js)" [level=3] [ref=e1304]:
+                      - strong [ref=e1305]: Game Initialization Flow (Three.js)
+                    - 'link "Permalink: Game Initialization Flow (Three.js)" [ref=e1306] [cursor=pointer]':
+                      - /url: "#game-initialization-flow-threejs"
+                      - img [ref=e1307]
+                  - region "mermaid rendered output container" [ref=e1309]:
+                    - generic [ref=e1310]:
+                      - generic [ref=e1311]:
+                        - group [ref=e1312]:
+                          - button "Open dialog" [ref=e1313] [cursor=pointer]:
+                            - img [ref=e1314]
+                        - button "Copy mermaid code" [ref=e1316] [cursor=pointer]:
+                          - img [ref=e1317]
+                      - iframe [ref=e1321]:
+                        - generic [active]:
+                          - img [ref=f304e5]
+                          - generic [ref=f304e6]:
+                            - button "Zoom in" [ref=f304e7] [cursor=pointer]:
+                              - img [ref=f304e8]
+                            - button "Zoom out" [ref=f304e11] [cursor=pointer]:
+                              - img [ref=f304e12]
+                            - button "Reset view" [ref=f304e15] [cursor=pointer]:
+                              - img [ref=f304e16]
+                            - button "Pan up" [ref=f304e18] [cursor=pointer]:
+                              - img [ref=f304e19]
+                            - button "Pan down" [ref=f304e21] [cursor=pointer]:
+                              - img [ref=f304e22]
+                            - button "Pan left" [ref=f304e24] [cursor=pointer]:
+                              - img [ref=f304e25]
+                            - button "Pan right" [ref=f304e27] [cursor=pointer]:
+                              - img [ref=f304e28]
+                    - generic [ref=e1322]:
+                      - img [ref=e1323]
+                      - generic [ref=e1326]: Loading
+                  - separator [ref=e1327]
+                  - paragraph [ref=e1328]:
+                    - strong [ref=e1329]: 흑괘의 길을 걸어라
+                    - text: "-"
+                    - emphasis [ref=e1330]: Walk the Path of the Black Trigram through Process Flow
+                  - paragraph [ref=e1331]: These flowcharts document the complete user journey and system processes for Black Trigram, ensuring comprehensive understanding of game mechanics and state transitions for authentic Korean martial arts combat simulation.
+                  - separator [ref=e1332]
+                  - paragraph [ref=e1333]:
+                    - strong [ref=e1334]: "📋 Document Control:"
+                    - strong [ref=e1335]: "✅ Approved by:"
+                    - text: James Pether Sörling, CEO
+                    - strong [ref=e1336]: "📤 Distribution:"
+                    - text: Public
+                    - strong [ref=e1337]: "🏷️ Classification:"
+                    - 'link "Confidentiality: Public" [ref=e1338] [cursor=pointer]':
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels
+                      - 'img "Confidentiality: Public" [ref=e1339]'
+                    - 'link "Integrity: Moderate" [ref=e1340] [cursor=pointer]':
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels
+                      - 'img "Integrity: Moderate" [ref=e1341]'
+                    - 'link "Availability: Standard" [ref=e1342] [cursor=pointer]':
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels
+                      - 'img "Availability: Standard" [ref=e1343]'
+                    - strong [ref=e1344]: "📅 Effective Date:"
+                    - text: 2026-03-19
+                    - strong [ref=e1345]: "⏰ Next Review:"
+                    - text: 2026-09-19
+                    - strong [ref=e1346]: "🎯 Framework Compliance:"
+                    - link "ISO 27001" [ref=e1347] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md
+                      - img "ISO 27001" [ref=e1348]
+                    - link "NIST CSF 2.0" [ref=e1349] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md
+                      - img "NIST CSF 2.0" [ref=e1350]
+  - alert [ref=e1354]

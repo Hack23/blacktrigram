@@ -364,7 +364,7 @@ graph TD
     end
     
     subgraph "Rendering Layer"
-        D[@react-three/fiber Canvas]
+        D["@react-three/fiber Canvas"]
     end
     
     subgraph "Three.js 3D Scene"
@@ -1609,15 +1609,15 @@ mindmap
       id4.3[Mobile browser performance gaps]
     id5(⚠️ Memory/GC Concerns)
       id5.1[Three.js objects need manual disposal]
-      id5.2[Skeletal animation memory overhead (~180MB desktop)]
-      id5.3[Particle systems can spike memory (1000+ particles)]
+      id5.2[Skeletal animation memory overhead - 180MB desktop]
+      id5.3[Particle systems can spike memory - 1000+ particles]
     id6(⚙️ Combat Realism Systems)
       id6.1[8/12 systems complete or near-complete - 67%]
       id6.2[4 systems remaining: trauma visualization, balance, HUD, movement]
-      id6.3[1 system partially implemented: bone impact audio (mapping + selection complete; asset coverage/final mix pending)]
+      id6.3[1 system partially implemented: bone impact audio - mapping + selection complete, asset coverage/final mix pending]
     id7(❌ Incomplete Features)
       id7.1[Techniques not yet stance-specific - 4 per archetype vs 3-5 per stance]
-      id7.2[EndScreen3D implemented but missing final UX polish (detailed stats, meta-progression hooks)]
+      id7.2[EndScreen3D implemented but missing final UX polish - detailed stats, meta-progression hooks]
       id7.3[Training mode limited scope]
     id8(📱 Mobile Performance)
       id8.1[30-45fps on mobile devices - meeting 30fps baseline target]

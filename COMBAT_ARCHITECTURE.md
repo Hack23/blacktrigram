@@ -1651,11 +1651,11 @@ graph TB
     
     subgraph "Archetype Physical Profiles"
         APH[ArchetypeProfiles]:::profile
-        APH --> MU[무사 (Musa)]:::musa
-        APH --> AM[암살자 (Amsalja)]:::amsalja
-        APH --> HK[해커 (Hacker)]:::hacker
-        APH --> JB[정보요원 (Jeongbo)]:::jeongbo
-        APH --> JJ[조직폭력배 (Jojik)]:::jojik
+        APH --> MU["무사 Musa"]:::musa
+        APH --> AM["암살자 Amsalja"]:::amsalja
+        APH --> HK["해커 Hacker"]:::hacker
+        APH --> JB["정보요원 Jeongbo"]:::jeongbo
+        APH --> JJ["조직폭력배 Jojik"]:::jojik
     end
     
     subgraph "Combat Physics Engine (src/utils/combatPhysics.ts)"
@@ -2766,8 +2766,8 @@ graph TB
     CALC1 --> EXEC[Execute Technique]:::action
     GUARD --> WAIT[Wait for Opening]:::action
     
-    EXEC --> END[End AI Tick]:::end
-    WAIT --> END
+    EXEC --> ENDTICK[End AI Tick]:::end
+    WAIT --> ENDTICK
     
     classDef start fill:#00ff00,stroke:#333,color:#000
     classDef process fill:#4da6ff,stroke:#333,color:#fff
