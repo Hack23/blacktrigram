@@ -1,0 +1,1246 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - region
+    - generic [ref=e3]:
+      - link "Skip to content" [ref=e4] [cursor=pointer]:
+        - /url: "#start-of-content"
+      - banner [ref=e6]:
+        - heading "Navigation Menu" [level=2] [ref=e7]
+        - generic [ref=e8]:
+          - link "Homepage" [ref=e10] [cursor=pointer]:
+            - /url: /
+            - img [ref=e11]
+          - generic [ref=e13]:
+            - navigation "Global" [ref=e16]:
+              - list [ref=e17]:
+                - listitem [ref=e18]:
+                  - button "Platform" [ref=e20] [cursor=pointer]:
+                    - text: Platform
+                    - img [ref=e21]
+                - listitem [ref=e23]:
+                  - button "Solutions" [ref=e25] [cursor=pointer]:
+                    - text: Solutions
+                    - img [ref=e26]
+                - listitem [ref=e28]:
+                  - button "Resources" [ref=e30] [cursor=pointer]:
+                    - text: Resources
+                    - img [ref=e31]
+                - listitem [ref=e33]:
+                  - button "Open Source" [ref=e35] [cursor=pointer]:
+                    - text: Open Source
+                    - img [ref=e36]
+                - listitem [ref=e38]:
+                  - button "Enterprise" [ref=e40] [cursor=pointer]:
+                    - text: Enterprise
+                    - img [ref=e41]
+                - listitem [ref=e43]:
+                  - link "Pricing" [ref=e44] [cursor=pointer]:
+                    - /url: https://github.com/pricing
+                    - generic [ref=e45]: Pricing
+            - generic [ref=e46]:
+              - button "Search or jump to…" [ref=e49] [cursor=pointer]:
+                - img [ref=e51]
+              - link "Sign in" [ref=e54] [cursor=pointer]:
+                - /url: /login?return_to=https%3A%2F%2Fgithub.com%2FHack23%2Fblacktrigram%2Fblob%2Fcopilot%2Fimprove-mermaid-diagrams%2FFUTURE_MINDMAP.md
+              - link "Sign up" [ref=e55] [cursor=pointer]:
+                - /url: /signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E%2Fblob%2Fshow&source=header-repo&source_repo=Hack23%2Fblacktrigram
+              - button "Appearance settings" [ref=e58] [cursor=pointer]:
+                - img
+    - main [ref=e62]:
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - generic [ref=e66]:
+            - img [ref=e67]
+            - link "Hack23" [ref=e70] [cursor=pointer]:
+              - /url: /Hack23
+            - generic [ref=e71]: /
+            - strong [ref=e72]:
+              - link "blacktrigram" [ref=e73] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram
+            - generic [ref=e74]: Public
+          - generic [ref=e75]:
+            - list:
+              - listitem [ref=e76]:
+                - link "You must be signed in to change notification settings" [ref=e77] [cursor=pointer]:
+                  - /url: /login?return_to=%2FHack23%2Fblacktrigram
+                  - img [ref=e78]
+                  - text: Notifications
+              - listitem [ref=e80]:
+                - link "Fork 2" [ref=e81] [cursor=pointer]:
+                  - /url: /login?return_to=%2FHack23%2Fblacktrigram
+                  - img [ref=e82]
+                  - text: Fork
+                  - generic "2" [ref=e84]
+              - listitem [ref=e85]:
+                - link "You must be signed in to star a repository" [ref=e87] [cursor=pointer]:
+                  - /url: /login?return_to=%2FHack23%2Fblacktrigram
+                  - img [ref=e88]
+                  - text: Star
+                  - generic "6 users starred this repository" [ref=e90]: "6"
+        - navigation "Repository" [ref=e91]:
+          - list [ref=e92]:
+            - listitem [ref=e93]:
+              - link "Code" [ref=e94] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/tree/copilot/improve-mermaid-diagrams
+                - img [ref=e95]
+                - generic [ref=e97]: Code
+            - listitem [ref=e98]:
+              - link "Issues 8" [ref=e99] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/issues
+                - img [ref=e100]
+                - generic [ref=e103]: Issues
+                - generic "8" [ref=e104]
+            - listitem [ref=e105]:
+              - link "Pull requests" [ref=e106] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/pulls
+                - img [ref=e107]
+                - generic [ref=e109]: Pull requests
+            - listitem [ref=e110]:
+              - link "Actions" [ref=e111] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/actions
+                - img [ref=e112]
+                - generic [ref=e114]: Actions
+            - listitem [ref=e115]:
+              - link "Projects" [ref=e116] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/projects
+                - img [ref=e117]
+                - generic [ref=e119]: Projects
+            - listitem [ref=e120]:
+              - link "Security and quality" [ref=e121] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/security
+                - img [ref=e122]
+                - generic [ref=e124]: Security and quality
+            - listitem [ref=e125]:
+              - link "Insights" [ref=e126] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/pulse
+                - img [ref=e127]
+                - generic [ref=e129]: Insights
+      - generic [ref=e137]:
+        - generic [ref=e139]:
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - heading "Collapse file tree" [level=2] [ref=e145]:
+                  - button "Collapse file tree" [expanded] [ref=e146] [cursor=pointer]:
+                    - img [ref=e147]
+                - heading "Files" [level=2] [ref=e150]
+              - generic [ref=e151]:
+                - generic [ref=e153]:
+                  - link "View file on default branch" [ref=e155] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/blob/main/FUTURE_MINDMAP.md
+                    - img [ref=e156]
+                  - button "copilot/improve-mermaid-diagrams branch" [ref=e159] [cursor=pointer]:
+                    - generic [ref=e160]:
+                      - generic [ref=e162]:
+                        - img [ref=e164]
+                        - generic [ref=e167]: copilot/improve-mermaid-diagrams
+                      - generic:
+                        - img
+                - button "Search this repository (forward slash)" [ref=e169] [cursor=pointer]:
+                  - img [ref=e170]
+            - generic [ref=e173]:
+              - img [ref=e175]
+              - combobox "Go to file" [ref=e177]
+            - navigation "File Tree Navigation" [ref=e183]:
+              - tree "Files" [ref=e185]:
+                - treeitem ".devcontainer" [level=1] [ref=e186]:
+                  - generic [ref=e187] [cursor=pointer]:
+                    - img [ref=e189]
+                    - generic [ref=e191]:
+                      - img [ref=e195]
+                      - generic [ref=e197]: .devcontainer
+                - treeitem ".github" [level=1] [ref=e198]:
+                  - generic [ref=e199] [cursor=pointer]:
+                    - img [ref=e201]
+                    - generic [ref=e203]:
+                      - img [ref=e207]
+                      - generic [ref=e209]: .github
+                - treeitem ".playwright-mcp" [level=1] [ref=e210]:
+                  - generic [ref=e211] [cursor=pointer]:
+                    - img [ref=e213]
+                    - generic [ref=e215]:
+                      - img [ref=e219]
+                      - generic [ref=e221]: .playwright-mcp
+                - treeitem ".vscode" [level=1] [ref=e222]:
+                  - generic [ref=e223] [cursor=pointer]:
+                    - img [ref=e225]
+                    - generic [ref=e227]:
+                      - img [ref=e231]
+                      - generic [ref=e233]: .vscode
+                - treeitem "cypress" [level=1] [ref=e234]:
+                  - generic [ref=e235] [cursor=pointer]:
+                    - img [ref=e237]
+                    - generic [ref=e239]:
+                      - img [ref=e243]
+                      - generic [ref=e245]: cypress
+                - treeitem "docs" [level=1] [ref=e246]:
+                  - generic [ref=e247] [cursor=pointer]:
+                    - img [ref=e249]
+                    - generic [ref=e251]:
+                      - img [ref=e255]
+                      - generic [ref=e257]: docs
+                - treeitem "public" [level=1] [ref=e258]:
+                  - generic [ref=e259] [cursor=pointer]:
+                    - img [ref=e261]
+                    - generic [ref=e263]:
+                      - img [ref=e267]
+                      - generic [ref=e269]: public
+                - treeitem "screenshots" [level=1] [ref=e270]:
+                  - generic [ref=e271] [cursor=pointer]:
+                    - img [ref=e273]
+                    - generic [ref=e275]:
+                      - img [ref=e279]
+                      - generic [ref=e281]: screenshots
+                - treeitem "scripts" [level=1] [ref=e282]:
+                  - generic [ref=e283] [cursor=pointer]:
+                    - img [ref=e285]
+                    - generic [ref=e287]:
+                      - img [ref=e291]
+                      - generic [ref=e293]: scripts
+                - treeitem "src" [level=1] [ref=e294]:
+                  - generic [ref=e295] [cursor=pointer]:
+                    - img [ref=e297]
+                    - generic [ref=e299]:
+                      - img [ref=e303]
+                      - generic [ref=e305]: src
+                - treeitem "vite-plugins" [level=1] [ref=e306]:
+                  - generic [ref=e307] [cursor=pointer]:
+                    - img [ref=e309]
+                    - generic [ref=e311]:
+                      - img [ref=e315]
+                      - generic [ref=e317]: vite-plugins
+                - treeitem ".dependency-cruiser.cjs" [level=1] [ref=e318]:
+                  - generic [ref=e320] [cursor=pointer]:
+                    - img [ref=e323]
+                    - generic [ref=e325]: .dependency-cruiser.cjs
+                - treeitem ".env.production" [level=1] [ref=e326]:
+                  - generic [ref=e328] [cursor=pointer]:
+                    - img [ref=e331]
+                    - generic [ref=e333]: .env.production
+                - treeitem ".gitignore" [level=1] [ref=e334]:
+                  - generic [ref=e336] [cursor=pointer]:
+                    - img [ref=e339]
+                    - generic [ref=e341]: .gitignore
+                - treeitem ".npmignore" [level=1] [ref=e342]:
+                  - generic [ref=e344] [cursor=pointer]:
+                    - img [ref=e347]
+                    - generic [ref=e349]: .npmignore
+                - treeitem ".nvmrc" [level=1] [ref=e350]:
+                  - generic [ref=e352] [cursor=pointer]:
+                    - img [ref=e355]
+                    - generic [ref=e357]: .nvmrc
+                - treeitem "ARCHITECTURE.md" [level=1] [ref=e358]:
+                  - generic [ref=e360] [cursor=pointer]:
+                    - img [ref=e363]
+                    - generic [ref=e365]: ARCHITECTURE.md
+                - treeitem "ART_ASSETS.md" [level=1] [ref=e366]:
+                  - generic [ref=e368] [cursor=pointer]:
+                    - img [ref=e371]
+                    - generic [ref=e373]: ART_ASSETS.md
+                - treeitem "AUDIO_ASSETS.md" [level=1] [ref=e374]:
+                  - generic [ref=e376] [cursor=pointer]:
+                    - img [ref=e379]
+                    - generic [ref=e381]: AUDIO_ASSETS.md
+                - treeitem "BCPPlan.md" [level=1] [ref=e382]:
+                  - generic [ref=e384] [cursor=pointer]:
+                    - img [ref=e387]
+                    - generic [ref=e389]: BCPPlan.md
+                - treeitem "CODEOWNERS" [level=1] [ref=e390]:
+                  - generic [ref=e392] [cursor=pointer]:
+                    - img [ref=e395]
+                    - generic [ref=e397]: CODEOWNERS
+                - treeitem "CODE_OF_CONDUCT.md" [level=1] [ref=e398]:
+                  - generic [ref=e400] [cursor=pointer]:
+                    - img [ref=e403]
+                    - generic [ref=e405]: CODE_OF_CONDUCT.md
+                - treeitem "COMBAT_ARCHITECTURE.md" [level=1] [ref=e406]:
+                  - generic [ref=e408] [cursor=pointer]:
+                    - img [ref=e411]
+                    - generic [ref=e413]: COMBAT_ARCHITECTURE.md
+                - treeitem "CONTRIBUTING.md" [level=1] [ref=e414]:
+                  - generic [ref=e416] [cursor=pointer]:
+                    - img [ref=e419]
+                    - generic [ref=e421]: CONTRIBUTING.md
+                - treeitem "CONTROLS.md" [level=1] [ref=e422]:
+                  - generic [ref=e424] [cursor=pointer]:
+                    - img [ref=e427]
+                    - generic [ref=e429]: CONTROLS.md
+                - treeitem "CRA-ASSESSMENT.md" [level=1] [ref=e430]:
+                  - generic [ref=e432] [cursor=pointer]:
+                    - img [ref=e435]
+                    - generic [ref=e437]: CRA-ASSESSMENT.md
+                - treeitem "DATA_MODEL.md" [level=1] [ref=e438]:
+                  - generic [ref=e440] [cursor=pointer]:
+                    - img [ref=e443]
+                    - generic [ref=e445]: DATA_MODEL.md
+                - treeitem "E2ETestPlan.md" [level=1] [ref=e446]:
+                  - generic [ref=e448] [cursor=pointer]:
+                    - img [ref=e451]
+                    - generic [ref=e453]: E2ETestPlan.md
+                - treeitem "End-of-Life-Strategy.md" [level=1] [ref=e454]:
+                  - generic [ref=e456] [cursor=pointer]:
+                    - img [ref=e459]
+                    - generic [ref=e461]: End-of-Life-Strategy.md
+                - treeitem "FLOWCHART.md" [level=1] [ref=e462]:
+                  - generic [ref=e464] [cursor=pointer]:
+                    - img [ref=e467]
+                    - generic [ref=e469]: FLOWCHART.md
+                - treeitem "FUTURE_ARCHITECTURE.md" [level=1] [ref=e470]:
+                  - generic [ref=e472] [cursor=pointer]:
+                    - img [ref=e475]
+                    - generic [ref=e477]: FUTURE_ARCHITECTURE.md
+                - treeitem "FUTURE_DATA_MODEL.md" [level=1] [ref=e478]:
+                  - generic [ref=e480] [cursor=pointer]:
+                    - img [ref=e483]
+                    - generic [ref=e485]: FUTURE_DATA_MODEL.md
+                - treeitem "FUTURE_FLOWCHART.md" [level=1] [ref=e486]:
+                  - generic [ref=e488] [cursor=pointer]:
+                    - img [ref=e491]
+                    - generic [ref=e493]: FUTURE_FLOWCHART.md
+                - treeitem "FUTURE_MINDMAP.md" [level=1] [ref=e494]:
+                  - generic [ref=e496] [cursor=pointer]:
+                    - img [ref=e499]
+                    - generic [ref=e501]: FUTURE_MINDMAP.md
+                - treeitem "FUTURE_SECURITY_ARCHITECTURE.md" [level=1] [ref=e502]:
+                  - generic [ref=e504] [cursor=pointer]:
+                    - img [ref=e507]
+                    - generic [ref=e509]: FUTURE_SECURITY_ARCHITECTURE.md
+                - treeitem "FUTURE_STATEDIAGRAM.md" [level=1] [ref=e510]:
+                  - generic [ref=e512] [cursor=pointer]:
+                    - img [ref=e515]
+                    - generic [ref=e517]: FUTURE_STATEDIAGRAM.md
+                - treeitem "FUTURE_SWOT.md" [level=1] [ref=e518]:
+                  - generic [ref=e520] [cursor=pointer]:
+                    - img [ref=e523]
+                    - generic [ref=e525]: FUTURE_SWOT.md
+                - treeitem "FUTURE_THREAT_MODEL.md" [level=1] [ref=e526]:
+                  - generic [ref=e528] [cursor=pointer]:
+                    - img [ref=e531]
+                    - generic [ref=e533]: FUTURE_THREAT_MODEL.md
+                - treeitem "FUTURE_WORKFLOWS.md" [level=1] [ref=e534]:
+                  - generic [ref=e536] [cursor=pointer]:
+                    - img [ref=e539]
+                    - generic [ref=e541]: FUTURE_WORKFLOWS.md
+                - treeitem "FinancialSecurityPlan.md" [level=1] [ref=e542]:
+                  - generic [ref=e544] [cursor=pointer]:
+                    - img [ref=e547]
+                    - generic [ref=e549]: FinancialSecurityPlan.md
+                - treeitem "ISMS_REFERENCE_MAPPING.md" [level=1] [ref=e550]:
+                  - generic [ref=e552] [cursor=pointer]:
+                    - img [ref=e555]
+                    - generic [ref=e557]: ISMS_REFERENCE_MAPPING.md
+                - treeitem "LICENSE" [level=1] [ref=e558]:
+                  - generic [ref=e560] [cursor=pointer]:
+                    - img [ref=e563]
+                    - generic [ref=e565]: LICENSE
+                - treeitem "MINDMAP.md" [level=1] [ref=e566]:
+                  - generic [ref=e568] [cursor=pointer]:
+                    - img [ref=e571]
+                    - generic [ref=e573]: MINDMAP.md
+                - treeitem "README.md" [level=1] [ref=e574]:
+                  - generic [ref=e576] [cursor=pointer]:
+                    - img [ref=e579]
+                    - generic [ref=e581]: README.md
+                - treeitem "ROADMAP.md" [level=1] [ref=e582]:
+                  - generic [ref=e584] [cursor=pointer]:
+                    - img [ref=e587]
+                    - generic [ref=e589]: ROADMAP.md
+                - treeitem "SECURITY.md" [level=1] [ref=e590]:
+                  - generic [ref=e592] [cursor=pointer]:
+                    - img [ref=e595]
+                    - generic [ref=e597]: SECURITY.md
+                - treeitem "SECURITY_ARCHITECTURE.md" [level=1] [ref=e598]:
+                  - generic [ref=e600] [cursor=pointer]:
+                    - img [ref=e603]
+                    - generic [ref=e605]: SECURITY_ARCHITECTURE.md
+                - treeitem "STATEDIAGRAM.md" [level=1] [ref=e606]:
+                  - generic [ref=e608] [cursor=pointer]:
+                    - img [ref=e611]
+                    - generic [ref=e613]: STATEDIAGRAM.md
+                - treeitem "SWOT.md" [level=1] [ref=e614]:
+                  - generic [ref=e616] [cursor=pointer]:
+                    - img [ref=e619]
+                    - generic [ref=e621]: SWOT.md
+                - treeitem "THREAT_MODEL.md" [level=1] [ref=e622]:
+                  - generic [ref=e624] [cursor=pointer]:
+                    - img [ref=e627]
+                    - generic [ref=e629]: THREAT_MODEL.md
+                - treeitem "UnitTestPlan.md" [level=1] [ref=e630]:
+                  - generic [ref=e632] [cursor=pointer]:
+                    - img [ref=e635]
+                    - generic [ref=e637]: UnitTestPlan.md
+                - treeitem "VIDEO_ASSETS.md" [level=1] [ref=e638]:
+                  - generic [ref=e640] [cursor=pointer]:
+                    - img [ref=e643]
+                    - generic [ref=e645]: VIDEO_ASSETS.md
+                - treeitem "VISION_2026_2034.md" [level=1] [ref=e646]:
+                  - generic [ref=e648] [cursor=pointer]:
+                    - img [ref=e651]
+                    - generic [ref=e653]: VISION_2026_2034.md
+                - treeitem "WORKFLOWS.md" [level=1] [ref=e654]:
+                  - generic [ref=e656] [cursor=pointer]:
+                    - img [ref=e659]
+                    - generic [ref=e661]: WORKFLOWS.md
+                - treeitem "budget.json" [level=1] [ref=e662]:
+                  - generic [ref=e664] [cursor=pointer]:
+                    - img [ref=e667]
+                    - generic [ref=e669]: budget.json
+                - treeitem "cypress.config.ts" [level=1] [ref=e670]:
+                  - generic [ref=e672] [cursor=pointer]:
+                    - img [ref=e675]
+                    - generic [ref=e677]: cypress.config.ts
+                - treeitem "development.md" [level=1] [ref=e678]:
+                  - generic [ref=e680] [cursor=pointer]:
+                    - img [ref=e683]
+                    - generic [ref=e685]: development.md
+                - treeitem "eslint.config.js" [level=1] [ref=e686]:
+                  - generic [ref=e688] [cursor=pointer]:
+                    - img [ref=e691]
+                    - generic [ref=e693]: eslint.config.js
+                - treeitem "game-design.md" [level=1] [ref=e694]:
+                  - generic [ref=e696] [cursor=pointer]:
+                    - img [ref=e699]
+                    - generic [ref=e701]: game-design.md
+                - treeitem "game-status.md" [level=1] [ref=e702]:
+                  - generic [ref=e704] [cursor=pointer]:
+                    - img [ref=e707]
+                    - generic [ref=e709]: game-status.md
+                - treeitem "generate-sitemaps.js" [level=1] [ref=e710]:
+                  - generic [ref=e712] [cursor=pointer]:
+                    - img [ref=e715]
+                    - generic [ref=e717]: generate-sitemaps.js
+                - treeitem "index.html" [level=1] [ref=e718]:
+                  - generic [ref=e720] [cursor=pointer]:
+                    - img [ref=e723]
+                    - generic [ref=e725]: index.html
+                - treeitem "knip.json" [level=1] [ref=e726]:
+                  - generic [ref=e728] [cursor=pointer]:
+                    - img [ref=e731]
+                    - generic [ref=e733]: knip.json
+                - treeitem "package-lock.json" [level=1] [ref=e734]:
+                  - generic [ref=e736] [cursor=pointer]:
+                    - img [ref=e739]
+                    - generic [ref=e741]: package-lock.json
+                - treeitem "package.json" [level=1] [ref=e742]:
+                  - generic [ref=e744] [cursor=pointer]:
+                    - img [ref=e747]
+                    - generic [ref=e749]: package.json
+                - treeitem "performance-testing.md" [level=1] [ref=e750]:
+                  - generic [ref=e752] [cursor=pointer]:
+                    - img [ref=e755]
+                    - generic [ref=e757]: performance-testing.md
+                - treeitem "restructure-audio.sh" [level=1] [ref=e758]:
+                  - generic [ref=e760] [cursor=pointer]:
+                    - img [ref=e763]
+                    - generic [ref=e765]: restructure-audio.sh
+                - treeitem "tsconfig.app.json" [level=1] [ref=e766]:
+                  - generic [ref=e768] [cursor=pointer]:
+                    - img [ref=e771]
+                    - generic [ref=e773]: tsconfig.app.json
+                - treeitem "tsconfig.json" [level=1] [ref=e774]:
+                  - generic [ref=e776] [cursor=pointer]:
+                    - img [ref=e779]
+                    - generic [ref=e781]: tsconfig.json
+                - treeitem "tsconfig.lib.json" [level=1] [ref=e782]:
+                  - generic [ref=e784] [cursor=pointer]:
+                    - img [ref=e787]
+                    - generic [ref=e789]: tsconfig.lib.json
+                - treeitem "tsconfig.node.json" [level=1] [ref=e790]:
+                  - generic [ref=e792] [cursor=pointer]:
+                    - img [ref=e795]
+                    - generic [ref=e797]: tsconfig.node.json
+                - treeitem "tsconfig.test.json" [level=1] [ref=e798]:
+                  - generic [ref=e800] [cursor=pointer]:
+                    - img [ref=e803]
+                    - generic [ref=e805]: tsconfig.test.json
+                - treeitem "typedoc.json" [level=1] [ref=e806]:
+                  - generic [ref=e808] [cursor=pointer]:
+                    - img [ref=e811]
+                    - generic [ref=e813]: typedoc.json
+                - treeitem "vite.config.ts" [level=1] [ref=e814]:
+                  - generic [ref=e816] [cursor=pointer]:
+                    - img [ref=e819]
+                    - generic [ref=e821]: vite.config.ts
+                - treeitem "vite.lib.config.ts" [level=1] [ref=e822]:
+                  - generic [ref=e824] [cursor=pointer]:
+                    - img [ref=e827]
+                    - generic [ref=e829]: vite.lib.config.ts
+                - treeitem "vitest.config.ts" [level=1] [ref=e830]:
+                  - generic [ref=e832] [cursor=pointer]:
+                    - img [ref=e835]
+                    - generic [ref=e837]: vitest.config.ts
+          - slider "Draggable pane splitter" [ref=e839]
+        - generic [ref=e842]:
+          - generic [ref=e846]:
+            - generic [ref=e848]:
+              - navigation "Breadcrumbs" [ref=e849]:
+                - heading "Breadcrumbs" [level=2] [ref=e850]
+                - list [ref=e851]:
+                  - listitem [ref=e852]:
+                    - link "blacktrigram" [ref=e853] [cursor=pointer]:
+                      - /url: /Hack23/blacktrigram/tree/copilot/improve-mermaid-diagrams
+              - generic [ref=e854]:
+                - text: /
+                - heading "FUTURE_MINDMAP.md" [level=1] [ref=e855]
+              - button "Copy path" [ref=e856] [cursor=pointer]:
+                - img [ref=e857]
+            - button "More file actions" [ref=e863] [cursor=pointer]:
+              - img [ref=e864]
+          - generic [ref=e866]:
+            - generic [ref=e868]:
+              - heading "Latest commit" [level=2] [ref=e869]
+              - generic [ref=e870]:
+                - generic [ref=e871]:
+                  - generic [ref=e873]:
+                    - img "Copilot" [ref=e874]
+                    - img "pethers" [ref=e875]
+                  - link "commits by Copilot" [ref=e877] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commits?author=Copilot
+                    - text: Copilot
+                  - generic [ref=e878]: and
+                  - link "commits by pethers" [ref=e880] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commits?author=pethers
+                    - text: pethers
+                - generic [ref=e881]:
+                  - 'link "fix: add theme init directives to all 215 mermaid blocks and fix dark…" [ref=e884] [cursor=pointer]':
+                    - /url: /Hack23/blacktrigram/commit/0be5e4e75ea3406ab7c6adcd622124365cbe73e2
+                  - button "Open commit details" [ref=e885] [cursor=pointer]:
+                    - img [ref=e886]
+              - generic [ref=e888]:
+                - generic [ref=e890]:
+                  - link "Commit 0be5e4e" [ref=e891] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commit/0be5e4e75ea3406ab7c6adcd622124365cbe73e2
+                    - text: 0be5e4e
+                  - text: ·
+                  - generic "Apr 8, 2026, 11:38 PM UTC" [ref=e892]: Apr 8, 202612 minutes ago
+                - generic [ref=e893]:
+                  - heading "History" [level=2] [ref=e894]
+                  - link "History" [ref=e895] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commits/copilot/improve-mermaid-diagrams/FUTURE_MINDMAP.md
+                    - generic [ref=e896]:
+                      - generic:
+                        - img
+                      - generic [ref=e897]: History
+            - generic [ref=e899]:
+              - generic [ref=e901]:
+                - heading "File metadata and controls" [level=2] [ref=e902]
+                - list "File view" [ref=e904]:
+                  - listitem [ref=e905]:
+                    - button "Preview" [ref=e906] [cursor=pointer]:
+                      - generic [ref=e908]: Preview
+                  - listitem [ref=e909]:
+                    - button "Code" [ref=e910] [cursor=pointer]:
+                      - generic [ref=e912]: Code
+                  - listitem [ref=e913]:
+                    - button "Blame" [ref=e914] [cursor=pointer]:
+                      - generic [ref=e916]: Blame
+                - generic [ref=e917]:
+                  - generic [ref=e919]:
+                    - link "Raw" [ref=e921] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/blacktrigram/raw/refs/heads/copilot/improve-mermaid-diagrams/FUTURE_MINDMAP.md
+                      - generic [ref=e923]: Raw
+                    - button "Copy raw file" [ref=e925] [cursor=pointer]:
+                      - img [ref=e926]
+                    - button "Download raw file" [ref=e930] [cursor=pointer]:
+                      - img [ref=e931]
+                  - button "Outline" [ref=e934] [cursor=pointer]:
+                    - img [ref=e935]
+              - region "FUTURE_MINDMAP.md" [ref=e938]:
+                - article [ref=e940]:
+                  - generic [ref=e941]:
+                    - heading "🧠 Black Trigram (흑괘) Future Technology Mindmap" [level=1] [ref=e942]
+                    - 'link "Permalink: 🧠 Black Trigram (흑괘) Future Technology Mindmap" [ref=e943] [cursor=pointer]':
+                      - /url: "#-black-trigram-흑괘-future-technology-mindmap"
+                      - img [ref=e944]
+                  - paragraph [ref=e946]:
+                    - strong [ref=e947]: "🔐 ISMS Alignment:"
+                    - text: This document follows
+                    - link "Hack23 Secure Development Policy" [ref=e948] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md
+                    - text: architecture documentation requirements.
+                  - generic [ref=e949]:
+                    - heading "📚 Related Documentation" [level=2] [ref=e950]
+                    - 'link "Permalink: 📚 Related Documentation" [ref=e951] [cursor=pointer]':
+                      - /url: "#-related-documentation"
+                      - img [ref=e952]
+                  - table [ref=e955]:
+                    - rowgroup [ref=e956]:
+                      - row "Document Focus Description" [ref=e957]:
+                        - columnheader "Document" [ref=e958]
+                        - columnheader "Focus" [ref=e959]
+                        - columnheader "Description" [ref=e960]
+                    - rowgroup [ref=e961]:
+                      - row "Current Mindmap 🧠 Current Concept Current Korean martial arts concepts" [ref=e962]:
+                        - cell "Current Mindmap" [ref=e963]:
+                          - link "Current Mindmap" [ref=e964] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/MINDMAP.md
+                        - cell "🧠 Current Concept" [ref=e965]
+                        - cell "Current Korean martial arts concepts" [ref=e966]
+                      - row "Future Architecture 🚀 Future Vision Planned architectural enhancements" [ref=e967]:
+                        - cell "Future Architecture" [ref=e968]:
+                          - link "Future Architecture" [ref=e969] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/FUTURE_ARCHITECTURE.md
+                        - cell "🚀 Future Vision" [ref=e970]
+                        - cell "Planned architectural enhancements" [ref=e971]
+                      - row "Future SWOT 📊 Strategy Strategic analysis for future phases" [ref=e972]:
+                        - cell "Future SWOT" [ref=e973]:
+                          - link "Future SWOT" [ref=e974] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/FUTURE_SWOT.md
+                        - cell "📊 Strategy" [ref=e975]
+                        - cell "Strategic analysis for future phases" [ref=e976]
+                      - row "Future Flowchart 🔄 Future Flow Planned workflow enhancements" [ref=e977]:
+                        - cell "Future Flowchart" [ref=e978]:
+                          - link "Future Flowchart" [ref=e979] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/FUTURE_FLOWCHART.md
+                        - cell "🔄 Future Flow" [ref=e980]
+                        - cell "Planned workflow enhancements" [ref=e981]
+                  - separator [ref=e982]
+                  - generic [ref=e983]:
+                    - heading "🎯 Overview" [level=2] [ref=e984]
+                    - 'link "Permalink: 🎯 Overview" [ref=e985] [cursor=pointer]':
+                      - /url: "#-overview"
+                      - img [ref=e986]
+                  - paragraph [ref=e988]: This mindmap documents the technology evolution roadmap for Black Trigram (흑괘), visualizing planned features, technical enhancements, and strategic development phases for the Korean martial arts combat simulator.
+                  - separator [ref=e989]
+                  - generic [ref=e990]:
+                    - heading "🌐 Future Technology Evolution Mindmap" [level=2] [ref=e991]
+                    - 'link "Permalink: 🌐 Future Technology Evolution Mindmap" [ref=e992] [cursor=pointer]':
+                      - /url: "#-future-technology-evolution-mindmap"
+                      - img [ref=e993]
+                  - region "mermaid rendered output container" [ref=e995]:
+                    - generic [ref=e996]:
+                      - generic [ref=e997]:
+                        - group [ref=e998]:
+                          - button "Open dialog" [ref=e999] [cursor=pointer]:
+                            - img [ref=e1000]
+                        - button "Copy mermaid code" [ref=e1002] [cursor=pointer]:
+                          - img [ref=e1003]
+                      - iframe [ref=e1007]:
+                        - generic [active]:
+                          - document [ref=f451e4]:
+                            - generic [ref=f451e212]:
+                              - paragraph [ref=f451e219]:
+                                - text: 🔮 흑괘
+                                - text: Future Evolution
+                                - text: AWS Backend
+                              - paragraph [ref=f451e226]: Backend Infrastructure
+                              - paragraph [ref=f451e233]: AWS Authentication
+                              - paragraph [ref=f451e240]: Amazon Cognito
+                              - paragraph [ref=f451e247]: User Pools
+                              - paragraph [ref=f451e254]: Identity Pools
+                              - paragraph [ref=f451e261]: OAuth2 OIDC
+                              - paragraph [ref=f451e268]: Social Login Google Facebook Discord GitHub
+                              - paragraph [ref=f451e275]: MFA Support
+                              - paragraph [ref=f451e282]: JWT Tokens
+                              - paragraph [ref=f451e289]: Access Token
+                              - paragraph [ref=f451e296]: Refresh Token
+                              - paragraph [ref=f451e303]: ID Token
+                              - paragraph [ref=f451e310]: Token Rotation
+                              - paragraph [ref=f451e317]: AWS Database Layer
+                              - paragraph [ref=f451e324]: DynamoDB
+                              - paragraph [ref=f451e331]: users table
+                              - paragraph [ref=f451e338]: match_history table
+                              - paragraph [ref=f451e345]: leaderboards table
+                              - paragraph [ref=f451e352]: achievements table
+                              - paragraph [ref=f451e359]: GSI-1 ELOByRegion PK region SK elo_rating
+                              - paragraph [ref=f451e366]: GSI-2 MatchByTimestamp PK user_id SK match_timestamp
+                              - paragraph [ref=f451e373]: DynamoDB Streams
+                              - paragraph [ref=f451e380]: Real-time Updates
+                              - paragraph [ref=f451e387]: Event Triggers
+                              - paragraph [ref=f451e394]: Lambda Integration
+                              - paragraph [ref=f451e401]: S3 Storage
+                              - paragraph [ref=f451e408]: Replays Bucket
+                              - paragraph [ref=f451e415]: Assets Bucket
+                              - paragraph [ref=f451e422]: Backups Bucket
+                              - paragraph [ref=f451e429]: Profile Images
+                              - paragraph [ref=f451e436]: AWS Backup
+                              - paragraph [ref=f451e443]: Automated Backups
+                              - paragraph [ref=f451e450]: Point-in-Time Recovery
+                              - paragraph [ref=f451e457]: Cross-Region Replication
+                              - paragraph [ref=f451e464]: AWS API Layer
+                              - paragraph [ref=f451e471]: API Gateway REST
+                              - paragraph [ref=f451e478]: GET api user profile
+                              - paragraph [ref=f451e485]: POST api user create
+                              - paragraph [ref=f451e492]: PUT api user update
+                              - paragraph [ref=f451e499]: POST api match save
+                              - paragraph [ref=f451e506]: GET api leaderboard
+                              - paragraph [ref=f451e513]: API Gateway WebSocket
+                              - paragraph [ref=f451e520]: wss api blacktrigram com ws
+                              - paragraph [ref=f451e527]: Connection Management
+                              - paragraph [ref=f451e534]: Real-time Messaging
+                              - paragraph [ref=f451e541]: Heartbeat Monitoring
+                              - paragraph [ref=f451e548]: Lambda Functions Node.js 25
+                              - paragraph [ref=f451e555]: getUserProfile
+                              - paragraph [ref=f451e562]: createUser
+                              - paragraph [ref=f451e569]: saveMatchResults
+                              - paragraph [ref=f451e576]: handleQueue Matchmaking
+                              - paragraph [ref=f451e583]: createCheckout Stripe
+                              - paragraph [ref=f451e590]: processWebhook
+                              - paragraph [ref=f451e597]: Lambda Layers
+                              - paragraph [ref=f451e604]: Shared Dependencies
+                              - paragraph [ref=f451e611]: Utility Functions
+                              - paragraph [ref=f451e618]: Database Clients
+                              - paragraph [ref=f451e625]: Authentication Helpers
+                              - paragraph [ref=f451e632]: AWS Networking
+                              - paragraph [ref=f451e639]: CloudFront CDN
+                              - paragraph [ref=f451e646]: Global Edge Locations
+                              - paragraph [ref=f451e653]: Asset Delivery
+                              - paragraph [ref=f451e660]: Cache Optimization
+                              - paragraph [ref=f451e667]: HTTPS Everywhere
+                              - paragraph [ref=f451e674]: Route 53 DNS
+                              - paragraph [ref=f451e681]: Domain Management
+                              - paragraph [ref=f451e688]: Health Checks
+                              - paragraph [ref=f451e695]: Failover Routing
+                              - paragraph [ref=f451e702]: Geo-location Routing
+                              - paragraph [ref=f451e709]: AWS WAF
+                              - paragraph [ref=f451e716]: DDoS Protection
+                              - paragraph [ref=f451e723]: Rate Limiting
+                              - paragraph [ref=f451e730]: IP Filtering
+                              - paragraph [ref=f451e737]: SQL Injection Prevention
+                              - paragraph [ref=f451e744]: AWS Monitoring
+                              - paragraph [ref=f451e751]: CloudWatch
+                              - paragraph [ref=f451e758]: Logs Centralized
+                              - paragraph [ref=f451e765]: Metrics Custom
+                              - paragraph [ref=f451e772]: Alarms Automated
+                              - paragraph [ref=f451e779]: Dashboards Real-time
+                              - paragraph [ref=f451e786]: X-Ray
+                              - paragraph [ref=f451e793]: Distributed Tracing
+                              - paragraph [ref=f451e800]: Performance Analysis
+                              - paragraph [ref=f451e807]: Bottleneck Detection
+                              - paragraph [ref=f451e814]: Error Tracking
+                              - paragraph [ref=f451e821]: SNS Notifications
+                              - paragraph [ref=f451e828]: Email Alerts
+                              - paragraph [ref=f451e835]: SMS Alerts
+                              - paragraph [ref=f451e842]: Push Notifications
+                              - paragraph [ref=f451e849]: Webhook Integration
+                              - paragraph [ref=f451e856]: Multiplayer Features
+                              - paragraph [ref=f451e863]: Online Matchmaking
+                              - paragraph [ref=f451e870]: ELO Rating System
+                              - paragraph [ref=f451e877]: Initial Rating 1500
+                              - paragraph [ref=f451e884]: K-factor 32
+                              - paragraph [ref=f451e891]: Rating Adjustments
+                              - paragraph [ref=f451e898]: Leaderboard Ranking
+                              - paragraph [ref=f451e905]: Matchmaking Algorithm
+                              - paragraph [ref=f451e912]: ELO Range Plus Minus 100
+                              - paragraph [ref=f451e919]: Expand After 3min Plus Minus 200
+                              - paragraph [ref=f451e926]: Region Priority Asia NA EU
+                              - paragraph [ref=f451e933]: Latency Check Under 100ms
+                              - paragraph [ref=f451e940]: Queue Management
+                              - paragraph [ref=f451e947]: DynamoDB Queue Table
+                              - paragraph [ref=f451e954]: Lambda Polling Every 5s
+                              - paragraph [ref=f451e961]: Position Tracking
+                              - paragraph [ref=f451e968]: Timeout Handling
+                              - paragraph [ref=f451e975]: Real-time Combat
+                              - paragraph [ref=f451e982]: WebRTC P2P
+                              - paragraph [ref=f451e989]: Peer Connection
+                              - paragraph [ref=f451e996]: ICE Candidates
+                              - paragraph [ref=f451e1003]: STUN TURN Servers
+                              - paragraph [ref=f451e1010]: NAT Traversal
+                              - paragraph [ref=f451e1017]: WebSocket Sync
+                              - paragraph [ref=f451e1024]: State Updates 60fps
+                              - paragraph [ref=f451e1031]: Input Buffering 3 Frames
+                              - paragraph [ref=f451e1038]: Lag Compensation 100ms
+                              - paragraph [ref=f451e1045]: Rollback Netcode
+                              - paragraph [ref=f451e1052]: Connection Monitoring
+                              - paragraph [ref=f451e1059]: Heartbeat Every 1s
+                              - paragraph [ref=f451e1066]: Ping Latency Tracking
+                              - paragraph [ref=f451e1073]: Disconnect Detection
+                              - paragraph [ref=f451e1080]: Auto-reconnect 30s Grace
+                              - paragraph [ref=f451e1087]: Social Features
+                              - paragraph [ref=f451e1094]: Friends System
+                              - paragraph [ref=f451e1101]: Friend Requests
+                              - paragraph [ref=f451e1108]: Online Status
+                              - paragraph [ref=f451e1115]: Invite to Match
+                              - paragraph [ref=f451e1122]: Recent Players
+                              - paragraph [ref=f451e1129]: Custom Lobbies
+                              - paragraph [ref=f451e1136]: Room Code 6 Digits
+                              - paragraph [ref=f451e1143]: Host Settings
+                              - paragraph [ref=f451e1150]: Player Ready Status
+                              - paragraph [ref=f451e1157]: Lobby Chat
+                              - paragraph [ref=f451e1164]: Replay System
+                              - paragraph [ref=f451e1171]: Match Recording S3
+                              - paragraph [ref=f451e1178]: Replay Playback
+                              - paragraph [ref=f451e1185]: Share Replay URL
+                              - paragraph [ref=f451e1192]: Highlight Reel
+                              - paragraph [ref=f451e1199]: Payment Processing
+                              - paragraph [ref=f451e1206]: Stripe Integration
+                              - paragraph [ref=f451e1213]: Checkout Sessions
+                              - paragraph [ref=f451e1220]: Hosted Payment Page
+                              - paragraph [ref=f451e1227]: Multiple Payment Methods
+                              - paragraph [ref=f451e1234]: Currency Support KRW USD
+                              - paragraph [ref=f451e1241]: Base Pricing Currency KRW
+                              - paragraph [ref=f451e1248]: USD Pricing Via Stripe FX
+                              - paragraph [ref=f451e1255]: Exchange Rate From Stripe At Checkout
+                              - paragraph [ref=f451e1262]: Amount Locked Per Session
+                              - paragraph [ref=f451e1269]: Tax Calculation
+                              - paragraph [ref=f451e1276]: Webhook Events
+                              - paragraph [ref=f451e1283]: checkout session completed
+                              - paragraph [ref=f451e1290]: payment intent succeeded
+                              - paragraph [ref=f451e1297]: customer subscription updated
+                              - paragraph [ref=f451e1304]: Signature Verification HMAC-SHA256
+                              - paragraph [ref=f451e1311]: Product Catalog
+                              - paragraph [ref=f451e1318]: Cosmetic Skins 5000-15000 KRW
+                              - paragraph [ref=f451e1325]: Battle Pass 9900 KRW
+                              - paragraph [ref=f451e1332]: DLC Packs 19900-49900 KRW
+                              - paragraph [ref=f451e1339]: Premium Currency
+                              - paragraph [ref=f451e1346]: Inventory Management
+                              - paragraph [ref=f451e1353]: DynamoDB Inventory
+                              - paragraph [ref=f451e1360]: Owned Items
+                              - paragraph [ref=f451e1367]: Purchase History
+                              - paragraph [ref=f451e1374]: Transaction Receipts
+                              - paragraph [ref=f451e1381]: Expiration Tracking
+                              - paragraph [ref=f451e1388]: Item Granting
+                              - paragraph [ref=f451e1395]: Immediate Unlock
+                              - paragraph [ref=f451e1402]: WebSocket Broadcast
+                              - paragraph [ref=f451e1409]: Client Cache Update
+                              - paragraph [ref=f451e1416]: Receipt Generation S3
+                              - paragraph [ref=f451e1423]: Advanced AI Future
+                              - paragraph [ref=f451e1430]: Machine Learning
+                              - paragraph [ref=f451e1437]: TensorFlow.js Client-Side
+                              - paragraph [ref=f451e1444]: Pattern Recognition
+                              - paragraph [ref=f451e1451]: Player Behavior Analysis
+                              - paragraph [ref=f451e1458]: Skill Assessment
+                              - paragraph [ref=f451e1465]: Adaptive Difficulty
+                              - paragraph [ref=f451e1472]: AWS SageMaker Backend
+                              - paragraph [ref=f451e1479]: Model Training
+                              - paragraph [ref=f451e1486]: Hyperparameter Tuning
+                              - paragraph [ref=f451e1493]: Batch Inference
+                              - paragraph [ref=f451e1500]: A B Testing
+                              - paragraph [ref=f451e1507]: Behavior Trees
+                              - paragraph [ref=f451e1514]: Complex Decision Making
+                              - paragraph [ref=f451e1521]: Conditional Nodes
+                              - paragraph [ref=f451e1528]: Sequence Nodes
+                              - paragraph [ref=f451e1535]: Parallel Nodes
+                              - paragraph [ref=f451e1542]: Decorator Nodes
+                              - paragraph [ref=f451e1549]: Emergent Strategies
+                              - paragraph [ref=f451e1556]: Combo Discovery
+                              - paragraph [ref=f451e1563]: Counter Patterns
+                              - paragraph [ref=f451e1570]: Stance Transitions
+                              - paragraph [ref=f451e1577]: VP Targeting
+                              - paragraph [ref=f451e1584]: Personalized Training
+                              - paragraph [ref=f451e1591]: Player Profiling
+                              - paragraph [ref=f451e1598]: Skill Gaps Analysis
+                              - paragraph [ref=f451e1605]: Learning Rate
+                              - paragraph [ref=f451e1612]: Preferred Techniques
+                              - paragraph [ref=f451e1619]: Weakness Patterns
+                              - paragraph [ref=f451e1626]: Custom Drills
+                              - paragraph [ref=f451e1633]: Targeted Exercises
+                              - paragraph [ref=f451e1640]: Progressive Difficulty
+                              - paragraph [ref=f451e1647]: Real-time Feedback
+                              - paragraph [ref=f451e1654]: Achievement Tracking
+                          - generic [ref=f451e1655]:
+                            - button "Zoom in" [ref=f451e1656] [cursor=pointer]:
+                              - img [ref=f451e1657]
+                            - button "Zoom out" [ref=f451e1660] [cursor=pointer]:
+                              - img [ref=f451e1661]
+                            - button "Reset view" [ref=f451e1664] [cursor=pointer]:
+                              - img [ref=f451e1665]
+                            - button "Pan up" [ref=f451e1667] [cursor=pointer]:
+                              - img [ref=f451e1668]
+                            - button "Pan down" [ref=f451e1670] [cursor=pointer]:
+                              - img [ref=f451e1671]
+                            - button "Pan left" [ref=f451e1673] [cursor=pointer]:
+                              - img [ref=f451e1674]
+                            - button "Pan right" [ref=f451e1676] [cursor=pointer]:
+                              - img [ref=f451e1677]
+                    - generic [ref=e1008]:
+                      - img [ref=e1009]
+                      - generic [ref=e1012]: Loading
+                  - separator [ref=e1013]
+                  - generic [ref=e1014]:
+                    - heading "🚀 Development Roadmap Phases" [level=2] [ref=e1015]
+                    - 'link "Permalink: 🚀 Development Roadmap Phases" [ref=e1016] [cursor=pointer]':
+                      - /url: "#-development-roadmap-phases"
+                      - img [ref=e1017]
+                  - region "mermaid rendered output container" [ref=e1019]:
+                    - generic [ref=e1020]:
+                      - generic [ref=e1021]:
+                        - group [ref=e1022]:
+                          - button "Open dialog" [ref=e1023] [cursor=pointer]:
+                            - img [ref=e1024]
+                        - button "Copy mermaid code" [ref=e1026] [cursor=pointer]:
+                          - img [ref=e1027]
+                      - iframe [ref=e1031]:
+                        - generic [active]:
+                          - document [ref=f452e4]:
+                            - generic [ref=f452e103]:
+                              - paragraph [ref=f452e110]:
+                                - text: 📅 Roadmap
+                                - text: Phases
+                              - paragraph [ref=f452e117]:
+                                - text: "Phase 1: Foundation"
+                                - text: Months 1-3
+                              - paragraph [ref=f452e124]: Complete Core Combat
+                              - paragraph [ref=f452e131]: Vital Point System
+                              - paragraph [ref=f452e138]: Trigram Mechanics
+                              - paragraph [ref=f452e145]: Physics Engine
+                              - paragraph [ref=f452e152]: Audio Feedback
+                              - paragraph [ref=f452e159]: Polish UI/UX
+                              - paragraph [ref=f452e166]: Korean Theming
+                              - paragraph [ref=f452e173]: Responsive Design
+                              - paragraph [ref=f452e180]: Accessibility
+                              - paragraph [ref=f452e187]: Performance
+                              - paragraph [ref=f452e194]: Testing & QA
+                              - paragraph [ref=f452e201]: Unit Tests
+                              - paragraph [ref=f452e208]: E2E Tests
+                              - paragraph [ref=f452e215]: User Testing
+                              - paragraph [ref=f452e222]: Bug Fixes
+                              - paragraph [ref=f452e229]:
+                                - text: "Phase 2: Backend"
+                                - text: Months 4-6
+                              - paragraph [ref=f452e236]: User Accounts
+                              - paragraph [ref=f452e243]: Authentication
+                              - paragraph [ref=f452e250]: Profile Management
+                              - paragraph [ref=f452e257]: Settings Sync
+                              - paragraph [ref=f452e264]: Session Persistence
+                              - paragraph [ref=f452e271]: Database Setup
+                              - paragraph [ref=f452e278]: Schema Design
+                              - paragraph [ref=f452e285]: Data Migration
+                              - paragraph [ref=f452e292]: Backup Strategy
+                              - paragraph [ref=f452e299]: Scaling Plan
+                              - paragraph [ref=f452e306]: API Development
+                              - paragraph [ref=f452e313]: RESTful Endpoints
+                              - paragraph [ref=f452e320]: GraphQL Schema
+                              - paragraph [ref=f452e327]: WebSocket Events
+                              - paragraph [ref=f452e334]: Documentation
+                              - paragraph [ref=f452e341]:
+                                - text: "Phase 3: Multiplayer"
+                                - text: Months 7-9
+                              - paragraph [ref=f452e348]: Matchmaking System
+                              - paragraph [ref=f452e355]: Queue Management
+                              - paragraph [ref=f452e362]: ELO Ranking
+                              - paragraph [ref=f452e369]: Skill Matching
+                              - paragraph [ref=f452e376]: Region Selection
+                              - paragraph [ref=f452e383]: Real-time Combat
+                              - paragraph [ref=f452e390]: State Sync
+                              - paragraph [ref=f452e397]: Input Handling
+                              - paragraph [ref=f452e404]: Lag Comp
+                              - paragraph [ref=f452e411]: Disconnect Recovery
+                              - paragraph [ref=f452e418]: Social Features
+                              - paragraph [ref=f452e425]: Friends System
+                              - paragraph [ref=f452e432]: Lobbies
+                              - paragraph [ref=f452e439]: Chat
+                              - paragraph [ref=f452e446]: Emotes
+                              - paragraph [ref=f452e453]:
+                                - text: "Phase 4: Mobile & AI"
+                                - text: Months 10-12
+                              - paragraph [ref=f452e460]: Mobile Optimization
+                              - paragraph [ref=f452e467]: PWA Implementation
+                              - paragraph [ref=f452e474]: Touch Controls
+                              - paragraph [ref=f452e481]: Performance Tuning
+                              - paragraph [ref=f452e488]: Native Builds
+                              - paragraph [ref=f452e495]: Advanced AI
+                              - paragraph [ref=f452e502]: ML Training
+                              - paragraph [ref=f452e509]: Behavior Trees
+                              - paragraph [ref=f452e516]: Adaptive Difficulty
+                              - paragraph [ref=f452e523]: Coaching System
+                              - paragraph [ref=f452e530]: Analytics Platform
+                              - paragraph [ref=f452e537]: Data Pipeline
+                              - paragraph [ref=f452e544]: Dashboards
+                              - paragraph [ref=f452e551]: Insights Engine
+                              - paragraph [ref=f452e558]: Reporting
+                              - paragraph [ref=f452e565]:
+                                - text: "Phase 5: Content"
+                                - text: Months 13-18
+                              - paragraph [ref=f452e572]: Story Mode
+                              - paragraph [ref=f452e579]: Campaign Design
+                              - paragraph [ref=f452e586]: Missions
+                              - paragraph [ref=f452e593]: Narrative
+                              - paragraph [ref=f452e600]: Rewards
+                              - paragraph [ref=f452e607]: New Characters
+                              - paragraph [ref=f452e614]: Design
+                              - paragraph [ref=f452e621]: Balance
+                              - paragraph [ref=f452e628]: Animation
+                              - paragraph [ref=f452e635]: Voice Work
+                              - paragraph [ref=f452e642]: Tournament System
+                              - paragraph [ref=f452e649]: Brackets
+                              - paragraph [ref=f452e656]: Prizes
+                              - paragraph [ref=f452e663]: Streaming
+                              - paragraph [ref=f452e670]: Replays
+                              - paragraph [ref=f452e677]:
+                                - text: "Phase 6: Scale"
+                                - text: Months 19-24
+                              - paragraph [ref=f452e684]: Global Expansion
+                              - paragraph [ref=f452e691]: Localization
+                              - paragraph [ref=f452e698]: Regional Servers
+                              - paragraph [ref=f452e705]: Marketing
+                              - paragraph [ref=f452e712]: Partnerships
+                              - paragraph [ref=f452e719]: Monetization
+                              - paragraph [ref=f452e726]: Cosmetics Shop
+                              - paragraph [ref=f452e733]: Battle Pass
+                              - paragraph [ref=f452e740]: Premium Content
+                              - paragraph [ref=f452e747]: Optional
+                              - paragraph [ref=f452e754]: Community Tools
+                              - paragraph [ref=f452e761]: Modding Support
+                              - paragraph [ref=f452e768]: Content Creator Tools
+                              - paragraph [ref=f452e775]: Tournament Hosting
+                              - paragraph [ref=f452e782]: Coaching Platform
+                          - generic [ref=f452e783]:
+                            - button "Zoom in" [ref=f452e784] [cursor=pointer]:
+                              - img [ref=f452e785]
+                            - button "Zoom out" [ref=f452e788] [cursor=pointer]:
+                              - img [ref=f452e789]
+                            - button "Reset view" [ref=f452e792] [cursor=pointer]:
+                              - img [ref=f452e793]
+                            - button "Pan up" [ref=f452e795] [cursor=pointer]:
+                              - img [ref=f452e796]
+                            - button "Pan down" [ref=f452e798] [cursor=pointer]:
+                              - img [ref=f452e799]
+                            - button "Pan left" [ref=f452e801] [cursor=pointer]:
+                              - img [ref=f452e802]
+                            - button "Pan right" [ref=f452e804] [cursor=pointer]:
+                              - img [ref=f452e805]
+                    - generic [ref=e1032]:
+                      - img [ref=e1033]
+                      - generic [ref=e1036]: Loading
+                  - separator [ref=e1037]
+                  - generic [ref=e1038]:
+                    - heading "💡 Innovation Areas" [level=2] [ref=e1039]
+                    - 'link "Permalink: 💡 Innovation Areas" [ref=e1040] [cursor=pointer]':
+                      - /url: "#-innovation-areas"
+                      - img [ref=e1041]
+                  - region "mermaid rendered output container" [ref=e1043]:
+                    - generic [ref=e1044]:
+                      - generic [ref=e1045]:
+                        - group [ref=e1046]:
+                          - button "Open dialog" [ref=e1047] [cursor=pointer]:
+                            - img [ref=e1048]
+                        - button "Copy mermaid code" [ref=e1050] [cursor=pointer]:
+                          - img [ref=e1051]
+                      - iframe [ref=e1055]:
+                        - generic [active]:
+                          - document [ref=f453e4]:
+                            - generic [ref=f453e82]:
+                              - paragraph [ref=f453e89]:
+                                - text: 💡 Innovation
+                                - text: Opportunities
+                              - paragraph [ref=f453e96]: VR/AR Integration
+                              - paragraph [ref=f453e103]: Virtual Reality Combat
+                              - paragraph [ref=f453e110]: Immersive Training
+                              - paragraph [ref=f453e117]: Full Body Tracking
+                              - paragraph [ref=f453e124]: Haptic Suits
+                              - paragraph [ref=f453e131]: Realistic Feedback
+                              - paragraph [ref=f453e138]: Augmented Reality
+                              - paragraph [ref=f453e145]: Mobile AR Mode
+                              - paragraph [ref=f453e152]: Real-world Overlays
+                              - paragraph [ref=f453e159]: Training Visualization
+                              - paragraph [ref=f453e166]: Anatomy Projection
+                              - paragraph [ref=f453e173]: AI-Powered Features
+                              - paragraph [ref=f453e180]: Personalized Training
+                              - paragraph [ref=f453e187]: Adaptive Difficulty
+                              - paragraph [ref=f453e194]: Skill Gap Analysis
+                              - paragraph [ref=f453e201]: Custom Drills
+                              - paragraph [ref=f453e208]: Progress Prediction
+                              - paragraph [ref=f453e215]: Voice Coach
+                              - paragraph [ref=f453e222]: Real-time Guidance
+                              - paragraph [ref=f453e229]: Technique Correction
+                              - paragraph [ref=f453e236]: Motivation
+                              - paragraph [ref=f453e243]: Korean/English
+                              - paragraph [ref=f453e250]: Computer Vision
+                              - paragraph [ref=f453e257]: Motion Capture
+                              - paragraph [ref=f453e264]: Pose Detection
+                              - paragraph [ref=f453e271]: Form Analysis
+                              - paragraph [ref=f453e278]: Webcam Training
+                              - paragraph [ref=f453e285]: Gamification
+                              - paragraph [ref=f453e292]: Achievement System
+                              - paragraph [ref=f453e299]: Badges
+                              - paragraph [ref=f453e306]: Trophies
+                              - paragraph [ref=f453e313]: Milestones
+                              - paragraph [ref=f453e320]: Prestige Ranks
+                              - paragraph [ref=f453e327]: Daily Challenges
+                              - paragraph [ref=f453e334]: Rotating Objectives
+                              - paragraph [ref=f453e341]: Streak Rewards
+                              - paragraph [ref=f453e348]: Special Events
+                              - paragraph [ref=f453e355]: Leaderboards
+                              - paragraph [ref=f453e362]: Progression Systems
+                              - paragraph [ref=f453e369]: Experience Points
+                              - paragraph [ref=f453e376]: Skill Trees
+                              - paragraph [ref=f453e383]: Unlockables
+                              - paragraph [ref=f453e390]: Mastery Levels
+                              - paragraph [ref=f453e397]: Educational Integration
+                              - paragraph [ref=f453e404]: Martial Arts Education
+                              - paragraph [ref=f453e411]: Historical Context
+                              - paragraph [ref=f453e418]: Cultural Significance
+                              - paragraph [ref=f453e425]: Philosophy
+                              - paragraph [ref=f453e432]: Real-world Application
+                              - paragraph [ref=f453e439]: Anatomy Learning
+                              - paragraph [ref=f453e446]: 3D Models
+                              - paragraph [ref=f453e453]: Interactive Diagrams
+                              - paragraph [ref=f453e460]: Medical Accuracy
+                              - paragraph [ref=f453e467]: Educational Mode
+                              - paragraph [ref=f453e474]: Korean Language
+                              - paragraph [ref=f453e481]: In-game Lessons
+                              - paragraph [ref=f453e488]: Terminology
+                              - paragraph [ref=f453e495]: Pronunciation
+                              - paragraph [ref=f453e502]: Cultural Context
+                              - paragraph [ref=f453e509]: Community Features
+                              - paragraph [ref=f453e516]: User Generated Content
+                              - paragraph [ref=f453e523]: Custom Techniques
+                              - paragraph [ref=f453e530]: Training Routines
+                              - paragraph [ref=f453e537]: Share Replays
+                              - paragraph [ref=f453e544]: Tutorial Videos
+                              - paragraph [ref=f453e551]: Esports Platform
+                              - paragraph [ref=f453e558]: Competitive Ladder
+                              - paragraph [ref=f453e565]: Pro Scene Support
+                              - paragraph [ref=f453e572]: Spectator Tools
+                              - paragraph [ref=f453e579]: Broadcasting
+                              - paragraph [ref=f453e586]: Knowledge Base
+                              - paragraph [ref=f453e593]: Wiki System
+                              - paragraph [ref=f453e600]: Strategy Guides
+                              - paragraph [ref=f453e607]: Character Databases
+                              - paragraph [ref=f453e614]: Community Forums
+                          - generic [ref=f453e615]:
+                            - button "Zoom in" [ref=f453e616] [cursor=pointer]:
+                              - img [ref=f453e617]
+                            - button "Zoom out" [ref=f453e620] [cursor=pointer]:
+                              - img [ref=f453e621]
+                            - button "Reset view" [ref=f453e624] [cursor=pointer]:
+                              - img [ref=f453e625]
+                            - button "Pan up" [ref=f453e627] [cursor=pointer]:
+                              - img [ref=f453e628]
+                            - button "Pan down" [ref=f453e630] [cursor=pointer]:
+                              - img [ref=f453e631]
+                            - button "Pan left" [ref=f453e633] [cursor=pointer]:
+                              - img [ref=f453e634]
+                            - button "Pan right" [ref=f453e636] [cursor=pointer]:
+                              - img [ref=f453e637]
+                    - generic [ref=e1056]:
+                      - img [ref=e1057]
+                      - generic [ref=e1060]: Loading
+                  - separator [ref=e1061]
+                  - generic [ref=e1062]:
+                    - heading "🔗 Technical Integration Map" [level=2] [ref=e1063]
+                    - 'link "Permalink: 🔗 Technical Integration Map" [ref=e1064] [cursor=pointer]':
+                      - /url: "#-technical-integration-map"
+                      - img [ref=e1065]
+                  - region "mermaid rendered output container" [ref=e1067]:
+                    - generic [ref=e1068]:
+                      - generic [ref=e1069]:
+                        - group [ref=e1070]:
+                          - button "Open dialog" [ref=e1071] [cursor=pointer]:
+                            - img [ref=e1072]
+                        - button "Copy mermaid code" [ref=e1074] [cursor=pointer]:
+                          - img [ref=e1075]
+                      - iframe [ref=e1079]:
+                        - generic [active]:
+                          - document [ref=f454e4]:
+                            - generic [ref=f454e76]:
+                              - paragraph [ref=f454e83]:
+                                - text: 🔗 Technical
+                                - text: Stack Evolution
+                              - paragraph [ref=f454e90]: Frontend Enhancements
+                              - paragraph [ref=f454e97]: Framework Upgrades
+                              - paragraph [ref=f454e104]: React 19+
+                              - paragraph [ref=f454e111]: Current
+                              - paragraph [ref=f454e118]: TypeScript 6+
+                              - paragraph [ref=f454e125]: Vite 6+
+                              - paragraph [ref=f454e132]: State Management
+                              - paragraph [ref=f454e139]: Zustand Evolution
+                              - paragraph [ref=f454e146]: TanStack Query
+                              - paragraph [ref=f454e153]: Offline Sync
+                              - paragraph [ref=f454e160]: Optimistic Updates
+                              - paragraph [ref=f454e167]: Performance
+                              - paragraph [ref=f454e174]: Code Splitting
+                              - paragraph [ref=f454e181]: Bundle Optimization
+                              - paragraph [ref=f454e188]: Asset Preloading
+                              - paragraph [ref=f454e195]: WebGL Optimization
+                              - paragraph [ref=f454e202]: Backend Stack
+                              - paragraph [ref=f454e209]: Runtime
+                              - paragraph [ref=f454e216]: Node.js/Bun
+                              - paragraph [ref=f454e223]: Deno Alternative
+                              - paragraph [ref=f454e230]: Edge Functions
+                              - paragraph [ref=f454e237]: Serverless
+                              - paragraph [ref=f454e244]: Framework
+                              - paragraph [ref=f454e251]: NestJS/Fastify
+                              - paragraph [ref=f454e258]: GraphQL Server
+                              - paragraph [ref=f454e265]: WebSocket Server
+                              - paragraph [ref=f454e272]: Background Jobs
+                              - paragraph [ref=f454e279]: Database
+                              - paragraph [ref=f454e286]: PostgreSQL Primary
+                              - paragraph [ref=f454e293]: Redis Cache
+                              - paragraph [ref=f454e300]: S3 Object Storage
+                              - paragraph [ref=f454e307]: CDN Integration
+                              - paragraph [ref=f454e314]: DevOps & Infrastructure
+                              - paragraph [ref=f454e321]: CI/CD Pipeline
+                              - paragraph [ref=f454e328]: GitHub Actions
+                              - paragraph [ref=f454e335]: Automated Testing
+                              - paragraph [ref=f454e342]: Security Scanning
+                              - paragraph [ref=f454e349]: Auto Deployment
+                              - paragraph [ref=f454e356]: Monitoring
+                              - paragraph [ref=f454e363]: Application Metrics
+                              - paragraph [ref=f454e370]: Error Tracking
+                              - paragraph [ref=f454e377]: Performance Monitoring
+                              - paragraph [ref=f454e384]: User Analytics
+                              - paragraph [ref=f454e391]: Security
+                              - paragraph [ref=f454e398]: WAF Rules
+                              - paragraph [ref=f454e405]: DDoS Protection
+                              - paragraph [ref=f454e412]: Penetration Testing
+                              - paragraph [ref=f454e419]: Compliance Audits
+                              - paragraph [ref=f454e426]: Third-party Integrations
+                              - paragraph [ref=f454e433]: Authentication Providers
+                              - paragraph [ref=f454e440]: Google OAuth
+                              - paragraph [ref=f454e447]: GitHub OAuth
+                              - paragraph [ref=f454e454]: Apple Sign In
+                              - paragraph [ref=f454e461]: Email/Password
+                              - paragraph [ref=f454e468]: Analytics Services
+                              - paragraph [ref=f454e475]: Google Analytics
+                              - paragraph [ref=f454e482]: Mixpanel
+                              - paragraph [ref=f454e489]: Amplitude
+                              - paragraph [ref=f454e496]: Custom Dashboard
+                              - paragraph [ref=f454e503]: Payment Processing
+                              - paragraph [ref=f454e510]: Stripe
+                              - paragraph [ref=f454e517]: PayPal
+                              - paragraph [ref=f454e524]: In-app Purchases
+                              - paragraph [ref=f454e531]: Cryptocurrency
+                              - paragraph [ref=f454e538]: Communication
+                              - paragraph [ref=f454e545]: Discord Integration
+                              - paragraph [ref=f454e552]: Twitch API
+                              - paragraph [ref=f454e559]: YouTube API
+                              - paragraph [ref=f454e566]: Email Service
+                          - generic [ref=f454e567]:
+                            - button "Zoom in" [ref=f454e568] [cursor=pointer]:
+                              - img [ref=f454e569]
+                            - button "Zoom out" [ref=f454e572] [cursor=pointer]:
+                              - img [ref=f454e573]
+                            - button "Reset view" [ref=f454e576] [cursor=pointer]:
+                              - img [ref=f454e577]
+                            - button "Pan up" [ref=f454e579] [cursor=pointer]:
+                              - img [ref=f454e580]
+                            - button "Pan down" [ref=f454e582] [cursor=pointer]:
+                              - img [ref=f454e583]
+                            - button "Pan left" [ref=f454e585] [cursor=pointer]:
+                              - img [ref=f454e586]
+                            - button "Pan right" [ref=f454e588] [cursor=pointer]:
+                              - img [ref=f454e589]
+                    - generic [ref=e1080]:
+                      - img [ref=e1081]
+                      - generic [ref=e1084]: Loading
+                  - separator [ref=e1085]
+                  - paragraph [ref=e1086]:
+                    - strong [ref=e1087]: 흑괘의 길을 걸어라
+                    - text: "-"
+                    - emphasis [ref=e1088]: Walk the Path of the Black Trigram into Technological Evolution
+                  - paragraph [ref=e1089]: This future mindmap visualizes the complete technology evolution roadmap for Black Trigram, documenting planned features, technical enhancements, and strategic development phases for transforming the Korean martial arts combat simulator into a comprehensive global platform.
+                  - separator [ref=e1090]
+                  - paragraph [ref=e1091]:
+                    - strong [ref=e1092]: "📋 Document Control:"
+                    - strong [ref=e1093]: "✅ Approved by:"
+                    - text: James Pether Sörling, CEO
+                    - strong [ref=e1094]: "📤 Distribution:"
+                    - text: Public
+                    - strong [ref=e1095]: "🏷️ Classification:"
+                    - 'link "Confidentiality: Public" [ref=e1096] [cursor=pointer]':
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels
+                      - 'img "Confidentiality: Public" [ref=e1097]'
+                    - strong [ref=e1098]: "📅 Effective Date:"
+                    - text: 2026-03-19
+                    - strong [ref=e1099]: "⏰ Next Review:"
+                    - text: 2026-09-19
+                    - strong [ref=e1100]: "🎯 Framework Compliance:"
+                    - link "ISO 27001" [ref=e1101] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md
+                      - img "ISO 27001" [ref=e1102]
+                    - link "NIST CSF 2.0" [ref=e1103] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md
+                      - img "NIST CSF 2.0" [ref=e1104]
+  - alert [ref=e1108]

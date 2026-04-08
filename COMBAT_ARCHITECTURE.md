@@ -2766,7 +2766,7 @@ graph TB
     CALC1 --> EXEC[Execute Technique]:::action
     GUARD --> WAIT[Wait for Opening]:::action
     
-    EXEC --> ENDTICK[End AI Tick]:::end
+    EXEC --> ENDTICK[End AI Tick]:::endState
     WAIT --> ENDTICK
     
     classDef start fill:#00ff00,stroke:#333,color:#000
@@ -2776,7 +2776,7 @@ graph TB
     classDef balanced fill:#ff8c00,stroke:#333,color:#fff
     classDef defensive fill:#0066cc,stroke:#333,color:#fff
     classDef action fill:#9370db,stroke:#333,color:#fff
-    classDef end fill:#808080,stroke:#333,color:#fff
+    classDef endState fill:#808080,stroke:#333,color:#fff
 ```
 
 ### Aggression Levels
