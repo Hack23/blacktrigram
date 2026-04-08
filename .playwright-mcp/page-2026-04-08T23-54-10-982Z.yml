@@ -1,0 +1,2002 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - region
+    - generic [ref=e3]:
+      - link "Skip to content" [ref=e4] [cursor=pointer]:
+        - /url: "#start-of-content"
+      - banner [ref=e6]:
+        - heading "Navigation Menu" [level=2] [ref=e7]
+        - generic [ref=e8]:
+          - link "Homepage" [ref=e10] [cursor=pointer]:
+            - /url: /
+            - img [ref=e11]
+          - generic [ref=e13]:
+            - navigation "Global" [ref=e16]:
+              - list [ref=e17]:
+                - listitem [ref=e18]:
+                  - button "Platform" [ref=e20] [cursor=pointer]:
+                    - text: Platform
+                    - img [ref=e21]
+                - listitem [ref=e23]:
+                  - button "Solutions" [ref=e25] [cursor=pointer]:
+                    - text: Solutions
+                    - img [ref=e26]
+                - listitem [ref=e28]:
+                  - button "Resources" [ref=e30] [cursor=pointer]:
+                    - text: Resources
+                    - img [ref=e31]
+                - listitem [ref=e33]:
+                  - button "Open Source" [ref=e35] [cursor=pointer]:
+                    - text: Open Source
+                    - img [ref=e36]
+                - listitem [ref=e38]:
+                  - button "Enterprise" [ref=e40] [cursor=pointer]:
+                    - text: Enterprise
+                    - img [ref=e41]
+                - listitem [ref=e43]:
+                  - link "Pricing" [ref=e44] [cursor=pointer]:
+                    - /url: https://github.com/pricing
+                    - generic [ref=e45]: Pricing
+            - generic [ref=e46]:
+              - button "Search or jump to…" [ref=e49] [cursor=pointer]:
+                - img [ref=e51]
+              - link "Sign in" [ref=e54] [cursor=pointer]:
+                - /url: /login?return_to=https%3A%2F%2Fgithub.com%2FHack23%2Fblacktrigram%2Fblob%2Fcopilot%2Fimprove-mermaid-diagrams%2FSTATEDIAGRAM.md
+              - link "Sign up" [ref=e55] [cursor=pointer]:
+                - /url: /signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E%2Fblob%2Fshow&source=header-repo&source_repo=Hack23%2Fblacktrigram
+              - button "Appearance settings" [ref=e58] [cursor=pointer]:
+                - img
+    - main [ref=e62]:
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - generic [ref=e66]:
+            - img [ref=e67]
+            - link "Hack23" [ref=e70] [cursor=pointer]:
+              - /url: /Hack23
+            - generic [ref=e71]: /
+            - strong [ref=e72]:
+              - link "blacktrigram" [ref=e73] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram
+            - generic [ref=e74]: Public
+          - generic [ref=e75]:
+            - list:
+              - listitem [ref=e76]:
+                - link "You must be signed in to change notification settings" [ref=e77] [cursor=pointer]:
+                  - /url: /login?return_to=%2FHack23%2Fblacktrigram
+                  - img [ref=e78]
+                  - text: Notifications
+              - listitem [ref=e80]:
+                - link "Fork 2" [ref=e81] [cursor=pointer]:
+                  - /url: /login?return_to=%2FHack23%2Fblacktrigram
+                  - img [ref=e82]
+                  - text: Fork
+                  - generic "2" [ref=e84]
+              - listitem [ref=e85]:
+                - link "You must be signed in to star a repository" [ref=e87] [cursor=pointer]:
+                  - /url: /login?return_to=%2FHack23%2Fblacktrigram
+                  - img [ref=e88]
+                  - text: Star
+                  - generic "6 users starred this repository" [ref=e90]: "6"
+        - navigation "Repository" [ref=e91]:
+          - list [ref=e92]:
+            - listitem [ref=e93]:
+              - link "Code" [ref=e94] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/tree/copilot/improve-mermaid-diagrams
+                - img [ref=e95]
+                - generic [ref=e97]: Code
+            - listitem [ref=e98]:
+              - link "Issues 8" [ref=e99] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/issues
+                - img [ref=e100]
+                - generic [ref=e103]: Issues
+                - generic "8" [ref=e104]
+            - listitem [ref=e105]:
+              - link "Pull requests" [ref=e106] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/pulls
+                - img [ref=e107]
+                - generic [ref=e109]: Pull requests
+            - listitem [ref=e110]:
+              - link "Actions" [ref=e111] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/actions
+                - img [ref=e112]
+                - generic [ref=e114]: Actions
+            - listitem [ref=e115]:
+              - link "Projects" [ref=e116] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/projects
+                - img [ref=e117]
+                - generic [ref=e119]: Projects
+            - listitem [ref=e120]:
+              - link "Security and quality" [ref=e121] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/security
+                - img [ref=e122]
+                - generic [ref=e124]: Security and quality
+            - listitem [ref=e125]:
+              - link "Insights" [ref=e126] [cursor=pointer]:
+                - /url: /Hack23/blacktrigram/pulse
+                - img [ref=e127]
+                - generic [ref=e129]: Insights
+      - generic [ref=e137]:
+        - generic [ref=e139]:
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - heading "Collapse file tree" [level=2] [ref=e145]:
+                  - button "Collapse file tree" [expanded] [ref=e146] [cursor=pointer]:
+                    - img [ref=e147]
+                - heading "Files" [level=2] [ref=e150]
+              - generic [ref=e151]:
+                - generic [ref=e153]:
+                  - link "View file on default branch" [ref=e155] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/blob/main/STATEDIAGRAM.md
+                    - img [ref=e156]
+                  - button "copilot/improve-mermaid-diagrams branch" [ref=e159] [cursor=pointer]:
+                    - generic [ref=e160]:
+                      - generic [ref=e162]:
+                        - img [ref=e164]
+                        - generic [ref=e167]: copilot/improve-mermaid-diagrams
+                      - generic:
+                        - img
+                - button "Search this repository (forward slash)" [ref=e169] [cursor=pointer]:
+                  - img [ref=e170]
+            - generic [ref=e173]:
+              - img [ref=e175]
+              - combobox "Go to file" [ref=e177]
+            - navigation "File Tree Navigation" [ref=e183]:
+              - tree "Files" [ref=e185]:
+                - treeitem ".devcontainer" [level=1] [ref=e186]:
+                  - generic [ref=e187] [cursor=pointer]:
+                    - img [ref=e189]
+                    - generic [ref=e191]:
+                      - img [ref=e195]
+                      - generic [ref=e197]: .devcontainer
+                - treeitem ".github" [level=1] [ref=e198]:
+                  - generic [ref=e199] [cursor=pointer]:
+                    - img [ref=e201]
+                    - generic [ref=e203]:
+                      - img [ref=e207]
+                      - generic [ref=e209]: .github
+                - treeitem ".playwright-mcp" [level=1] [ref=e210]:
+                  - generic [ref=e211] [cursor=pointer]:
+                    - img [ref=e213]
+                    - generic [ref=e215]:
+                      - img [ref=e219]
+                      - generic [ref=e221]: .playwright-mcp
+                - treeitem ".vscode" [level=1] [ref=e222]:
+                  - generic [ref=e223] [cursor=pointer]:
+                    - img [ref=e225]
+                    - generic [ref=e227]:
+                      - img [ref=e231]
+                      - generic [ref=e233]: .vscode
+                - treeitem "cypress" [level=1] [ref=e234]:
+                  - generic [ref=e235] [cursor=pointer]:
+                    - img [ref=e237]
+                    - generic [ref=e239]:
+                      - img [ref=e243]
+                      - generic [ref=e245]: cypress
+                - treeitem "docs" [level=1] [ref=e246]:
+                  - generic [ref=e247] [cursor=pointer]:
+                    - img [ref=e249]
+                    - generic [ref=e251]:
+                      - img [ref=e255]
+                      - generic [ref=e257]: docs
+                - treeitem "public" [level=1] [ref=e258]:
+                  - generic [ref=e259] [cursor=pointer]:
+                    - img [ref=e261]
+                    - generic [ref=e263]:
+                      - img [ref=e267]
+                      - generic [ref=e269]: public
+                - treeitem "screenshots" [level=1] [ref=e270]:
+                  - generic [ref=e271] [cursor=pointer]:
+                    - img [ref=e273]
+                    - generic [ref=e275]:
+                      - img [ref=e279]
+                      - generic [ref=e281]: screenshots
+                - treeitem "scripts" [level=1] [ref=e282]:
+                  - generic [ref=e283] [cursor=pointer]:
+                    - img [ref=e285]
+                    - generic [ref=e287]:
+                      - img [ref=e291]
+                      - generic [ref=e293]: scripts
+                - treeitem "src" [level=1] [ref=e294]:
+                  - generic [ref=e295] [cursor=pointer]:
+                    - img [ref=e297]
+                    - generic [ref=e299]:
+                      - img [ref=e303]
+                      - generic [ref=e305]: src
+                - treeitem "vite-plugins" [level=1] [ref=e306]:
+                  - generic [ref=e307] [cursor=pointer]:
+                    - img [ref=e309]
+                    - generic [ref=e311]:
+                      - img [ref=e315]
+                      - generic [ref=e317]: vite-plugins
+                - treeitem ".dependency-cruiser.cjs" [level=1] [ref=e318]:
+                  - generic [ref=e320] [cursor=pointer]:
+                    - img [ref=e323]
+                    - generic [ref=e325]: .dependency-cruiser.cjs
+                - treeitem ".env.production" [level=1] [ref=e326]:
+                  - generic [ref=e328] [cursor=pointer]:
+                    - img [ref=e331]
+                    - generic [ref=e333]: .env.production
+                - treeitem ".gitignore" [level=1] [ref=e334]:
+                  - generic [ref=e336] [cursor=pointer]:
+                    - img [ref=e339]
+                    - generic [ref=e341]: .gitignore
+                - treeitem ".npmignore" [level=1] [ref=e342]:
+                  - generic [ref=e344] [cursor=pointer]:
+                    - img [ref=e347]
+                    - generic [ref=e349]: .npmignore
+                - treeitem ".nvmrc" [level=1] [ref=e350]:
+                  - generic [ref=e352] [cursor=pointer]:
+                    - img [ref=e355]
+                    - generic [ref=e357]: .nvmrc
+                - treeitem "ARCHITECTURE.md" [level=1] [ref=e358]:
+                  - generic [ref=e360] [cursor=pointer]:
+                    - img [ref=e363]
+                    - generic [ref=e365]: ARCHITECTURE.md
+                - treeitem "ART_ASSETS.md" [level=1] [ref=e366]:
+                  - generic [ref=e368] [cursor=pointer]:
+                    - img [ref=e371]
+                    - generic [ref=e373]: ART_ASSETS.md
+                - treeitem "AUDIO_ASSETS.md" [level=1] [ref=e374]:
+                  - generic [ref=e376] [cursor=pointer]:
+                    - img [ref=e379]
+                    - generic [ref=e381]: AUDIO_ASSETS.md
+                - treeitem "BCPPlan.md" [level=1] [ref=e382]:
+                  - generic [ref=e384] [cursor=pointer]:
+                    - img [ref=e387]
+                    - generic [ref=e389]: BCPPlan.md
+                - treeitem "CODEOWNERS" [level=1] [ref=e390]:
+                  - generic [ref=e392] [cursor=pointer]:
+                    - img [ref=e395]
+                    - generic [ref=e397]: CODEOWNERS
+                - treeitem "CODE_OF_CONDUCT.md" [level=1] [ref=e398]:
+                  - generic [ref=e400] [cursor=pointer]:
+                    - img [ref=e403]
+                    - generic [ref=e405]: CODE_OF_CONDUCT.md
+                - treeitem "COMBAT_ARCHITECTURE.md" [level=1] [ref=e406]:
+                  - generic [ref=e408] [cursor=pointer]:
+                    - img [ref=e411]
+                    - generic [ref=e413]: COMBAT_ARCHITECTURE.md
+                - treeitem "CONTRIBUTING.md" [level=1] [ref=e414]:
+                  - generic [ref=e416] [cursor=pointer]:
+                    - img [ref=e419]
+                    - generic [ref=e421]: CONTRIBUTING.md
+                - treeitem "CONTROLS.md" [level=1] [ref=e422]:
+                  - generic [ref=e424] [cursor=pointer]:
+                    - img [ref=e427]
+                    - generic [ref=e429]: CONTROLS.md
+                - treeitem "CRA-ASSESSMENT.md" [level=1] [ref=e430]:
+                  - generic [ref=e432] [cursor=pointer]:
+                    - img [ref=e435]
+                    - generic [ref=e437]: CRA-ASSESSMENT.md
+                - treeitem "DATA_MODEL.md" [level=1] [ref=e438]:
+                  - generic [ref=e440] [cursor=pointer]:
+                    - img [ref=e443]
+                    - generic [ref=e445]: DATA_MODEL.md
+                - treeitem "E2ETestPlan.md" [level=1] [ref=e446]:
+                  - generic [ref=e448] [cursor=pointer]:
+                    - img [ref=e451]
+                    - generic [ref=e453]: E2ETestPlan.md
+                - treeitem "End-of-Life-Strategy.md" [level=1] [ref=e454]:
+                  - generic [ref=e456] [cursor=pointer]:
+                    - img [ref=e459]
+                    - generic [ref=e461]: End-of-Life-Strategy.md
+                - treeitem "FLOWCHART.md" [level=1] [ref=e462]:
+                  - generic [ref=e464] [cursor=pointer]:
+                    - img [ref=e467]
+                    - generic [ref=e469]: FLOWCHART.md
+                - treeitem "FUTURE_ARCHITECTURE.md" [level=1] [ref=e470]:
+                  - generic [ref=e472] [cursor=pointer]:
+                    - img [ref=e475]
+                    - generic [ref=e477]: FUTURE_ARCHITECTURE.md
+                - treeitem "FUTURE_DATA_MODEL.md" [level=1] [ref=e478]:
+                  - generic [ref=e480] [cursor=pointer]:
+                    - img [ref=e483]
+                    - generic [ref=e485]: FUTURE_DATA_MODEL.md
+                - treeitem "FUTURE_FLOWCHART.md" [level=1] [ref=e486]:
+                  - generic [ref=e488] [cursor=pointer]:
+                    - img [ref=e491]
+                    - generic [ref=e493]: FUTURE_FLOWCHART.md
+                - treeitem "FUTURE_MINDMAP.md" [level=1] [ref=e494]:
+                  - generic [ref=e496] [cursor=pointer]:
+                    - img [ref=e499]
+                    - generic [ref=e501]: FUTURE_MINDMAP.md
+                - treeitem "FUTURE_SECURITY_ARCHITECTURE.md" [level=1] [ref=e502]:
+                  - generic [ref=e504] [cursor=pointer]:
+                    - img [ref=e507]
+                    - generic [ref=e509]: FUTURE_SECURITY_ARCHITECTURE.md
+                - treeitem "FUTURE_STATEDIAGRAM.md" [level=1] [ref=e510]:
+                  - generic [ref=e512] [cursor=pointer]:
+                    - img [ref=e515]
+                    - generic [ref=e517]: FUTURE_STATEDIAGRAM.md
+                - treeitem "FUTURE_SWOT.md" [level=1] [ref=e518]:
+                  - generic [ref=e520] [cursor=pointer]:
+                    - img [ref=e523]
+                    - generic [ref=e525]: FUTURE_SWOT.md
+                - treeitem "FUTURE_THREAT_MODEL.md" [level=1] [ref=e526]:
+                  - generic [ref=e528] [cursor=pointer]:
+                    - img [ref=e531]
+                    - generic [ref=e533]: FUTURE_THREAT_MODEL.md
+                - treeitem "FUTURE_WORKFLOWS.md" [level=1] [ref=e534]:
+                  - generic [ref=e536] [cursor=pointer]:
+                    - img [ref=e539]
+                    - generic [ref=e541]: FUTURE_WORKFLOWS.md
+                - treeitem "FinancialSecurityPlan.md" [level=1] [ref=e542]:
+                  - generic [ref=e544] [cursor=pointer]:
+                    - img [ref=e547]
+                    - generic [ref=e549]: FinancialSecurityPlan.md
+                - treeitem "ISMS_REFERENCE_MAPPING.md" [level=1] [ref=e550]:
+                  - generic [ref=e552] [cursor=pointer]:
+                    - img [ref=e555]
+                    - generic [ref=e557]: ISMS_REFERENCE_MAPPING.md
+                - treeitem "LICENSE" [level=1] [ref=e558]:
+                  - generic [ref=e560] [cursor=pointer]:
+                    - img [ref=e563]
+                    - generic [ref=e565]: LICENSE
+                - treeitem "MINDMAP.md" [level=1] [ref=e566]:
+                  - generic [ref=e568] [cursor=pointer]:
+                    - img [ref=e571]
+                    - generic [ref=e573]: MINDMAP.md
+                - treeitem "README.md" [level=1] [ref=e574]:
+                  - generic [ref=e576] [cursor=pointer]:
+                    - img [ref=e579]
+                    - generic [ref=e581]: README.md
+                - treeitem "ROADMAP.md" [level=1] [ref=e582]:
+                  - generic [ref=e584] [cursor=pointer]:
+                    - img [ref=e587]
+                    - generic [ref=e589]: ROADMAP.md
+                - treeitem "SECURITY.md" [level=1] [ref=e590]:
+                  - generic [ref=e592] [cursor=pointer]:
+                    - img [ref=e595]
+                    - generic [ref=e597]: SECURITY.md
+                - treeitem "SECURITY_ARCHITECTURE.md" [level=1] [ref=e598]:
+                  - generic [ref=e600] [cursor=pointer]:
+                    - img [ref=e603]
+                    - generic [ref=e605]: SECURITY_ARCHITECTURE.md
+                - treeitem "STATEDIAGRAM.md" [level=1] [ref=e606]:
+                  - generic [ref=e608] [cursor=pointer]:
+                    - img [ref=e611]
+                    - generic [ref=e613]: STATEDIAGRAM.md
+                - treeitem "SWOT.md" [level=1] [ref=e614]:
+                  - generic [ref=e616] [cursor=pointer]:
+                    - img [ref=e619]
+                    - generic [ref=e621]: SWOT.md
+                - treeitem "THREAT_MODEL.md" [level=1] [ref=e622]:
+                  - generic [ref=e624] [cursor=pointer]:
+                    - img [ref=e627]
+                    - generic [ref=e629]: THREAT_MODEL.md
+                - treeitem "UnitTestPlan.md" [level=1] [ref=e630]:
+                  - generic [ref=e632] [cursor=pointer]:
+                    - img [ref=e635]
+                    - generic [ref=e637]: UnitTestPlan.md
+                - treeitem "VIDEO_ASSETS.md" [level=1] [ref=e638]:
+                  - generic [ref=e640] [cursor=pointer]:
+                    - img [ref=e643]
+                    - generic [ref=e645]: VIDEO_ASSETS.md
+                - treeitem "VISION_2026_2034.md" [level=1] [ref=e646]:
+                  - generic [ref=e648] [cursor=pointer]:
+                    - img [ref=e651]
+                    - generic [ref=e653]: VISION_2026_2034.md
+                - treeitem "WORKFLOWS.md" [level=1] [ref=e654]:
+                  - generic [ref=e656] [cursor=pointer]:
+                    - img [ref=e659]
+                    - generic [ref=e661]: WORKFLOWS.md
+                - treeitem "budget.json" [level=1] [ref=e662]:
+                  - generic [ref=e664] [cursor=pointer]:
+                    - img [ref=e667]
+                    - generic [ref=e669]: budget.json
+                - treeitem "cypress.config.ts" [level=1] [ref=e670]:
+                  - generic [ref=e672] [cursor=pointer]:
+                    - img [ref=e675]
+                    - generic [ref=e677]: cypress.config.ts
+                - treeitem "development.md" [level=1] [ref=e678]:
+                  - generic [ref=e680] [cursor=pointer]:
+                    - img [ref=e683]
+                    - generic [ref=e685]: development.md
+                - treeitem "eslint.config.js" [level=1] [ref=e686]:
+                  - generic [ref=e688] [cursor=pointer]:
+                    - img [ref=e691]
+                    - generic [ref=e693]: eslint.config.js
+                - treeitem "game-design.md" [level=1] [ref=e694]:
+                  - generic [ref=e696] [cursor=pointer]:
+                    - img [ref=e699]
+                    - generic [ref=e701]: game-design.md
+                - treeitem "game-status.md" [level=1] [ref=e702]:
+                  - generic [ref=e704] [cursor=pointer]:
+                    - img [ref=e707]
+                    - generic [ref=e709]: game-status.md
+                - treeitem "generate-sitemaps.js" [level=1] [ref=e710]:
+                  - generic [ref=e712] [cursor=pointer]:
+                    - img [ref=e715]
+                    - generic [ref=e717]: generate-sitemaps.js
+                - treeitem "index.html" [level=1] [ref=e718]:
+                  - generic [ref=e720] [cursor=pointer]:
+                    - img [ref=e723]
+                    - generic [ref=e725]: index.html
+                - treeitem "knip.json" [level=1] [ref=e726]:
+                  - generic [ref=e728] [cursor=pointer]:
+                    - img [ref=e731]
+                    - generic [ref=e733]: knip.json
+                - treeitem "package-lock.json" [level=1] [ref=e734]:
+                  - generic [ref=e736] [cursor=pointer]:
+                    - img [ref=e739]
+                    - generic [ref=e741]: package-lock.json
+                - treeitem "package.json" [level=1] [ref=e742]:
+                  - generic [ref=e744] [cursor=pointer]:
+                    - img [ref=e747]
+                    - generic [ref=e749]: package.json
+                - treeitem "performance-testing.md" [level=1] [ref=e750]:
+                  - generic [ref=e752] [cursor=pointer]:
+                    - img [ref=e755]
+                    - generic [ref=e757]: performance-testing.md
+                - treeitem "restructure-audio.sh" [level=1] [ref=e758]:
+                  - generic [ref=e760] [cursor=pointer]:
+                    - img [ref=e763]
+                    - generic [ref=e765]: restructure-audio.sh
+                - treeitem "tsconfig.app.json" [level=1] [ref=e766]:
+                  - generic [ref=e768] [cursor=pointer]:
+                    - img [ref=e771]
+                    - generic [ref=e773]: tsconfig.app.json
+                - treeitem "tsconfig.json" [level=1] [ref=e774]:
+                  - generic [ref=e776] [cursor=pointer]:
+                    - img [ref=e779]
+                    - generic [ref=e781]: tsconfig.json
+                - treeitem "tsconfig.lib.json" [level=1] [ref=e782]:
+                  - generic [ref=e784] [cursor=pointer]:
+                    - img [ref=e787]
+                    - generic [ref=e789]: tsconfig.lib.json
+                - treeitem "tsconfig.node.json" [level=1] [ref=e790]:
+                  - generic [ref=e792] [cursor=pointer]:
+                    - img [ref=e795]
+                    - generic [ref=e797]: tsconfig.node.json
+                - treeitem "tsconfig.test.json" [level=1] [ref=e798]:
+                  - generic [ref=e800] [cursor=pointer]:
+                    - img [ref=e803]
+                    - generic [ref=e805]: tsconfig.test.json
+                - treeitem "typedoc.json" [level=1] [ref=e806]:
+                  - generic [ref=e808] [cursor=pointer]:
+                    - img [ref=e811]
+                    - generic [ref=e813]: typedoc.json
+                - treeitem "vite.config.ts" [level=1] [ref=e814]:
+                  - generic [ref=e816] [cursor=pointer]:
+                    - img [ref=e819]
+                    - generic [ref=e821]: vite.config.ts
+                - treeitem "vite.lib.config.ts" [level=1] [ref=e822]:
+                  - generic [ref=e824] [cursor=pointer]:
+                    - img [ref=e827]
+                    - generic [ref=e829]: vite.lib.config.ts
+                - treeitem "vitest.config.ts" [level=1] [ref=e830]:
+                  - generic [ref=e832] [cursor=pointer]:
+                    - img [ref=e835]
+                    - generic [ref=e837]: vitest.config.ts
+          - slider "Draggable pane splitter" [ref=e839]
+        - generic [ref=e842]:
+          - generic [ref=e846]:
+            - generic [ref=e848]:
+              - navigation "Breadcrumbs" [ref=e849]:
+                - heading "Breadcrumbs" [level=2] [ref=e850]
+                - list [ref=e851]:
+                  - listitem [ref=e852]:
+                    - link "blacktrigram" [ref=e853] [cursor=pointer]:
+                      - /url: /Hack23/blacktrigram/tree/copilot/improve-mermaid-diagrams
+              - generic [ref=e854]:
+                - text: /
+                - heading "STATEDIAGRAM.md" [level=1] [ref=e855]
+              - button "Copy path" [ref=e856] [cursor=pointer]:
+                - img [ref=e857]
+            - button "More file actions" [ref=e863] [cursor=pointer]:
+              - img [ref=e864]
+          - generic [ref=e866]:
+            - generic [ref=e868]:
+              - heading "Latest commit" [level=2] [ref=e869]
+              - generic [ref=e870]:
+                - generic [ref=e871]:
+                  - generic [ref=e873]:
+                    - img "Copilot" [ref=e874]
+                    - img "pethers" [ref=e875]
+                  - link "commits by Copilot" [ref=e877] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commits?author=Copilot
+                    - text: Copilot
+                  - generic [ref=e878]: and
+                  - link "commits by pethers" [ref=e880] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commits?author=pethers
+                    - text: pethers
+                - generic [ref=e881]:
+                  - 'link "docs: address PR review comments on tutorial flow and state docs" [ref=e884] [cursor=pointer]':
+                    - /url: /Hack23/blacktrigram/commit/1d1ffbe995c0d36d1e15649ed5d8fa60eda71e6c
+                  - button "Open commit details" [ref=e885] [cursor=pointer]:
+                    - img [ref=e886]
+                  - button "success" [ref=e888] [cursor=pointer]:
+                    - img [ref=e889]
+              - generic [ref=e891]:
+                - generic [ref=e893]:
+                  - link "Commit 1d1ffbe" [ref=e894] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commit/1d1ffbe995c0d36d1e15649ed5d8fa60eda71e6c
+                    - text: 1d1ffbe
+                  - text: ·
+                  - generic "Apr 7, 2026, 2:16 AM UTC" [ref=e895]: Apr 7, 20262 days ago
+                - generic [ref=e896]:
+                  - heading "History" [level=2] [ref=e897]
+                  - link "History" [ref=e898] [cursor=pointer]:
+                    - /url: /Hack23/blacktrigram/commits/copilot/improve-mermaid-diagrams/STATEDIAGRAM.md
+                    - generic [ref=e899]:
+                      - generic:
+                        - img
+                      - generic [ref=e900]: History
+            - generic [ref=e902]:
+              - generic [ref=e904]:
+                - heading "File metadata and controls" [level=2] [ref=e905]
+                - list "File view" [ref=e907]:
+                  - listitem [ref=e908]:
+                    - button "Preview" [ref=e909] [cursor=pointer]:
+                      - generic [ref=e911]: Preview
+                  - listitem [ref=e912]:
+                    - button "Code" [ref=e913] [cursor=pointer]:
+                      - generic [ref=e915]: Code
+                  - listitem [ref=e916]:
+                    - button "Blame" [ref=e917] [cursor=pointer]:
+                      - generic [ref=e919]: Blame
+                - generic [ref=e920]:
+                  - generic [ref=e922]:
+                    - link "Raw" [ref=e924] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/blacktrigram/raw/refs/heads/copilot/improve-mermaid-diagrams/STATEDIAGRAM.md
+                      - generic [ref=e926]: Raw
+                    - button "Copy raw file" [ref=e928] [cursor=pointer]:
+                      - img [ref=e929]
+                    - button "Download raw file" [ref=e933] [cursor=pointer]:
+                      - img [ref=e934]
+                  - button "Outline" [ref=e937] [cursor=pointer]:
+                    - img [ref=e938]
+              - region "STATEDIAGRAM.md" [ref=e941]:
+                - article [ref=e943]:
+                  - generic [ref=e944]:
+                    - heading "🎮 Black Trigram (흑괘) State Diagrams" [level=1] [ref=e945]
+                    - 'link "Permalink: 🎮 Black Trigram (흑괘) State Diagrams" [ref=e946] [cursor=pointer]':
+                      - /url: "#-black-trigram-흑괘-state-diagrams"
+                      - img [ref=e947]
+                  - paragraph [ref=e949]:
+                    - strong [ref=e950]: "🔐 ISMS Alignment:"
+                    - text: This document follows
+                    - link "Hack23 Secure Development Policy" [ref=e951] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md
+                    - text: architecture documentation requirements.
+                  - generic [ref=e952]:
+                    - heading "📚 Related Documentation" [level=2] [ref=e953]
+                    - 'link "Permalink: 📚 Related Documentation" [ref=e954] [cursor=pointer]':
+                      - /url: "#-related-documentation"
+                      - img [ref=e955]
+                  - table [ref=e958]:
+                    - rowgroup [ref=e959]:
+                      - row "Document Focus Description" [ref=e960]:
+                        - columnheader "Document" [ref=e961]
+                        - columnheader "Focus" [ref=e962]
+                        - columnheader "Description" [ref=e963]
+                    - rowgroup [ref=e964]:
+                      - row "Architecture 🏛️ Structure C4 model showing system components" [ref=e965]:
+                        - cell "Architecture" [ref=e966]:
+                          - link "Architecture" [ref=e967] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/ARCHITECTURE.md
+                        - cell "🏛️ Structure" [ref=e968]
+                        - cell "C4 model showing system components" [ref=e969]
+                      - row "Data Model 📊 Data Type system and data structures" [ref=e970]:
+                        - cell "Data Model" [ref=e971]:
+                          - link "Data Model" [ref=e972] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/DATA_MODEL.md
+                        - cell "📊 Data" [ref=e973]
+                        - cell "Type system and data structures" [ref=e974]
+                      - row "Flowchart 🔄 Process Flow Game flow and user journeys" [ref=e975]:
+                        - cell "Flowchart" [ref=e976]:
+                          - link "Flowchart" [ref=e977] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/FLOWCHART.md
+                        - cell "🔄 Process Flow" [ref=e978]
+                        - cell "Game flow and user journeys" [ref=e979]
+                      - row "Combat Architecture ⚔️ Combat System Detailed combat mechanics implementation" [ref=e980]:
+                        - cell "Combat Architecture" [ref=e981]:
+                          - link "Combat Architecture" [ref=e982] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/COMBAT_ARCHITECTURE.md
+                        - cell "⚔️ Combat System" [ref=e983]
+                        - cell "Detailed combat mechanics implementation" [ref=e984]
+                      - row "Future State Diagram 🔮 Evolution Planned state machine enhancements" [ref=e985]:
+                        - cell "Future State Diagram" [ref=e986]:
+                          - link "Future State Diagram" [ref=e987] [cursor=pointer]:
+                            - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/FUTURE_STATEDIAGRAM.md
+                        - cell "🔮 Evolution" [ref=e988]
+                        - cell "Planned state machine enhancements" [ref=e989]
+                  - separator [ref=e990]
+                  - generic [ref=e991]:
+                    - heading "🎯 Overview" [level=2] [ref=e992]
+                    - 'link "Permalink: 🎯 Overview" [ref=e993] [cursor=pointer]':
+                      - /url: "#-overview"
+                      - img [ref=e994]
+                  - paragraph [ref=e996]: This document provides comprehensive state machine diagrams for Black Trigram (흑괘), documenting all game states, combat states, and their valid transitions. State diagrams use Korean cyberpunk color scheme consistent with the game's aesthetic.
+                  - paragraph [ref=e997]:
+                    - strong [ref=e998]: "State Diagram Index:"
+                  - list [ref=e999]:
+                    - listitem [ref=e1000]:
+                      - link "Top-Level Game States" [ref=e1001] [cursor=pointer]:
+                        - /url: "#top-level-game-states"
+                      - text: — Main game state machine
+                    - listitem [ref=e1002]:
+                      - link "Combat Round States" [ref=e1003] [cursor=pointer]:
+                        - /url: "#combat-round-states-70-vital-points--28-bone-animation"
+                      - text: — Round lifecycle
+                    - listitem [ref=e1004]:
+                      - link "Active Combat Sub-States" [ref=e1005] [cursor=pointer]:
+                        - /url: "#active-combat-sub-states-expanded"
+                      - text: — Expanded fighting mechanics
+                    - listitem [ref=e1006]:
+                      - link "Grappling State Transitions" [ref=e1007] [cursor=pointer]:
+                        - /url: "#grappling-state-transitions"
+                      - text: — Close-range grappling system
+                    - listitem [ref=e1008]:
+                      - link "Consciousness Degradation States" [ref=e1009] [cursor=pointer]:
+                        - /url: "#consciousness-degradation-states"
+                      - text: — Alert → Dazed → Stunned → Unconscious
+                    - listitem [ref=e1010]:
+                      - link "Player Combat States" [ref=e1011] [cursor=pointer]:
+                        - /url: "#player-combat-states-5-archetypes--skeletal-system"
+                      - text: — Archetype-specific states
+                    - listitem [ref=e1012]:
+                      - text: "Cross-reference:"
+                      - link "Flowcharts" [ref=e1013] [cursor=pointer]:
+                        - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/FLOWCHART.md
+                      - text: for process flows,
+                      - link "Data Model" [ref=e1014] [cursor=pointer]:
+                        - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/DATA_MODEL.md
+                      - text: for type definitions,
+                      - link "Combat Architecture" [ref=e1015] [cursor=pointer]:
+                        - /url: /Hack23/blacktrigram/blob/copilot/improve-mermaid-diagrams/COMBAT_ARCHITECTURE.md
+                      - text: for implementation details
+                  - separator [ref=e1016]
+                  - generic [ref=e1017]:
+                    - heading "🎮 Main Game State Machine" [level=2] [ref=e1018]
+                    - 'link "Permalink: 🎮 Main Game State Machine" [ref=e1019] [cursor=pointer]':
+                      - /url: "#-main-game-state-machine"
+                      - img [ref=e1020]
+                  - generic [ref=e1022]:
+                    - heading "Top-Level Game States" [level=3] [ref=e1023]:
+                      - strong [ref=e1024]: Top-Level Game States
+                    - 'link "Permalink: Top-Level Game States" [ref=e1025] [cursor=pointer]':
+                      - /url: "#top-level-game-states"
+                      - img [ref=e1026]
+                  - region "mermaid rendered output container" [ref=e1028]:
+                    - generic [ref=e1029]:
+                      - generic [ref=e1030]:
+                        - group [ref=e1031]:
+                          - button "Open dialog" [ref=e1032] [cursor=pointer]:
+                            - img [ref=e1033]
+                        - button "Copy mermaid code" [ref=e1035] [cursor=pointer]:
+                          - img [ref=e1036]
+                      - iframe [ref=e1040]:
+                        - generic [active]:
+                          - document [ref=f676e4]:
+                            - generic [ref=f676e6]:
+                              - generic [ref=f676e38]:
+                                - paragraph [ref=f676e44]: App Start
+                                - paragraph [ref=f676e50]: Assets Loaded
+                                - paragraph [ref=f676e56]: Load Failed
+                                - paragraph [ref=f676e62]: Retry
+                                - paragraph [ref=f676e68]: Exit
+                                - paragraph [ref=f676e74]: Continue
+                                - paragraph [ref=f676e80]: Start Versus
+                                - paragraph [ref=f676e86]: Start Training
+                                - paragraph [ref=f676e92]: Start Tutorial
+                                - paragraph [ref=f676e98]: Open Settings
+                                - paragraph [ref=f676e104]: Exit Game
+                                - paragraph [ref=f676e110]: Save & Close
+                                - paragraph [ref=f676e116]: Players Selected
+                                - paragraph [ref=f676e122]: Cancel
+                                - paragraph [ref=f676e128]: Exit Training
+                                - paragraph [ref=f676e134]: Exit Tutorial
+                                - paragraph [ref=f676e140]: Pause Button
+                                - paragraph [ref=f676e146]: Player Wins
+                                - paragraph [ref=f676e152]: Player Loses
+                                - paragraph [ref=f676e158]: Resume
+                                - paragraph [ref=f676e164]: Quit to Menu
+                                - paragraph [ref=f676e170]: Continue
+                                - paragraph [ref=f676e176]: Continue
+                                - paragraph [ref=f676e182]: Rematch
+                              - generic [ref=f676e183]:
+                                - paragraph [ref=f676e192]: Loading
+                                - paragraph [ref=f676e199]: Intro
+                                - paragraph [ref=f676e206]: Error
+                                - paragraph [ref=f676e220]: MainMenu
+                                - paragraph [ref=f676e227]: CharacterSelect
+                                - paragraph [ref=f676e234]: Training
+                                - paragraph [ref=f676e241]: Tutorial
+                                - paragraph [ref=f676e248]: Settings
+                                - paragraph [ref=f676e255]: Combat
+                                - paragraph [ref=f676e262]: Paused
+                                - paragraph [ref=f676e269]: Victory
+                                - paragraph [ref=f676e276]: Defeat
+                                - paragraph [ref=f676e285]:
+                                  - text: Load audio/visual assets
+                                  - text: Initialize game systems
+                                  - text: Prepare Three.js/WebGL renderer
+                                - paragraph [ref=f676e294]:
+                                  - text: Active combat round
+                                  - text: 8 trigram stances
+                                  - text: 70 vital points
+                                  - text: Real-time physics
+                                - paragraph [ref=f676e303]:
+                                  - text: Practice vital points
+                                  - text: Learn trigram stances
+                                  - text: Master techniques
+                          - generic [ref=f676e304]:
+                            - button "Zoom in" [ref=f676e305] [cursor=pointer]:
+                              - img [ref=f676e306]
+                            - button "Zoom out" [ref=f676e309] [cursor=pointer]:
+                              - img [ref=f676e310]
+                            - button "Reset view" [ref=f676e313] [cursor=pointer]:
+                              - img [ref=f676e314]
+                            - button "Pan up" [ref=f676e316] [cursor=pointer]:
+                              - img [ref=f676e317]
+                            - button "Pan down" [ref=f676e319] [cursor=pointer]:
+                              - img [ref=f676e320]
+                            - button "Pan left" [ref=f676e322] [cursor=pointer]:
+                              - img [ref=f676e323]
+                            - button "Pan right" [ref=f676e325] [cursor=pointer]:
+                              - img [ref=f676e326]
+                  - separator [ref=e1041]
+                  - generic [ref=e1042]:
+                    - heading "⚔️ Combat State Machine" [level=2] [ref=e1043]
+                    - 'link "Permalink: ⚔️ Combat State Machine" [ref=e1044] [cursor=pointer]':
+                      - /url: "#️-combat-state-machine"
+                      - img [ref=e1045]
+                  - generic [ref=e1047]:
+                    - heading "Combat Round States (70 Vital Points + 28-Bone Animation)" [level=3] [ref=e1048]:
+                      - strong [ref=e1049]: Combat Round States (70 Vital Points + 28-Bone Animation)
+                    - 'link "Permalink: Combat Round States (70 Vital Points + 28-Bone Animation)" [ref=e1050] [cursor=pointer]':
+                      - /url: "#combat-round-states-70-vital-points--28-bone-animation"
+                      - img [ref=e1051]
+                  - region "mermaid rendered output container" [ref=e1053]:
+                    - generic [ref=e1054]:
+                      - generic [ref=e1055]:
+                        - group [ref=e1056]:
+                          - button "Open dialog" [ref=e1057] [cursor=pointer]:
+                            - img [ref=e1058]
+                        - button "Copy mermaid code" [ref=e1060] [cursor=pointer]:
+                          - img [ref=e1061]
+                      - iframe [ref=e1065]:
+                        - generic [active]:
+                          - document [ref=f677e4]:
+                            - generic [ref=f677e6]:
+                              - generic [ref=f677e64]:
+                                - paragraph [ref=f677e70]: Initialize Round
+                                - paragraph [ref=f677e76]: Load 3D Assets
+                                - paragraph [ref=f677e82]: Initialize 28-Bone Skeleton
+                                - paragraph [ref=f677e88]: Setup Complete
+                                - paragraph [ref=f677e94]: Start Timer
+                                - paragraph [ref=f677e100]:
+                                  - text: Count == 0
+                                  - text: "Recommended starting stance: 건 (Geon, Heaven)"
+                                - paragraph [ref=f677e106]: No Input
+                                - paragraph [ref=f677e112]: Attack Input (Space)
+                                - paragraph [ref=f677e118]: Block Input (Shift)
+                                - paragraph [ref=f677e124]: Stance Change (1-8)
+                                - paragraph [ref=f677e130]: Movement (WASD)
+                                - paragraph [ref=f677e136]: Attack Input
+                                - paragraph [ref=f677e142]: Block Input
+                                - paragraph [ref=f677e148]: Stance Change
+                                - paragraph [ref=f677e154]: Movement Input
+                                - paragraph [ref=f677e160]: Validate Stance + Ki
+                                - paragraph [ref=f677e166]:
+                                  - text: Play Attack Animation
+                                  - text: Update 28 Bones
+                                  - text: Apply Hand Pose
+                                - paragraph [ref=f677e172]: Polygon-based Detection
+                                - paragraph [ref=f677e178]: Check 70 Vital Points
+                                - paragraph [ref=f677e184]: VP Hit Detected
+                                - paragraph [ref=f677e190]: No VP Hit
+                                - paragraph [ref=f677e196]: Counter-Attack
+                                - paragraph [ref=f677e202]:
+                                  - text: Calculate VP Damage
+                                  - text: 5 Severity Levels
+                                  - text: 7 Anatomical Categories
+                                - paragraph [ref=f677e208]:
+                                  - text: Update 8 Body Parts
+                                  - text: Pain Response
+                                  - text: Consciousness
+                                - paragraph [ref=f677e214]: VP Stun Effect
+                                - paragraph [ref=f677e220]:
+                                  - text: Recovery Period
+                                  - text: Return to Idle
+                                - paragraph [ref=f677e226]:
+                                  - text: Counter Success
+                                  - text: Defender Counterattacks
+                                - paragraph [ref=f677e232]:
+                                  - text: Block State Active
+                                  - text: Guard Animation
+                                  - text: Stance-Specific
+                                - paragraph [ref=f677e238]: Block Window Ends
+                                - paragraph [ref=f677e244]: Perfect Block Timing
+                                - paragraph [ref=f677e250]:
+                                  - text: Counter Window Active
+                                  - text: Bonus Damage
+                                  - text: Fast Technique
+                                - paragraph [ref=f677e256]: Counter Complete
+                                - paragraph [ref=f677e262]: Window Expires
+                                - paragraph [ref=f677e268]:
+                                  - text: Consume Ki/Stamina
+                                  - text: Transition Cost
+                                - paragraph [ref=f677e274]:
+                                  - text: Update Trigram Stance
+                                  - text: New Techniques Available
+                                - paragraph [ref=f677e280]: Stance Changed
+                                - paragraph [ref=f677e286]:
+                                  - text: Check Leg Damage
+                                  - text: Movement Penalties
+                                - paragraph [ref=f677e292]: "Injured: Reduced Speed"
+                                - paragraph [ref=f677e298]: "Healthy: Normal Speed"
+                                - paragraph [ref=f677e304]: Movement Complete
+                                - paragraph [ref=f677e310]: Movement Complete
+                                - paragraph [ref=f677e316]:
+                                  - text: Update Muscle Tension
+                                  - text: Visual Feedback
+                                  - text: Skeletal System
+                                - paragraph [ref=f677e322]: Stun Duration Ends
+                                - paragraph [ref=f677e328]:
+                                  - text: Recovery Complete
+                                  - text: Ready to Fight
+                                - paragraph [ref=f677e334]: Check KO Conditions
+                                - paragraph [ref=f677e340]: Health ≤ 0
+                                - paragraph [ref=f677e346]: Consciousness ≤ 0
+                                - paragraph [ref=f677e352]: Time Up
+                                - paragraph [ref=f677e358]: Fight Continues
+                                - paragraph [ref=f677e364]: While Stunned
+                                - paragraph [ref=f677e370]: Save Combat Statistics
+                                - paragraph [ref=f677e376]: Match Complete
+                                - paragraph [ref=f677e382]: Next Round
+                              - generic [ref=f677e383]:
+                                - paragraph [ref=f677e392]: RoundStart
+                                - paragraph [ref=f677e399]: LoadAssets
+                                - paragraph [ref=f677e406]: InitSkeleton
+                                - paragraph [ref=f677e413]: Ready
+                                - paragraph [ref=f677e420]: Countdown
+                                - paragraph [ref=f677e427]: Fighting
+                                - paragraph [ref=f677e434]: Idle
+                                - paragraph [ref=f677e441]: Attacking
+                                - paragraph [ref=f677e448]: Defending
+                                - paragraph [ref=f677e455]: Transitioning
+                                - paragraph [ref=f677e462]: Moving
+                                - paragraph [ref=f677e469]: ExecutingTechnique
+                                - paragraph [ref=f677e476]: SkeletalAnimation
+                                - paragraph [ref=f677e483]: HitDetection
+                                - paragraph [ref=f677e490]: VPCheck
+                                - paragraph [ref=f677e497]: Hit
+                                - paragraph [ref=f677e504]: Miss
+                                - paragraph [ref=f677e511]: Countered
+                                - paragraph [ref=f677e518]: ApplyVPDamage
+                                - paragraph [ref=f677e525]: UpdateBodyParts
+                                - paragraph [ref=f677e532]: Stunned
+                                - paragraph [ref=f677e539]: Recovering
+                                - paragraph [ref=f677e546]: BlockActive
+                                - paragraph [ref=f677e553]: Countering
+                                - paragraph [ref=f677e560]: CounterAttack
+                                - paragraph [ref=f677e567]: ConsumeResources
+                                - paragraph [ref=f677e574]: UpdateStance
+                                - paragraph [ref=f677e581]: CheckLegInjury
+                                - paragraph [ref=f677e588]: SlowMovement
+                                - paragraph [ref=f677e595]: NormalMovement
+                                - paragraph [ref=f677e602]: MuscleTension
+                                - paragraph [ref=f677e609]: CheckKO
+                                - paragraph [ref=f677e616]: RoundEnd
+                                - paragraph [ref=f677e623]: SaveStats
+                                - paragraph [ref=f677e639]:
+                                  - text: Validate stance compatibility
+                                  - text: Check Ki/Stamina resources
+                                  - text: Select appropriate technique
+                                  - text: 8 trigram stances available
+                                - paragraph [ref=f677e648]:
+                                  - text: 70 vital point targets
+                                  - text: "5 severity levels:"
+                                  - text: Lethal, Critical, Major,
+                                  - text: Moderate, Minor
+                                  - text: 7 anatomical categories
+                                - paragraph [ref=f677e657]:
+                                  - text: "8 body parts tracked:"
+                                  - text: Head, Torso, Arms (2),
+                                  - text: Legs (2), Hands (2)
+                                  - text: Pain response system
+                                  - text: Consciousness levels
+                                  - text: Breathing disruption
+                                - paragraph [ref=f677e666]:
+                                  - text: 28-bone hierarchy
+                                  - text: "7 hand poses (HandPoseType enum):"
+                                  - text: FIST, KNIFE_HAND, SPEAR_HAND,
+                                  - text: PALM_HEEL, GRAPPLING, OPEN, RELAXED
+                                  - text: Muscle tension visualization (0.0-1.0)
+                                - paragraph [ref=f677e675]:
+                                  - text: Brief counter window (0.2-0.5s)
+                                  - text: Extra damage bonus (1.5x)
+                                  - text: Requires precise timing
+                                  - text: Advanced technique mastery
+                                  - text: Stance-dependent options
+                          - generic [ref=f677e676]:
+                            - button "Zoom in" [ref=f677e677] [cursor=pointer]:
+                              - img [ref=f677e678]
+                            - button "Zoom out" [ref=f677e681] [cursor=pointer]:
+                              - img [ref=f677e682]
+                            - button "Reset view" [ref=f677e685] [cursor=pointer]:
+                              - img [ref=f677e686]
+                            - button "Pan up" [ref=f677e688] [cursor=pointer]:
+                              - img [ref=f677e689]
+                            - button "Pan down" [ref=f677e691] [cursor=pointer]:
+                              - img [ref=f677e692]
+                            - button "Pan left" [ref=f677e694] [cursor=pointer]:
+                              - img [ref=f677e695]
+                            - button "Pan right" [ref=f677e697] [cursor=pointer]:
+                              - img [ref=f677e698]
+                    - generic [ref=e1066]:
+                      - img [ref=e1067]
+                      - generic [ref=e1070]: Loading
+                  - separator [ref=e1071]
+                  - generic [ref=e1072]:
+                    - heading "Active Combat Sub-States (Expanded)" [level=3] [ref=e1073]:
+                      - strong [ref=e1074]: Active Combat Sub-States (Expanded)
+                    - 'link "Permalink: Active Combat Sub-States (Expanded)" [ref=e1075] [cursor=pointer]':
+                      - /url: "#active-combat-sub-states-expanded"
+                      - img [ref=e1076]
+                  - paragraph [ref=e1078]:
+                    - text: Expands the
+                    - code [ref=e1079]: Fighting
+                    - text: state from the Combat Round States diagram into detailed sub-states covering all combat actions, hit results, and state transitions.
+                  - region "mermaid rendered output container" [ref=e1080]:
+                    - generic [ref=e1081]:
+                      - generic [ref=e1082]:
+                        - group [ref=e1083]:
+                          - button "Open dialog" [ref=e1084] [cursor=pointer]:
+                            - img [ref=e1085]
+                        - button "Copy mermaid code" [ref=e1087] [cursor=pointer]:
+                          - img [ref=e1088]
+                      - iframe [ref=e1092]:
+                        
+                    - generic [ref=e1093]:
+                      - img [ref=e1094]
+                      - generic [ref=e1097]: Loading
+                  - separator [ref=e1098]
+                  - generic [ref=e1099]:
+                    - heading "Grappling State Transitions" [level=3] [ref=e1100]:
+                      - strong [ref=e1101]: Grappling State Transitions
+                    - 'link "Permalink: Grappling State Transitions" [ref=e1102] [cursor=pointer]':
+                      - /url: "#grappling-state-transitions"
+                      - img [ref=e1103]
+                  - paragraph [ref=e1105]:
+                    - text: Details the four grappling engagement states that occur during close-range combat, based on
+                    - code [ref=e1106]: COMBAT_ARCHITECTURE.md
+                    - text: grappling system.
+                  - region "mermaid rendered output container" [ref=e1107]:
+                    - generic [ref=e1108]:
+                      - generic [ref=e1109]:
+                        - group [ref=e1110]:
+                          - button "Open dialog" [ref=e1111] [cursor=pointer]:
+                            - img [ref=e1112]
+                        - button "Copy mermaid code" [ref=e1114] [cursor=pointer]:
+                          - img [ref=e1115]
+                      - iframe [ref=e1119]:
+                        - generic [active]:
+                          - document [ref=f679e4]:
+                            - generic [ref=f679e6]:
+                              - generic [ref=f679e7]:
+                                - paragraph [ref=f679e15]: GrapplingEngaged
+                                - paragraph [ref=f679e28]: ThrowAttempt
+                                - paragraph [ref=f679e37]: Escape
+                                - paragraph [ref=f679e46]: GroundControl
+                              - generic [ref=f679e67]:
+                                - paragraph [ref=f679e73]: Normal Combat
+                                - paragraph [ref=f679e79]: Technique + Balance
+                                - paragraph [ref=f679e85]: Opponent Defense
+                                - paragraph [ref=f679e91]: Strike from Ground
+                                - paragraph [ref=f679e97]: Submission Attempt
+                                - paragraph [ref=f679e103]: Continue Control
+                                - paragraph [ref=f679e109]: Lock Applied
+                                - paragraph [ref=f679e115]: Opponent Taps/KO
+                                - paragraph [ref=f679e121]: Stamina > Threshold
+                                - paragraph [ref=f679e127]: Stamina Depleted
+                                - paragraph [ref=f679e133]: Return to Standing
+                                - paragraph [ref=f679e139]: Knockout / Submission
+                                - paragraph [ref=f679e145]: Close Range + Grapple Input
+                                - paragraph [ref=f679e151]: Initial Engagement
+                                - paragraph [ref=f679e157]: Throw Input
+                                - paragraph [ref=f679e163]: Break Free (Stamina Check)
+                                - paragraph [ref=f679e169]: Takedown Success
+                                - paragraph [ref=f679e175]: Return to Clinch
+                                - paragraph [ref=f679e181]: Ground Position
+                                - paragraph [ref=f679e187]: Remain in Clinch
+                                - paragraph [ref=f679e193]: Opponent Escape Attempt
+                                - paragraph [ref=f679e199]: Break Free Success
+                              - generic [ref=f679e200]:
+                                - paragraph [ref=f679e209]: Standing
+                                - generic [ref=f679e212]:
+                                  - paragraph [ref=f679e221]: Clinch
+                                  - generic [ref=f679e226]:
+                                    - paragraph [ref=f679e232]: Dominate Position
+                                    - paragraph [ref=f679e238]: Underhook
+                                  - generic [ref=f679e239]:
+                                    - paragraph [ref=f679e248]: ClinchActive
+                                    - paragraph [ref=f679e255]: UpperBodyControl
+                                    - paragraph [ref=f679e262]: LowerBodyControl
+                                - paragraph [ref=f679e271]: InitiateThrow
+                                - paragraph [ref=f679e278]: ThrowSuccess
+                                - paragraph [ref=f679e285]: ThrowFailed
+                                - paragraph [ref=f679e294]: DominantPosition
+                                - paragraph [ref=f679e301]: GroundStrike
+                                - paragraph [ref=f679e308]: Submission
+                                - paragraph [ref=f679e315]: SubmissionLock
+                                - paragraph [ref=f679e322]: KO
+                                - paragraph [ref=f679e331]: AttemptBreak
+                                - paragraph [ref=f679e338]: BreakFree
+                                - paragraph [ref=f679e345]: EscapeFailed
+                                - paragraph [ref=f679e361]:
+                                  - text: "Clinch mechanics:"
+                                  - text: "- grappleControl attribute"
+                                  - text: "- Balance affects throw success"
+                                  - text: "- Stamina drain per frame"
+                                  - text: "- Position advantage scoring"
+                                - paragraph [ref=f679e370]:
+                                  - text: "Ground combat:"
+                                  - text: "- Position hierarchy"
+                                  - text: "- Ground strikes available"
+                                  - text: "- Submission techniques"
+                                  - text: "- Escape difficulty scales"
+                                  - text: with stamina depletion
+                          - generic [ref=f679e371]:
+                            - button "Zoom in" [ref=f679e372] [cursor=pointer]:
+                              - img [ref=f679e373]
+                            - button "Zoom out" [ref=f679e376] [cursor=pointer]:
+                              - img [ref=f679e377]
+                            - button "Reset view" [ref=f679e380] [cursor=pointer]:
+                              - img [ref=f679e381]
+                            - button "Pan up" [ref=f679e383] [cursor=pointer]:
+                              - img [ref=f679e384]
+                            - button "Pan down" [ref=f679e386] [cursor=pointer]:
+                              - img [ref=f679e387]
+                            - button "Pan left" [ref=f679e389] [cursor=pointer]:
+                              - img [ref=f679e390]
+                            - button "Pan right" [ref=f679e392] [cursor=pointer]:
+                              - img [ref=f679e393]
+                    - generic [ref=e1120]:
+                      - img [ref=e1121]
+                      - generic [ref=e1124]: Loading
+                  - separator [ref=e1125]
+                  - generic [ref=e1126]:
+                    - heading "Consciousness Degradation States" [level=3] [ref=e1127]:
+                      - strong [ref=e1128]: Consciousness Degradation States
+                    - 'link "Permalink: Consciousness Degradation States" [ref=e1129] [cursor=pointer]':
+                      - /url: "#consciousness-degradation-states"
+                      - img [ref=e1130]
+                  - paragraph [ref=e1132]: Models the four-level consciousness system that tracks a fighter's mental state during combat, from fully alert to unconscious knockout.
+                  - region "mermaid rendered output container" [ref=e1133]:
+                    - generic [ref=e1134]:
+                      - generic [ref=e1135]:
+                        - group [ref=e1136]:
+                          - button "Open dialog" [ref=e1137] [cursor=pointer]:
+                            - img [ref=e1138]
+                        - button "Copy mermaid code" [ref=e1140] [cursor=pointer]:
+                          - img [ref=e1141]
+                      - iframe [ref=e1145]:
+                        - generic [active]:
+                          - document [ref=f680e4]:
+                            - generic [ref=f680e6]:
+                              - generic [ref=f680e7]:
+                                - paragraph [ref=f680e15]: Alert
+                                - paragraph [ref=f680e26]: Dazed
+                                - paragraph [ref=f680e37]: Stunned
+                                - paragraph [ref=f680e48]: Unconscious
+                              - generic [ref=f680e74]:
+                                - paragraph [ref=f680e80]: Combat Start (100% Consciousness)
+                                - paragraph [ref=f680e86]: Head Hit / VP Strike\nConsciousness 60-80%
+                                - paragraph [ref=f680e92]: Recovery Timer\n+ No Further Hits
+                                - paragraph [ref=f680e98]: Additional Head Hit\nConsciousness 30-60%
+                                - paragraph [ref=f680e104]: Recovery Timer\n+ No Further Hits
+                                - paragraph [ref=f680e110]: Critical Hit / VP Lethal\nConsciousness ≤ 0%
+                                - paragraph [ref=f680e116]: Round End (KO)
+                              - generic [ref=f680e117]:
+                                - paragraph [ref=f680e128]: FullCapacity
+                                - paragraph [ref=f680e137]:
+                                  - text: 의식 명확 (Clear Consciousness)
+                                  - text: Full combat ability
+                                  - text: Normal reaction speed
+                                  - text: All techniques available
+                                - paragraph [ref=f680e146]: ReducedCapacity
+                                - paragraph [ref=f680e155]:
+                                  - text: 멍함 (Dazed State)
+                                  - text: Slowed reaction (-20%)
+                                  - text: Reduced accuracy (-15%)
+                                  - text: Visual blur effect
+                                  - text: "Head movement: SHAKE"
+                                - paragraph [ref=f680e164]: SeverelyImpaired
+                                - paragraph [ref=f680e173]:
+                                  - text: 기절 (Stunned State)
+                                  - text: Cannot attack
+                                  - text: Minimal defense (-50%)
+                                  - text: Muscle tension spikes
+                                  - text: "Facial expression: PAINED"
+                                  - text: Stagger animation active
+                                - paragraph [ref=f680e182]: KnockedOut
+                                - paragraph [ref=f680e191]:
+                                  - text: 의식 상실 (Unconscious)
+                                  - text: Cannot act
+                                  - text: "Head movement: DROP"
+                                  - text: "Facial expression: DEFEATED"
+                                  - text: "Eye openness: 0.0"
+                                  - text: "Muscle relaxation: Full"
+                                - paragraph [ref=f680e207]:
+                                  - text: "Consciousness: 80-100%"
+                                  - text: All combat abilities active
+                                  - text: Full technique roster
+                                  - text: Normal movement speed
+                                - paragraph [ref=f680e216]:
+                                  - text: "Consciousness: 60-80%"
+                                  - text: Recovery possible with time
+                                  - text: Reduced combat effectiveness
+                                  - text: Visual/audio feedback to player
+                                - paragraph [ref=f680e225]:
+                                  - text: "Consciousness: 30-60%"
+                                  - text: Vulnerable to follow-up
+                                  - text: Limited defensive options
+                                  - text: High risk of knockout
+                                - paragraph [ref=f680e234]:
+                                  - text: "Consciousness: 0%"
+                                  - text: Immediate round end
+                                  - text: KO victory for opponent
+                                  - text: Full facial/body response
+                          - generic [ref=f680e235]:
+                            - button "Zoom in" [ref=f680e236] [cursor=pointer]:
+                              - img [ref=f680e237]
+                            - button "Zoom out" [ref=f680e240] [cursor=pointer]:
+                              - img [ref=f680e241]
+                            - button "Reset view" [ref=f680e244] [cursor=pointer]:
+                              - img [ref=f680e245]
+                            - button "Pan up" [ref=f680e247] [cursor=pointer]:
+                              - img [ref=f680e248]
+                            - button "Pan down" [ref=f680e250] [cursor=pointer]:
+                              - img [ref=f680e251]
+                            - button "Pan left" [ref=f680e253] [cursor=pointer]:
+                              - img [ref=f680e254]
+                            - button "Pan right" [ref=f680e256] [cursor=pointer]:
+                              - img [ref=f680e257]
+                    - generic [ref=e1146]:
+                      - img [ref=e1147]
+                      - generic [ref=e1150]: Loading
+                  - generic [ref=e1151]:
+                    - heading "Player Combat States (5 Archetypes + Skeletal System)" [level=3] [ref=e1152]:
+                      - strong [ref=e1153]: Player Combat States (5 Archetypes + Skeletal System)
+                    - 'link "Permalink: Player Combat States (5 Archetypes + Skeletal System)" [ref=e1154] [cursor=pointer]':
+                      - /url: "#player-combat-states-5-archetypes--skeletal-system"
+                      - img [ref=e1155]
+                  - region "mermaid rendered output container" [ref=e1157]:
+                    - generic [ref=e1158]:
+                      - generic [ref=e1159]:
+                        - group [ref=e1160]:
+                          - button "Open dialog" [ref=e1161] [cursor=pointer]:
+                            - img [ref=e1162]
+                        - button "Copy mermaid code" [ref=e1164] [cursor=pointer]:
+                          - img [ref=e1165]
+                      - iframe [ref=e1169]:
+                        - generic [active]:
+                          - document [ref=f681e4]:
+                            - generic [ref=f681e6]:
+                              - generic [ref=f681e54]:
+                                - paragraph [ref=f681e60]: Enter Combat Arena
+                                - paragraph [ref=f681e66]: Press Attack (Space)
+                                - paragraph [ref=f681e72]: Hold Block (Shift)
+                                - paragraph [ref=f681e78]: Movement Input (WASD)
+                                - paragraph [ref=f681e84]: Press Stance Key (1-8)
+                                - paragraph [ref=f681e90]: Check Input Validity
+                                - paragraph [ref=f681e96]:
+                                  - text: Valid Input
+                                  - text: Sufficient Resources
+                                - paragraph [ref=f681e102]: Invalid Input
+                                - paragraph [ref=f681e108]: Attack Complete
+                                - paragraph [ref=f681e114]: Recovery Done
+                                - paragraph [ref=f681e120]:
+                                  - text: Guard Pose
+                                  - text: Stance-Specific
+                                - paragraph [ref=f681e126]: Block Window Open
+                                - paragraph [ref=f681e132]: Release Block
+                                - paragraph [ref=f681e138]: Perfect Timing (±0.1s)
+                                - paragraph [ref=f681e144]:
+                                  - text: Counter Window
+                                  - text: 0.5s Duration
+                                - paragraph [ref=f681e150]:
+                                  - text: Execute Counter
+                                  - text: 1.5x Damage
+                                - paragraph [ref=f681e156]: Counter Complete
+                                - paragraph [ref=f681e162]: Window Expired
+                                - paragraph [ref=f681e168]: Calculate New Position
+                                - paragraph [ref=f681e174]: Check Ki/Stamina
+                                - paragraph [ref=f681e180]: Sufficient Resources
+                                - paragraph [ref=f681e186]: Insufficient Resources
+                                - paragraph [ref=f681e192]:
+                                  - text: Play Transition
+                                  - text: Skeletal Animation
+                                - paragraph [ref=f681e198]:
+                                  - text: Update Stance
+                                  - text: 8 Trigram Effects
+                                - paragraph [ref=f681e204]: Transition Complete
+                                - paragraph [ref=f681e210]: Hit by Opponent
+                                - paragraph [ref=f681e216]: Interrupted
+                                - paragraph [ref=f681e222]: Hit During Movement
+                                - paragraph [ref=f681e228]: Stun Applied
+                                - paragraph [ref=f681e234]: No Stun
+                                - paragraph [ref=f681e240]:
+                                  - text: Cannot Move
+                                  - text: Cannot Attack
+                                  - text: Skeletal Tremor
+                                - paragraph [ref=f681e246]: Duration Timer
+                                - paragraph [ref=f681e252]: Stun Duration Ends
+                                - paragraph [ref=f681e258]:
+                                  - text: Play Recovery
+                                  - text: Breathing Animation
+                                - paragraph [ref=f681e264]: Recovery Complete
+                                - paragraph [ref=f681e270]: Health Check
+                                - paragraph [ref=f681e276]: Consciousness Check
+                                - paragraph [ref=f681e282]:
+                                  - text: Health ≤ 0
+                                  - text: OR Consciousness ≤ 0
+                                - paragraph [ref=f681e288]: Fight Continues
+                                - paragraph [ref=f681e294]:
+                                  - text: Knockout Animation
+                                  - text: Collapse Sequence
+                                - paragraph [ref=f681e300]: Round End
+                                - paragraph [ref=f681e306]: Load Archetype
+                                - paragraph [ref=f681e312]: Ready to Fight
+                                - paragraph [ref=f681e318]: Execute 28-Bone Animation
+                                - paragraph [ref=f681e324]: Hitbox Active
+                                - paragraph [ref=f681e330]: Check Leg Damage
+                                - paragraph [ref=f681e336]: Movement Complete
+                                - paragraph [ref=f681e342]: Calculate Damage
+                                - paragraph [ref=f681e348]: Update 8 Body Parts
+                                - paragraph [ref=f681e354]: Apply Effects
+                                - paragraph [ref=f681e360]: Check Stun
+                              - generic [ref=f681e361]:
+                                - paragraph [ref=f681e370]: Spawn
+                                - generic [ref=f681e371]:
+                                  - paragraph [ref=f681e380]: InitializeArchetype
+                                  - generic [ref=f681e392]:
+                                    - paragraph [ref=f681e398]: 무사 Warrior
+                                    - paragraph [ref=f681e404]: 암살자 Assassin
+                                    - paragraph [ref=f681e410]: 해커 Hacker
+                                    - paragraph [ref=f681e416]: 정보요원 Agent
+                                    - paragraph [ref=f681e422]: 조직폭력배 Criminal
+                                    - paragraph [ref=f681e428]: Load Archetype Skills
+                                  - generic [ref=f681e429]:
+                                    - paragraph [ref=f681e438]: SelectArchetype
+                                    - paragraph [ref=f681e445]: Musa
+                                    - paragraph [ref=f681e452]: Amsalja
+                                    - paragraph [ref=f681e459]: Hacker
+                                    - paragraph [ref=f681e466]: Intelligence
+                                    - paragraph [ref=f681e473]: Crime
+                                    - paragraph [ref=f681e480]: LoadSkills
+                                - paragraph [ref=f681e494]: Idle
+                                - paragraph [ref=f681e501]: Attacking
+                                - paragraph [ref=f681e508]: Blocking
+                                - paragraph [ref=f681e515]: Moving
+                                - paragraph [ref=f681e522]: StanceChange
+                                - paragraph [ref=f681e529]: ValidateInput
+                                - paragraph [ref=f681e536]: AttackExecution
+                                - generic [ref=f681e537]:
+                                  - paragraph [ref=f681e546]: SkeletalAnimation
+                                  - generic [ref=f681e548]:
+                                    - paragraph [ref=f681e554]: Root Bone
+                                    - paragraph [ref=f681e560]: 3 Spine Bones
+                                    - paragraph [ref=f681e566]: Neck + Head
+                                    - paragraph [ref=f681e572]: L/R Arms (6 bones each)
+                                    - paragraph [ref=f681e578]: L/R Legs (5 bones each)
+                                    - paragraph [ref=f681e584]: Select Hand Pose (7 types)
+                                    - paragraph [ref=f681e590]: Muscle Tension (0.0-1.0)
+                                  - generic [ref=f681e591]:
+                                    - paragraph [ref=f681e600]: UpdatePelvis
+                                    - paragraph [ref=f681e607]: UpdateSpine
+                                    - paragraph [ref=f681e614]: UpdateNeck
+                                    - paragraph [ref=f681e621]: UpdateArms
+                                    - paragraph [ref=f681e628]: UpdateLegs
+                                    - paragraph [ref=f681e635]: ApplyHandPose
+                                    - paragraph [ref=f681e642]: UpdateMuscles
+                                - paragraph [ref=f681e656]: HitboxActive
+                                - paragraph [ref=f681e663]: AttackRecovery
+                                - paragraph [ref=f681e670]: BlockAnimation
+                                - paragraph [ref=f681e677]: BlockActive
+                                - paragraph [ref=f681e684]: PerfectBlock
+                                - paragraph [ref=f681e691]: Countering
+                                - paragraph [ref=f681e698]: CounterAttack
+                                - paragraph [ref=f681e705]: UpdatePosition
+                                - generic [ref=f681e706]:
+                                  - paragraph [ref=f681e715]: CheckInjuries
+                                  - generic [ref=f681e723]:
+                                    - paragraph [ref=f681e729]: Both Legs > 70%
+                                    - paragraph [ref=f681e735]: One Leg < 70%
+                                    - paragraph [ref=f681e741]: Both Legs < 70%
+                                    - paragraph [ref=f681e747]: 100% Speed
+                                    - paragraph [ref=f681e753]: 70% Speed
+                                    - paragraph [ref=f681e759]: 40% Speed
+                                  - generic [ref=f681e760]:
+                                    - paragraph [ref=f681e769]: EvaluateLegHealth
+                                    - paragraph [ref=f681e776]: HealthyLegs
+                                    - paragraph [ref=f681e783]: InjuredLeg
+                                    - paragraph [ref=f681e790]: BothInjured
+                                    - paragraph [ref=f681e797]: NormalSpeed
+                                    - paragraph [ref=f681e804]: ReducedSpeed
+                                    - paragraph [ref=f681e811]: SeverelySlowed
+                                - paragraph [ref=f681e825]: ValidateStance
+                                - paragraph [ref=f681e832]: Transitioning
+                                - paragraph [ref=f681e839]: TransitionAnimation
+                                - paragraph [ref=f681e846]: UpdateStanceBonus
+                                - paragraph [ref=f681e853]: TakeHit
+                                - generic [ref=f681e854]:
+                                  - paragraph [ref=f681e863]: EvaluateHit
+                                  - generic [ref=f681e880]:
+                                    - paragraph [ref=f681e886]:
+                                      - text: Vital Point Struck
+                                      - text: 70 Targets
+                                    - paragraph [ref=f681e892]: Regular Hit
+                                    - paragraph [ref=f681e898]: Lethal (80-100 dmg)
+                                    - paragraph [ref=f681e904]: Critical (60-80 dmg)
+                                    - paragraph [ref=f681e910]: Major (40-60 dmg)
+                                    - paragraph [ref=f681e916]: Moderate (20-40 dmg)
+                                    - paragraph [ref=f681e922]: Minor (10-20 dmg)
+                                  - generic [ref=f681e923]:
+                                    - paragraph [ref=f681e932]: CheckVPHit
+                                    - paragraph [ref=f681e939]: VPHit
+                                    - paragraph [ref=f681e946]: NormalHit
+                                    - paragraph [ref=f681e953]: DetermineSeverity
+                                    - paragraph [ref=f681e960]: LethalHit
+                                    - paragraph [ref=f681e967]: CriticalHit
+                                    - paragraph [ref=f681e974]: MajorHit
+                                    - paragraph [ref=f681e981]: ModerateHit
+                                    - paragraph [ref=f681e988]: MinorHit
+                                    - paragraph [ref=f681e995]: ApplyBaseDamage
+                                    - paragraph [ref=f681e1002]: ApplyVPDamage
+                                - generic [ref=f681e1010]:
+                                  - paragraph [ref=f681e1019]: UpdateBodyParts
+                                  - generic [ref=f681e1021]:
+                                    - paragraph [ref=f681e1030]: UpdateHead
+                                    - paragraph [ref=f681e1037]: UpdateTorso
+                                    - paragraph [ref=f681e1044]: UpdateLeftArm
+                                    - paragraph [ref=f681e1051]: UpdateRightArm
+                                    - paragraph [ref=f681e1058]: UpdateLeftLeg
+                                    - paragraph [ref=f681e1065]: UpdateRightLeg
+                                    - paragraph [ref=f681e1072]: UpdateLeftHand
+                                    - paragraph [ref=f681e1079]: UpdateRightHand
+                                - generic [ref=f681e1087]:
+                                  - paragraph [ref=f681e1096]: ApplyCombatEffects
+                                  - generic [ref=f681e1098]:
+                                    - paragraph [ref=f681e1104]: Calculate Pain Level
+                                    - paragraph [ref=f681e1110]: Update Consciousness
+                                    - paragraph [ref=f681e1116]: Check Breathing
+                                    - paragraph [ref=f681e1122]: Apply Status Effects
+                                  - generic [ref=f681e1123]:
+                                    - paragraph [ref=f681e1132]: PainResponse
+                                    - paragraph [ref=f681e1139]: ConsciousnessCheck
+                                    - paragraph [ref=f681e1146]: BreathingCheck
+                                    - paragraph [ref=f681e1153]: StatusEffects
+                                - paragraph [ref=f681e1167]: CheckStunned
+                                - paragraph [ref=f681e1174]: Stunned
+                                - paragraph [ref=f681e1181]: Recovering
+                                - paragraph [ref=f681e1188]: StunAnimation
+                                - paragraph [ref=f681e1195]: StunTimer
+                                - paragraph [ref=f681e1202]: RecoveryAnimation
+                                - paragraph [ref=f681e1209]: CheckKnockout
+                                - paragraph [ref=f681e1216]: Knocked
+                                - paragraph [ref=f681e1223]: KOAnimation
+                                - paragraph [ref=f681e1239]:
+                                  - text: Ki cost applied
+                                  - text: Stamina consumed
+                                  - text: 28-bone animation plays
+                                  - text: Hit detection active
+                                  - text: 7 hand pose options
+                                  - text: Muscle tension updates
+                                - paragraph [ref=f681e1248]:
+                                  - text: Cannot move
+                                  - text: Cannot attack
+                                  - text: Cannot block
+                                  - text: Cannot change stance
+                                  - text: Vulnerable state
+                                  - text: "Duration: 0.5s - 8s"
+                                  - text: Based on VP severity
+                                - paragraph [ref=f681e1257]:
+                                  - text: Consume Ki energy
+                                  - text: Brief vulnerability window
+                                  - text: Update stance bonuses
+                                  - text: Change available techniques
+                                  - text: "8 trigram stances:"
+                                  - text: 건 태 리 진 손 감 간 곤
+                                - paragraph [ref=f681e1266]:
+                                  - text: 70 vital point targets
+                                  - text: 5 severity levels
+                                  - text: 7 anatomical categories
+                                  - text: Polygon-based detection
+                                  - text: Stance effectiveness check
+                                  - text: Precision roll calculation
+                          - generic [ref=f681e1267]:
+                            - button "Zoom in" [ref=f681e1268] [cursor=pointer]:
+                              - img [ref=f681e1269]
+                            - button "Zoom out" [ref=f681e1272] [cursor=pointer]:
+                              - img [ref=f681e1273]
+                            - button "Reset view" [ref=f681e1276] [cursor=pointer]:
+                              - img [ref=f681e1277]
+                            - button "Pan up" [ref=f681e1279] [cursor=pointer]:
+                              - img [ref=f681e1280]
+                            - button "Pan down" [ref=f681e1282] [cursor=pointer]:
+                              - img [ref=f681e1283]
+                            - button "Pan left" [ref=f681e1285] [cursor=pointer]:
+                              - img [ref=f681e1286]
+                            - button "Pan right" [ref=f681e1288] [cursor=pointer]:
+                              - img [ref=f681e1289]
+                    - generic [ref=e1170]:
+                      - img [ref=e1171]
+                      - generic [ref=e1174]: Loading
+                  - separator [ref=e1175]
+                  - generic [ref=e1176]:
+                    - heading "🎯 Trigram Stance State Machine" [level=2] [ref=e1177]
+                    - 'link "Permalink: 🎯 Trigram Stance State Machine" [ref=e1178] [cursor=pointer]':
+                      - /url: "#-trigram-stance-state-machine"
+                      - img [ref=e1179]
+                  - generic [ref=e1181]:
+                    - heading "Eight Trigram Transitions" [level=3] [ref=e1182]:
+                      - strong [ref=e1183]: Eight Trigram Transitions
+                    - 'link "Permalink: Eight Trigram Transitions" [ref=e1184] [cursor=pointer]':
+                      - /url: "#eight-trigram-transitions"
+                      - img [ref=e1185]
+                  - region "mermaid rendered output container" [ref=e1187]:
+                    - generic [ref=e1188]:
+                      - generic [ref=e1189]:
+                        - group [ref=e1190]:
+                          - button "Open dialog" [ref=e1191] [cursor=pointer]:
+                            - img [ref=e1192]
+                        - button "Copy mermaid code" [ref=e1194] [cursor=pointer]:
+                          - img [ref=e1195]
+                      - iframe [ref=e1199]:
+                        - generic [active]:
+                          - document [ref=f682e4]:
+                            - generic [ref=f682e6]:
+                              - generic [ref=f682e74]:
+                                - paragraph [ref=f682e80]: Default Start
+                                - paragraph [ref=f682e86]: Press 2
+                                - paragraph [ref=f682e92]: Press 3
+                                - paragraph [ref=f682e98]: Press 4
+                                - paragraph [ref=f682e104]: Press 5
+                                - paragraph [ref=f682e110]: Press 6
+                                - paragraph [ref=f682e116]: Press 7
+                                - paragraph [ref=f682e122]: Press 8
+                                - paragraph [ref=f682e128]: Press 1
+                                - paragraph [ref=f682e134]: Press 3
+                                - paragraph [ref=f682e140]: Press 4
+                                - paragraph [ref=f682e146]: Press 5
+                                - paragraph [ref=f682e152]: Press 6
+                                - paragraph [ref=f682e158]: Press 7
+                                - paragraph [ref=f682e164]: Press 8
+                                - paragraph [ref=f682e170]: Press 1
+                                - paragraph [ref=f682e176]: Press 2
+                                - paragraph [ref=f682e182]: Press 4
+                                - paragraph [ref=f682e188]: Press 5
+                                - paragraph [ref=f682e194]: Press 6
+                                - paragraph [ref=f682e200]: Press 7
+                                - paragraph [ref=f682e206]: Press 8
+                                - paragraph [ref=f682e212]: Press 1
+                                - paragraph [ref=f682e218]: Press 2
+                                - paragraph [ref=f682e224]: Press 3
+                                - paragraph [ref=f682e230]: Press 5
+                                - paragraph [ref=f682e236]: Press 6
+                                - paragraph [ref=f682e242]: Press 7
+                                - paragraph [ref=f682e248]: Press 8
+                                - paragraph [ref=f682e254]: Press 1
+                                - paragraph [ref=f682e260]: Press 2
+                                - paragraph [ref=f682e266]: Press 3
+                                - paragraph [ref=f682e272]: Press 4
+                                - paragraph [ref=f682e278]: Press 6
+                                - paragraph [ref=f682e284]: Press 7
+                                - paragraph [ref=f682e290]: Press 8
+                                - paragraph [ref=f682e296]: Press 1
+                                - paragraph [ref=f682e302]: Press 2
+                                - paragraph [ref=f682e308]: Press 3
+                                - paragraph [ref=f682e314]: Press 4
+                                - paragraph [ref=f682e320]: Press 5
+                                - paragraph [ref=f682e326]: Press 7
+                                - paragraph [ref=f682e332]: Press 8
+                                - paragraph [ref=f682e338]: Press 1
+                                - paragraph [ref=f682e344]: Press 2
+                                - paragraph [ref=f682e350]: Press 3
+                                - paragraph [ref=f682e356]: Press 4
+                                - paragraph [ref=f682e362]: Press 5
+                                - paragraph [ref=f682e368]: Press 6
+                                - paragraph [ref=f682e374]: Press 8
+                                - paragraph [ref=f682e380]: Press 1
+                                - paragraph [ref=f682e386]: Press 2
+                                - paragraph [ref=f682e392]: Press 3
+                                - paragraph [ref=f682e398]: Press 4
+                                - paragraph [ref=f682e404]: Press 5
+                                - paragraph [ref=f682e410]: Press 6
+                                - paragraph [ref=f682e416]: Press 7
+                              - generic [ref=f682e417]:
+                                - paragraph [ref=f682e426]:
+                                  - text: ☰ 건 Geon
+                                  - text: Heaven
+                                - paragraph [ref=f682e433]:
+                                  - text: ☱ 태 Tae
+                                  - text: Lake
+                                - paragraph [ref=f682e440]:
+                                  - text: ☲ 리 Li
+                                  - text: Fire
+                                - paragraph [ref=f682e447]:
+                                  - text: ☳ 진 Jin
+                                  - text: Thunder
+                                - paragraph [ref=f682e454]:
+                                  - text: ☴ 손 Son
+                                  - text: Wind
+                                - paragraph [ref=f682e461]:
+                                  - text: ☵ 감 Gam
+                                  - text: Water
+                                - paragraph [ref=f682e468]:
+                                  - text: ☶ 간 Gan
+                                  - text: Mountain
+                                - paragraph [ref=f682e475]:
+                                  - text: ☷ 곤 Gon
+                                  - text: Earth
+                                - paragraph [ref=f682e484]:
+                                  - text: Direct force
+                                  - text: +Attack Power
+                                  - text: Traditional techniques
+                                - paragraph [ref=f682e493]:
+                                  - text: Flow & adaptation
+                                  - text: +Speed
+                                  - text: Counter techniques
+                                - paragraph [ref=f682e502]:
+                                  - text: Defensive mastery
+                                  - text: +Defense
+                                  - text: Block techniques
+                          - generic [ref=f682e503]:
+                            - button "Zoom in" [ref=f682e504] [cursor=pointer]:
+                              - img [ref=f682e505]
+                            - button "Zoom out" [ref=f682e508] [cursor=pointer]:
+                              - img [ref=f682e509]
+                            - button "Reset view" [ref=f682e512] [cursor=pointer]:
+                              - img [ref=f682e513]
+                            - button "Pan up" [ref=f682e515] [cursor=pointer]:
+                              - img [ref=f682e516]
+                            - button "Pan down" [ref=f682e518] [cursor=pointer]:
+                              - img [ref=f682e519]
+                            - button "Pan left" [ref=f682e521] [cursor=pointer]:
+                              - img [ref=f682e522]
+                            - button "Pan right" [ref=f682e524] [cursor=pointer]:
+                              - img [ref=f682e525]
+                    - generic [ref=e1200]:
+                      - img [ref=e1201]
+                      - generic [ref=e1204]: Loading
+                  - separator [ref=e1205]
+                  - generic [ref=e1206]:
+                    - heading "🥋 Training Mode States" [level=2] [ref=e1207]
+                    - 'link "Permalink: 🥋 Training Mode States" [ref=e1208] [cursor=pointer]':
+                      - /url: "#-training-mode-states"
+                      - img [ref=e1209]
+                  - generic [ref=e1211]:
+                    - heading "Training Session State Machine" [level=3] [ref=e1212]:
+                      - strong [ref=e1213]: Training Session State Machine
+                    - 'link "Permalink: Training Session State Machine" [ref=e1214] [cursor=pointer]':
+                      - /url: "#training-session-state-machine"
+                      - img [ref=e1215]
+                  - region "mermaid rendered output container" [ref=e1217]:
+                    - generic [ref=e1218]:
+                      - generic [ref=e1219]:
+                        - group [ref=e1220]:
+                          - button "Open dialog" [ref=e1221] [cursor=pointer]:
+                            - img [ref=e1222]
+                        - button "Copy mermaid code" [ref=e1224] [cursor=pointer]:
+                          - img [ref=e1225]
+                      - iframe [ref=e1229]:
+                        - generic [active]:
+                          - document [ref=f683e4]:
+                            - generic [ref=f683e6]:
+                              - generic [ref=f683e62]:
+                                - paragraph [ref=f683e68]: Enter Training
+                                - paragraph [ref=f683e74]: Select VP Training
+                                - paragraph [ref=f683e80]: Select Stance Training
+                                - paragraph [ref=f683e86]: Select Combo Training
+                                - paragraph [ref=f683e92]: Select Free Practice
+                                - paragraph [ref=f683e98]: Exit
+                                - paragraph [ref=f683e104]: Initialize
+                                - paragraph [ref=f683e110]: VP Selected
+                                - paragraph [ref=f683e116]: Strike Executed
+                                - paragraph [ref=f683e122]: Perfect Hit
+                                - paragraph [ref=f683e128]: Good Hit
+                                - paragraph [ref=f683e134]: Poor Hit
+                                - paragraph [ref=f683e140]: Missed
+                                - paragraph [ref=f683e146]: Display Results
+                                - paragraph [ref=f683e152]: Continue
+                                - paragraph [ref=f683e158]: Change Mode
+                                - paragraph [ref=f683e164]: Initialize
+                                - paragraph [ref=f683e170]: Transition Started
+                                - paragraph [ref=f683e176]: Transition Complete
+                                - paragraph [ref=f683e182]: < 0.5s
+                                - paragraph [ref=f683e188]: 0.5-1s
+                                - generic [ref=f683e192]: "> 1s"
+                                - paragraph [ref=f683e198]: Continue
+                                - paragraph [ref=f683e204]: Change Mode
+                                - paragraph [ref=f683e210]: Show Sequence
+                                - paragraph [ref=f683e216]: Start Execution
+                                - paragraph [ref=f683e222]: Combo Complete
+                                - paragraph [ref=f683e228]: All Correct
+                                - paragraph [ref=f683e234]: Some Correct
+                                - paragraph [ref=f683e240]: Failed
+                                - paragraph [ref=f683e246]: Next Combo
+                                - paragraph [ref=f683e252]: Change Mode
+                                - paragraph [ref=f683e258]: Initialize
+                                - paragraph [ref=f683e264]: Any Action
+                                - paragraph [ref=f683e270]: Exit
+                              - generic [ref=f683e271]:
+                                - paragraph [ref=f683e280]: ModeSelect
+                                - paragraph [ref=f683e287]: VPTraining
+                                - paragraph [ref=f683e294]: StanceTraining
+                                - paragraph [ref=f683e301]: ComboTraining
+                                - paragraph [ref=f683e308]: FreePractice
+                                - paragraph [ref=f683e322]: SelectingVP
+                                - paragraph [ref=f683e329]: AttemptingStrike
+                                - paragraph [ref=f683e336]: Grading
+                                - paragraph [ref=f683e343]: Perfect
+                                - paragraph [ref=f683e350]: Good
+                                - paragraph [ref=f683e357]: Poor
+                                - paragraph [ref=f683e364]: Missed
+                                - paragraph [ref=f683e371]: ShowingFeedback
+                                - paragraph [ref=f683e378]: PracticingStances
+                                - paragraph [ref=f683e385]: TimingTransition
+                                - paragraph [ref=f683e392]: GradingSpeed
+                                - paragraph [ref=f683e399]: FastTransition
+                                - paragraph [ref=f683e406]: NormalTransition
+                                - paragraph [ref=f683e413]: SlowTransition
+                                - paragraph [ref=f683e420]: DisplayingCombo
+                                - paragraph [ref=f683e427]: ExecutingCombo
+                                - paragraph [ref=f683e434]: CheckingCombo
+                                - paragraph [ref=f683e441]: PerfectCombo
+                                - paragraph [ref=f683e448]: PartialCombo
+                                - paragraph [ref=f683e455]: FailedCombo
+                                - paragraph [ref=f683e462]: Practicing
+                                - paragraph [ref=f683e471]:
+                                  - text: Learn 70 vital points
+                                  - text: Practice precision
+                                  - text: Build muscle memory
+                                  - text: Track progress
+                                - paragraph [ref=f683e480]:
+                                  - text: Master 8 stances
+                                  - text: Improve speed
+                                  - text: Learn transitions
+                                  - text: Optimize energy use
+                                - paragraph [ref=f683e489]:
+                                  - text: Learn techniques
+                                  - text: Build combos
+                                  - text: Timing practice
+                                  - text: Advanced moves
+                          - generic [ref=f683e494]:
+                            - button "Zoom in" [ref=f683e495] [cursor=pointer]:
+                              - img [ref=f683e496]
+                            - button "Zoom out" [ref=f683e499] [cursor=pointer]:
+                              - img [ref=f683e500]
+                            - button "Reset view" [ref=f683e503] [cursor=pointer]:
+                              - img [ref=f683e504]
+                            - button "Pan up" [ref=f683e506] [cursor=pointer]:
+                              - img [ref=f683e507]
+                            - button "Pan down" [ref=f683e509] [cursor=pointer]:
+                              - img [ref=f683e510]
+                            - button "Pan left" [ref=f683e512] [cursor=pointer]:
+                              - img [ref=f683e513]
+                            - button "Pan right" [ref=f683e515] [cursor=pointer]:
+                              - img [ref=f683e516]
+                    - generic [ref=e1230]:
+                      - img [ref=e1231]
+                      - generic [ref=e1234]: Loading
+                  - separator [ref=e1235]
+                  - generic [ref=e1236]:
+                    - heading "🎵 Audio State Machine" [level=2] [ref=e1237]
+                    - 'link "Permalink: 🎵 Audio State Machine" [ref=e1238] [cursor=pointer]':
+                      - /url: "#-audio-state-machine"
+                      - img [ref=e1239]
+                  - generic [ref=e1241]:
+                    - heading "Audio System States" [level=3] [ref=e1242]:
+                      - strong [ref=e1243]: Audio System States
+                    - 'link "Permalink: Audio System States" [ref=e1244] [cursor=pointer]':
+                      - /url: "#audio-system-states"
+                      - img [ref=e1245]
+                  - region "mermaid rendered output container" [ref=e1247]:
+                    - generic [ref=e1248]:
+                      - generic [ref=e1249]:
+                        - group [ref=e1250]:
+                          - button "Open dialog" [ref=e1251] [cursor=pointer]:
+                            - img [ref=e1252]
+                        - button "Copy mermaid code" [ref=e1254] [cursor=pointer]:
+                          - img [ref=e1255]
+                      - iframe [ref=e1259]:
+                        - generic [active]:
+                          - document [ref=f684e4]:
+                            - generic [ref=f684e6]:
+                              - generic [ref=f684e29]:
+                                - paragraph [ref=f684e35]: App Start
+                                - paragraph [ref=f684e41]: Audio Context Created
+                                - paragraph [ref=f684e47]: Init Error
+                                - paragraph [ref=f684e53]: Retry
+                                - paragraph [ref=f684e59]: Give Up
+                                - paragraph [ref=f684e65]: No Audio Playing
+                                - paragraph [ref=f684e71]: Play Request
+                                - paragraph [ref=f684e77]: Sound in Cache
+                                - paragraph [ref=f684e83]: Fetch from CDN
+                                - paragraph [ref=f684e89]: Start Playback
+                                - paragraph [ref=f684e95]: Download Complete
+                                - paragraph [ref=f684e101]: Download Error
+                                - paragraph [ref=f684e107]: Playback Complete
+                                - paragraph [ref=f684e113]: Pause Request
+                                - paragraph [ref=f684e119]: Stop Request
+                                - paragraph [ref=f684e125]: Resume Request
+                                - paragraph [ref=f684e131]: Stop Request
+                                - paragraph [ref=f684e137]: Cleanup Complete
+                              - generic [ref=f684e138]:
+                                - paragraph [ref=f684e147]: Initializing
+                                - paragraph [ref=f684e154]: Ready
+                                - paragraph [ref=f684e161]: Failed
+                                - paragraph [ref=f684e175]: Idle
+                                - paragraph [ref=f684e182]: LoadingSound
+                                - paragraph [ref=f684e189]: Cached
+                                - paragraph [ref=f684e196]: Downloading
+                                - paragraph [ref=f684e203]: Playing
+                                - paragraph [ref=f684e210]: Paused
+                                - paragraph [ref=f684e217]: Stopped
+                                - paragraph [ref=f684e226]:
+                                  - text: Track active sounds
+                                  - text: Apply volume settings
+                                  - text: Manage sound pool
+                                  - text: Prevent overlap
+                                - paragraph [ref=f684e235]:
+                                  - text: Use browser cache
+                                  - text: Instant playback
+                                  - text: No network delay
+                          - generic [ref=f684e236]:
+                            - button "Zoom in" [ref=f684e237] [cursor=pointer]:
+                              - img [ref=f684e238]
+                            - button "Zoom out" [ref=f684e241] [cursor=pointer]:
+                              - img [ref=f684e242]
+                            - button "Reset view" [ref=f684e245] [cursor=pointer]:
+                              - img [ref=f684e246]
+                            - button "Pan up" [ref=f684e248] [cursor=pointer]:
+                              - img [ref=f684e249]
+                            - button "Pan down" [ref=f684e251] [cursor=pointer]:
+                              - img [ref=f684e252]
+                            - button "Pan left" [ref=f684e254] [cursor=pointer]:
+                              - img [ref=f684e255]
+                            - button "Pan right" [ref=f684e257] [cursor=pointer]:
+                              - img [ref=f684e258]
+                    - generic [ref=e1260]:
+                      - img [ref=e1261]
+                      - generic [ref=e1264]: Loading
+                  - separator [ref=e1265]
+                  - generic [ref=e1266]:
+                    - heading "🔄 UI State Machine" [level=2] [ref=e1267]
+                    - 'link "Permalink: 🔄 UI State Machine" [ref=e1268] [cursor=pointer]':
+                      - /url: "#-ui-state-machine"
+                      - img [ref=e1269]
+                  - generic [ref=e1271]:
+                    - heading "Menu Navigation States" [level=3] [ref=e1272]:
+                      - strong [ref=e1273]: Menu Navigation States
+                    - 'link "Permalink: Menu Navigation States" [ref=e1274] [cursor=pointer]':
+                      - /url: "#menu-navigation-states"
+                      - img [ref=e1275]
+                  - region "mermaid rendered output container" [ref=e1277]:
+                    - generic [ref=e1278]:
+                      - generic [ref=e1279]:
+                        - group [ref=e1280]:
+                          - button "Open dialog" [ref=e1281] [cursor=pointer]:
+                            - img [ref=e1282]
+                        - button "Copy mermaid code" [ref=e1284] [cursor=pointer]:
+                          - img [ref=e1285]
+                      - iframe [ref=e1289]:
+                        - generic [active]:
+                          - document [ref=f685e4]:
+                            - generic [ref=f685e6]:
+                              - generic [ref=f685e47]:
+                                - paragraph [ref=f685e53]: App Ready
+                                - paragraph [ref=f685e59]: Select Versus
+                                - paragraph [ref=f685e65]: Select Training
+                                - paragraph [ref=f685e71]: Select Tutorial
+                                - paragraph [ref=f685e77]: Select Settings
+                                - paragraph [ref=f685e83]: Exit
+                                - paragraph [ref=f685e89]: Start Game
+                                - paragraph [ref=f685e95]: Back
+                                - paragraph [ref=f685e101]: Start Training
+                                - paragraph [ref=f685e107]: Back
+                                - paragraph [ref=f685e113]: Start Tutorial
+                                - paragraph [ref=f685e119]: Back
+                                - paragraph [ref=f685e125]: Audio Tab
+                                - paragraph [ref=f685e131]: Video Tab
+                                - paragraph [ref=f685e137]: Controls Tab
+                                - paragraph [ref=f685e143]: Save & Exit
+                                - paragraph [ref=f685e149]: Back to Settings
+                                - paragraph [ref=f685e155]: Characters Selected
+                                - paragraph [ref=f685e161]: Cancel
+                                - paragraph [ref=f685e167]: Assets Loaded
+                                - paragraph [ref=f685e173]: Pause
+                                - paragraph [ref=f685e179]: Round Won
+                                - paragraph [ref=f685e185]: Round Lost
+                                - paragraph [ref=f685e191]: Resume
+                                - paragraph [ref=f685e197]: Quit
+                                - paragraph [ref=f685e203]: Continue
+                                - paragraph [ref=f685e209]: Rematch
+                                - paragraph [ref=f685e215]: Continue
+                                - paragraph [ref=f685e221]: Retry
+                                - paragraph [ref=f685e227]: Exit Training
+                                - paragraph [ref=f685e233]: Exit Tutorial
+                              - generic [ref=f685e234]:
+                                - paragraph [ref=f685e243]: MainMenu
+                                - paragraph [ref=f685e250]: VersusMenu
+                                - paragraph [ref=f685e257]: TrainingMenu
+                                - paragraph [ref=f685e264]: TutorialMenu
+                                - paragraph [ref=f685e271]: SettingsMenu
+                                - paragraph [ref=f685e285]: CharacterSelect
+                                - paragraph [ref=f685e292]: TrainingSession
+                                - paragraph [ref=f685e299]: TutorialSession
+                                - paragraph [ref=f685e306]: AudioSettings
+                                - paragraph [ref=f685e313]: VideoSettings
+                                - paragraph [ref=f685e320]: ControlSettings
+                                - paragraph [ref=f685e327]: LoadingMatch
+                                - paragraph [ref=f685e334]: InMatch
+                                - paragraph [ref=f685e341]: PauseMenu
+                                - paragraph [ref=f685e348]: VictoryScreen
+                                - paragraph [ref=f685e355]: DefeatScreen
+                                - paragraph [ref=f685e364]:
+                                  - text: "Audio: Volume controls"
+                                  - text: "Video: Quality settings"
+                                  - text: "Controls: Key bindings"
+                                  - text: "Language: Korean/English"
+                                - paragraph [ref=f685e373]:
+                                  - text: "Choose archetype:"
+                                  - text: 무사 Musa
+                                  - text: 암살자 Amsalja
+                                  - text: 해커 Hacker
+                                  - text: 정보요원 Intelligence
+                                  - text: 조직폭력배 Organized Crime
+                          - generic [ref=f685e374]:
+                            - button "Zoom in" [ref=f685e375] [cursor=pointer]:
+                              - img [ref=f685e376]
+                            - button "Zoom out" [ref=f685e379] [cursor=pointer]:
+                              - img [ref=f685e380]
+                            - button "Reset view" [ref=f685e383] [cursor=pointer]:
+                              - img [ref=f685e384]
+                            - button "Pan up" [ref=f685e386] [cursor=pointer]:
+                              - img [ref=f685e387]
+                            - button "Pan down" [ref=f685e389] [cursor=pointer]:
+                              - img [ref=f685e390]
+                            - button "Pan left" [ref=f685e392] [cursor=pointer]:
+                              - img [ref=f685e393]
+                            - button "Pan right" [ref=f685e395] [cursor=pointer]:
+                              - img [ref=f685e396]
+                    - generic [ref=e1290]:
+                      - img [ref=e1291]
+                      - generic [ref=e1294]: Loading
+                  - separator [ref=e1295]
+                  - generic [ref=e1296]:
+                    - heading "📊 Resource Management States" [level=2] [ref=e1297]
+                    - 'link "Permalink: 📊 Resource Management States" [ref=e1298] [cursor=pointer]':
+                      - /url: "#-resource-management-states"
+                      - img [ref=e1299]
+                  - generic [ref=e1301]:
+                    - heading "Player Resource States" [level=3] [ref=e1302]:
+                      - strong [ref=e1303]: Player Resource States
+                    - 'link "Permalink: Player Resource States" [ref=e1304] [cursor=pointer]':
+                      - /url: "#player-resource-states"
+                      - img [ref=e1305]
+                  - region "mermaid rendered output container" [ref=e1307]:
+                    - generic [ref=e1308]:
+                      - generic [ref=e1309]:
+                        - group [ref=e1310]:
+                          - button "Open dialog" [ref=e1311] [cursor=pointer]:
+                            - img [ref=e1312]
+                        - button "Copy mermaid code" [ref=e1314] [cursor=pointer]:
+                          - img [ref=e1315]
+                      - iframe [ref=e1319]:
+                        - generic [active]:
+                          - document [ref=f686e4]:
+                            - generic [ref=f686e6]:
+                              - generic [ref=f686e7]:
+                                - paragraph [ref=f686e15]: FullResources
+                                - paragraph [ref=f686e24]: Regenerating
+                                - paragraph [ref=f686e33]: Depleting
+                              - generic [ref=f686e64]:
+                                - paragraph [ref=f686e70]: Take Damage
+                                - paragraph [ref=f686e76]: More Damage
+                                - paragraph [ref=f686e82]: Critical Damage
+                                - paragraph [ref=f686e88]: Fatal Damage
+                                - paragraph [ref=f686e94]: Use Technique
+                                - paragraph [ref=f686e100]: More Techniques
+                                - paragraph [ref=f686e106]: Exhausted
+                                - paragraph [ref=f686e112]: Physical Exertion
+                                - paragraph [ref=f686e118]: More Exertion
+                                - paragraph [ref=f686e124]: Exhausted
+                                - paragraph [ref=f686e130]: Healing
+                                - paragraph [ref=f686e136]: Partial Healing
+                                - paragraph [ref=f686e142]: Emergency Healing
+                                - paragraph [ref=f686e148]: Ki Recovery
+                                - paragraph [ref=f686e154]: Partial Recovery
+                                - paragraph [ref=f686e160]: Slow Recovery
+                                - paragraph [ref=f686e166]: Rest
+                                - paragraph [ref=f686e172]: Partial Rest
+                                - paragraph [ref=f686e178]: Recovery
+                                - paragraph [ref=f686e184]: Knockout
+                                - paragraph [ref=f686e190]: Match Start
+                                - paragraph [ref=f686e196]: Actions Taken
+                                - paragraph [ref=f686e202]: Rest/Recovery
+                                - paragraph [ref=f686e208]: Resume Action
+                                - paragraph [ref=f686e214]: Full Recovery
+                              - generic [ref=f686e215]:
+                                - paragraph [ref=f686e226]: HealthFull
+                                - paragraph [ref=f686e233]: KiFull
+                                - paragraph [ref=f686e240]: StaminaFull
+                                - paragraph [ref=f686e247]: HealthModerate
+                                - paragraph [ref=f686e254]: HealthLow
+                                - paragraph [ref=f686e261]: HealthCritical
+                                - paragraph [ref=f686e268]: HealthZero
+                                - paragraph [ref=f686e275]: KiModerate
+                                - paragraph [ref=f686e282]: KiLow
+                                - paragraph [ref=f686e289]: KiEmpty
+                                - paragraph [ref=f686e296]: StaminaModerate
+                                - paragraph [ref=f686e303]: StaminaLow
+                                - paragraph [ref=f686e310]: StaminaEmpty
+                                - paragraph [ref=f686e326]:
+                                  - text: "Health: 100%"
+                                  - text: "Ki: 100%"
+                                  - text: "Stamina: 100%"
+                                  - text: Ready for combat
+                                - paragraph [ref=f686e335]:
+                                  - text: Resources consumed
+                                  - text: "by actions:"
+                                  - text: "- Attacks use Ki"
+                                  - text: "- Movement uses Stamina"
+                                  - text: "- Damage reduces Health"
+                          - generic [ref=f686e336]:
+                            - button "Zoom in" [ref=f686e337] [cursor=pointer]:
+                              - img [ref=f686e338]
+                            - button "Zoom out" [ref=f686e341] [cursor=pointer]:
+                              - img [ref=f686e342]
+                            - button "Reset view" [ref=f686e345] [cursor=pointer]:
+                              - img [ref=f686e346]
+                            - button "Pan up" [ref=f686e348] [cursor=pointer]:
+                              - img [ref=f686e349]
+                            - button "Pan down" [ref=f686e351] [cursor=pointer]:
+                              - img [ref=f686e352]
+                            - button "Pan left" [ref=f686e354] [cursor=pointer]:
+                              - img [ref=f686e355]
+                            - button "Pan right" [ref=f686e357] [cursor=pointer]:
+                              - img [ref=f686e358]
+                    - generic [ref=e1320]:
+                      - img [ref=e1321]
+                      - generic [ref=e1324]: Loading
+                  - separator [ref=e1325]
+                  - paragraph [ref=e1326]:
+                    - strong [ref=e1327]: 흑괘의 길을 걸어라
+                    - text: "-"
+                    - emphasis [ref=e1328]: Walk the Path of the Black Trigram through State Transitions
+                  - paragraph [ref=e1329]: These state diagrams document all valid state transitions for Black Trigram game systems, ensuring comprehensive understanding of state management for authentic Korean martial arts combat simulation.
+                  - separator [ref=e1330]
+                  - paragraph [ref=e1331]:
+                    - strong [ref=e1332]: "📋 Document Control:"
+                    - strong [ref=e1333]: "✅ Approved by:"
+                    - text: James Pether Sörling, CEO
+                    - strong [ref=e1334]: "📤 Distribution:"
+                    - text: Public
+                    - strong [ref=e1335]: "🏷️ Classification:"
+                    - 'link "Confidentiality: Public" [ref=e1336] [cursor=pointer]':
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels
+                      - 'img "Confidentiality: Public" [ref=e1337]'
+                    - 'link "Integrity: Moderate" [ref=e1338] [cursor=pointer]':
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels
+                      - 'img "Integrity: Moderate" [ref=e1339]'
+                    - 'link "Availability: Standard" [ref=e1340] [cursor=pointer]':
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels
+                      - 'img "Availability: Standard" [ref=e1341]'
+                    - strong [ref=e1342]: "📅 Effective Date:"
+                    - text: 2026-03-19
+                    - strong [ref=e1343]: "⏰ Next Review:"
+                    - text: 2026-09-19
+                    - strong [ref=e1344]: "🎯 Framework Compliance:"
+                    - link "ISO 27001" [ref=e1345] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md
+                      - img "ISO 27001" [ref=e1346]
+                    - link "NIST CSF 2.0" [ref=e1347] [cursor=pointer]:
+                      - /url: https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md
+                      - img "NIST CSF 2.0" [ref=e1348]
+  - alert [ref=e1352]
