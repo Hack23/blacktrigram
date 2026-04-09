@@ -195,7 +195,7 @@ flowchart TD
     CheckPaymentStatus -->|Failed| LogFailure[Log Payment Failure<br/>SNS Notification<br/>Customer Support]
     CheckPaymentStatus -->|Pending| WaitConfirmation[Wait for<br/>Confirmation<br/>Async Processing]
     
-    ProcessPurchase --> UpdateInventory["DynamoDB Update<br/>users/userId/inventory<br/>Add purchased items"]
+    ProcessPurchase --> UpdateInventory["DynamoDB Update<br/>users/<userId>/inventory<br/>Add purchased items"]
     
     UpdateInventory --> BackupS3[S3 Backup<br/>Purchase Receipt<br/>JSON + Metadata]
     

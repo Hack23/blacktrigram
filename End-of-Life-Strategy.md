@@ -105,7 +105,7 @@ mindmap
         📅 Current In-repo implementation
         ⏰ EOL Browser Web Audio API dependent
         🔄 Web Audio API
-      🎨 react-three/drei 10.7.x
+      🎨 @react-three/drei 10.7.x
         📅 Current Latest
         ⏰ EOL R3F-dependent
         🔄 3D Helpers and Audio

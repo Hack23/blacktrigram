@@ -673,7 +673,7 @@ flowchart TD
     CacheAssets --> InitAudio
 
     InitAudio --> LoadAudioFiles[Load Audio Files<br/>Korean Traditional<br/>Combat SFX<br/>Cyberpunk BGM]
-    LoadAudioFiles --> InitThree["Initialize Three.js<br/>react-three/fiber<br/>WebGL Context"]
+    LoadAudioFiles --> InitThree["Initialize Three.js<br/>@react-three/fiber<br/>WebGL Context"]
     
     InitThree --> CreateScene[Create 3D Scene<br/>Camera Setup<br/>Lighting<br/>Environment]
     
