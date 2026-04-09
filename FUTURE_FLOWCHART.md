@@ -195,7 +195,7 @@ flowchart TD
     CheckPaymentStatus -->|Failed| LogFailure[Log Payment Failure<br/>SNS Notification<br/>Customer Support]
     CheckPaymentStatus -->|Pending| WaitConfirmation[Wait for<br/>Confirmation<br/>Async Processing]
     
-    ProcessPurchase --> UpdateInventory[DynamoDB Update<br/>users/{userId}/inventory<br/>Add purchased items]
+    ProcessPurchase --> UpdateInventory["DynamoDB Update<br/>users/<userId>/inventory<br/>Add purchased items"]
     
     UpdateInventory --> BackupS3[S3 Backup<br/>Purchase Receipt<br/>JSON + Metadata]
     
@@ -248,14 +248,14 @@ flowchart TD
     
     ConnectWS --> WSHandshake[WebSocket Handshake<br/>Cookie: session_token<br/>ConnectionId]
     
-    WSHandshake --> EnterQueue[Send Queue Request<br/>{ action: 'join_queue'<br/> mode: 'ranked'<br/> elo: 1500<br/> region: 'asia-northeast-2' }]
+    WSHandshake --> EnterQueue["Send Queue Request<br/>action: join_queue<br/>mode: ranked<br/>elo: 1500<br/>region: asia-northeast-2"]
     
     EnterQueue --> Lambda1[Lambda: handleMatchQueue<br/>DynamoDB Query<br/>Find Opponents]
     
     Lambda1 --> Matching{Matchmaking<br/>Algorithm<br/>ELO ±100}
     
     Matching -->|No Match| QueueWait[Wait in Queue<br/>Update Position<br/>30s timeout]
-    Matching -->|Match Found!| VerifyMatch[🎯 Match Found!<br/>Opponent: {username}<br/>ELO: {rating}<br/>Ping: {ms}ms]
+    Matching -->|Match Found!| VerifyMatch["🎯 Match Found!<br/>Opponent: username<br/>ELO: rating<br/>Ping: ms"]
     
     QueueWait --> CheckTimeout{Timeout?<br/>3min}
     CheckTimeout -->|No| Matching
@@ -281,7 +281,7 @@ flowchart TD
     
     CreateMatch --> AllocateRoom[Allocate Game Room<br/>Generate room_id<br/>WebRTC Setup]
     
-    AllocateRoom --> SyncPlayers[Sync Player Data<br/>{ player1: {}<br/> player2: {}<br/> room_id: '' }]
+    AllocateRoom --> SyncPlayers["Sync Player Data<br/>player1, player2<br/>room_id assigned"]
     
     SyncPlayers --> LoadMatch[Load Match Assets<br/>Stage Selection<br/>Character Models]
     

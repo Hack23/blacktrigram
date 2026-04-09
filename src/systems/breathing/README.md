@@ -212,6 +212,7 @@ Automatically upgrades old-style breathlessness status effects to use the new br
 ### Vital Point Strike Flow
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     A[Vital Point Hit] --> B{Is Torso?}
     B -->|Yes| C[Get Disruption Level]
@@ -226,6 +227,7 @@ graph TD
 ### Frame Update Flow
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     A[Game Loop 60fps] --> B{Active Effect?}
     B -->|No| C[Continue]

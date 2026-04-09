@@ -102,6 +102,7 @@ The vital point system is the cornerstone of Black Trigram's combat realism, imp
 ### 1.1 System Overview
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "🎯 70 Vital Points System (급소 체계)"
         VPS["⚡ VitalPointSystem<br/>70 Targets"]:::vital
@@ -399,6 +400,7 @@ The 8 Trigram Stance System (팔괘 자세) is the foundation of Black Trigram's
 ### 2.1 Stance Overview
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "☯️ Eight Trigram Stances (팔괘 자세)"
         G["☰ 건 Geon<br/>⛅ Heaven/Sky<br/>💪 Power: +20%"]:::geon

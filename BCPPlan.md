@@ -43,7 +43,7 @@ Our business continuity planning is directly driven by the [Classification Frame
     'theme': 'base',
     'themeVariables': {
       'primaryColor': '#1565C0',
-      'primaryTextColor': '#0d47a1',
+      'primaryTextColor': '#fff',
       'lineColor': '#1565C0',
       'secondaryColor': '#4CAF50',
       'tertiaryColor': '#FF9800'
@@ -275,7 +275,7 @@ graph TB
     'theme': 'base',
     'themeVariables': {
       'primaryColor': '#e3f2fd',
-      'primaryTextColor': '#0d47a1',
+      'primaryTextColor': '#0d1b2a',
       'lineColor': '#2979FF'
     }
   }
@@ -336,17 +336,20 @@ flowchart TB
 ### 🔝 Priority Matrix
 
 ```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'quadrant1Fill': '#ff6666',
-      'quadrant2Fill': '#ffaa66',
-      'quadrant3Fill': '#66ff66',
-      'quadrant4Fill': '#ffff66'
-    }
+%%{init: {
+  "theme": "neutral",
+  "themeVariables": {
+    "quadrant1Fill": "#2E7D32",
+    "quadrant2Fill": "#D32F2F",
+    "quadrant3Fill": "#1565C0",
+    "quadrant4Fill": "#FF9800",
+    "quadrantTitleFill": "#ffffff",
+    "quadrantPointFill": "#ffffff",
+    "quadrantPointTextFill": "#ffffff",
+    "quadrantXAxisTextFill": "#ffffff",
+    "quadrantYAxisTextFill": "#ffffff"
   }
-}%%
+}}%%
 quadrantChart
     title Educational Function Priority Matrix
     x-axis Low Impact --> High Impact
@@ -635,7 +638,7 @@ Our multi-region strategy leverages AWS global infrastructure with GitHub Pages 
     'theme': 'base',
     'themeVariables': {
       'primaryColor': '#e3f2fd',
-      'primaryTextColor': '#0d47a1',
+      'primaryTextColor': '#212121',
       'lineColor': '#2979FF'
     }
   }
@@ -714,7 +717,7 @@ graph LR
     'theme': 'base',
     'themeVariables': {
       'primaryColor': '#e3f2fd',
-      'primaryTextColor': '#0d47a1',
+      'primaryTextColor': '#0d1b2a',
       'lineColor': '#2979FF'
     }
   }

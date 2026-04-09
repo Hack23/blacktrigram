@@ -38,6 +38,7 @@ Black Trigram (흑괘) is a frontend-only Korean martial arts combat simulator w
 ### **Entity Relationship Diagram**
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800'}}}%%
 erDiagram
     PLAYER ||--|| PLAYER_ARCHETYPE : "has"
     PLAYER ||--o{ STATUS_EFFECT : "suffers"
@@ -689,6 +690,7 @@ Black Trigram implements a performance-optimized skeletal animation system with 
 #### **Core Bone Structure (28 bones)**
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     PELVIS[PELVIS - Root]
     
@@ -903,6 +905,7 @@ export enum VitalPointSeverity {
 ### **Combat State Transitions**
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 stateDiagram-v2
     [*] --> IDLE
     

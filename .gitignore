@@ -5706,3 +5706,4 @@ build
 # Test results
 test-results.xml
 build/
+.playwright-mcp/

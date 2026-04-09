@@ -22,6 +22,7 @@ This mindmap documents the technology evolution roadmap for Black Trigram (흑�
 ## 🌐 Future Technology Evolution Mindmap
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((🔮 흑괘<br/>Future Evolution<br/>AWS Backend))
     Backend Infrastructure
@@ -236,6 +237,7 @@ mindmap
 ## 🚀 Development Roadmap Phases
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((📅 Roadmap<br/>Phases))
     Phase 1: Foundation<br/>Months 1-3
@@ -341,6 +343,7 @@ mindmap
 ## 💡 Innovation Areas
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((💡 Innovation<br/>Opportunities))
     VR/AR Integration
@@ -425,6 +428,7 @@ mindmap
 ## 🔗 Technical Integration Map
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((🔗 Technical<br/>Stack Evolution))
     Frontend Enhancements

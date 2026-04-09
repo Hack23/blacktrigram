@@ -84,6 +84,7 @@ This repository is fully configured for GitHub Codespaces, providing:
 > 📖 **Learn more**: See [Copilot MCP Setup Guide](.github/COPILOT_MCP_SETUP.md) for detailed information about MCP server configuration and usage.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     A[Developer] -->|Opens in Codespace| B[Container Setup]
     B -->|Auto-configures| C[Development Environment]
@@ -121,6 +122,7 @@ graph LR
 ## Security Workflows
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     A[🔒 Code Push/PR] --> B{🛡️ Security Gates}
 
@@ -168,6 +170,7 @@ graph TD
 ## Test & Report Workflow
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     A[🚀 Code Push/PR] --> B{🔍 Prepare Environment}
 
@@ -441,6 +444,7 @@ See comprehensive test plans:
 ### CI/CD Pipeline
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "🔧 CI Pipeline"
         A1[📝 Code Changes] --> A2[🔍 Lint & Type Check]
@@ -995,6 +999,7 @@ cat .env.production
 ### Release Flow
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     A[🚀 Release Trigger] --> B{📋 Release Type}
 
@@ -1059,6 +1064,7 @@ git push origin v1.0.0
 Release notes are automatically generated using semantic labeling:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     A[🔄 PR Labels] --> B[📝 Release Drafter]
     B --> C[📊 Categorized Notes]
@@ -1176,6 +1182,7 @@ Each release includes multiple artifacts with full traceability:
 ### 🌐 Deployment Pipeline
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','actorBkg':'#1565C0','actorTextColor':'#fff','actorLineColor':'#455A64','signalColor':'#455A64','signalTextColor':'#fff','noteBkgColor':'#FFD600','noteTextColor':'#000','noteBorderColor':'#F57F17'}}}%%
 sequenceDiagram
     participant Dev as 👨‍💻 Developer
     participant GH as 🐙 GitHub

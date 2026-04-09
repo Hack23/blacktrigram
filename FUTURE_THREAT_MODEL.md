@@ -186,7 +186,7 @@ flowchart TB
     'theme': 'base',
     'themeVariables': {
       'primaryColor': '#e3f2fd',
-      'primaryTextColor': '#0d47a1',
+      'primaryTextColor': '#01579b',
       'lineColor': '#2196f3',
       'secondaryColor': '#fff3e0',
       'tertiaryColor': '#e8f5e9'
@@ -622,16 +622,20 @@ Following [Risk-Centric Threat Modeling](https://github.com/Hack23/ISMS-PUBLIC/b
 ### **⚖️ Risk Heat Matrix**
 
 ```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#fff',
-      'primaryTextColor': '#000',
-      'lineColor': '#333'
-    }
+%%{init: {
+  "theme": "neutral",
+  "themeVariables": {
+    "quadrant1Fill": "#2E7D32",
+    "quadrant2Fill": "#D32F2F",
+    "quadrant3Fill": "#1565C0",
+    "quadrant4Fill": "#FF9800",
+    "quadrantTitleFill": "#ffffff",
+    "quadrantPointFill": "#ffffff",
+    "quadrantPointTextFill": "#ffffff",
+    "quadrantXAxisTextFill": "#ffffff",
+    "quadrantYAxisTextFill": "#ffffff"
   }
-}%%
+}}%%
 quadrantChart
     title 🎯 AWS Backend Risk Heat Matrix
     x-axis Low Likelihood --> High Likelihood

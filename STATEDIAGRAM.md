@@ -229,8 +229,9 @@ stateDiagram-v2
         Idle --> Attacking: Attack Input (Space)
         Idle --> Blocking: Block Input (Shift)
         Idle --> StanceChanging: Stance Input (1-8)
-        Idle --> Moving: Movement (WASD)
     }
+
+    Standing --> Moving: Movement (WASD)
 
     state Attacking {
         [*] --> ValidateAttack

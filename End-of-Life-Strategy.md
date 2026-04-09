@@ -65,58 +65,58 @@ mindmap
   root)🥋 Black Trigram Stack(
     (🖥️ Runtime)
       ☕ Node.js 25.x
-        📅 CI Runtime Baseline (transitioning): 25.x while migration to 26.x LTS is active
-        ⏰ Lifecycle source of truth: [Node.js release schedule](https://github.com/nodejs/release#release-schedule)
-        🔄 LTS migration track: 24.x and 26.x (migration target: 26.x)
+        📅 CI Runtime Baseline - transitioning to 26.x LTS
+        ⏰ Lifecycle source - Node.js release schedule
+        🔄 LTS migration track - 24.x and 26.x
         📢 New schedule from 27.x
         🚀 Prepared for Node 26 LTS upgrade
       🌐 Browser Runtime
         📅 Evergreen Updates
-        ⏰ EOL: N/A (Auto-update)
+        ⏰ EOL N/A - Auto-update
         🔄 WebGL/WebAssembly Support
     (⚛️ Frontend Framework)
-      📦 React ^19.2.4
-        📅 Current: Latest
-        ⏰ EOL: ~2027-2028
+      📦 React 19.2.x
+        📅 Current Latest
+        ⏰ EOL ~2027-2028
         🔄 Concurrent Features
       🎮 Three.js 0.183.x / R3F 9.5.x
-        📅 Current: Latest
-        ⏰ EOL: Active development
+        📅 Current Latest
+        ⏰ EOL Active development
         🔄 WebGL 2.0 + WebGPU Support
-      📱 Internal ErrorBoundary Component (React)
-        📅 Current: In-repo component
-        ⏰ EOL: React-dependent
+      📱 Internal ErrorBoundary Component
+        📅 Current In-repo component
+        ⏰ EOL React-dependent
         🔄 Error Handling
-    (🛠️ Build & Tooling)
-      ⚡ Vite ^8.0.0
-        📅 Current: Latest
-        ⏰ EOL: Active (yearly)
+    (🛠️ Build and Tooling)
+      ⚡ Vite 8.x
+        📅 Current Latest
+        ⏰ EOL Active yearly
         🔄 ESBuild Integration
-      📝 TypeScript ^6.0.2
-        📅 Current: Latest
-        ⏰ EOL: ~6-month cycles
+      📝 TypeScript 6.x
+        📅 Current Latest
+        ⏰ EOL ~6-month cycles
         🔄 Strict Mode Enabled
-      🔍 ESLint ^9.39.2
-        📅 Current: Latest
-        ⏰ EOL: Active
+      🔍 ESLint 9.x
+        📅 Current Latest
+        ⏰ EOL Active
         🔄 Flat Config System
-    (🎵 Audio & Assets)
-      🎵 Internal Web Audio System (AudioManager)
-        📅 Current: In-repo implementation
-        ⏰ EOL: Browser Web Audio API–dependent
+    (🎵 Audio and Assets)
+      🎵 Internal Web Audio System
+        📅 Current In-repo implementation
+        ⏰ EOL Browser Web Audio API dependent
         🔄 Web Audio API
       🎨 @react-three/drei 10.7.x
-        📅 Current: Latest
-        ⏰ EOL: R3F-dependent
-        🔄 3D Helpers & Audio
-    (🧪 Testing & Quality)
-      🧪 Vitest ^4.0.x
-        📅 Current: Latest
-        ⏰ EOL: Active
+        📅 Current Latest
+        ⏰ EOL R3F-dependent
+        🔄 3D Helpers and Audio
+    (🧪 Testing and Quality)
+      🧪 Vitest 4.x
+        📅 Current Latest
+        ⏰ EOL Active
         🔄 Native ESM Support
-      🔧 Cypress ^15.11.x
-        📅 Current: Latest
-        ⏰ EOL: Active
+      🔧 Cypress 15.x
+        📅 Current Latest
+        ⏰ EOL Active
         🔄 E2E Testing
 ```
 
@@ -173,6 +173,7 @@ Starting with **Node.js 27.x**, the Node.js project is [evolving its release sch
 Following [Hack23 AB's Proactive Runtime Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md#proactive-runtime--operations-management), Black Trigram implements a **current-version-first** approach for optimal security and performance.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','taskBkgColor':'#2979FF','taskTextColor':'#fff','taskTextDarkColor':'#fff','taskTextOutsideColor':'#000','activeTaskBkgColor':'#00C853','activeTaskBorderColor':'#00796B','doneTaskBkgColor':'#4CAF50','doneTaskBorderColor':'#2E7D32','critBkgColor':'#D32F2F','critBorderColor':'#B71C1C'}}}%%
 gantt
     title Node.js Lifecycle & Black Trigram Transition Timeline (Updated Schedule)
     dateFormat YYYY-MM-DD
@@ -382,6 +383,7 @@ flowchart LR
 Real-time monitoring using [endoflife.date](https://endoflife.date/) references and automated tracking:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','taskBkgColor':'#2979FF','taskTextColor':'#fff','taskTextDarkColor':'#fff','taskTextOutsideColor':'#000','activeTaskBkgColor':'#00C853','activeTaskBorderColor':'#00796B','doneTaskBkgColor':'#4CAF50','doneTaskBorderColor':'#2E7D32','critBkgColor':'#D32F2F','critBorderColor':'#B71C1C'}}}%%
 gantt
     title Black Trigram Technology End-of-Life Timeline (2025-2031)
     dateFormat YYYY-MM-DD
@@ -546,18 +548,20 @@ Should EOL conditions trigger migration, the successor platform will maintain **
 ### **📊 Technology Investment Strategy**
 
 ```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#e8f5e9',
-      'primaryTextColor': '#2e7d32',
-      'lineColor': '#4caf50',
-      'secondaryColor': '#e3f2fd',
-      'tertiaryColor': '#fff8e1'
-    }
+%%{init: {
+  "theme": "neutral",
+  "themeVariables": {
+    "quadrant1Fill": "#2E7D32",
+    "quadrant2Fill": "#D32F2F",
+    "quadrant3Fill": "#1565C0",
+    "quadrant4Fill": "#FF9800",
+    "quadrantTitleFill": "#ffffff",
+    "quadrantPointFill": "#ffffff",
+    "quadrantPointTextFill": "#ffffff",
+    "quadrantXAxisTextFill": "#ffffff",
+    "quadrantYAxisTextFill": "#ffffff"
   }
-}%%
+}}%%
 quadrantChart
     title 🎯 Technology Investment vs Migration Complexity
     x-axis Low Migration Complexity --> High Migration Complexity

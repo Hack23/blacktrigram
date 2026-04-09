@@ -98,6 +98,7 @@ This security architecture implements controls aligned with Hack23 AB's publicly
 The following diagram illustrates the layered defense-in-depth architecture for Black Trigram, showing how security controls are organized across infrastructure, application, and development layers.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "🏆 Defense-in-Depth Security Architecture"
         direction TB
@@ -165,6 +166,7 @@ graph TD
 **Current Status**: ❌ No Authentication - Client-Side Only Web Application
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Frontend-Only Architecture (No Authentication)"
         A[👤 Player] -->|"Direct Access"| B[🌐 Web Browser]
@@ -213,6 +215,7 @@ Black Trigram is a frontend-only web application with:
 **Current Status**: ❌ No Data Auditing - Session-Only Application
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Auditing Architecture"
         A[👤 Player] -->|"Action"| B[⚙️ Client Logic]
@@ -251,6 +254,7 @@ Black Trigram currently has:
 **Current Status**: ❌ No Session Tracking - Client-Side Only
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Session Tracking"
         A[👤 Player] -->|"Interact"| B[🖱️ Game Interface]
@@ -289,6 +293,7 @@ Black Trigram session handling:
 **Current Status**: ❌ No Security Event Monitoring - Frontend Only
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Security Event Monitoring"
         A[🔓 No Authentication<br>Events]
@@ -324,6 +329,7 @@ Black Trigram security monitoring:
 **Current Status**: ✅ AWS CloudFront + Route53 - Multi-Region with GitHub Pages DR
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "AWS Network Security Infrastructure"
         A[🌐 Internet] -->|"DNS Query"| B[🛡️ Route53 DNSSEC + Health Checks]
@@ -433,6 +439,7 @@ Black Trigram network security includes AWS CloudFront + S3 multi-region deploym
 ### Domain Security Monitoring
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "DNS Security Monitoring"
         A[🔍 DNSSEC Validation] --> B[📊 Query Monitoring]
@@ -455,6 +462,7 @@ flowchart LR
 **Current Status**: ❌ Not Applicable - No AWS Infrastructure
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "No VPC Infrastructure"
         A[🚫 No Private Subnets]
@@ -478,6 +486,7 @@ Black Trigram does not use VPC infrastructure:
 **Current Status**: ✅ Multi-Region AWS + GitHub Pages DR
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "AWS Multi-Region High Availability"
         A[📡 Route53 Health Checks] --> B{Primary Healthy?}
@@ -545,6 +554,7 @@ As a static content application, Black Trigram benefits from inherent resilience
 **Current Status**: ✅ TLS Encryption + S3 Server-Side Encryption
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Data Protection Strategy"
         A[👤 Player] <-->|"🔒 TLS 1.3"| B[⚖️ CloudFront CDN]
@@ -594,6 +604,7 @@ Black Trigram data protection:
 **Current Status**: ✅ Implemented - CloudFront + S3 + Route53
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "AWS Security Services"
         A[⚖️ CloudFront CDN] --> B[🛡️ AWS Shield Standard]
@@ -676,6 +687,7 @@ Black Trigram uses AWS infrastructure exclusively for static content hosting and
 **Current Status**: ❌ Not Applicable - No AWS Backend Services
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No AWS FSBP Implementation"
         A[🚫 No Config Service]
@@ -701,6 +713,7 @@ Black Trigram does not implement AWS FSBP (uses AWS only for static hosting via 
 **Current Status**: ❌ No Threat Detection - Frontend Only
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Threat Detection"
         A[🔍 No Threat<br>Detection]
@@ -731,6 +744,7 @@ Black Trigram threat detection:
 **Current Status**: ❌ No Vulnerability Management - Static Content
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Vulnerability Management"
         A[🔎 No Vulnerability<br>Scanning]
@@ -761,6 +775,7 @@ Black Trigram vulnerability management:
 **Current Status**: ❌ No Configuration Management - Static Content
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Configuration Management"
         A[⚙️ No AWS Config]
@@ -790,6 +805,7 @@ Black Trigram configuration management:
 **Current Status**: ❌ No Security Monitoring - Frontend Only
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Security Monitoring"
         A[📊 No Log Sources]
@@ -821,6 +837,7 @@ Black Trigram monitoring:
 **Current Status**: ❌ No Automated Security Operations - Static Content
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Automated Security Operations"
         A[⏱️ No Maintenance<br>Windows]
@@ -850,6 +867,7 @@ Black Trigram automated operations:
 **Current Status**: ✅ Partial Implementation - Frontend Security Only
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "Frontend Application Security"
         A[🛡️ Browser<br>Security Model] --> B[🔐 HTTPS Only]
@@ -888,6 +906,7 @@ Black Trigram application security:
 **Current Status**: ❌ No Formal Compliance - Educational Application
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "No Formal Compliance"
         A[🏛️ No Compliance<br>Framework]
@@ -919,6 +938,7 @@ Black Trigram compliance:
 **Current Status**: ✅ Simplified Defense Strategy - Minimal Attack Surface
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Simplified Defense-in-Depth"
         A[🌐 Network Layer] --> B[🔒 HTTPS/TLS]
@@ -959,6 +979,7 @@ Black Trigram's simplified defense approach:
 **Current Status**: ❌ No Security Operations - Static Content Only
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Security Operations"
         A[🔍 No Monitoring]
@@ -990,6 +1011,7 @@ Black Trigram security operations:
 **Current Status**: ✅ Minimal Security Investment - Frontend Only
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Minimal Security Investment"
         A[💰 Low Cost] --> B[📦 CDN Costs Only]
@@ -1028,6 +1050,7 @@ Black Trigram security investment:
 **Current Status**: ✅ Comprehensive CI/CD Security - GitHub Actions
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Security-Hardened CI/CD Pipeline"
         A[🔒 Source Code<br>Security] --> B[🔍 CodeQL Analysis]
