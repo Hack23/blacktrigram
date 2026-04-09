@@ -45,6 +45,7 @@ _— Based on Hack23 AB's commitment to security through transparency and excell
 This threat model implements all five strategies defined in [Hack23 AB Threat Modeling Policy §4](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md#threat-modeling-strategies):
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root)🎯 Black Trigram Threat Modeling(
     (🎖️ Attacker-Centric)
@@ -425,16 +426,20 @@ Following [Risk-Centric Threat Modeling](https://github.com/Hack23/ISMS-PUBLIC/b
 ### **⚖️ Risk Heat Matrix**
 
 ```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#fff',
-      'primaryTextColor': '#000',
-      'lineColor': '#333'
-    }
+%%{init: {
+  "theme": "neutral",
+  "themeVariables": {
+    "quadrant1Fill": "#2E7D32",
+    "quadrant2Fill": "#D32F2F",
+    "quadrant3Fill": "#1565C0",
+    "quadrant4Fill": "#FF9800",
+    "quadrantTitleFill": "#ffffff",
+    "quadrantPointFill": "#ffffff",
+    "quadrantPointTextFill": "#ffffff",
+    "quadrantXAxisTextFill": "#ffffff",
+    "quadrantYAxisTextFill": "#ffffff"
   }
-}%%
+}}%%
 quadrantChart
     title 🎯 Black Trigram Risk Heat Matrix
     x-axis Low Likelihood --> High Likelihood
@@ -937,6 +942,7 @@ Following [Hack23 AB Threat Modeling Policy — AI-Enabled Threats](https://gith
 #### **🛡️ AI Threat Countermeasures for Educational Gaming**
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     A[🤖 AI Threat Detection] --> B{Threat Category}
     B -->|Content Manipulation| C[Cultural Review Gate]
@@ -974,6 +980,7 @@ Following [Hack23 AB Threat Modeling Policy — Maturity Framework](https://gith
 #### **📈 Maturity Progression Roadmap**
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     L1[Level 1<br/>Ad-hoc<br/>✅ Done] --> L2[Level 2<br/>Repeatable<br/>✅ Done]
     L2 --> L3[Level 3<br/>Defined<br/>✅ Current]

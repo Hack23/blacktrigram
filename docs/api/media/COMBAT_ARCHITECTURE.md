@@ -78,6 +78,7 @@ Below, we define the Combat System's architecture in detail.
 ## 🔧 Core Combat System Architecture
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "Combat System Controller (src/systems/CombatSystem.ts)"
         CSC[CombatSystemController]:::core
@@ -152,6 +153,7 @@ graph TB
 ## ☰ Trigram Combat System (팔괘 무술 체계)
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     subgraph "Eight Trigram Stances (팔괘)"
         G[☰ 건 Geon<br/>Heaven]:::geon
@@ -241,6 +243,7 @@ interface StanceGuardPose {
 ### Animation State Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     subgraph "Guard Animation States"
         SG1[stance_guard_geon]:::guard
@@ -681,6 +684,7 @@ The Stance Transition Animation System provides smooth, realistic 600ms transiti
 ### System Architecture
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "Transition Matrix (64 Transitions)"
         TM[STANCE_TRANSITIONS Map]:::matrix
@@ -1194,6 +1198,7 @@ function handleStanceChange(from: TrigramStance, to: TrigramStance) {
 ## 🎯 Vital Point Targeting System (급소 타격 체계)
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "70 Vital Points (급소)"
         VPS[VitalPointSystem]:::vital
@@ -1246,6 +1251,7 @@ graph TB
 ## 👤 Player Archetype Combat Specializations (무사 유형별 전투 특화)
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     subgraph "Five Player Archetypes (오대 무사)"
         M[무사 Musa<br/>Traditional Warrior]:::musa
@@ -1294,6 +1300,7 @@ graph LR
 The Dark Ops technique system integrates authentic Korean special operations combat methods into the game, providing 15 specialized techniques focused on silent incapacitation, tactical assassination, and nerve strike warfare.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "Dark Ops Units (암흑작전 부대)"
         DO[암흑작전부대<br/>Dark Operations Unit]:::darkops
@@ -1453,6 +1460,7 @@ Dark Ops techniques target specific anatomical vulnerable points:
 The Movement Penalty System implements realistic injury-based movement penalties where leg and body damage reduces movement speed, restricts stance changes, and affects balance. This system creates authentic combat trauma effects based on Korean martial arts principles where targeting legs (다리) is a fundamental combat strategy.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "Movement Penalty System (src/systems/bodypart/MovementPenaltySystem.ts)"
         MPS[MovementPenaltySystem]:::movement
@@ -1631,6 +1639,7 @@ if (movementPenaltySystem.shouldEnterHelplessState(health, maxHealth)) {
 The Physical Attributes System implements authentic biomechanics where each fighter's body dimensions (weight, limb length, muscle/fat mass, age) directly affect combat performance. Based on realistic human physiology and Korean martial arts principles, this system ensures that combat feels authentic and strategic.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "Physical Attributes System (src/data/archetypePhysicalAttributes.ts)"
         PAS[PhysicalAttributesSystem]:::physical
@@ -1642,11 +1651,11 @@ graph TB
     
     subgraph "Archetype Physical Profiles"
         APH[ArchetypeProfiles]:::profile
-        APH --> MU[무사 (Musa)]:::musa
-        APH --> AM[암살자 (Amsalja)]:::amsalja
-        APH --> HK[해커 (Hacker)]:::hacker
-        APH --> JB[정보요원 (Jeongbo)]:::jeongbo
-        APH --> JJ[조직폭력배 (Jojik)]:::jojik
+        APH --> MU["무사 Musa"]:::musa
+        APH --> AM["암살자 Amsalja"]:::amsalja
+        APH --> HK["해커 Hacker"]:::hacker
+        APH --> JB["정보요원 Jeongbo"]:::jeongbo
+        APH --> JJ["조직폭력배 Jojik"]:::jojik
     end
     
     subgraph "Combat Physics Engine (src/utils/combatPhysics.ts)"
@@ -2331,6 +2340,7 @@ Recovery animations follow Black Trigram's Korean martial arts principles:
 ## 🎮 Combat Component Architecture
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "React Components Layer"
         CS[CombatScreen]:::react
@@ -2372,6 +2382,7 @@ graph TB
 ## 🔊 Audio System Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     subgraph "Traditional Korean Instruments (국악)"
         GAY[가야금 Gayageum]:::traditional
@@ -2730,6 +2741,7 @@ AI fighters utilize behavior trees for dynamic combat decision-making based on h
 ### AI Decision Flow
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     START[Combat AI Tick]:::start --> ASSESS[Assess Situation]:::process
     
@@ -2754,8 +2766,8 @@ graph TB
     CALC1 --> EXEC[Execute Technique]:::action
     GUARD --> WAIT[Wait for Opening]:::action
     
-    EXEC --> END[End AI Tick]:::end
-    WAIT --> END
+    EXEC --> ENDTICK[End AI Tick]:::endState
+    WAIT --> ENDTICK
     
     classDef start fill:#00ff00,stroke:#333,color:#000
     classDef process fill:#4da6ff,stroke:#333,color:#fff
@@ -2764,7 +2776,7 @@ graph TB
     classDef balanced fill:#ff8c00,stroke:#333,color:#fff
     classDef defensive fill:#0066cc,stroke:#333,color:#fff
     classDef action fill:#9370db,stroke:#333,color:#fff
-    classDef end fill:#808080,stroke:#333,color:#fff
+    classDef endState fill:#808080,stroke:#333,color:#fff
 ```
 
 ### Aggression Levels
@@ -3304,6 +3316,7 @@ The system embodies traditional principles:
 ## 🎯 Success Metrics
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     subgraph "Combat Effectiveness Metrics"
         ACC[정확도 Accuracy<br/>85%+ hit detection]:::metric

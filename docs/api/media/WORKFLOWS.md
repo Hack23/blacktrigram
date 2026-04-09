@@ -56,6 +56,7 @@ The Black Trigram project uses GitHub Actions for automation with the following 
 Black Trigram implements industry best practices for securing CI/CD pipelines, with StepSecurity hardening for all workflows:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "🛡️ Pipeline Security Hardening"
         PH[Permissions Hardening] --> LAP[Least Access Principle]
@@ -101,6 +102,7 @@ Every workflow in the Black Trigram project implements:
 The Test and Report workflow ensures comprehensive quality validation:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     Start[🚀 Code Push/PR] --> Prepare[🔧 Prepare Environment]
     Prepare --> BuildVal[🏗️ Build Validation]
@@ -146,6 +148,7 @@ The comprehensive testing approach covers:
 The secure release workflow handles version management, build attestations, and deployment with SLSA compliance:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     Trigger[🏷️ Release Trigger] --> Prepare[🔧 Prepare Release]
     Prepare --> Build[🏗️ Build Package]
@@ -183,6 +186,7 @@ flowchart TD
 The AWS deployment workflow handles automatic deployment to CloudFront + S3 multi-region infrastructure with disaster recovery failover to GitHub Pages.
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     Trigger[📝 Push to Main] --> Prepare[🔧 Environment Setup]
     Prepare --> S3Deploy[💾 Sync docs/ to S3 us-east-1]
@@ -241,6 +245,7 @@ The workflow uses AWS OIDC (OpenID Connect) for secure authentication:
 Multiple security scanning workflows protect the application:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "🔒 Static Security Analysis"
         CodeQL[🔍 CodeQL Analysis]
@@ -304,6 +309,7 @@ Supply chain security assessment:
 Intelligent pull request labeling for development workflows:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     PR[📝 Pull Request] --> Analysis[🔍 File Analysis]
     Analysis --> Labels{🏷️ Label Categories}
@@ -353,6 +359,7 @@ The labeler automatically applies labels based on file changes:
 Lighthouse performance auditing using the budget.json configuration:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     Deploy[🌐 Deployment] --> Lighthouse[🔆 Lighthouse Audit]
     Lighthouse --> Performance[⚡ Performance Metrics]
@@ -400,6 +407,7 @@ The Lighthouse workflow tests against specific performance budgets:
 ZAP security scanning of the deployed application:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     Deployed[🌐 Deployed Application] --> ZAP[🕷️ ZAP Security Scan]
     ZAP --> WebVulns[🔍 Web Vulnerabilities]
@@ -431,6 +439,7 @@ flowchart TD
 GitHub Copilot environment preparation with Model Context Protocol (MCP) servers:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     Trigger[🚀 Workflow Trigger] --> Setup[🔧 Environment Setup]
     Setup --> Chrome[🌐 Chrome Installation]
@@ -486,6 +495,7 @@ The workflow sets up the following MCP servers for enhanced Copilot capabilities
 WCAG 2.1 Level AA compliance validation for Korean-English bilingual UI:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     Trigger[🔄 PR/Push Trigger] --> AxeTests[♿ axe-core Tests]
     Trigger --> ColorTests[🎨 Color Contrast Tests]
@@ -542,6 +552,7 @@ Black Trigram implements comprehensive accessibility testing for inclusive gamin
 Automated validation of asset references and integrity:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     Trigger[🔄 Code/Asset Changes] --> Audit[🔍 Asset Audit Script]
     
@@ -588,6 +599,7 @@ flowchart TD
 Automated UI/UX screenshot capture for visual regression and documentation:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     Trigger[🔄 PR Trigger] --> SetupEnv[🔧 Playwright Setup]
     SetupEnv --> BuildApp[🏗️ Build Application]
@@ -627,6 +639,7 @@ flowchart TD
 The complete CI/CD pipeline shows how all workflows interact:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TB
     subgraph "🔄 Continuous Integration"
         PR[📝 Pull Request] --> TestReport[🧪 Test & Report]

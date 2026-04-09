@@ -30,6 +30,7 @@
 ## 🌐 System Context
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','personBkg':'#1565C0','containerBkg':'#2979FF','componentBkg':'#4CAF50','person_bg':'#1565C0','container_bg':'#2979FF','component_bg':'#4CAF50'}}}%%
 C4Context
     title System Context - Black Trigram (흑괘) Web Application (Q1 2026)
 
@@ -69,6 +70,7 @@ C4Context
 ## 🏢 Container View
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','personBkg':'#1565C0','containerBkg':'#2979FF','componentBkg':'#4CAF50','person_bg':'#1565C0','container_bg':'#2979FF','component_bg':'#4CAF50'}}}%%
 C4Container
     title Container View - Black Trigram Performance Architecture (Q1 2026)
 
@@ -164,6 +166,7 @@ C4Container
 ## 🧩 Component View
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','personBkg':'#1565C0','containerBkg':'#2979FF','componentBkg':'#4CAF50','person_bg':'#1565C0','container_bg':'#2979FF','component_bg':'#4CAF50'}}}%%
 C4Component
     title Combat System Components - Korean Martial Arts Engine (Q1 2026)
 
@@ -352,6 +355,7 @@ The following Three.js packages are now installed and configured:
 ### 🏗️ Architecture Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "React 19 Application Layer"
         A[React Components]
@@ -360,7 +364,7 @@ graph TD
     end
     
     subgraph "Rendering Layer"
-        D[@react-three/fiber Canvas]
+        D["@react-three/fiber Canvas"]
     end
     
     subgraph "Three.js 3D Scene"
@@ -404,6 +408,7 @@ graph TD
 ### 📐 Rendering Pipeline
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','actorBkg':'#1565C0','actorTextColor':'#fff','actorLineColor':'#455A64','signalColor':'#455A64','signalTextColor':'#fff','noteBkgColor':'#FFD600','noteTextColor':'#000','noteBorderColor':'#F57F17'}}}%%
 sequenceDiagram
     participant React as React Component
     participant Canvas as @react-three/fiber Canvas
@@ -1150,6 +1155,7 @@ src/
 ## 🔄 Combat Flow Sequence
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','actorBkg':'#1565C0','actorTextColor':'#fff','actorLineColor':'#455A64','signalColor':'#455A64','signalTextColor':'#fff','noteBkgColor':'#FFD600','noteTextColor':'#000','noteBorderColor':'#F57F17'}}}%%
 sequenceDiagram
     title 🔄 Combat Flow – Fully Frontend (Black Trigram Q1 2026)
 
@@ -1207,6 +1213,7 @@ sequenceDiagram
 ### **Three.js-Specific Optimizations**
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph PM["🔍 Performance Monitoring (Q1 2026)"]
       PerfMon[📈 Performance Monitor]
@@ -1530,6 +1537,7 @@ quadrantChart
 ### Mindmap of Strengths
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((🟢 Strengths Q1 2026))
     id1(🛠️ Zero-Install Web App)
@@ -1580,6 +1588,7 @@ mindmap
 ### Mindmap of Weaknesses
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((🟠 Weaknesses Q1 2026))
     id1(🌀 No Persistence Session-Only)
@@ -1600,15 +1609,15 @@ mindmap
       id4.3[Mobile browser performance gaps]
     id5(⚠️ Memory/GC Concerns)
       id5.1[Three.js objects need manual disposal]
-      id5.2[Skeletal animation memory overhead (~180MB desktop)]
-      id5.3[Particle systems can spike memory (1000+ particles)]
+      id5.2[Skeletal animation memory overhead - 180MB desktop]
+      id5.3[Particle systems can spike memory - 1000+ particles]
     id6(⚙️ Combat Realism Systems)
       id6.1[8/12 systems complete or near-complete - 67%]
       id6.2[4 systems remaining: trauma visualization, balance, HUD, movement]
-      id6.3[1 system partially implemented: bone impact audio (mapping + selection complete; asset coverage/final mix pending)]
+      id6.3[1 system partially implemented: bone impact audio - mapping + selection complete, asset coverage/final mix pending]
     id7(❌ Incomplete Features)
       id7.1[Techniques not yet stance-specific - 4 per archetype vs 3-5 per stance]
-      id7.2[EndScreen3D implemented but missing final UX polish (detailed stats, meta-progression hooks)]
+      id7.2[EndScreen3D implemented but missing final UX polish - detailed stats, meta-progression hooks]
       id7.3[Training mode limited scope]
     id8(📱 Mobile Performance)
       id8.1[30-45fps on mobile devices - meeting 30fps baseline target]
@@ -1623,6 +1632,7 @@ mindmap
 ### Mindmap of Opportunities
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((🔵 Opportunities Q1 2026))
     id1(💡 PWA & Offline Caching)
@@ -1668,6 +1678,7 @@ mindmap
 ### Mindmap of Threats
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((🔴 Threats Q1 2026))
     id1(🌩️ CDN Outages / Latency)
@@ -1737,6 +1748,7 @@ mindmap
 ### Player Archetypes & Combat Philosophy
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((🥋 Black Trigram Core))
     id1[🎮 Player Archetypes]
@@ -1814,6 +1826,7 @@ mindmap
 ### System Architecture Layers
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 mindmap
   root((🏗️ Architecture))
     id1[🖥️ Presentation Layer]
@@ -1889,6 +1902,7 @@ mindmap
 ### User Journey Through Game
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     Start([🎮 Game Load]) --> Loading[⏳ Loading Assets]
     Loading --> Intro[🏮 Intro Screen]
@@ -1932,6 +1946,7 @@ flowchart TD
 ### Combat System Data Flow
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "🎮 Input Layer"
         KI[Keyboard Input]
@@ -1993,6 +2008,7 @@ graph TB
 ### Trigram Advantage Matrix
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     subgraph "☯️ Trigram Relationships"
         G[☰ 건 Geon]
@@ -2038,6 +2054,7 @@ graph LR
 ### Resource Loading Pipeline
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','actorBkg':'#1565C0','actorTextColor':'#fff','actorLineColor':'#455A64','signalColor':'#455A64','signalTextColor':'#fff','noteBkgColor':'#FFD600','noteTextColor':'#000','noteBorderColor':'#F57F17'}}}%%
 sequenceDiagram
     participant B as Browser
     participant L as Asset Loader
@@ -2065,6 +2082,7 @@ sequenceDiagram
 ### Memory Management Strategy
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "🧠 Memory Pools"
         PP[Particle Pool<br/>Pre-allocated: 1000]
@@ -2109,6 +2127,7 @@ graph TD
 ### Frontend Security Architecture
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
     subgraph "🛡️ Security Layers"
         CSP[Content Security Policy]
@@ -2149,6 +2168,7 @@ graph TB
 ### CI/CD Pipeline
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     subgraph "🔧 Development"
         DEV[Local Dev]
@@ -2200,6 +2220,7 @@ graph LR
 ### Performance Monitoring Dashboard
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "📈 Client Metrics"
         FPS[FPS Counter]
@@ -2246,6 +2267,7 @@ graph TD
 ### Potential Backend Integration
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "Current: Frontend Only"
         FE[React + Three.js]

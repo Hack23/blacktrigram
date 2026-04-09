@@ -68,6 +68,7 @@ As of Q1 2026, Black Trigram has reached production-ready quality across all maj
 ### Implementation Maturity Assessment
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     A[Black Trigram Q1 2026] --> B[✅ Production-Ready Systems]
     A --> C[⚠️ Polish & Optimization]
@@ -300,6 +301,7 @@ graph TD
 ##### C4 Container Diagram: AWS Serverless Architecture
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','personBkg':'#1565C0','containerBkg':'#2979FF','componentBkg':'#4CAF50','person_bg':'#1565C0','container_bg':'#2979FF','component_bg':'#4CAF50'}}}%%
 C4Container
     title Black Trigram Future Backend Architecture - AWS Serverless
 
@@ -642,6 +644,7 @@ C4Container
 **Authentication Flow Diagram**:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','actorBkg':'#1565C0','actorTextColor':'#fff','actorLineColor':'#455A64','signalColor':'#455A64','signalTextColor':'#fff','noteBkgColor':'#FFD600','noteTextColor':'#000','noteBorderColor':'#F57F17'}}}%%
 sequenceDiagram
     participant Player as 🧑 Player
     participant Frontend as ⚛️ React Frontend
@@ -718,6 +721,7 @@ Users can only access their own resources through condition-based policies:
 **Stripe Payment Flow**:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','actorBkg':'#1565C0','actorTextColor':'#fff','actorLineColor':'#455A64','signalColor':'#455A64','signalTextColor':'#fff','noteBkgColor':'#FFD600','noteTextColor':'#000','noteBorderColor':'#F57F17'}}}%%
 sequenceDiagram
     participant Player as 🧑 Player
     participant Frontend as ⚛️ React Frontend
@@ -1915,6 +1919,7 @@ sequenceDiagram
 ### 📈 Visual Roadmap Timeline
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','taskBkgColor':'#2979FF','taskTextColor':'#fff','taskTextDarkColor':'#fff','taskTextOutsideColor':'#000','activeTaskBkgColor':'#00C853','activeTaskBorderColor':'#00796B','doneTaskBkgColor':'#4CAF50','doneTaskBorderColor':'#2E7D32','critBkgColor':'#D32F2F','critBorderColor':'#B71C1C'}}}%%
 gantt
     title Black Trigram Development Roadmap (2026-2034)
     dateFormat  YYYY-MM
@@ -1955,6 +1960,7 @@ gantt
 ### 🎯 Feature Completion Timeline
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800'}}}%%
 timeline
     title Black Trigram Feature Evolution (2026-2034)
     
@@ -2210,6 +2216,7 @@ From humble beginnings to industry leadership, one vital point at a time.
 ### System Context Evolution
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','personBkg':'#1565C0','containerBkg':'#2979FF','componentBkg':'#4CAF50','person_bg':'#1565C0','container_bg':'#2979FF','component_bg':'#4CAF50'}}}%%
 C4Context
   title Phase 1 - Combat Foundation System Context
 
@@ -2235,6 +2242,7 @@ C4Context
 ### New Components - Vital Point System
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','personBkg':'#1565C0','containerBkg':'#2979FF','componentBkg':'#4CAF50','person_bg':'#1565C0','container_bg':'#2979FF','component_bg':'#4CAF50'}}}%%
 C4Component
     title Phase 1 - Vital Point Combat System
 
@@ -2301,6 +2309,7 @@ C4Component
 ### Cultural Integration Architecture
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','personBkg':'#1565C0','containerBkg':'#2979FF','componentBkg':'#4CAF50','person_bg':'#1565C0','container_bg':'#2979FF','component_bg':'#4CAF50'}}}%%
 C4Component
     title Phase 2 - Korean Cultural Authenticity System
 
@@ -2369,6 +2378,7 @@ C4Component
 ### Player Archetype System
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','personBkg':'#1565C0','containerBkg':'#2979FF','componentBkg':'#4CAF50','person_bg':'#1565C0','container_bg':'#2979FF','component_bg':'#4CAF50'}}}%%
 C4Component
     title Phase 3 - Player Archetype Combat System
 
@@ -2444,6 +2454,7 @@ C4Component
 ### Training & Education Architecture
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','personBkg':'#1565C0','containerBkg':'#2979FF','componentBkg':'#4CAF50','person_bg':'#1565C0','container_bg':'#2979FF','component_bg':'#4CAF50'}}}%%
 C4Component
     title Phase 4 - Mastery and Training System
 
@@ -2515,6 +2526,7 @@ C4Component
 ### Development Phases Timeline
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','taskBkgColor':'#2979FF','taskTextColor':'#fff','taskTextDarkColor':'#fff','taskTextOutsideColor':'#000','activeTaskBkgColor':'#00C853','activeTaskBorderColor':'#00796B','doneTaskBkgColor':'#4CAF50','doneTaskBorderColor':'#2E7D32','critBkgColor':'#D32F2F','critBorderColor':'#B71C1C'}}}%%
 gantt
     title Black Trigram Development Roadmap
     dateFormat  YYYY-MM-DD
@@ -2675,6 +2687,7 @@ gantt
 ### Long-term Architecture Evolution
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     P4[Phase 4: Mastery System] --> VR[VR/AR Integration]
     P4 --> Multi[Multiplayer Dojang]
