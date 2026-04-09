@@ -30,7 +30,7 @@ jobs:
       is_prerelease: ${{ github.event.inputs.prerelease || 'false' }}
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
+        uses: step-security/harden-runner@f808768d1510423e83855289c910610ca9b43176 # v2.17.0
         with:
           egress-policy: audit
 
@@ -203,7 +203,7 @@ jobs:
       attestations: write # Required for SBOM and build attestations
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
+        uses: step-security/harden-runner@f808768d1510423e83855289c910610ca9b43176 # v2.17.0
         with:
           egress-policy: audit
 
@@ -307,7 +307,7 @@ jobs:
       id-token: write # Required for OIDC
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
+        uses: step-security/harden-runner@f808768d1510423e83855289c910610ca9b43176 # v2.17.0
         with:
           egress-policy: audit
 
@@ -336,7 +336,7 @@ jobs:
         # "pull_request_target.X is not a known webhook name" due to
         # Probot framework limitations. These are harmless and tracked
         # upstream: https://github.com/release-drafter/release-drafter/issues/1369
-        uses: release-drafter/release-drafter@139054aeaa9adc52ab36ddf67437541f039b88e2 # v7.1.1
+        uses: release-drafter/release-drafter@5de93583980a40bd78603b6dfdcda5b4df377b32 # v7.2.0
         with:
           version: ${{ needs.prepare.outputs.version }}
           tag: ${{ needs.prepare.outputs.version }}
@@ -399,7 +399,7 @@ jobs:
       id-token: write # Required for npm provenance
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
+        uses: step-security/harden-runner@f808768d1510423e83855289c910610ca9b43176 # v2.17.0
         with:
           egress-policy: audit
 
