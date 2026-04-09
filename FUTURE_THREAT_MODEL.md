@@ -186,7 +186,7 @@ flowchart TB
     'theme': 'base',
     'themeVariables': {
       'primaryColor': '#e3f2fd',
-      'primaryTextColor': '#fff',
+      'primaryTextColor': '#01579b',
       'lineColor': '#2196f3',
       'secondaryColor': '#fff3e0',
       'tertiaryColor': '#e8f5e9'

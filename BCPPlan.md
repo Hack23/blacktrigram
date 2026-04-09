@@ -208,7 +208,7 @@ Our GitHub-based frontend infrastructure supports several critical functions tha
     'theme': 'base',
     'themeVariables': {
       'primaryColor': '#e3f2fd',
-      'primaryTextColor': '#fff',
+      'primaryTextColor': '#0d47a1',
       'lineColor': '#2979FF'
     }
   }
@@ -275,7 +275,7 @@ graph TB
     'theme': 'base',
     'themeVariables': {
       'primaryColor': '#e3f2fd',
-      'primaryTextColor': '#fff',
+      'primaryTextColor': '#0d1b2a',
       'lineColor': '#2979FF'
     }
   }
@@ -638,7 +638,7 @@ Our multi-region strategy leverages AWS global infrastructure with GitHub Pages 
     'theme': 'base',
     'themeVariables': {
       'primaryColor': '#e3f2fd',
-      'primaryTextColor': '#fff',
+      'primaryTextColor': '#212121',
       'lineColor': '#2979FF'
     }
   }
@@ -717,7 +717,7 @@ graph LR
     'theme': 'base',
     'themeVariables': {
       'primaryColor': '#e3f2fd',
-      'primaryTextColor': '#fff',
+      'primaryTextColor': '#0d1b2a',
       'lineColor': '#2979FF'
     }
   }
