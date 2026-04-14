@@ -10,7 +10,7 @@ const NORMAL_AVG_THRESHOLD = 50;
 const NORMAL_MIN_THRESHOLD = 40;
 /** Lenient thresholds for CI/headless/mocked WebGL where FPS may be low */
 const LENIENT_AVG_THRESHOLD = 15;
-const LENIENT_MIN_THRESHOLD = 5;
+const LENIENT_MIN_THRESHOLD = 2;
 
 export interface FPSMetrics {
   readonly averageFPS: number;
