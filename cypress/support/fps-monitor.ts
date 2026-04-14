@@ -8,9 +8,14 @@ import { isRunningInCI } from "./env";
 /** FPS thresholds for environments with good rendering performance */
 const NORMAL_AVG_THRESHOLD = 50;
 const NORMAL_MIN_THRESHOLD = 40;
-/** Lenient thresholds for CI/headless/mocked WebGL where FPS may be low */
+/**
+ * Lenient thresholds for CI/headless/mocked WebGL where FPS may be low.
+ * CI runners use software-rendered / mocked WebGL with limited CPU, so
+ * single-frame dips to ~3-4 FPS are expected.  A min of 3 still catches
+ * full freezes (0-2 FPS ≈ 333-500 ms frames).
+ */
 const LENIENT_AVG_THRESHOLD = 15;
-const LENIENT_MIN_THRESHOLD = 2;
+const LENIENT_MIN_THRESHOLD = 3;
 
 export interface FPSMetrics {
   readonly averageFPS: number;
@@ -159,9 +164,13 @@ export function assertSmoothFPS(duration: number = 2000): void {
     // Check minimum FPS doesn't drop to zero
     expect(metrics.minFPS).to.be.greaterThan(minThreshold);
     
-    // Check that we don't drop too many frames (relax for CI/headless environments)
+    // Check that we don't drop too many frames
     const dropRate = (metrics.droppedFrames / metrics.samples) * 100;
-    if (!useLenient) {
+    if (useLenient) {
+      // In CI, still flag if more than half the frames are dropped —
+      // this catches severe sustained stutters without failing on occasional dips.
+      expect(dropRate).to.be.lessThan(50);
+    } else {
       expect(dropRate).to.be.lessThan(20); // Less than 20% dropped frames
     }
 
