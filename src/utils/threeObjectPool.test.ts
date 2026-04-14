@@ -498,12 +498,12 @@ describe("ThreeObjectPools", () => {
       expect(poolTime).toBeLessThanOrEqual(allowed);
 
       // Log performance for informational purposes
+      // Guard against nonPoolTime being 0 (timer resolution) to avoid Infinity/NaN
+      const ratio = nonPoolTime > 0 ? (poolTime / nonPoolTime).toFixed(2) : "N/A";
       console.log(
         `Pool time: ${poolTime.toFixed(
           2
-        )}ms, Non-pool time: ${nonPoolTime.toFixed(2)}ms, Ratio: ${(
-          poolTime / nonPoolTime
-        ).toFixed(2)}x, CI: ${isCI}`
+        )}ms, Non-pool time: ${nonPoolTime.toFixed(2)}ms, Ratio: ${ratio}x, CI: ${isCI}`
       );
     });
   });

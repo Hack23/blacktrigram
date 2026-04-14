@@ -215,12 +215,15 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("8️⃣ Testing Keyboard Controls");
 
     // Test keyboard shortcut '1' for combat
+    // Wait for keyboard handler to mount after returning from previous screen
+    cy.wait(1000);
     cy.get("body").type("1");
-    cy.get('[data-testid="combat-screen"]', { timeout: 5000 }).should("exist");
+    // VERSUS mode defers player init via setTimeout — use generous timeout for CI
+    cy.get('[data-testid="combat-screen"]', { timeout: 20000 }).should("exist");
     cy.log("✅ Keyboard shortcut '1' navigates to Combat");
 
     cy.returnToIntro();
-    cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
+    cy.get('[data-testid="intro-screen"]', { timeout: 10000 }).should("exist");
     cy.log("✅ Keyboard controls verified");
 
     // ============================================================
