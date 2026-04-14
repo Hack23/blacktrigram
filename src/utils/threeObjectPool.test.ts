@@ -465,7 +465,8 @@ describe("ThreeObjectPools", () => {
 
   describe("Performance characteristics", () => {
     it("should handle high-frequency acquire/release efficiently", () => {
-      const ITERATIONS = 1000;
+      // Use higher iteration count to reduce timing noise on slow runners
+      const ITERATIONS = 5000;
 
       // Prewarm pool to avoid allocation during test
       ThreeObjectPools.euler.prewarm(100);
@@ -487,19 +488,22 @@ describe("ThreeObjectPools", () => {
       }
       const nonPoolTime = performance.now() - nonPoolStart;
 
-      // Verify pool operations complete in reasonable time
-      // Performance can vary by environment, so we use a lenient check
-      // The key benefit is reduced GC pressure, not necessarily raw speed
-      const allowed = Math.max(nonPoolTime * 10, 5); // Extra lenient to account for devcontainer variance
+      // Verify pool operations complete in reasonable time.
+      // The key benefit of pooling is reduced GC pressure, not raw speed.
+      // CI runners have limited resources so we use a higher absolute floor
+      // only there; locally the 10ms floor catches real regressions.
+      const isCI = process.env.CI === "true" || process.env.CI === "1";
+      const absoluteFloor = isCI ? 50 : 10;
+      const allowed = Math.max(nonPoolTime * 10, absoluteFloor);
       expect(poolTime).toBeLessThanOrEqual(allowed);
 
       // Log performance for informational purposes
+      // Guard against nonPoolTime being 0 (timer resolution) to avoid Infinity/NaN
+      const ratio = nonPoolTime > 0 ? (poolTime / nonPoolTime).toFixed(2) : "N/A";
       console.log(
         `Pool time: ${poolTime.toFixed(
           2
-        )}ms, Non-pool time: ${nonPoolTime.toFixed(2)}ms, Ratio: ${(
-          poolTime / nonPoolTime
-        ).toFixed(2)}x`
+        )}ms, Non-pool time: ${nonPoolTime.toFixed(2)}ms, Ratio: ${ratio}x, CI: ${isCI}`
       );
     });
   });
