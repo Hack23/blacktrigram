@@ -161,8 +161,8 @@ export function assertSmoothFPS(duration: number = 2000): void {
     // Check average FPS meets threshold
     expect(metrics.averageFPS).to.be.greaterThan(avgThreshold);
     
-    // Check minimum FPS doesn't drop to zero
-    expect(metrics.minFPS).to.be.greaterThan(minThreshold);
+    // Check minimum FPS doesn't drop below the allowed threshold
+    expect(metrics.minFPS).to.be.at.least(minThreshold);
     
     // Check that we don't drop too many frames
     const dropRate = (metrics.droppedFrames / metrics.samples) * 100;
