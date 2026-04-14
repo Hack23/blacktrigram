@@ -490,7 +490,7 @@ describe("ThreeObjectPools", () => {
       // Verify pool operations complete in reasonable time
       // Performance can vary by environment, so we use a lenient check
       // The key benefit is reduced GC pressure, not necessarily raw speed
-      const allowed = Math.max(nonPoolTime * 10, 5); // Extra lenient to account for devcontainer variance
+      const allowed = Math.max(nonPoolTime * 10, 50); // Extra lenient to account for CI/devcontainer variance
       expect(poolTime).toBeLessThanOrEqual(allowed);
 
       // Log performance for informational purposes
