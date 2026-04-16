@@ -15,7 +15,7 @@
  * Hysteresis factor for portrait detection.
  *
  * A viewport is treated as portrait when `height > width × FACTOR`. The
- * factor is &lt; 1.0 so near-square viewports (e.g. `1024×1000`) settle into
+ * factor is < 1.0 so near-square viewports (e.g. `1024×1000`) settle into
  * one orientation and don't flap on every pixel of resize.
  *
  * @public
@@ -41,7 +41,7 @@ export const PORTRAIT_FORCE_MAX_WIDTH_PX = 1024;
  * 3D arena never ends up drawn behind the controls.
  *
  * Two values are provided so that very small phones (iPhone SE class,
- * width &lt; 380) can still fit a playable arena.
+ * width < 380) can still fit a playable arena.
  *
  * Combat uses the larger 200/160 band because its Mobile controls stack
  * D-Pad + action buttons + the persistent technique bar. Training uses
@@ -52,7 +52,7 @@ export const PORTRAIT_FORCE_MAX_WIDTH_PX = 1024;
 export const MOBILE_CONTROLS_RESERVED_HEIGHT_PX = {
   /** D-Pad + action buttons + technique bar on combat (standard phones) */
   combatStandard: 200,
-  /** Combat controls on extra-small phones (width &lt; 380) */
+  /** Combat controls on extra-small phones (width < 380) */
   combatExtraSmall: 160,
   /** Training on-screen controls (standard phones) */
   trainingStandard: 180,
@@ -66,7 +66,7 @@ export const MOBILE_CONTROLS_RESERVED_HEIGHT_PX = {
  *
  * @param controlsHeight - layout constant for technique/control bar
  * @param footerHeight - layout constant for footer
- * @param isExtraSmall - true when the viewport is &lt; 380px wide
+ * @param isExtraSmall - true when the viewport is < 380px wide
  * @param variant - "combat" or "training" (differs in control band size)
  *
  * @public

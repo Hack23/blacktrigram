@@ -29,7 +29,7 @@ export interface MobileAreaBounds {
 /**
  * Device orientation for mobile area calculation.
  *
- * - `landscape`: width &gt; height, the arena is rendered in 4:3 (wider than tall)
+ * - `landscape`: width > height, the arena is rendered in 4:3 (wider than tall)
  *   so both fighters remain visible from a side view.
  * - `portrait`: height ≥ width, the arena is rendered in 3:4 (taller than wide)
  *   so both fighters plus the horizontal breathing-room between them fit
