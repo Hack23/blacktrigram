@@ -2235,7 +2235,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       // Resolve AI's fallback animation from its current stance so that
       // a stance-less AI decision still plays a stance-appropriate visual
       // instead of the legacy "jab"/"cross" literals that made every AI
-      // action look identical.
+      // action look identical. Defensive chaining covers the (expected-
+      // unreachable) cases where `validPlayers[1]` is missing or where a
+      // stance has no techniques registered yet — in both cases we fall
+      // through to the literal "jab" as the absolute last resort.
       // AI의 현재 자세에서 기본 애니메이션을 도출
       const aiStance = validPlayers[1]?.currentStance ?? TrigramStance.GEON;
       const aiFallbackTechnique = TRIGRAM_TECHNIQUES[aiStance]?.[0];

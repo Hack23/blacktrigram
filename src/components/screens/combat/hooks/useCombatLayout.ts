@@ -35,6 +35,11 @@ import { getScreenSize } from "../../../../systems/ResponsiveScaling";
 import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimensions";
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
+import {
+  PORTRAIT_FORCE_MAX_WIDTH_PX,
+  PORTRAIT_HYSTERESIS_FACTOR,
+  portraitMobileControlsBottomBand,
+} from "../../../../utils/responsiveOrientationConstants";
 import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
@@ -74,18 +79,19 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   // Determine screen size category using centralized scaling system
   const screenSize = useMemo(() => getScreenSize(width), [width]);
 
-  // Portrait orientation detection. The 0.9 factor provides hysteresis so
-  // viewports near 1:1 don't flap on every resize event.
+  // Portrait orientation detection. The hysteresis factor provides stability
+  // so viewports near 1:1 don't flap on every resize event.
   // 세로 모드 감지
-  const isPortrait = height > width * 0.9;
+  const isPortrait = height > width * PORTRAIT_HYSTERESIS_FACTOR;
 
   // Device detection has its own internal caching based on screen dimensions.
   // In addition to its user-agent result we force the mobile branch for any
-  // narrow portrait viewport (<1024px wide) so that devtools emulation and
-  // real rotated phones both render the mobile-optimized layout.
+  // narrow portrait viewport so that devtools emulation and real rotated
+  // phones both render the mobile-optimized layout.
   // 모바일 레이아웃 강제: 세로 + 좁은 화면
   const isMobile =
-    shouldUseMobileControls() || (isPortrait && width < 1024);
+    shouldUseMobileControls() ||
+    (isPortrait && width < PORTRAIT_FORCE_MAX_WIDTH_PX);
 
   // Centralized layout constants for easier tweaking
   // Enhanced with tablet-specific values for better responsive support
@@ -115,12 +121,15 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
 
       // In portrait we must reserve space for the whole bottom band
       // (technique bar + mobile controls + footer) or the arena ends up
-      // behind the D-Pad. The constants are conservative upper bounds to
-      // guarantee no overlap on any supported phone.
+      // behind the D-Pad. See responsiveOrientationConstants.ts for the
+      // derivation of the mobile-controls reservation.
       const minBottomClearance = isPortrait
-        ? layoutConstants.controlsHeight +
-          layoutConstants.footerHeight +
-          (isExtraSmall ? 160 : 200) // mobile controls (D-Pad + action buttons)
+        ? portraitMobileControlsBottomBand(
+            layoutConstants.controlsHeight,
+            layoutConstants.footerHeight,
+            isExtraSmall,
+            "combat",
+          )
         : isExtraSmall
           ? 110
           : 120;

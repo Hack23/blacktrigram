@@ -866,8 +866,10 @@ const TECHNIQUE_ANIMATION_FALLBACK: ReadonlyArray<readonly [RegExp, string]> = [
   [/flowing.?push|flowing.?palm/i, "flowing_push"],
   [/rapid.?barrage|연환타/i, "rapid_barrage"],
   [/rhythmic.?strike|리듬타격/i, "rhythmic_strikes"],
-  [/heavenly.?fist|천권|정권/i, "jab"],
-  [/dragon.?fist|용권/i, "cross"],
+  // Heavenly/dragon fist names are stance-specific and should map to the
+  // proper Geon/Jin animations, not the generic jab/cross fallbacks.
+  [/heavenly.?fist|천권|정권/i, "heaven_strike"],
+  [/dragon.?fist|용권/i, "jin_lightning_flash"],
 
   // Kicks (차기) - more specific patterns first
   [/axe.?kick|내려차기|naeryeo/i, "axe_kick"],

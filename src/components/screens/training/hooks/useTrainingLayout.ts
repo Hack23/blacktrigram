@@ -35,6 +35,11 @@ import { getScreenSize } from "../../../../systems/ResponsiveScaling";
 import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimensions";
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
+import {
+  PORTRAIT_FORCE_MAX_WIDTH_PX,
+  PORTRAIT_HYSTERESIS_FACTOR,
+  portraitMobileControlsBottomBand,
+} from "../../../../utils/responsiveOrientationConstants";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -77,15 +82,16 @@ export function useTrainingLayout(
   // Determine screen size category using centralized scaling system
   const screenSize = useMemo(() => getScreenSize(width), [width]);
 
-  // Portrait orientation with hysteresis (see useCombatLayout for details)
+  // Portrait orientation with hysteresis (see responsiveOrientationConstants)
   // 세로 모드 감지 (히스테리시스 적용)
-  const isPortrait = height > width * 0.9;
+  const isPortrait = height > width * PORTRAIT_HYSTERESIS_FACTOR;
 
   // Force mobile branch on narrow portrait viewports even if the user-agent
   // says we're on desktop (devtools emulation + real rotated phones).
   // 좁은 세로 화면에서는 모바일 레이아웃 강제
   const isMobile =
-    shouldUseMobileControls() || (isPortrait && width < 1024);
+    shouldUseMobileControls() ||
+    (isPortrait && width < PORTRAIT_FORCE_MAX_WIDTH_PX);
 
   // Centralized layout constants for easier tweaking
   // Enhanced with tablet-specific values for better responsive support
@@ -125,10 +131,15 @@ export function useTrainingLayout(
       const topClearance = isExtraSmall ? 75 : 80;
       // Portrait needs the full bottom band reserved (training controls +
       // footer + virtual controls) so the arena doesn't end up behind them.
+      // Training's virtual-controls band is lighter than Combat's, so the
+      // shared helper picks the "training" variant.
       const bottomClearance = isPortrait
-        ? layoutConstants.controlsHeight +
-          layoutConstants.footerHeight +
-          (isExtraSmall ? 140 : 180)
+        ? portraitMobileControlsBottomBand(
+            layoutConstants.controlsHeight,
+            layoutConstants.footerHeight,
+            isExtraSmall,
+            "training",
+          )
         : 120;
 
       return calculateMobileAreaBounds(
