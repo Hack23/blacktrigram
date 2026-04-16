@@ -189,10 +189,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     useCombatAudio();
 
   // Responsive detection and layout (using dedicated training layout hook)
-  const { trainingAreaBounds, isMobile, screenSize } = useTrainingLayout(
-    width,
-    height,
-  );
+  const { trainingAreaBounds, isMobile, isPortrait, screenSize } =
+    useTrainingLayout(width, height);
 
   // Use Korean theme hook for consistent theming
   const theme = useKoreanTheme({
@@ -1252,10 +1250,21 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Use shared physics config for consistent camera setup across screens
   // Mobile: tighter FOV and closer camera for better framing
   // Desktop: wider FOV and further camera for full view
-  const cameraConfig = useMemo(
-    () => createCameraConfig(isMobile),
-    [isMobile],
-  );
+  // Portrait: pull camera back on Z and widen FOV so the dummy + both
+  // side overlays fit in the narrow viewport.
+  const cameraConfig = useMemo(() => {
+    const base = createCameraConfig(isMobile);
+    if (!isPortrait) return base;
+    return {
+      ...base,
+      fov: Math.min(80, base.fov + 15),
+      position: [base.position[0], base.position[1], base.position[2] + 4] as [
+        number,
+        number,
+        number,
+      ],
+    };
+  }, [isMobile, isPortrait]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 15: RENDER

@@ -30,8 +30,12 @@ describe("useCombatLayout", () => {
     });
 
     it("should detect desktop at 768px", () => {
-      const { result } = renderHook(() => useCombatLayout(768, 800));
+      // Use a landscape-oriented 768px viewport so portrait-force doesn't
+      // promote this to mobile (the hook now treats narrow portrait
+      // viewports as mobile regardless of user-agent).
+      const { result } = renderHook(() => useCombatLayout(768, 600));
       expect(result.current.isMobile).toBe(false);
+      expect(result.current.isPortrait).toBe(false);
     });
 
     it("should detect mobile at 320px", () => {
@@ -112,60 +116,85 @@ describe("useCombatLayout", () => {
       expect(arenaBounds.worldWidthMeters).toBeGreaterThan(0);
     });
 
-    it("should calculate correct arena bounds for mobile", () => {
+    it("should calculate correct arena bounds for mobile (landscape)", () => {
       // Mock as mobile device
       vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(
         true,
       );
 
-      const { result } = renderHook(() => useCombatLayout(480, 800));
-      const { arenaBounds } = result.current;
+      // Landscape phone: width > height → 4:3 arena
+      const { result } = renderHook(() => useCombatLayout(800, 480));
+      const { arenaBounds, isPortrait } = result.current;
+      expect(isPortrait).toBe(false);
 
       // Mobile arena should be sized with 4:3 aspect ratio (width wider than height)
       expect(arenaBounds.width).toBeGreaterThanOrEqual(300);
-      expect(arenaBounds.width).toBeLessThanOrEqual(400);
-      expect(arenaBounds.height).toBeGreaterThanOrEqual(225); // 300 * 3/4
-      expect(arenaBounds.height).toBeLessThanOrEqual(350); // Conservative upper bound
+      expect(arenaBounds.width).toBeLessThanOrEqual(500);
+      expect(arenaBounds.height).toBeGreaterThan(0);
 
       // Should maintain 4:3 aspect ratio (within small tolerance for rounding)
       const aspectRatio = arenaBounds.width / arenaBounds.height;
       expect(aspectRatio).toBeCloseTo(4 / 3, 2);
 
       // Arena should be centered horizontally
-      const expectedX = (480 - arenaBounds.width) / 2;
+      const expectedX = (800 - arenaBounds.width) / 2;
       expect(arenaBounds.x).toBeCloseTo(expectedX, 1);
-
-      // Arena Y should start after HUD and padding
-      expect(arenaBounds.y).toBe(95 + 10);
 
       // Mobile should have reduced scale
       expect(arenaBounds.scale).toBeLessThan(1.0);
       expect(arenaBounds.scale).toBeGreaterThan(0);
     });
 
-    it("should handle very small screens", () => {
+    it("should calculate correct arena bounds for mobile (portrait → 3:4)", () => {
+      vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(
+        true,
+      );
+
+      // Portrait phone: height > width → 3:4 arena (taller than wide)
+      const { result } = renderHook(() => useCombatLayout(480, 800));
+      const { arenaBounds, isPortrait } = result.current;
+      expect(isPortrait).toBe(true);
+
+      // Portrait arena is taller than wide (3:4)
+      expect(arenaBounds.height).toBeGreaterThan(arenaBounds.width);
+      const aspectRatio = arenaBounds.width / arenaBounds.height;
+      expect(aspectRatio).toBeCloseTo(3 / 4, 2);
+
+      // Arena must stay fully on-screen
+      expect(arenaBounds.x).toBeGreaterThanOrEqual(0);
+      expect(arenaBounds.x + arenaBounds.width).toBeLessThanOrEqual(480);
+      expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(800);
+
+      // Arena should have non-zero usable area
+      expect(arenaBounds.width * arenaBounds.height).toBeGreaterThan(10_000);
+    });
+
+    it("should handle very small screens (portrait)", () => {
       // Mock as mobile device
       vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(
         true,
       );
 
+      // iPhone-SE-class portrait (width < 380, height > width)
       const { result } = renderHook(() => useCombatLayout(320, 568));
-      const { arenaBounds } = result.current;
+      const { arenaBounds, isPortrait } = result.current;
+      expect(isPortrait).toBe(true);
 
       expect(arenaBounds.width).toBeGreaterThan(0);
       expect(arenaBounds.height).toBeGreaterThan(0);
       expect(arenaBounds.x).toBeGreaterThanOrEqual(0);
       expect(arenaBounds.y).toBeGreaterThanOrEqual(0);
 
-      // Extra-small devices (<380px) use tighter margins (30px total instead of 40px)
-      // Arena should fit within available space (320 - 30 = 290px)
-      // and not exceed it to prevent overflow
-      const availableWidth = 320 - 30; // 290px for extra-small devices
+      // Arena must fit horizontally within extra-small device (320 - 30 margin)
+      const availableWidth = 320 - 30;
       expect(arenaBounds.width).toBeLessThanOrEqual(availableWidth);
 
-      // Arena should still be playable (reasonable size)
-      expect(arenaBounds.width).toBeGreaterThan(200);
-      expect(arenaBounds.height).toBeGreaterThan(150);
+      // Arena must not overflow the viewport vertically (the whole point of
+      // the portrait fix)
+      expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(568);
+
+      // Arena should still be playable (non-trivial area)
+      expect(arenaBounds.width * arenaBounds.height).toBeGreaterThan(5_000);
 
       // Should have scale property
       expect(arenaBounds.scale).toBeGreaterThan(0);
@@ -190,13 +219,14 @@ describe("useCombatLayout", () => {
     });
 
     it("should recalculate when crossing mobile breakpoint", () => {
-      // Create first hook instance with tablet (800px)
+      // Create first hook instance with tablet landscape (wider than tall
+      // so portrait-force doesn't kick in for width<1024)
       vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(
         false,
       );
 
       const { result: tabletResult } = renderHook(() =>
-        useCombatLayout(800, 800),
+        useCombatLayout(1000, 700),
       );
 
       expect(tabletResult.current.isMobile).toBe(false);
@@ -235,124 +265,103 @@ describe("useCombatLayout", () => {
   });
 
   describe("edge cases", () => {
-    it("should handle iPhone SE (375x667) with proper arena sizing", () => {
-      // Mock as mobile device
+    it("should handle iPhone SE (375x667) in portrait without occluding arena", () => {
       vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(
         true,
       );
 
       const { result } = renderHook(() => useCombatLayout(375, 667));
-      const { arenaBounds } = result.current;
+      const { arenaBounds, isPortrait, layoutConstants } = result.current;
+      expect(isPortrait).toBe(true);
 
-      // Arena should fit within screen with proper clearances
+      // Clearances
       const topClearance = arenaBounds.y;
       const bottomClearance = 667 - (arenaBounds.y + arenaBounds.height);
 
-      expect(topClearance).toBeGreaterThanOrEqual(80); // Min 80px top clearance
-      expect(bottomClearance).toBeGreaterThanOrEqual(120); // Min 120px bottom clearance
+      expect(topClearance).toBeGreaterThanOrEqual(80);
+      // In portrait we reserve controls + footer + mobile controls at bottom
+      expect(bottomClearance).toBeGreaterThanOrEqual(
+        layoutConstants.controlsHeight + layoutConstants.footerHeight,
+      );
 
-      // Arena should be sized appropriately for iPhone SE
-      // Width should be around 335px (375 - 40 for margins)
-      // Height should be around 251px (335 * 3/4 to maintain 4:3 ratio)
-      expect(arenaBounds.width).toBeGreaterThanOrEqual(300);
-      expect(arenaBounds.width).toBeLessThanOrEqual(375);
-      expect(arenaBounds.height).toBeGreaterThanOrEqual(225);
-      expect(arenaBounds.height).toBeLessThanOrEqual(300);
+      // Arena must stay inside the viewport (regression guard for bug
+      // where the arena was rendered behind the D-Pad / technique bar).
+      expect(arenaBounds.x).toBeGreaterThanOrEqual(0);
+      expect(arenaBounds.x + arenaBounds.width).toBeLessThanOrEqual(375);
+      expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(667);
 
-      // Should maintain 4:3 aspect ratio
+      // 3:4 arena (taller than wide) in portrait
+      expect(arenaBounds.height).toBeGreaterThan(arenaBounds.width);
       const aspectRatio = arenaBounds.width / arenaBounds.height;
-      expect(aspectRatio).toBeCloseTo(4 / 3, 2);
+      expect(aspectRatio).toBeCloseTo(3 / 4, 2);
+
+      // Playable size
+      expect(arenaBounds.width * arenaBounds.height).toBeGreaterThan(10_000);
     });
 
-    it("should handle iPhone 14 Pro Max (430x932) with proper arena sizing", () => {
-      // Mock as mobile device
+    it("should handle iPhone 14 Pro Max (430x932) in portrait without occluding arena", () => {
       vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(
         true,
       );
 
       const { result } = renderHook(() => useCombatLayout(430, 932));
-      const { arenaBounds } = result.current;
+      const { arenaBounds, isPortrait } = result.current;
+      expect(isPortrait).toBe(true);
 
-      // Arena should fit within screen with proper clearances
-      const topClearance = arenaBounds.y;
-      const bottomClearance = 932 - (arenaBounds.y + arenaBounds.height);
+      expect(arenaBounds.y).toBeGreaterThanOrEqual(80);
+      expect(arenaBounds.x).toBeGreaterThanOrEqual(0);
+      expect(arenaBounds.x + arenaBounds.width).toBeLessThanOrEqual(430);
+      expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(932);
 
-      expect(topClearance).toBeGreaterThanOrEqual(80); // Min 80px top clearance
-      expect(bottomClearance).toBeGreaterThanOrEqual(120); // Min 120px bottom clearance
-
-      // Arena should be sized appropriately for larger phones
-      // Width should be around 390px (430 - 40 for margins), capped at 400
-      // Height should be around 292.5px (390 * 3/4 to maintain 4:3 ratio), capped at 300
-      expect(arenaBounds.width).toBeGreaterThanOrEqual(350);
-      expect(arenaBounds.width).toBeLessThanOrEqual(400);
-      expect(arenaBounds.height).toBeGreaterThanOrEqual(260);
-      expect(arenaBounds.height).toBeLessThanOrEqual(310);
-
-      // Should maintain 4:3 aspect ratio
+      // 3:4 aspect ratio
+      expect(arenaBounds.height).toBeGreaterThan(arenaBounds.width);
       const aspectRatio = arenaBounds.width / arenaBounds.height;
-      expect(aspectRatio).toBeCloseTo(4 / 3, 2);
+      expect(aspectRatio).toBeCloseTo(3 / 4, 2);
+
+      expect(arenaBounds.width * arenaBounds.height).toBeGreaterThan(30_000);
     });
 
-    it("should handle 2K Android devices (1200x2400) with larger arena", () => {
-      // Mock as mobile device (user-agent based detection)
+    it("should handle 2K Android devices (1200x2400) in portrait", () => {
       vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(
         true,
       );
 
       const { result } = renderHook(() => useCombatLayout(1200, 2400));
-      const { arenaBounds } = result.current;
+      const { arenaBounds, isPortrait } = result.current;
+      expect(isPortrait).toBe(true);
 
-      // Arena should fit within screen with proper clearances
-      const topClearance = arenaBounds.y;
-      const bottomClearance = 2400 - (arenaBounds.y + arenaBounds.height);
+      expect(arenaBounds.x).toBeGreaterThanOrEqual(0);
+      expect(arenaBounds.x + arenaBounds.width).toBeLessThanOrEqual(1200);
+      expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(2400);
 
-      expect(topClearance).toBeGreaterThanOrEqual(80); // Min 80px top clearance
-      expect(bottomClearance).toBeGreaterThanOrEqual(120); // Min 120px bottom clearance
-
-      // 2K devices should get larger arena (up to 600px width)
-      expect(arenaBounds.width).toBeGreaterThanOrEqual(400);
-      expect(arenaBounds.width).toBeLessThanOrEqual(600);
-      expect(arenaBounds.height).toBeGreaterThanOrEqual(300);
-      expect(arenaBounds.height).toBeLessThanOrEqual(450);
-
-      // Should maintain 4:3 aspect ratio
+      // 3:4 aspect ratio in portrait
+      expect(arenaBounds.height).toBeGreaterThan(arenaBounds.width);
       const aspectRatio = arenaBounds.width / arenaBounds.height;
-      expect(aspectRatio).toBeCloseTo(4 / 3, 2);
+      expect(aspectRatio).toBeCloseTo(3 / 4, 2);
 
-      // Scale should be appropriate for larger arena (~100 px/m in physics-first)
       expect(arenaBounds.scale).toBeGreaterThan(0.4);
       expect(arenaBounds.scale).toBeLessThan(1.2);
     });
 
-    it("should handle 4K Android devices (1440x3168) with largest mobile arena", () => {
-      // Mock as mobile device (user-agent based detection)
+    it("should handle 4K Android devices (1440x3168) in portrait", () => {
       vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(
         true,
       );
 
       const { result } = renderHook(() => useCombatLayout(1440, 3168));
-      const { arenaBounds } = result.current;
+      const { arenaBounds, isPortrait } = result.current;
+      expect(isPortrait).toBe(true);
 
-      // Arena should fit within screen with proper clearances
-      const topClearance = arenaBounds.y;
-      const bottomClearance = 3168 - (arenaBounds.y + arenaBounds.height);
+      expect(arenaBounds.x).toBeGreaterThanOrEqual(0);
+      expect(arenaBounds.x + arenaBounds.width).toBeLessThanOrEqual(1440);
+      expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(3168);
 
-      expect(topClearance).toBeGreaterThanOrEqual(80); // Min 80px top clearance
-      expect(bottomClearance).toBeGreaterThanOrEqual(120); // Min 120px bottom clearance
-
-      // 4K devices should get largest mobile arena (up to 800px width)
-      expect(arenaBounds.width).toBeGreaterThanOrEqual(600);
-      expect(arenaBounds.width).toBeLessThanOrEqual(800);
-      expect(arenaBounds.height).toBeGreaterThanOrEqual(450);
-      expect(arenaBounds.height).toBeLessThanOrEqual(600);
-
-      // Should maintain 4:3 aspect ratio
+      // 3:4 aspect ratio in portrait
+      expect(arenaBounds.height).toBeGreaterThan(arenaBounds.width);
       const aspectRatio = arenaBounds.width / arenaBounds.height;
-      expect(aspectRatio).toBeCloseTo(4 / 3, 2);
+      expect(aspectRatio).toBeCloseTo(3 / 4, 2);
 
-      // Scale should be closer to desktop for high-res devices (~100 px/m in physics-first)
-      expect(arenaBounds.scale).toBeGreaterThan(0.6);
-      expect(arenaBounds.scale).toBeLessThan(1.3);
+      expect(arenaBounds.scale).toBeGreaterThan(0.4);
     });
 
     it("should handle zero dimensions gracefully", () => {

@@ -61,6 +61,7 @@ export interface TrainingLayout {
   readonly layoutConstants: TrainingLayoutConstants;
   readonly trainingAreaBounds: TrainingAreaBounds;
   readonly isMobile: boolean;
+  readonly isPortrait: boolean;
   readonly screenSize: ScreenSize;
 }
 
@@ -76,9 +77,15 @@ export function useTrainingLayout(
   // Determine screen size category using centralized scaling system
   const screenSize = useMemo(() => getScreenSize(width), [width]);
 
-  // Device detection has its own internal caching based on screen dimensions
-  // No need for additional React memoization here
-  const isMobile = shouldUseMobileControls();
+  // Portrait orientation with hysteresis (see useCombatLayout for details)
+  // 세로 모드 감지 (히스테리시스 적용)
+  const isPortrait = height > width * 0.9;
+
+  // Force mobile branch on narrow portrait viewports even if the user-agent
+  // says we're on desktop (devtools emulation + real rotated phones).
+  // 좁은 세로 화면에서는 모바일 레이아웃 강제
+  const isMobile =
+    shouldUseMobileControls() || (isPortrait && width < 1024);
 
   // Centralized layout constants for easier tweaking
   // Enhanced with tablet-specific values for better responsive support
@@ -103,8 +110,9 @@ export function useTrainingLayout(
     };
   }, [isMobile, screenSize]);
 
-  // Training area bounds using physics-first 4:3 aspect ratio sizing
-  // Arena size is based on resolution (6×4.5, 8×6, 10×7.5, 12×9, 14×10.5 meters)
+  // Training area bounds using orientation-aware aspect-ratio sizing
+  // Landscape mobile: 4:3 — horizontal dummy + analysis overlay
+  // Portrait mobile : 3:4 — vertical dummy + bottom training controls fit
   const trainingAreaBounds = useMemo<TrainingAreaBounds>(() => {
     const areaY = layoutConstants.headerHeight + layoutConstants.padding;
 
@@ -113,14 +121,23 @@ export function useTrainingLayout(
 
     // Mobile-specific training area sizing for better screen fit
     if (isMobile) {
-      // Use shared mobile area calculation for consistency with combat screen
-      // Mobile bounds already include world dimensions from resolution
+      const isExtraSmall = width < 380;
+      const topClearance = isExtraSmall ? 75 : 80;
+      // Portrait needs the full bottom band reserved (training controls +
+      // footer + virtual controls) so the arena doesn't end up behind them.
+      const bottomClearance = isPortrait
+        ? layoutConstants.controlsHeight +
+          layoutConstants.footerHeight +
+          (isExtraSmall ? 140 : 180)
+        : 120;
+
       return calculateMobileAreaBounds(
         width,
         height,
-        80, // minTopClearance (header space)
-        120, // minBottomClearance (controls space)
+        topClearance,
+        bottomClearance,
         areaY,
+        isPortrait ? "portrait" : "landscape",
       );
     }
 
@@ -158,12 +175,13 @@ export function useTrainingLayout(
       worldWidthMeters: worldDimensions.widthMeters,
       worldDepthMeters: worldDimensions.depthMeters,
     };
-  }, [width, height, layoutConstants, isMobile]);
+  }, [width, height, layoutConstants, isMobile, isPortrait]);
 
   return {
     layoutConstants,
     trainingAreaBounds,
     isMobile,
+    isPortrait,
     screenSize,
   };
 }

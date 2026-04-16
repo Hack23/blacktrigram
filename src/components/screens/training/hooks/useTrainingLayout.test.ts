@@ -24,7 +24,9 @@ describe("useTrainingLayout", () => {
 
   describe("Screen size detection", () => {
     it("should detect mobile screen size (<768px)", () => {
-      const { result } = renderHook(() => useTrainingLayout(375, 667));
+      // Landscape mobile so the portrait-force rule doesn't promote this
+      // to mobile when the user-agent mock returns false.
+      const { result } = renderHook(() => useTrainingLayout(667, 375));
 
       expect(result.current.screenSize).toBe("mobile");
       expect(result.current.isMobile).toBe(false); // Mocked to false by default
@@ -227,45 +229,49 @@ describe("useTrainingLayout", () => {
       vi.mocked(shouldUseMobileControls).mockReturnValue(true);
     });
 
-    it("should calculate mobile area bounds with 4:3 aspect ratio", () => {
-      const { result } = renderHook(() => useTrainingLayout(375, 667));
+    it("should calculate mobile area bounds with aspect ratio matching orientation", () => {
+      // Portrait phone → 3:4 arena
+      const { result: portrait } = renderHook(() =>
+        useTrainingLayout(375, 667),
+      );
+      expect(portrait.current.isMobile).toBe(true);
+      expect(portrait.current.isPortrait).toBe(true);
+      const pBounds = portrait.current.trainingAreaBounds;
+      expect(pBounds.width).toBeGreaterThan(0);
+      expect(pBounds.height).toBeGreaterThan(0);
+      // Portrait: height > width, aspect ≈ 3/4
+      expect(pBounds.width / pBounds.height).toBeCloseTo(3 / 4, 2);
+      expect(pBounds.scale).toBeLessThan(1.0);
 
-      expect(result.current.isMobile).toBe(true);
-      const bounds = result.current.trainingAreaBounds;
-
-      // Check that bounds exist
-      expect(bounds).toBeDefined();
-      expect(bounds.width).toBeGreaterThan(0);
-      expect(bounds.height).toBeGreaterThan(0);
-
-      // Verify 4:3 aspect ratio (allowing small rounding error)
-      const aspectRatio = bounds.width / bounds.height;
-      expect(aspectRatio).toBeCloseTo(4 / 3, 2);
-
-      // Check scale factor is less than 1.0 for mobile
-      expect(bounds.scale).toBeLessThan(1.0);
+      // Landscape phone → 4:3 arena
+      const { result: landscape } = renderHook(() =>
+        useTrainingLayout(667, 375),
+      );
+      expect(landscape.current.isMobile).toBe(true);
+      expect(landscape.current.isPortrait).toBe(false);
+      const lBounds = landscape.current.trainingAreaBounds;
+      // Landscape: width > height, aspect ≈ 4/3
+      expect(lBounds.width / lBounds.height).toBeCloseTo(4 / 3, 2);
     });
 
     it("should adapt mobile area width to device resolution", () => {
-      // Standard phone
+      // Use landscape dimensions across the board so aspect-ratio math is
+      // comparable across resolutions.
       const { result: standard } = renderHook(() =>
-        useTrainingLayout(375, 667),
+        useTrainingLayout(667, 375),
       );
       expect(standard.current.isMobile).toBe(true);
 
-      // Large phone
       vi.mocked(shouldUseMobileControls).mockReturnValue(true);
-      const { result: large } = renderHook(() => useTrainingLayout(768, 1024));
+      const { result: large } = renderHook(() => useTrainingLayout(1024, 768));
       expect(large.current.isMobile).toBe(true);
 
-      // 2K mobile device
       vi.mocked(shouldUseMobileControls).mockReturnValue(true);
       const { result: mobile2k } = renderHook(() =>
         useTrainingLayout(1200, 800),
       );
       expect(mobile2k.current.isMobile).toBe(true);
 
-      // 4K mobile device
       vi.mocked(shouldUseMobileControls).mockReturnValue(true);
       const { result: mobile4k } = renderHook(() =>
         useTrainingLayout(1440, 900),
@@ -285,23 +291,24 @@ describe("useTrainingLayout", () => {
     });
 
     it("should ensure minimum mobile area size for usability", () => {
-      // Very small screen (320x480)
+      // Very small portrait screen (320x480)
       const { result } = renderHook(() => useTrainingLayout(320, 480));
 
       expect(result.current.isMobile).toBe(true);
+      expect(result.current.isPortrait).toBe(true);
       const bounds = result.current.trainingAreaBounds;
 
-      // For very small screens (320px), available width is 280px (320 - 40 margins)
-      // The shared helper will use this as max, which is less than the 300px minimum
-      // This is actually correct behavior - we shouldn't force a minimum that exceeds available space
       expect(bounds.width).toBeGreaterThan(0);
       expect(bounds.height).toBeGreaterThan(0);
 
-      // Verify aspect ratio is maintained (allowing for rounding and constraints)
-      // On very small screens, the aspect ratio may deviate slightly due to minimum size constraints
+      // Portrait: arena is taller than wide (3:4)
       const aspectRatio = bounds.width / bounds.height;
-      expect(aspectRatio).toBeGreaterThan(1.0); // Width should be greater than height
-      expect(aspectRatio).toBeLessThan(1.5); // Should be reasonably close to 4:3 (1.33)
+      expect(aspectRatio).toBeLessThanOrEqual(1.0);
+      expect(aspectRatio).toBeGreaterThan(0.5);
+
+      // Arena must stay inside the viewport
+      expect(bounds.x + bounds.width).toBeLessThanOrEqual(320);
+      expect(bounds.y + bounds.height).toBeLessThanOrEqual(480);
     });
 
     it("should center mobile area horizontally", () => {

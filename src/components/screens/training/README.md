@@ -37,6 +37,25 @@ training/
 
 ---
 
+## 📱 Responsive Orientation Profiles
+
+`useTrainingLayout(width, height)` mirrors the Combat screen's responsive
+model and exposes `{ isMobile, isPortrait, trainingAreaBounds }`:
+
+| Profile          | Trigger                                  | Arena aspect | Camera                      |
+| ---------------- | ---------------------------------------- | ------------ | --------------------------- |
+| Desktop          | `!isMobile && !isPortrait`               | 4:3          | Default (FOV 60, z=12)      |
+| Mobile landscape | `isMobile && !isPortrait`                | 4:3          | Tighter (FOV 55, z=10)      |
+| Mobile portrait  | `isPortrait && width < 1024`             | 3:4          | Pulled back (FOV +15, z+4)  |
+
+In portrait mobile the training arena uses a 3:4 aspect ratio (taller than
+wide) and the bottom band reserves space for training controls, the footer
+and the on-screen virtual controls so the dummy + anatomy overlays are never
+occluded. See `src/components/screens/combat/README.md` for full rules —
+the training screen inherits the same orientation profile.
+
+---
+
 ## ⚡ Performance Characteristics
 
 ### Current Performance (January 2026)

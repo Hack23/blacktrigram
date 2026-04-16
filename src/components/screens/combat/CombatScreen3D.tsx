@@ -261,7 +261,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, []);
 
   // Layout calculations
-  const { arenaBounds, isMobile, screenSize, layoutConstants } =
+  const { arenaBounds, isMobile, isPortrait, screenSize, layoutConstants } =
     useCombatLayout(width, height);
 
   // Use Korean theme hook for consistent theming
@@ -292,7 +292,22 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Camera and rendering configuration based on device
   // Use shared physics config for consistent camera setup across screens
-  const cameraConfig = useMemo(() => createCameraConfig(isMobile), [isMobile]);
+  // In portrait we pull the camera back on Z and widen the FOV so both
+  // fighters fit the narrow viewport without getting clipped.
+  // 세로 모드에서는 카메라를 뒤로 빼고 FOV를 넓힘
+  const cameraConfig = useMemo(() => {
+    const base = createCameraConfig(isMobile);
+    if (!isPortrait) return base;
+    return {
+      ...base,
+      fov: Math.min(80, base.fov + 15),
+      position: [base.position[0], base.position[1], base.position[2] + 4] as [
+        number,
+        number,
+        number,
+      ],
+    };
+  }, [isMobile, isPortrait]);
 
   // Rendering quality based on device (optimize for 60fps on mobile)
   // Uses performance tier system for extra-small, mobile, and desktop devices
@@ -3029,29 +3044,36 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isPaused={isPaused || showPauseMenu}
         />
 
-        {/* Left HUD - Player 1 stats */}
-        <CombatLeftHUD
-          width={width}
-          height={height}
-          isMobile={isMobile}
-          positionScale={positionScale}
-          player={validPlayers[0]}
-          laterality={combatState.playerLaterality[0]}
-          isInGuard={player1Animation.isInStanceGuard()}
-          speedModifiers={player1SpeedModifiers}
-        />
+        {/* Left HUD - Player 1 stats.
+            In portrait mobile the side HUDs occlude the 3D arena; collapse
+            them away so the arena stays fully visible. Player status is
+            still shown in the CombatTopHUD (health/stamina strip). */}
+        {!(isMobile && isPortrait) && (
+          <CombatLeftHUD
+            width={width}
+            height={height}
+            isMobile={isMobile}
+            positionScale={positionScale}
+            player={validPlayers[0]}
+            laterality={combatState.playerLaterality[0]}
+            isInGuard={player1Animation.isInStanceGuard()}
+            speedModifiers={player1SpeedModifiers}
+          />
+        )}
 
         {/* Right HUD - Player 2/AI stats with difficulty indicator */}
-        <CombatRightHUD
-          width={width}
-          height={height}
-          isMobile={isMobile}
-          positionScale={positionScale}
-          player={validPlayers[1]}
-          laterality={combatState.playerLaterality[1]}
-          speedModifiers={player2SpeedModifiers}
-          difficultyTier={currentDifficultyTier}
-        />
+        {!(isMobile && isPortrait) && (
+          <CombatRightHUD
+            width={width}
+            height={height}
+            isMobile={isMobile}
+            positionScale={positionScale}
+            player={validPlayers[1]}
+            laterality={combatState.playerLaterality[1]}
+            speedModifiers={player2SpeedModifiers}
+            difficultyTier={currentDifficultyTier}
+          />
+        )}
 
         {/* Bottom HUD - Technique bar, volume, messages */}
         <CombatBottomHUD
