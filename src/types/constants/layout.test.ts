@@ -25,12 +25,17 @@ describe("getMobileControlsBottom", () => {
     expect(getMobileControlsBottom(500)).toBe(200);
   });
 
-  it("ignores non-finite / negative values by falling back to the reduced band (< 500)", () => {
-    // Negative / 0 / NaN are treated as "< 500" → reduced band, matching the
-    // behaviour we want on obscure / degenerate viewports.
+  it("treats non-positive inputs as 'short viewport' and returns the reduced band", () => {
+    // `0`, negatives are all `< 500`, so they get the reduced 120 px band.
+    // This matches the intent: any realistic viewport short-circuits to the
+    // comfortable default only when it's actually tall enough.
     expect(getMobileControlsBottom(0)).toBe(120);
     expect(getMobileControlsBottom(-10)).toBe(120);
-    expect(Number.isNaN(NaN) && getMobileControlsBottom(NaN)).toBe(200);
-    // NaN < 500 is false, so NaN goes to the default 200 branch — documented.
+  });
+
+  it("treats NaN as a 'tall' viewport and returns the default 200 px band", () => {
+    // `NaN < 500` is `false`, so `NaN` falls through to the default branch.
+    // Documented here so callers know degenerate/unknown inputs stay safe.
+    expect(getMobileControlsBottom(NaN)).toBe(200);
   });
 });
