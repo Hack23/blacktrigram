@@ -27,6 +27,17 @@ export interface PainVignetteProps {
    * @korean 모바일여부
    */
   readonly isMobile: boolean;
+
+  /**
+   * Multiplier applied to the effect's maximum opacity (0.0-1.0).
+   *
+   * Use this to soften the fullscreen effect when the 3D arena is already
+   * visually compressed (e.g. portrait mobile) so the vignette does not
+   * further obscure the view. Default is `1.0` (no attenuation).
+   *
+   * @korean 효과강도배수
+   */
+  readonly intensityScale?: number;
 }
 
 /**
@@ -51,6 +62,7 @@ export interface PainVignetteProps {
 export const PainVignette: React.FC<PainVignetteProps> = ({
   pain,
   isMobile,
+  intensityScale = 1,
 }) => {
   const vignetteStyle = useMemo(() => {
     // Clamp pain to 0-100 range
@@ -63,8 +75,10 @@ export const PainVignette: React.FC<PainVignetteProps> = ({
     // Mobile uses smaller vignette size for subtlety
     const vignetteSize = isMobile ? "80px" : "150px";
 
-    // Maximum opacity is lower on mobile
-    const maxOpacity = isMobile ? 0.5 : 0.7;
+    // Maximum opacity is lower on mobile, and can be further attenuated
+    // by the caller via `intensityScale` (e.g. portrait mobile).
+    const safeScale = Math.max(0, Math.min(1, intensityScale));
+    const maxOpacity = (isMobile ? 0.5 : 0.7) * safeScale;
     const opacity = intensity * maxOpacity;
 
     // Use KOREAN_COLORS.PAIN_INDICATOR constant
@@ -81,7 +95,7 @@ export const PainVignette: React.FC<PainVignetteProps> = ({
       transition: "box-shadow 0.5s ease-out",
       zIndex: 50, // Below UI controls but above game content
     };
-  }, [pain, isMobile]);
+  }, [pain, isMobile, intensityScale]);
 
   // Don't render if pain is very low (< 5%)
   if (pain < 5) {

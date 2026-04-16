@@ -56,6 +56,14 @@ export interface MobileControlsWrapperProps {
   readonly onStanceWheelToggle: () => void;
   /** Gesture handler */
   readonly onGesture: (gesture: GestureEvent) => void;
+  /**
+   * Current viewport height in pixels.
+   *
+   * Forwarded to `getMobileControlsBottom()` so the D-Pad / ActionButtons
+   * drop closer to the bottom edge on short viewports (e.g. landscape
+   * phones &lt; 500 px tall). When omitted, the default 200 px band is used.
+   */
+  readonly viewportHeight?: number;
 }
 
 /**
@@ -97,7 +105,9 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
   onStanceChange,
   onStanceWheelToggle,
   onGesture,
+  viewportHeight,
 }) => {
+  const controlsBottom = getMobileControlsBottom(viewportHeight);
   return (
     <>
       {/* Virtual D-Pad - Bottom-left for movement */}
@@ -106,7 +116,7 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
         onMove={onMove}
         disabled={!enabled}
         opacity={0.8}
-        bottom={getMobileControlsBottom()}
+        bottom={controlsBottom}
       />
 
       {/* Action Buttons - Bottom-right for attack/block */}
@@ -116,7 +126,7 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
         onBlock={onBlock}
         disabled={!enabled}
         opacity={0.8}
-        bottom={getMobileControlsBottom()}
+        bottom={controlsBottom}
       />
 
       {/* Stance Wheel - Right-center for trigram stance selection */}

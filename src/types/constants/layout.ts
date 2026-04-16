@@ -58,11 +58,22 @@ export function getTechniqueBarBottom(isMobile: boolean): number {
 }
 
 /**
- * Get mobile controls bottom position (always 200px)
- * 
- * @returns Bottom position in pixels
+ * Get mobile controls bottom position.
+ *
+ * Returns the standard 200 px band for comfortable D-Pad / ActionButton
+ * reach on portrait phones, tablets and desktops. On short viewports
+ * (height &lt; 500 px, typical of a phone rotated to landscape) the band
+ * is reduced to 120 px so the virtual controls do not dominate the
+ * vertical real estate nor crowd the arena.
+ *
+ * @param viewportHeight - Optional current viewport height in pixels.
+ *                         When omitted or &gt;= 500, returns the default 200 px.
+ * @returns Bottom position in pixels (120 for short viewports, 200 otherwise)
  */
-export function getMobileControlsBottom(): number {
+export function getMobileControlsBottom(viewportHeight?: number): number {
+  if (typeof viewportHeight === "number" && viewportHeight < 500) {
+    return Math.round(LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS * 0.6);
+  }
   return LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS;
 }
 

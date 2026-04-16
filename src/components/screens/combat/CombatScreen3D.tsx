@@ -60,6 +60,7 @@ import {
 } from "../../../types";
 import { Injury, InjuryType } from "../../../types/injury";
 import { Z_INDEX } from "../../../types/LayoutTypes";
+import { getMobileControlsBottom } from "../../../types/constants/layout";
 import {
   FONT_FAMILY,
   getPerformanceSettings,
@@ -3114,7 +3115,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         />
 
         {/* Player State Visual Indicators */}
-        {/* Player 1 State Overlay - includes consciousness blur, pain vignette, etc. */}
+        {/* Player 1 State Overlay - includes consciousness blur, pain vignette, etc.
+            In portrait mobile the arena is already rendered in a compressed 3:4
+            aspect ratio, so halve the fullscreen vignette/blur/flash intensity
+            to avoid further obscuring the scene. */}
         <PlayerStateOverlayHtml
           pain={validPlayers[0].pain}
           balanceState={getBalanceState(validPlayers[0].balance)}
@@ -3123,6 +3127,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           bloodLoss={0} // FIXME: bloodLoss property not yet added to PlayerState interface - overlay will not display until implemented
           stamina={validPlayers[0].stamina}
           isMobile={isMobile}
+          intensityScale={isMobile && isPortrait ? 0.5 : 1}
         />
 
         {/* Note: Player 2 (AI) does not get fullscreen state overlays like consciousness blur */}
@@ -3256,6 +3261,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             onMove={handleMobileMove}
             onAttack={handleMobileAttack}
             onBlock={handleMobileBlock}
+            bottom={getMobileControlsBottom(height)}
           />
 
           <StanceWheelPure

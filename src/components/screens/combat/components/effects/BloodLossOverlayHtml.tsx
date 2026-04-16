@@ -27,6 +27,16 @@ export interface BloodLossOverlayProps {
    * @korean 모바일여부
    */
   readonly isMobile: boolean;
+
+  /**
+   * Multiplier applied to the effect's maximum opacity (0.0-1.0).
+   *
+   * Use this to soften the fullscreen effect when the 3D arena is already
+   * visually compressed (e.g. portrait mobile). Default is `1.0`.
+   *
+   * @korean 효과강도배수
+   */
+  readonly intensityScale?: number;
 }
 
 /**
@@ -55,7 +65,7 @@ export interface BloodLossOverlayProps {
  * ```
  */
 export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
-  ({ bloodLoss, isMobile }) => {
+  ({ bloodLoss, isMobile, intensityScale = 1 }) => {
   const overlayStyle = useMemo(() => {
     // Only show when blood loss exceeds critical threshold
     const criticalThreshold = 50;
@@ -73,8 +83,9 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
     const intensity =
       (clampedBloodLoss - criticalThreshold) / (100 - criticalThreshold);
 
-    // Mobile uses reduced intensity
-    const maxOpacity = isMobile ? 0.15 : 0.25;
+    // Mobile uses reduced intensity, callers may further attenuate.
+    const safeScale = Math.max(0, Math.min(1, intensityScale));
+    const maxOpacity = (isMobile ? 0.15 : 0.25) * safeScale;
     const baseOpacity = intensity * maxOpacity;
 
     // Use KOREAN_COLORS.BLOODLOSS_INDICATOR constant
@@ -94,7 +105,7 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
       transition: "opacity 0.5s ease-out",
       zIndex: 55, // Between pain vignette and consciousness blur
     } as React.CSSProperties;
-  }, [bloodLoss, isMobile]);
+  }, [bloodLoss, isMobile, intensityScale]);
 
   // Don't render if blood loss is below threshold
   if (bloodLoss < 50 || !overlayStyle) {
@@ -137,9 +148,11 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
     if (wasCritical !== isCritical) return false;
     
     // If both critical, only re-render if significant change (5+ points)
+    // or if isMobile / intensityScale changes.
     return (
       Math.abs(prevProps.bloodLoss - nextProps.bloodLoss) < 5 &&
-      prevProps.isMobile === nextProps.isMobile
+      prevProps.isMobile === nextProps.isMobile &&
+      prevProps.intensityScale === nextProps.intensityScale
     );
   },
 );

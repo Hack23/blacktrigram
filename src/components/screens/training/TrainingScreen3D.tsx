@@ -1478,17 +1478,23 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         }}
         data-testid="training-hud-overlay"
       >
-        {/* Left HUD - Anatomy Controls, Guard Indicator */}
-        <TrainingLeftHUD
-          width={width}
-          height={height}
-          isMobile={isMobile}
-          positionScale={positionScale}
-          visibleAnatomyLayers={trainingState.visibleAnatomyLayers}
-          onAnatomyLayerToggle={handleAnatomyLayerToggle}
-          currentStanceIndex={trainingState.currentStanceIndex}
-          isInGuard={playerAnimation.isInStanceGuard()}
-        />
+        {/* Left HUD - Anatomy Controls, Guard Indicator.
+            Hidden in portrait mobile because the 18 %-wide side HUD
+            occludes the already-compressed 3:4 arena; anatomy layer
+            toggles remain reachable from the Top HUD's Vital-Point
+            overlay controls. */}
+        {!(isMobile && isPortrait) && (
+          <TrainingLeftHUD
+            width={width}
+            height={height}
+            isMobile={isMobile}
+            positionScale={positionScale}
+            visibleAnatomyLayers={trainingState.visibleAnatomyLayers}
+            onAnatomyLayerToggle={handleAnatomyLayerToggle}
+            currentStanceIndex={trainingState.currentStanceIndex}
+            isInGuard={playerAnimation.isInStanceGuard()}
+          />
+        )}
 
         {/* Top HUD - Training Controls, Archetype Selector, Return Button */}
         <TrainingTopHUD
@@ -1506,32 +1512,36 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           onPlaySFX={(sound) => audio.playSFX(sound)}
         />
 
-        {/* Right HUD - Mode Selector, Stats, Vital Point Selection */}
-        <TrainingRightHUD
-          width={width}
-          height={height}
-          isMobile={isMobile}
-          positionScale={positionScale}
-          trainingMode={trainingState.trainingMode}
-          onModeChange={trainingActions.setTrainingMode}
-          stats={{
-            ...trainingState.stats,
-            sessionDuration: trainingState.sessionDuration,
-            bestCombo: trainingState.bestCombo,
-            perfectStrikes: trainingState.perfectStrikes,
-          }}
-          distanceToDummy={distanceToDummy}
-          effectiveReach={currentTechniqueReach}
-          selectedVitalPoint={trainingState.selectedVitalPoint}
-          onVitalPointSelect={trainingActions.setSelectedVitalPoint}
-          footworkDrillType={trainingState.footworkDrillType}
-          footworkDrillStep={trainingState.footworkDrillStep}
-          footworkDrillActive={trainingState.footworkDrillActive}
-          onStartFootworkDrill={trainingActions.startFootworkDrill}
-          onStopFootworkDrill={trainingActions.stopFootworkDrill}
-          onAdvanceFootworkStep={trainingActions.advanceFootworkStep}
-        />
-
+        {/* Right HUD - Mode Selector, Stats, Vital Point Selection.
+            Hidden in portrait mobile for the same occlusion reason as
+            the Left HUD. Users can rotate to landscape to access the
+            full stats + vital-point / footwork controls. */}
+        {!(isMobile && isPortrait) && (
+          <TrainingRightHUD
+            width={width}
+            height={height}
+            isMobile={isMobile}
+            positionScale={positionScale}
+            trainingMode={trainingState.trainingMode}
+            onModeChange={trainingActions.setTrainingMode}
+            stats={{
+              ...trainingState.stats,
+              sessionDuration: trainingState.sessionDuration,
+              bestCombo: trainingState.bestCombo,
+              perfectStrikes: trainingState.perfectStrikes,
+            }}
+            distanceToDummy={distanceToDummy}
+            effectiveReach={currentTechniqueReach}
+            selectedVitalPoint={trainingState.selectedVitalPoint}
+            onVitalPointSelect={trainingActions.setSelectedVitalPoint}
+            footworkDrillType={trainingState.footworkDrillType}
+            footworkDrillStep={trainingState.footworkDrillStep}
+            footworkDrillActive={trainingState.footworkDrillActive}
+            onStartFootworkDrill={trainingActions.startFootworkDrill}
+            onStopFootworkDrill={trainingActions.stopFootworkDrill}
+            onAdvanceFootworkStep={trainingActions.advanceFootworkStep}
+          />
+        )}
         {/* Bottom HUD - Technique Bar, Feedback Messages, Mobile Controls */}
         <TrainingBottomHUD
           width={width}
@@ -1580,7 +1590,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               onAttack={handleMobileAttack}
               onBlock={handleMobileBlock}
               disabled={!mobileControlsEnabled}
-              bottom={getMobileControlsBottom()}
+              bottom={getMobileControlsBottom(height)}
               opacity={0.85}
             />
 
