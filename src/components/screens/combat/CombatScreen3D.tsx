@@ -117,6 +117,7 @@ import { CombatParticleEffects3D } from "./components/effects/CombatParticleEffe
 import {
   CombatBottomHUD,
   CombatLeftHUD,
+  CombatPortraitStatusStrip,
   CombatRightHUD,
   CombatTopHUD,
 } from "./components/hud";
@@ -3050,7 +3051,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* Left HUD - Player 1 stats.
             In portrait mobile the side HUDs occlude the 3D arena; collapse
             them away so the arena stays fully visible. Player status is
-            still shown in the CombatTopHUD (health/stamina strip). */}
+            shown instead via CombatPortraitStatusStrip below. */}
         {!(isMobile && isPortrait) && (
           <CombatLeftHUD
             width={width}
@@ -3075,6 +3076,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             laterality={combatState.playerLaterality[1]}
             speedModifiers={player2SpeedModifiers}
             difficultyTier={currentDifficultyTier}
+          />
+        )}
+
+        {/* Portrait-mobile HP/stamina strip. Replaces the hidden side HUDs
+            so both players can still see their health at a glance without
+            re-introducing arena occlusion. */}
+        {isMobile && isPortrait && (
+          <CombatPortraitStatusStrip
+            width={width}
+            height={height}
+            player1={validPlayers[0]}
+            player2={validPlayers[1]}
+            positionScale={positionScale}
+            topOffset={layoutConstants.hudHeight}
           />
         )}
 

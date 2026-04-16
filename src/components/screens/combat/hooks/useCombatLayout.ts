@@ -108,7 +108,21 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   // Portrait mobile:  3:4 (height > width) — fits both fighters vertically
   //                    without being occluded by bottom HUD + D-Pad
   const arenaBounds = useMemo<ArenaBounds>(() => {
-    const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
+    // In portrait mobile we render a compact two-player status strip
+    // directly below the top HUD to replace the collapsed side HUDs.
+    // Reserve its height here so the arena is pushed below it instead of
+    // being drawn underneath. Use a tighter strip on extra-small phones
+    // (< 380 px wide) to preserve the playable arena area.
+    const isExtraSmallWidth = width < 380;
+    const portraitStatusStripHeight =
+      isMobile && isPortrait
+        ? Math.max(isExtraSmallWidth ? 28 : 36, Math.round(height * 0.055))
+        : 0;
+
+    const arenaY =
+      layoutConstants.hudHeight +
+      portraitStatusStripHeight +
+      layoutConstants.padding;
 
     // Calculate world dimensions based on screen resolution (not device type)
     // All arenas are SQUARE for consistent combat mechanics
@@ -116,8 +130,9 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
 
     // Mobile-specific arena sizing for better screen fit
     if (isMobile) {
-      const isExtraSmall = width < 380;
-      const minTopClearance = isExtraSmall ? 75 : 80;
+      const isExtraSmall = isExtraSmallWidth;
+      const minTopClearance =
+        (isExtraSmall ? 75 : 80) + portraitStatusStripHeight;
 
       // In portrait we must reserve space for the whole bottom band
       // (technique bar + mobile controls + footer) or the arena ends up
