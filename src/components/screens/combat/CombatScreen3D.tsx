@@ -41,14 +41,15 @@ import {
   AnimationType,
   determineRecoveryType,
   getAnimation,
-  getAnimationForTechnique,
   getRecoveryAnimationState,
+  resolveTechniqueAnimation,
 } from "../../../systems/animation";
 import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import type { BalancePlayerState } from "../../../systems/combat/BalanceSystem";
 import { HitEffectType } from "../../../systems/effects";
 import { injuryMovementModifier } from "../../../systems/movement/InjuryMovementModifier";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
+import { TRIGRAM_TECHNIQUES } from "../../../systems/trigram/techniques";
 import type { KoreanTechnique } from "../../../systems/vitalpoint/types";
 import {
   CombatState,
@@ -1544,9 +1545,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         // Set attack animation based on technique
         // 기술에 따른 공격 애니메이션 설정
-        const animationName = getAnimationForTechnique(
-          technique.name.english || technique.id,
-        );
+        // Uses resolveTechniqueAnimation so that stance-specific animations
+        // (e.g., "geon_heaven_strike") are preferred over the regex fallback
+        // that previously collapsed every attack to the jab animation.
+        const animationName = resolveTechniqueAnimation(technique);
         setPlayer1AttackAnimation(animationName);
 
         // Store technique ID for enum-based AnimationType lookup
@@ -1727,9 +1729,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Create enhanced attack handler with action feedback and animation
   const handleAttackWithFeedback = useCallback(() => {
-    // Set default attack animation for basic attacks (without specific technique)
-    // 기본 공격 애니메이션 설정 (잽)
-    setPlayer1AttackAnimation("jab");
+    // For the "basic" attack (space bar / on-screen Attack button) we use
+    // the first technique available in the player's current stance so the
+    // skeletal animation matches the stance (e.g., Geon → "geon_heaven_strike",
+    // Li → "li_precision_jab"). This prevents every stance from producing
+    // the same jab visual.
+    // 기본 공격 애니메이션 설정 - 현재 자세의 첫 번째 기술 사용
+    const basicTechnique = techniqueSelection.availableTechniques[0];
+    const animationName = basicTechnique
+      ? resolveTechniqueAnimation(basicTechnique)
+      : "jab";
+    setPlayer1AttackAnimation(animationName);
+    if (basicTechnique?.id) {
+      setPlayer1TechniqueId(basicTechnique.id);
+    }
 
     // Try to transition to attack animation
     const success = player1Animation.transitionTo(AnimationState.ATTACK);
@@ -1743,7 +1756,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       );
       handleAttack();
     }
-  }, [player1Animation, combatActions, handleAttack]);
+  }, [
+    player1Animation,
+    combatActions,
+    handleAttack,
+    techniqueSelection.availableTechniques,
+  ]);
 
   // Create enhanced defend handler with action feedback and animation
   const handleDefendWithFeedback = useCallback(() => {
@@ -2199,24 +2217,27 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       selectedTechnique?: KoreanTechnique,
       targetVitalPoint?: string,
     ) => {
+      // Resolve AI's fallback animation from its current stance so that
+      // a stance-less AI decision still plays a stance-appropriate visual
+      // instead of the legacy "jab"/"cross" literals that made every AI
+      // action look identical.
+      // AI의 현재 자세에서 기본 애니메이션을 도출
+      const aiStance = validPlayers[1]?.currentStance ?? TrigramStance.GEON;
+      const aiFallbackTechnique = TRIGRAM_TECHNIQUES[aiStance]?.[0];
+      const aiFallbackAnim = aiFallbackTechnique
+        ? resolveTechniqueAnimation(aiFallbackTechnique)
+        : "jab";
       switch (action) {
         case "attack":
           // Set AI attack animation based on technique
           // AI 공격 애니메이션 설정
-          if (
-            selectedTechnique?.name?.english ||
-            selectedTechnique?.englishName
-          ) {
-            const techName =
-              selectedTechnique.name?.english ??
-              selectedTechnique.englishName ??
-              "jab";
-            const p2AttackAnimName = getAnimationForTechnique(techName);
+          if (selectedTechnique) {
+            const p2AttackAnimName = resolveTechniqueAnimation(selectedTechnique);
             setPlayer2AttackAnimation(p2AttackAnimName);
 
             // Store technique ID for enum-based AnimationType lookup
             // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
-            if (selectedTechnique?.id) {
+            if (selectedTechnique.id) {
               setPlayer2TechniqueId(selectedTechnique.id);
             }
             const p2AttackAnim = getAnimation(p2AttackAnimName);
@@ -2224,9 +2245,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player2AttackDurationRef.current = p2AttackDur;
             player2Animation.transitionToAttack(p2AttackDur);
           } else {
-            setPlayer2AttackAnimation("jab");
-            player2AttackDurationRef.current = 0.55;
-            player2Animation.transitionToAttack(0.55);
+            setPlayer2AttackAnimation(aiFallbackAnim);
+            if (aiFallbackTechnique?.id) {
+              setPlayer2TechniqueId(aiFallbackTechnique.id);
+            }
+            const p2FallbackAnim = getAnimation(aiFallbackAnim);
+            const p2FallbackDur = p2FallbackAnim?.duration ?? 0.55;
+            player2AttackDurationRef.current = p2FallbackDur;
+            player2Animation.transitionToAttack(p2FallbackDur);
           }
           handleAIAttack(selectedTechnique, targetVitalPoint);
           break;
@@ -2238,20 +2264,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         case "combo":
           // Set AI attack animation based on technique
           // AI 기술 애니메이션 설정
-          if (
-            selectedTechnique?.name?.english ||
-            selectedTechnique?.englishName
-          ) {
-            const techName =
-              selectedTechnique.name?.english ??
-              selectedTechnique.englishName ??
-              "cross";
-            const p2TechAnimName = getAnimationForTechnique(techName);
+          if (selectedTechnique) {
+            const p2TechAnimName = resolveTechniqueAnimation(selectedTechnique);
             setPlayer2AttackAnimation(p2TechAnimName);
 
             // Store technique ID for enum-based AnimationType lookup
             // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
-            if (selectedTechnique?.id) {
+            if (selectedTechnique.id) {
               setPlayer2TechniqueId(selectedTechnique.id);
             }
             const p2TechAnim = getAnimation(p2TechAnimName);
@@ -2259,9 +2278,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player2AttackDurationRef.current = p2TechDur;
             player2Animation.transitionToAttack(p2TechDur);
           } else {
-            setPlayer2AttackAnimation("cross");
-            player2AttackDurationRef.current = 0.6;
-            player2Animation.transitionToAttack(0.6);
+            setPlayer2AttackAnimation(aiFallbackAnim);
+            if (aiFallbackTechnique?.id) {
+              setPlayer2TechniqueId(aiFallbackTechnique.id);
+            }
+            const p2FallbackAnim = getAnimation(aiFallbackAnim);
+            const p2FallbackDur = p2FallbackAnim?.duration ?? 0.6;
+            player2AttackDurationRef.current = p2FallbackDur;
+            player2Animation.transitionToAttack(p2FallbackDur);
           }
           handleAITechnique(selectedTechnique, targetVitalPoint);
           break;
@@ -2324,20 +2348,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         case "counter":
           // Set AI attack animation for counter attack
           // AI 반격 애니메이션 설정
-          if (
-            selectedTechnique?.name?.english ||
-            selectedTechnique?.englishName
-          ) {
-            const techName =
-              selectedTechnique.name?.english ??
-              selectedTechnique.englishName ??
-              "cross";
-            const p2CounterAnimName = getAnimationForTechnique(techName);
+          if (selectedTechnique) {
+            const p2CounterAnimName = resolveTechniqueAnimation(selectedTechnique);
             setPlayer2AttackAnimation(p2CounterAnimName);
 
             // Store technique ID for enum-based AnimationType lookup
             // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
-            if (selectedTechnique?.id) {
+            if (selectedTechnique.id) {
               setPlayer2TechniqueId(selectedTechnique.id);
             }
             const p2CounterAnim = getAnimation(p2CounterAnimName);
@@ -2345,9 +2362,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player2AttackDurationRef.current = p2CounterDur;
             player2Animation.transitionToAttack(p2CounterDur);
           } else {
-            setPlayer2AttackAnimation("cross");
-            player2AttackDurationRef.current = 0.6;
-            player2Animation.transitionToAttack(0.6);
+            setPlayer2AttackAnimation(aiFallbackAnim);
+            if (aiFallbackTechnique?.id) {
+              setPlayer2TechniqueId(aiFallbackTechnique.id);
+            }
+            const p2FallbackAnim = getAnimation(aiFallbackAnim);
+            const p2FallbackDur = p2FallbackAnim?.duration ?? 0.6;
+            player2AttackDurationRef.current = p2FallbackDur;
+            player2Animation.transitionToAttack(p2FallbackDur);
           }
           handleAIAttack(selectedTechnique, targetVitalPoint);
           addCombatMessage("AI 반격!", "AI Counter!");

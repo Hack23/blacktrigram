@@ -56,7 +56,7 @@ import {
   AnimationEvents,
   AnimationState,
   AnimationType,
-  getAnimationForTechnique,
+  resolveTechniqueAnimation,
 } from "../../../systems/animation";
 import { getAnimationForTechniqueOrDefault } from "../../../systems/animation/core/TechniqueAnimationMapping";
 import { physicalReachCalculator } from "../../../systems/physics";
@@ -732,9 +732,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
         // Set attack animation based on technique
         // 기술에 따른 공격 애니메이션 설정
-        const animationName = getAnimationForTechnique(
-          technique.name.english || technique.id,
-        );
+        // Uses resolveTechniqueAnimation so stance-specific animations
+        // (e.g. "geon_heaven_strike", "li_precision_jab") are selected,
+        // instead of every technique collapsing to the generic "jab" visual.
+        const animationName = resolveTechniqueAnimation(technique);
         setAttackAnimation(animationName);
 
         // In training mode, do not deduct resources to allow continuous practice
