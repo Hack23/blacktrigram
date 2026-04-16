@@ -177,13 +177,13 @@
     "screenshots:all": "npm run screenshots:capture && npm run screenshots:post"
   },
   "peerDependencies": {
-    "@react-three/drei": "^10.0.0",
-    "@react-three/fiber": "^9.0.0",
-    "@react-three/postprocessing": "^3.0.0",
-    "postprocessing": "^6.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "three": "^0.183.0"
+    "@react-three/drei": "10.0.0",
+    "@react-three/fiber": "9.0.0",
+    "@react-three/postprocessing": "3.0.0",
+    "postprocessing": "6.0.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "three": "0.183.0"
   },
   "devDependencies": {
     "@aws-sdk/client-bedrock-runtime": "3.1031.0",
