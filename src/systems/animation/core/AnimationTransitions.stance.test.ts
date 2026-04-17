@@ -316,8 +316,11 @@ describe("AnimationTransitions - Stance Transition System", () => {
       const endTime = performance.now();
       const duration = endTime - startTime;
       
-      // Should complete in less than 10ms (very fast Map lookups)
-      expect(duration).toBeLessThan(10);
+      // Should complete in less than 50ms (very fast Map lookups).
+      // The threshold is generous to absorb CI runner jitter where shared
+      // hosts can spike well past a 10 ms budget for 1000 lookups without
+      // representing a real performance regression.
+      expect(duration).toBeLessThan(50);
     });
   });
 

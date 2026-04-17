@@ -61,14 +61,22 @@ const PlayerPill: React.FC<{
   readonly barHeight: number;
   readonly testId: string;
 }> = ({ player, side, fontSize, barHeight, testId }) => {
-  const healthPercent = Math.max(
-    0,
-    Math.min(100, (player.health / player.maxHealth) * 100),
-  );
-  const staminaPercent = Math.max(
-    0,
-    Math.min(100, (player.stamina / player.maxStamina) * 100),
-  );
+  // Guard against non-positive maxima (0 or negative) which would
+  // otherwise yield Infinity/NaN percentages and render invalid widths.
+  const healthPercent =
+    player.maxHealth > 0
+      ? Math.max(
+          0,
+          Math.min(100, (player.health / player.maxHealth) * 100),
+        )
+      : 0;
+  const staminaPercent =
+    player.maxStamina > 0
+      ? Math.max(
+          0,
+          Math.min(100, (player.stamina / player.maxStamina) * 100),
+        )
+      : 0;
 
   const healthColor =
     healthPercent > 50
