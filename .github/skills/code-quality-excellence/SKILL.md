@@ -1,3 +1,9 @@
+---
+name: code-quality-excellence
+description: Enforces code quality standards for Black Trigram — maintainable, type-safe TypeScript with low complexity, organized imports, explicit error handling, and search-before-create discipline
+license: MIT
+---
+
 # ✨ Code Quality Excellence Skill
 
 > **Strategic Principle**: High-quality code is reusable, type-safe, maintainable, and testable by design.

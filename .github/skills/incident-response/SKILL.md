@@ -1,3 +1,9 @@
+---
+name: incident-response
+description: Enforces security incident response procedures for Black Trigram aligned with Hack23 Incident Response Plan — severity classification, SLA-based remediation, secret rotation, lessons learned, and automated detection
+license: MIT
+---
+
 # 🚨 Incident Response Skill
 
 > **Strategic Principle**: Prepare for incidents before they happen. Swift, structured response minimizes impact.

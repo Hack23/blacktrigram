@@ -19,17 +19,58 @@ This directory contains specialized GitHub Copilot custom agent profiles for Bla
 - **Skill**: "All security changes must update SECURITY_ARCHITECTURE.md" ✅ Automatic
 - **Agent**: "I will implement JWT authentication in `src/auth/jwt.ts`" 🤖 On-demand
 
-### Available Skills (7 Total)
+### Available Skills (29 Total)
 
-1. **[security-architecture-validation](../skills/security-architecture-validation/SKILL.md)** - ISMS security-by-design enforcement
-2. **[c4-architecture-documentation](../skills/c4-architecture-documentation/SKILL.md)** - C4 Model architecture standards
-3. **[korean-theming-standards](../skills/korean-theming-standards/SKILL.md)** - Korean cyberpunk aesthetic rules
-4. **[testing-strategy-enforcement](../skills/testing-strategy-enforcement/SKILL.md)** - >90% test coverage requirements
-5. **[performance-optimization](../skills/performance-optimization/SKILL.md)** - 60fps and bundle size enforcement
-6. **[isms-compliance-checking](../skills/isms-compliance-checking/SKILL.md)** - ISO 27001, NIST CSF, CIS Controls
-7. **[threejs-best-practices](../skills/threejs-best-practices/SKILL.md)** - Three.js/React best practices
+Black Trigram now ships **29 strategic skills** organized across Security & Compliance, Architecture & Documentation, Visual & Cultural, Testing & Quality, Performance, Three.js, Game Development, AI Governance, and Agentic Workflows. See the **[Skills catalog](../skills/README.md)** for the full list and activation triggers.
+
+**Highlights (security & compliance core):**
+
+1. **[security-architecture-validation](../skills/security-architecture-validation/SKILL.md)** — ISMS security-by-design enforcement
+2. **[secure-development-lifecycle](../skills/secure-development-lifecycle/SKILL.md)** — all 7 SDLC phases + DevSecOps
+3. **[isms-compliance-checking](../skills/isms-compliance-checking/SKILL.md)** — ISO 27001, NIST CSF 2.0, CIS v8.1
+4. **[compliance-framework-alignment](../skills/compliance-framework-alignment/SKILL.md)** — multi-framework traceability
+5. **[classification-framework-enforcement](../skills/classification-framework-enforcement/SKILL.md)** — C/I/A/P classification + BIA
+6. **[open-source-governance](../skills/open-source-governance/SKILL.md)** — Hack23 Open Source Policy enforcement
+7. **[threat-modeling-enforcement](../skills/threat-modeling-enforcement/SKILL.md)** — STRIDE + MITRE ATT&CK + attack trees
+8. **[vulnerability-management](../skills/vulnerability-management/SKILL.md)** — CVE remediation SLAs, OSSF ≥ 8, SBOM
+9. **[incident-response](../skills/incident-response/SKILL.md)** — severity SLAs, rotation, lessons learned
+10. **[secrets-management](../skills/secrets-management/SKILL.md)** — credential hygiene, GitHub Secrets
+11. **[data-protection](../skills/data-protection/SKILL.md)** — classification, TLS, CSP, SRI
+12. **[input-validation](../skills/input-validation/SKILL.md)** — Zod / type guards at boundaries
+13. **[risk-assessment-frameworks](../skills/risk-assessment-frameworks/SKILL.md)** — ISO 31000 / ID.RA
+14. **[gdpr-compliance](../skills/gdpr-compliance/SKILL.md)** — GDPR / NIS2 / EU CRA
+15. **[ai-governance](../skills/ai-governance/SKILL.md)** — EU AI Act, NIST AI RMF, AI transparency
+16. **[github-agentic-workflows](../skills/github-agentic-workflows/SKILL.md)** — defense-in-depth workflow security
+
+**Architecture & Docs:** c4-architecture-documentation · documentation-standards
+
+**Quality & Testing:** testing-strategy-enforcement · code-quality-excellence · typescript-strict-patterns · accessibility-wcag-patterns
+
+**Performance & Three.js:** performance-optimization · threejs-best-practices
+
+**Game & Cultural:** game-development-patterns · korean-martial-arts-authenticity · 3d-combat-systems · audio-game-integration · korean-theming-standards
 
 All agents leverage these skills for automatic quality enforcement. **[Learn more →](../skills/README.md)**
+
+### 🔐 Hack23 ISMS Policy Integration (all agents reference these)
+
+Every repo agent encodes links to the applicable Hack23 ISMS policies so that code changes, reviews, tests, and documentation trace back to a governed source of truth:
+
+| Domain | Policy |
+|---|---|
+| Governance baseline | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) |
+| SDLC / secure coding | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) |
+| OSS supply chain | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) |
+| CVE response | [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) |
+| Crypto | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) |
+| Access / identity | [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) |
+| Incidents | [Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) |
+| Data handling | [Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md) |
+| AI | [AI Governance Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/AI_Policy.md) |
+| Threat analysis | [Threat Modeling Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) |
+| Change control | [Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) |
+| Continuity / DR | [Business Continuity Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Business_Continuity_Plan.md) |
+| Compliance | [Compliance Checklist](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Compliance_Checklist.md) (ISO 27001 · NIST CSF 2.0 · CIS v8.1) |
 
 ## 🔑 Essential Context Files
 
@@ -80,44 +121,7 @@ All agents have access to essential project configuration files that define the 
 
 ### MCP Servers Available
 
-```mermaid
-graph TB
-    subgraph "Core MCP Servers"
-        FS[📁 filesystem<br/>File Operations]
-        GH[🐙 github<br/>GitHub API]
-        GT[📊 git<br/>Git Operations]
-        MEM[🧠 memory<br/>Context Memory]
-        ST[🤔 sequential-thinking<br/>Problem Solving]
-    end
-    
-    subgraph "Testing & Automation"
-        PW[🎭 playwright<br/>Browser Automation]
-    end
-    
-    subgraph "Optional Servers"
-        BS[🔍 brave-search<br/>Web Search]
-        AWS[☁️ aws<br/>Cloud Infrastructure]
-    end
-    
-    Agents[GitHub Copilot Agents] --> FS
-    Agents --> GH
-    Agents --> GT
-    Agents --> MEM
-    Agents --> ST
-    Agents --> PW
-    Agents -.-> BS
-    Agents -.-> AWS
-    
-    style FS fill:#4CAF50,stroke:#2E7D32,color:#fff
-    style GH fill:#2196F3,stroke:#1565C0,color:#fff
-    style GT fill:#FF9800,stroke:#E65100,color:#fff
-    style MEM fill:#9C27B0,stroke:#6A1B9A,color:#fff
-    style ST fill:#00BCD4,stroke:#00838F,color:#fff
-    style PW fill:#E91E63,stroke:#AD1457,color:#fff
-    style BS fill:#FFC107,stroke:#F57F17,color:#000
-    style AWS fill:#FF5722,stroke:#BF360C,color:#fff
-    style Agents fill:#607D8B,stroke:#37474F,color:#fff
-```
+See [`.github/copilot-mcp.json`](../copilot-mcp.json) for the authoritative list. Repository-level agents do **not** embed MCP config in their frontmatter — session-level MCP applies uniformly. Core servers: **github** (Insiders with Copilot coding-agent tools), **filesystem**, **memory**, **sequential-thinking**, **playwright**.
 
 ### Development Environment
 
@@ -198,18 +202,19 @@ graph LR
 - ✅ Monitoring test coverage and quality metrics
 - ✅ Performance analysis and optimization tracking
 
-**Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `custom-agent`
+**Tools Available:** `["*"]` (all tools allowed — no MCP server config at repo level; session-level MCP from `.github/copilot-mcp.json` applies)
 
-**MCP Servers:** GitHub, Playwright, AWS
+**MCP (session-level only):** GitHub, filesystem, memory, sequential-thinking, playwright — configured in `.github/copilot-mcp.json`, not in individual agent frontmatter
 
 **Expertise:**
 - Product management and issue orchestration
 - Quality assurance across all dimensions
 - UI/UX evaluation and accessibility
-- ISMS alignment (ISO 27001, NIST CSF, CIS Controls)
+- ISMS alignment (ISO 27001, NIST CSF, CIS Controls, Information Security Policy)
 - Performance monitoring (60fps, bundle size)
 - Agent coordination and delegation
 - GitHub issue creation and management
+- Copilot coding agent orchestration with `base_ref`, `custom_instructions`, stacked PRs
 
 ---
 
@@ -224,7 +229,7 @@ graph LR
 - ✅ Integrating @react-three/fiber components
 - ✅ Implementing combat mechanics
 
-**Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `playwright-browser_*`
+**Tools Available:** `["*"]` (all tools allowed)
 
 **Expertise:**
 - React + Three.js integration patterns
@@ -246,7 +251,7 @@ graph LR
 - ✅ React Testing Library tests
 - ✅ Performance optimization
 
-**Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `playwright-browser_*`
+**Tools Available:** `["*"]` (all tools allowed)
 
 **Expertise:**
 - React 19 best practices
@@ -268,7 +273,7 @@ graph LR
 - ✅ 3D scene and resource management
 - ✅ Object pooling
 
-**Tools Available:** `view`, `edit`, `create`, `search_code`, `bash`, `playwright-browser_*`
+**Tools Available:** `["*"]` (all tools allowed)
 
 **Expertise:**
 - Three.js / @react-three/fiber integration
@@ -290,7 +295,7 @@ graph LR
 - ✅ Testing Three.js components
 - ✅ Testing Korean UI elements
 
-**Tools Available:** `view`, `edit`, `create`, `bash`, `playwright-browser_*`
+**Tools Available:** `["*"]` (all tools allowed)
 
 **Expertise:**
 - Vitest unit testing
@@ -312,7 +317,7 @@ graph LR
 - ✅ Performance and accessibility testing
 - ✅ Test metrics and reporting
 
-**Tools Available:** `view`, `edit`, `create`, `bash`, `search_code`, `playwright-browser_*`
+**Tools Available:** `["*"]` (all tools allowed)
 
 **Expertise:**
 - Test suite architecture
@@ -334,7 +339,7 @@ graph LR
 - ✅ Security policy documentation (SECURITY.md)
 - ✅ Bilingual content (Korean/English)
 
-**Tools Available:** `view`, `edit`, `create`, `search_code`, `playwright-browser_*`
+**Tools Available:** `["*"]` (all tools allowed)
 
 **Expertise:**
 - Code documentation
@@ -356,7 +361,7 @@ graph LR
 - ✅ Security assessment
 - ✅ Performance review
 
-**Tools Available:** `view`, `search_code`, `playwright-browser_*` (read-only)
+**Tools Available:** `["*"]` (all tools allowed; by convention this agent treats edits as suggestions)
 
 **Expertise:**
 - Code quality assessment
@@ -378,7 +383,7 @@ graph LR
 - ✅ Dependency security audits
 - ✅ Security automation
 
-**Tools Available:** `view`, `edit`, `create`, `bash`, `search_code`, `playwright-browser_*`
+**Tools Available:** `["*"]` (all tools allowed)
 
 **Expertise:**
 - Supply chain security
@@ -463,20 +468,24 @@ All agents have access to appropriate GitHub Copilot tools:
 
 ### 🔌 MCP (Model Context Protocol) Servers
 
-The Task Agent has access to specialized MCP servers for enhanced capabilities:
+> **Important:** Repository-level agents (the ones in this directory) **do not embed MCP server configuration in their frontmatter**. MCP servers are configured once at the repository level in [`.github/copilot-mcp.json`](../copilot-mcp.json) and are available to **every** agent session. This keeps agent definitions focused on capability and prompt engineering.
+
+Servers configured for Black Trigram sessions:
 
 | MCP Server | Purpose | Operations |
 |------------|---------|------------|
-| **GitHub MCP** | Repository and issue management | Create/update issues, search code, manage PRs, releases |
-| **Playwright MCP** | Browser automation and UI testing | Navigate, screenshot, DOM analysis, interaction testing |
-| **AWS MCP** | Cloud infrastructure operations | Infrastructure monitoring, deployment validation, cost analysis |
+| **GitHub MCP** (Insiders) | Repository and issue management | Issues, PRs, Actions, Copilot coding agent tools (`assign_copilot_to_issue`, `create_pull_request_with_copilot` with `base_ref` / `custom_instructions` / `custom_agent`), `get_copilot_job_status` |
+| **Filesystem MCP** | File-system operations | Read, list, search within allowed directories |
+| **Memory MCP** | Cross-session memory | Entity/observation graph for persistent facts |
+| **Sequential-thinking MCP** | Structured reasoning | Step-by-step problem decomposition |
+| **Playwright MCP** | Browser automation | Navigate, screenshot, DOM interaction, network capture |
 
-**Benefits of MCP Integration:**
-- 🎯 Direct GitHub API access for issue creation and management
-- 🌐 Live browser automation for UI/UX testing
-- ☁️ Cloud infrastructure insights and deployment validation
-- 🔄 Seamless integration with existing workflows
-- 📊 Real-time quality metrics and analysis
+**Benefits of session-level MCP:**
+- 🎯 Uniform capability across all agents (no drift)
+- 🔐 Central secret management (PAT injected from environment)
+- 🌐 Live browser automation for UI / E2E
+- 🔄 Seamless Copilot coding-agent orchestration with Insiders experimental features
+- 📊 Real-time GitHub metrics and history
 
 ### 🏗️ Agent Architecture Overview
 
@@ -484,15 +493,20 @@ All agents read Essential Context Files (`copilot-setup-steps.yml`, `copilot-mcp
 
 ### Tool Access by Agent
 
-| Agent | Access Level |
-|-------|-------------|
-| 🎯 Task Agent | All tools + GitHub MCP + Playwright MCP + AWS MCP |
-| 🔍 Code Review Agent | View + search + Playwright (read-only) |
-| 📝 Documentation Writer | View + edit + create + search + Playwright |
-| 🛠️ Coding / ⚛️ Frontend / 🎮 Game Dev | All tools |
-| 🧪 Testing / 🔬 Test Engineer | All tools |
-| 🛡️ Security Specialist | All tools |
-| 🥋 Korean Martial Arts Expert | All tools |
+All repository-level agents declare `tools: ["*"]` in frontmatter — no per-agent tool restrictions. MCP capability is session-level (see [`.github/copilot-mcp.json`](../copilot-mcp.json)).
+
+| Agent | Access Level | Notes |
+|-------|-------------|-------|
+| 🎯 Task Agent | `["*"]` | Orchestrator — leans on GitHub MCP Copilot coding-agent tools |
+| 🛠️ Coding Agent | `["*"]` | General implementation |
+| ⚛️ Frontend Specialist | `["*"]` | React 19 + strict TS |
+| 🎮 Game Developer | `["*"]` | Three.js / R3F / physics / audio |
+| 🧪 Testing Agent | `["*"]` | Vitest + Cypress + security tests |
+| 🔬 Test Engineer | `["*"]` | Strategy + CI gates + SAST/DAST/SCA |
+| 📝 Documentation Writer | `["*"]` | TSDoc + C4 + ISMS docs |
+| 🔍 Code Review Agent | `["*"]` | By convention treats edits as suggestions |
+| 🛡️ Security Specialist | `["*"]` | Supply chain + ISMS + vulnerability |
+| 🥋 Korean Martial Arts Expert | `["*"]` | Authenticity + cultural accuracy |
 
 ## 🎯 Agent Development Guidelines
 - Performance testing

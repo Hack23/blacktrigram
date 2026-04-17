@@ -1,3 +1,9 @@
+---
+name: ai-governance
+description: Enforces AI governance for Black Trigram — transparent and accountable AI-assisted development aligned with Hack23 AI Governance Policy, EU AI Act, NIST AI RMF, and Information Security Policy
+license: MIT
+---
+
 # 🤖 AI Governance Skill
 
 > **Strategic Principle**: AI-powered development must be transparent, accountable, and aligned with organizational policies.

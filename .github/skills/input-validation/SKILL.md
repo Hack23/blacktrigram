@@ -1,3 +1,9 @@
+---
+name: input-validation
+description: Enforces input validation at all system boundaries for Black Trigram — type, length, format, range checks; Zod/type guards; safe output encoding; aligned with OWASP A03:2021 and Hack23 Secure Development Policy §3.3
+license: MIT
+---
+
 # 🛡️ Input Validation Skill
 
 > **Strategic Principle**: Never trust input. Validate everything at system boundaries.

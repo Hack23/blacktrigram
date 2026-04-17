@@ -1,3 +1,9 @@
+---
+name: data-protection
+description: Enforces data protection at every stage of its lifecycle for Black Trigram — classification, HTTPS/TLS 1.2+, CSP, SRI, minimal retention, aligned with Hack23 Data Classification Policy and GDPR Articles 5, 25, 32
+license: MIT
+---
+
 # 🛡️ Data Protection Skill
 
 > **Strategic Principle**: Protect data at every stage of its lifecycle - in transit, at rest, and in use.

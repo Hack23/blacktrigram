@@ -1,3 +1,9 @@
+---
+name: typescript-strict-patterns
+description: Enforces maximum TypeScript type safety for Black Trigram — strict mode, no 'any', readonly by default, exhaustive pattern matching, explicit return types for compile-time error detection
+license: MIT
+---
+
 # 📐 TypeScript Strict Patterns Skill
 
 > **Strategic Principle**: TypeScript's type system is your first line of defense. Use it to prevent bugs at compile time.
