@@ -698,6 +698,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     currentPosition: player3DPositionWithAttackMovement,
   } = useAttackMovement({
     isAttacking: isPlayerAttacking,
+    // eslint-disable-next-line react-hooks/refs -- ref value is set synchronously before isAttacking becomes true; hook only reads this at attack start
     animationType: currentTechniqueAnimationTypeRef.current,
     currentStance: trainingPlayerState.currentStance,
     basePosition: player3DPosition,

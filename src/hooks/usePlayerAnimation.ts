@@ -9,7 +9,7 @@
  * @korean 플레이어애니메이션훅
  */
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   AnimationEvents,
   AnimationState,
@@ -216,9 +216,6 @@ export function usePlayerAnimation(
 ): UsePlayerAnimationReturn {
   const { customConfigs, events, initialState = "idle" } = options;
 
-  // Force re-renders when state changes
-  const [, forceUpdate] = useState(0);
-
   // Create animation configs (memoized)
   const configs = useMemo(
     () => customConfigs ?? DEFAULT_ANIMATION_CONFIGS,
@@ -236,26 +233,26 @@ export function usePlayerAnimation(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty deps - only create once
 
-  // Track previous state to only update on actual changes
-  const prevStateRef = useRef<AnimationState>(stateMachine.getCurrentState());
-  const prevFrameRef = useRef<number>(stateMachine.getCurrentFrame());
+  // Track current state/frame as React state so they can be safely returned
+  // during render. Previously these were refs paired with a forceUpdate trick,
+  // but react-hooks/refs forbids reading .current during render.
+  const [currentState, setCurrentState] = useState<AnimationState>(() =>
+    stateMachine.getCurrentState(),
+  );
+  const [currentFrame, setCurrentFrame] = useState<number>(() =>
+    stateMachine.getCurrentFrame(),
+  );
 
   // Memoized callbacks with selective state updates
   const update = useCallback(
     (deltaTime: number) => {
       const result = stateMachine.update(deltaTime);
-      const currentState = stateMachine.getCurrentState();
-      const currentFrame = stateMachine.getCurrentFrame();
+      const nextState = stateMachine.getCurrentState();
+      const nextFrame = stateMachine.getCurrentFrame();
 
       // Only trigger re-render if state or frame changed
-      if (
-        currentState !== prevStateRef.current ||
-        currentFrame !== prevFrameRef.current
-      ) {
-        prevStateRef.current = currentState;
-        prevFrameRef.current = currentFrame;
-        forceUpdate((n) => n + 1);
-      }
+      setCurrentState((prev) => (prev !== nextState ? nextState : prev));
+      setCurrentFrame((prev) => (prev !== nextFrame ? nextFrame : prev));
 
       return result;
     },
@@ -266,9 +263,8 @@ export function usePlayerAnimation(
     (newState: AnimationState) => {
       const success = stateMachine.transitionTo(newState);
       if (success) {
-        prevStateRef.current = stateMachine.getCurrentState();
-        prevFrameRef.current = stateMachine.getCurrentFrame();
-        forceUpdate((n) => n + 1);
+        setCurrentState(stateMachine.getCurrentState());
+        setCurrentFrame(stateMachine.getCurrentFrame());
       }
       return success;
     },
@@ -277,18 +273,16 @@ export function usePlayerAnimation(
 
   const reset = useCallback(() => {
     stateMachine.reset();
-    prevStateRef.current = stateMachine.getCurrentState();
-    prevFrameRef.current = stateMachine.getCurrentFrame();
-    forceUpdate((n) => n + 1);
+    setCurrentState(stateMachine.getCurrentState());
+    setCurrentFrame(stateMachine.getCurrentFrame());
   }, [stateMachine]);
 
   const transitionToStanceGuard = useCallback(
     (stance: TrigramStance) => {
       const success = stateMachine.transitionToStanceGuard(stance);
       if (success) {
-        prevStateRef.current = stateMachine.getCurrentState();
-        prevFrameRef.current = stateMachine.getCurrentFrame();
-        forceUpdate((n) => n + 1);
+        setCurrentState(stateMachine.getCurrentState());
+        setCurrentFrame(stateMachine.getCurrentFrame());
       }
       return success;
     },
@@ -299,9 +293,8 @@ export function usePlayerAnimation(
     (durationSeconds: number) => {
       const success = stateMachine.transitionToAttack(durationSeconds);
       if (success) {
-        prevStateRef.current = stateMachine.getCurrentState();
-        prevFrameRef.current = stateMachine.getCurrentFrame();
-        forceUpdate((n) => n + 1);
+        setCurrentState(stateMachine.getCurrentState());
+        setCurrentFrame(stateMachine.getCurrentFrame());
       }
       return success;
     },
@@ -315,9 +308,8 @@ export function usePlayerAnimation(
         toStance,
       );
       if (success) {
-        prevStateRef.current = stateMachine.getCurrentState();
-        prevFrameRef.current = stateMachine.getCurrentFrame();
-        forceUpdate((n) => n + 1);
+        setCurrentState(stateMachine.getCurrentState());
+        setCurrentFrame(stateMachine.getCurrentFrame());
       }
       return success;
     },
@@ -332,15 +324,10 @@ export function usePlayerAnimation(
     return stateMachine.getCurrentGuardStance();
   }, [stateMachine]);
 
-  // Memoize the return value to ensure stable reference unless state/frame changes
-  // Note: Using ref.current as dependencies is intentional here - when state changes,
-  // forceUpdate triggers a re-render, and the refs have new values which cause
-  // the useMemo to recalculate
-  // Return a fresh object each render to ensure currentState/currentFrame are always up-to-date
-  // Mutable ref values don't trigger re-renders, so we can't rely on memoization here
+  // Return a fresh object each render so consumers see the latest state/frame
   return {
-    currentState: prevStateRef.current,
-    currentFrame: prevFrameRef.current,
+    currentState,
+    currentFrame,
     update,
     transitionTo,
     transitionToAttack,
