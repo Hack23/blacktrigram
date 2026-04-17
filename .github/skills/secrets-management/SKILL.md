@@ -1,3 +1,9 @@
+---
+name: secrets-management
+description: Enforces secure handling of API keys, tokens, and credentials for Black Trigram — no hardcoded secrets, GitHub Secrets for CI/CD, rotation SLAs, aligned with OWASP A02:2021 and Hack23 Cryptography Policy
+license: MIT
+---
+
 # 🔑 Secrets Management Skill
 
 > **Strategic Principle**: Secrets must never appear in source code. Manage secrets securely throughout their lifecycle.

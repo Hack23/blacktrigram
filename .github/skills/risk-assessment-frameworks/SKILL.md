@@ -1,3 +1,9 @@
+---
+name: risk-assessment-frameworks
+description: Enforces systematic risk identification, evaluation, and treatment for Black Trigram — aligned with ISO 31000, ISO 27001 6.1/6.2, NIST CSF ID.RA, and Hack23 Information Security Policy
+license: MIT
+---
+
 # ⚖️ Risk Assessment Frameworks Skill
 
 > **Strategic Principle**: Understand risks to make informed decisions. Assess, prioritize, and mitigate systematically.

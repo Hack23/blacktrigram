@@ -1,3 +1,9 @@
+---
+name: documentation-standards
+description: Enforces consistent documentation standards for Black Trigram — JSDoc/TSDoc completeness, architecture currency, bilingual Korean-English content, and security documentation updates
+license: MIT
+---
+
 # 📝 Documentation Standards Skill
 
 > **Strategic Principle**: Great documentation is as important as great code. Document for clarity, maintainability, and knowledge transfer.

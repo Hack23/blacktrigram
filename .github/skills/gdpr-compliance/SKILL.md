@@ -1,3 +1,9 @@
+---
+name: gdpr-compliance
+description: Enforces GDPR, NIS2, and EU Cyber Resilience Act requirements for Black Trigram — data minimization, explicit consent, right-to-erasure, privacy by design, and Hack23 Data Classification Policy alignment
+license: MIT
+---
+
 # 🔒 GDPR Compliance Skill
 
 > **Strategic Principle**: Privacy by design. Protect user data as a fundamental right, not an afterthought.

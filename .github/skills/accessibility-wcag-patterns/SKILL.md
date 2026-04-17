@@ -1,3 +1,9 @@
+---
+name: accessibility-wcag-patterns
+description: Enforces WCAG 2.1 Level AA accessibility for Black Trigram — semantic HTML, ARIA, keyboard navigation, 4.5:1/3:1 contrast, screen reader support, and prefers-reduced-motion for inclusive Korean martial arts gameplay
+license: MIT
+---
+
 # ♿ Accessibility & WCAG Patterns Skill
 
 > **Strategic Principle**: Accessible software is usable software. Build inclusive experiences that work for everyone, regardless of ability.
