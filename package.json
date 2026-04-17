@@ -1,6 +1,6 @@
 {
   "name": "blacktrigram",
-  "version": "0.7.19",
+  "version": "0.7.20",
   "description": "Black Trigram (흑괘) - Korean Martial Arts Combat Simulator. Reusable game systems, combat mechanics, animation framework, and Korean martial arts data built with React, Three.js, and TypeScript.",
   "type": "module",
   "main": "./lib/index.js",
