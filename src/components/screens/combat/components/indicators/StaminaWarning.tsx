@@ -30,6 +30,16 @@ export interface StaminaWarningProps {
    * @korean 모바일여부
    */
   readonly isMobile: boolean;
+
+  /**
+   * Multiplier applied to the warning's visual weight (0.0-1.0).
+   *
+   * Used to soften the fullscreen flash when the 3D arena is already
+   * visually compressed (e.g. portrait mobile). Default is `1.0`.
+   *
+   * @korean 효과강도배수
+   */
+  readonly intensityScale?: number;
 }
 
 /**
@@ -49,6 +59,7 @@ export interface StaminaWarningProps {
 export const StaminaWarning: React.FC<StaminaWarningProps> = ({
   stamina,
   isMobile,
+  intensityScale = 1,
 }) => {
   const theme = useKoreanTheme({ variant: "danger", size: "md", isMobile });
   
@@ -65,11 +76,19 @@ export const StaminaWarning: React.FC<StaminaWarningProps> = ({
     // Calculate urgency based on how low stamina is (20-0% -> 0-1)
     const urgency = (criticalThreshold - clampedStamina) / criticalThreshold;
 
+    // Attenuation (e.g. 0.5 on portrait mobile). Applied to the glow and
+    // a separate `borderColor` alpha, but the border itself always renders
+    // at full opacity so the warning frame stays visible.
+    const safeScale = Math.max(0, Math.min(1, intensityScale));
+
     // Mobile uses thinner border
     const borderWidth = isMobile ? "4px" : "6px";
 
-    // Use theme WARNING_YELLOW constant with proper conversion
-    const warningColor = hexToRgbaString(theme.colors.WARNING_YELLOW, 1);
+    // Border stays at full alpha so the warning outline is always visible,
+    // regardless of `intensityScale`.
+    const borderColor = hexToRgbaString(theme.colors.WARNING_YELLOW, 1);
+    // Glow is attenuated so the overall flash is subtler when requested.
+    const glowColor = hexToRgbaString(theme.colors.WARNING_YELLOW, safeScale);
     // Animation speed increases with urgency
     const animationDuration = Math.max(0.6, 1.2 - urgency * 0.6);
 
@@ -77,13 +96,13 @@ export const StaminaWarning: React.FC<StaminaWarningProps> = ({
       position: "fixed" as const,
       inset: borderWidth,
       pointerEvents: "none" as const,
-      border: `${borderWidth} solid ${warningColor}`,
-      boxShadow: `0 0 20px ${warningColor}`,
+      border: `${borderWidth} solid ${borderColor}`,
+      boxShadow: `0 0 ${Math.round(20 * safeScale)}px ${glowColor}`,
       animation: `staminaFlash ${animationDuration}s ease-in-out infinite`,
       transition: "border-color 0.3s ease-out",
       zIndex: 85, // Below balance indicator but above game content
     };
-  }, [stamina, isMobile, theme.colors.WARNING_YELLOW]);
+  }, [stamina, isMobile, intensityScale, theme.colors.WARNING_YELLOW]);
 
   // Don't render if stamina is not critical
   if (stamina >= 20 || !warningStyle) {

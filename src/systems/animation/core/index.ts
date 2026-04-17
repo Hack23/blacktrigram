@@ -37,6 +37,7 @@ export {
   getAnimationForTechnique,
   getAnimationForTechniqueId,
   getAnimationForTechniqueIdWithConfig,
+  resolveTechniqueAnimation,
   GRAPPLING_ANIMATIONS,
   KICK_ANIMATIONS,
   PUNCH_ANIMATIONS,

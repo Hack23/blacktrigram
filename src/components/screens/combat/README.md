@@ -40,6 +40,39 @@ combat/
 
 ---
 
+## 📱 Responsive Orientation Profiles
+
+The combat screen's layout is computed by `useCombatLayout(width, height)`, which
+returns an orientation-aware `{ isMobile, isPortrait, arenaBounds }` tuple. The
+hook selects one of four layout profiles:
+
+| Profile              | Trigger                                     | Arena aspect | Side HUDs | Camera                         |
+| -------------------- | ------------------------------------------- | ------------ | --------- | ------------------------------ |
+| Desktop              | `!isMobile && !isPortrait`                  | 4:3          | Shown     | Default (FOV 60, z=12)         |
+| Mobile landscape     | `isMobile && !isPortrait`                   | 4:3          | Shown     | Tighter (FOV 55, z=10)         |
+| Mobile portrait      | `isPortrait && width < 1024`                | 3:4          | **Hidden** | Pulled back (FOV +15, z+4)    |
+| Tablet (landscape)   | `isMobile && width ≥ 768 && !isPortrait`    | 4:3          | Shown     | Mobile camera                  |
+
+Key rules:
+
+- **Portrait forcing**: any viewport with `height > width × 0.9` and
+  `width < 1024` is treated as mobile, regardless of user-agent, so devtools
+  emulation matches real rotated phones.
+- **Bottom-band reservation**: in portrait mobile, `useCombatLayout` subtracts
+  `controlsHeight + footerHeight + mobileControlsHeight` from the arena's
+  available height so the 3D scene is never occluded by the technique bar or
+  D-Pad / action buttons.
+- **Side-HUD collapse**: `CombatLeftHUD` and `CombatRightHUD` are not rendered
+  in portrait mobile (player HP/stamina remain visible via the top HUD).
+- **Camera**: in portrait the FOV is widened and the camera is pulled back so
+  both fighters fit the narrow viewport from head to feet.
+
+See `useCombatLayout.responsive.test.ts` for a viewport matrix that enforces
+"arena stays inside the viewport with non-trivial area" on every supported
+phone + tablet resolution.
+
+---
+
 ## ⚡ Performance Characteristics
 
 ### Current Performance (January 2026)

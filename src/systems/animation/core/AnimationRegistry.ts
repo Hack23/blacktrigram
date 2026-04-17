@@ -845,6 +845,35 @@ export function getAnimation(name: string): SkeletalAnimation | undefined {
  * @korean 기술애니메이션폴백매핑
  */
 const TECHNIQUE_ANIMATION_FALLBACK: ReadonlyArray<readonly [RegExp, string]> = [
+  // ───────────────────────────────────────────────────────────────────────
+  // Stance-specific distinctive strikes - MUST be checked before the generic
+  // /strike/ rule so that "Thunder Strike", "Heaven Strike", "Nerve Strike",
+  // "Precision Strike", etc. don't collapse to the generic "jab" fallback.
+  // ───────────────────────────────────────────────────────────────────────
+  [/heaven.?strike|천둥벽력|하늘치기/i, "heaven_strike"],
+  [/lightning.?(strike|flash)|번개|뇌격/i, "lightning_strike"],
+  [/nerve.?strike|신경.?타격|신경치기/i, "nerve_strike"],
+  [/pressure.?point|혈도|급소/i, "pressure_point_strike"],
+  [/solar.?plexus|명치|태양신경총/i, "solar_plexus_strike"],
+  [/throat.?strike|후두타격|목치기/i, "throat_strike"],
+  [/temple.?(strike|elbow)|관자놀이/i, "temple_strike"],
+  [/eye.?gouge|눈찌르기/i, "eye_gouge"],
+  [/ear.?strike|귀치기/i, "ear_strike"],
+  [/liver.?(disruption|strike)|간장|간치기/i, "liver_disruption"],
+  [/kidney.?(strike|punch)|신장치기/i, "kidney_strike"],
+  [/spear.?hand|관수|손끝찌르기/i, "spear_hand_strike"],
+  [/flowing.?cross|flowing.?strike|유수타격/i, "flowing_cross"],
+  [/flowing.?push|flowing.?palm/i, "flowing_push"],
+  [/rapid.?barrage|연환타/i, "rapid_barrage"],
+  [/rhythmic.?strike|리듬타격/i, "rhythmic_strikes"],
+  // Heavenly/dragon fist names are stance-specific and should map to the
+  // proper Geon/Jin animations, not the generic jab/cross fallbacks.
+  // Note: intentionally exclude "정권" (generic straight punch) here — it
+  // should continue to resolve to the generic `jab` via the kick/jab
+  // section below, not to Geon's heaven_strike.
+  [/heavenly.?fist|천권/i, "heaven_strike"],
+  [/dragon.?fist|용권/i, "jin_lightning_flash"],
+
   // Kicks (차기) - more specific patterns first
   [/axe.?kick|내려차기|naeryeo/i, "axe_kick"],
   [/back.?kick|뒤차기|dwi.?chagi/i, "back_kick"],
@@ -877,7 +906,7 @@ const TECHNIQUE_ANIMATION_FALLBACK: ReadonlyArray<readonly [RegExp, string]> = [
   [/cross|십자|교차/i, "cross"],
   [/uppercut|upper|올려|치올/i, "uppercut"],
   [/jab|잽|직권|찌르기|punch|주먹|권/i, "jab"],
-  // Generic strikes last
+  // Generic strikes last - only used when no more specific pattern matched above
   [/strike|타격|격|chigi/i, "jab"],
 ] as const;
 
@@ -906,20 +935,107 @@ const TECHNIQUE_ANIMATION_FALLBACK: ReadonlyArray<readonly [RegExp, string]> = [
  * @korean 기술에맞는애니메이션가져오기
  */
 export function getAnimationForTechnique(techniqueNameOrId: string): string {
+  if (!techniqueNameOrId) return "jab";
+
   // 1. First check if technique ID exists directly in ALL_ANIMATIONS
   //    This handles stance-specific animations like "geon_heaven_strike"
   if (ALL_ANIMATIONS.has(techniqueNameOrId)) {
     return techniqueNameOrId;
   }
 
-  // 2. Try regex pattern matching for generic technique names
+  // 2. Try a normalized form: "Thunder Strike" → "thunder_strike".
+  //    This lets us catch techniques whose English name happens to match
+  //    an animation key exactly once spaces are collapsed.
+  const normalized = techniqueNameOrId
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, "_")
+    .replace(/[^a-z0-9_]/g, "");
+  if (normalized && ALL_ANIMATIONS.has(normalized)) {
+    return normalized;
+  }
+
+  // 3. Try regex pattern matching for generic technique names
   for (const [pattern, animationName] of TECHNIQUE_ANIMATION_FALLBACK) {
     if (pattern.test(techniqueNameOrId)) {
       return animationName;
     }
   }
 
-  // 3. Ultimate fallback to jab
+  // 4. Ultimate fallback to jab
+  return "jab";
+}
+
+/**
+ * Resolve a technique object to its best-matching animation key.
+ *
+ * This is the single, authoritative entry point for screens and systems
+ * that need to know which skeletal animation to play for a given technique.
+ *
+ * Resolution order (most specific → least):
+ *  1. `technique.animationId` if present and registered (KoreanTechnique / TrigramStanceTechnique).
+ *  2. `technique.id` if registered (Technique objects from {@link getTechniquesForStanceAndArchetype}
+ *     already carry their stance-specific id, e.g. `"geon_heaven_strike"`).
+ *  3. Regex-based fallback on `technique.name.english`, then `technique.name.korean`.
+ *  4. `"jab"` as ultimate fallback.
+ *
+ * Passing the technique object (rather than a loose string) avoids the
+ * long-standing bug where `technique.name.english` — e.g. `"Thunder Strike"` —
+ * would match only the generic `/strike/` rule and collapse every
+ * stance-specific attack to the jab animation.
+ *
+ * @param technique - Technique or technique-like object.
+ * @returns Animation key registered in {@link ALL_ANIMATIONS}.
+ *
+ * @korean 기술객체로애니메이션해결
+ */
+export function resolveTechniqueAnimation(
+  technique:
+    | {
+        readonly id?: string;
+        readonly animationId?: string;
+        readonly name?: {
+          readonly english?: string;
+          readonly korean?: string;
+        };
+      }
+    | null
+    | undefined,
+): string {
+  if (!technique) return "jab";
+
+  // 1. Prefer animationId (authoritative 1-1 mapping on KoreanTechnique).
+  if (technique.animationId && ALL_ANIMATIONS.has(technique.animationId)) {
+    return technique.animationId;
+  }
+
+  // 2. technique.id (Technique objects preserve stance-prefixed ids here).
+  if (technique.id && ALL_ANIMATIONS.has(technique.id)) {
+    return technique.id;
+  }
+
+  // 3. Regex/normalized fallback on the most specific string we have.
+  const english = technique.name?.english;
+  if (english) {
+    const byEnglish = getAnimationForTechnique(english);
+    // Guard: only accept the result if it's not the dumb "jab" default when
+    // we still have an id/animationId we can try as a last resort.
+    if (byEnglish !== "jab" || !technique.id) {
+      return byEnglish;
+    }
+  }
+
+  // 4. Try id as a string (may go through regex fallback if not registered).
+  if (technique.id) {
+    return getAnimationForTechnique(technique.id);
+  }
+
+  // 5. Korean name as last resort.
+  const korean = technique.name?.korean;
+  if (korean) {
+    return getAnimationForTechnique(korean);
+  }
+
   return "jab";
 }
 

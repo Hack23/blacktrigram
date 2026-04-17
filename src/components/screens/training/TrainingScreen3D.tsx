@@ -56,7 +56,7 @@ import {
   AnimationEvents,
   AnimationState,
   AnimationType,
-  getAnimationForTechnique,
+  resolveTechniqueAnimation,
 } from "../../../systems/animation";
 import { getAnimationForTechniqueOrDefault } from "../../../systems/animation/core/TechniqueAnimationMapping";
 import { physicalReachCalculator } from "../../../systems/physics";
@@ -189,10 +189,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     useCombatAudio();
 
   // Responsive detection and layout (using dedicated training layout hook)
-  const { trainingAreaBounds, isMobile, screenSize } = useTrainingLayout(
-    width,
-    height,
-  );
+  const { trainingAreaBounds, isMobile, isPortrait, screenSize } =
+    useTrainingLayout(width, height);
 
   // Use Korean theme hook for consistent theming
   const theme = useKoreanTheme({
@@ -732,9 +730,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
         // Set attack animation based on technique
         // 기술에 따른 공격 애니메이션 설정
-        const animationName = getAnimationForTechnique(
-          technique.name.english || technique.id,
-        );
+        // Uses resolveTechniqueAnimation so stance-specific animations
+        // (e.g. "geon_heaven_strike", "li_precision_jab") are selected,
+        // instead of every technique collapsing to the generic "jab" visual.
+        const animationName = resolveTechniqueAnimation(technique);
         setAttackAnimation(animationName);
 
         // In training mode, do not deduct resources to allow continuous practice
@@ -1251,10 +1250,21 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Use shared physics config for consistent camera setup across screens
   // Mobile: tighter FOV and closer camera for better framing
   // Desktop: wider FOV and further camera for full view
-  const cameraConfig = useMemo(
-    () => createCameraConfig(isMobile),
-    [isMobile],
-  );
+  // Portrait: pull camera back on Z and widen FOV so the dummy + both
+  // side overlays fit in the narrow viewport.
+  const cameraConfig = useMemo(() => {
+    const base = createCameraConfig(isMobile);
+    if (!isPortrait) return base;
+    return {
+      ...base,
+      fov: Math.min(80, base.fov + 15),
+      position: [base.position[0], base.position[1], base.position[2] + 4] as [
+        number,
+        number,
+        number,
+      ],
+    };
+  }, [isMobile, isPortrait]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 15: RENDER
@@ -1468,17 +1478,23 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         }}
         data-testid="training-hud-overlay"
       >
-        {/* Left HUD - Anatomy Controls, Guard Indicator */}
-        <TrainingLeftHUD
-          width={width}
-          height={height}
-          isMobile={isMobile}
-          positionScale={positionScale}
-          visibleAnatomyLayers={trainingState.visibleAnatomyLayers}
-          onAnatomyLayerToggle={handleAnatomyLayerToggle}
-          currentStanceIndex={trainingState.currentStanceIndex}
-          isInGuard={playerAnimation.isInStanceGuard()}
-        />
+        {/* Left HUD - Anatomy Controls, Guard Indicator.
+            Hidden in portrait mobile because the 18 %-wide side HUD
+            occludes the already-compressed 3:4 arena; anatomy layer
+            toggles remain reachable from the Top HUD's Vital-Point
+            overlay controls. */}
+        {!(isMobile && isPortrait) && (
+          <TrainingLeftHUD
+            width={width}
+            height={height}
+            isMobile={isMobile}
+            positionScale={positionScale}
+            visibleAnatomyLayers={trainingState.visibleAnatomyLayers}
+            onAnatomyLayerToggle={handleAnatomyLayerToggle}
+            currentStanceIndex={trainingState.currentStanceIndex}
+            isInGuard={playerAnimation.isInStanceGuard()}
+          />
+        )}
 
         {/* Top HUD - Training Controls, Archetype Selector, Return Button */}
         <TrainingTopHUD
@@ -1496,32 +1512,36 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           onPlaySFX={(sound) => audio.playSFX(sound)}
         />
 
-        {/* Right HUD - Mode Selector, Stats, Vital Point Selection */}
-        <TrainingRightHUD
-          width={width}
-          height={height}
-          isMobile={isMobile}
-          positionScale={positionScale}
-          trainingMode={trainingState.trainingMode}
-          onModeChange={trainingActions.setTrainingMode}
-          stats={{
-            ...trainingState.stats,
-            sessionDuration: trainingState.sessionDuration,
-            bestCombo: trainingState.bestCombo,
-            perfectStrikes: trainingState.perfectStrikes,
-          }}
-          distanceToDummy={distanceToDummy}
-          effectiveReach={currentTechniqueReach}
-          selectedVitalPoint={trainingState.selectedVitalPoint}
-          onVitalPointSelect={trainingActions.setSelectedVitalPoint}
-          footworkDrillType={trainingState.footworkDrillType}
-          footworkDrillStep={trainingState.footworkDrillStep}
-          footworkDrillActive={trainingState.footworkDrillActive}
-          onStartFootworkDrill={trainingActions.startFootworkDrill}
-          onStopFootworkDrill={trainingActions.stopFootworkDrill}
-          onAdvanceFootworkStep={trainingActions.advanceFootworkStep}
-        />
-
+        {/* Right HUD - Mode Selector, Stats, Vital Point Selection.
+            Hidden in portrait mobile for the same occlusion reason as
+            the Left HUD. Users can rotate to landscape to access the
+            full stats + vital-point / footwork controls. */}
+        {!(isMobile && isPortrait) && (
+          <TrainingRightHUD
+            width={width}
+            height={height}
+            isMobile={isMobile}
+            positionScale={positionScale}
+            trainingMode={trainingState.trainingMode}
+            onModeChange={trainingActions.setTrainingMode}
+            stats={{
+              ...trainingState.stats,
+              sessionDuration: trainingState.sessionDuration,
+              bestCombo: trainingState.bestCombo,
+              perfectStrikes: trainingState.perfectStrikes,
+            }}
+            distanceToDummy={distanceToDummy}
+            effectiveReach={currentTechniqueReach}
+            selectedVitalPoint={trainingState.selectedVitalPoint}
+            onVitalPointSelect={trainingActions.setSelectedVitalPoint}
+            footworkDrillType={trainingState.footworkDrillType}
+            footworkDrillStep={trainingState.footworkDrillStep}
+            footworkDrillActive={trainingState.footworkDrillActive}
+            onStartFootworkDrill={trainingActions.startFootworkDrill}
+            onStopFootworkDrill={trainingActions.stopFootworkDrill}
+            onAdvanceFootworkStep={trainingActions.advanceFootworkStep}
+          />
+        )}
         {/* Bottom HUD - Technique Bar, Feedback Messages, Mobile Controls */}
         <TrainingBottomHUD
           width={width}
@@ -1570,7 +1590,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               onAttack={handleMobileAttack}
               onBlock={handleMobileBlock}
               disabled={!mobileControlsEnabled}
-              bottom={getMobileControlsBottom()}
+              bottom={getMobileControlsBottom(height)}
               opacity={0.85}
             />
 

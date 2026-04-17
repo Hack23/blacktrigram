@@ -63,6 +63,22 @@ export interface PlayerStateOverlayProps {
    * @korean 모바일여부
    */
   readonly isMobile: boolean;
+
+  /**
+   * Multiplier applied to every fullscreen effect's visual weight (0.0-1.0).
+   *
+   * Used by the parent screen to attenuate fullscreen vignette / blur / flash
+   * effects when the 3D arena is already visually compressed (e.g. portrait
+   * mobile, where the arena is rendered in a 3:4 aspect ratio and consumes
+   * the majority of the viewport height). Default is `1.0` (no attenuation).
+   *
+   * Cascades to `PainVignette`, `ConsciousnessBlur`, `BloodLossOverlayHtml`
+   * and `StaminaWarning`. Does not affect `BalanceIndicator`, which is an
+   * informational indicator rather than a fullscreen overlay.
+   *
+   * @korean 효과강도배수
+   */
+  readonly intensityScale?: number;
 }
 
 /**
@@ -99,11 +115,16 @@ export const PlayerStateOverlayHtml = React.memo<PlayerStateOverlayProps>(
     bloodLoss = 0,
     stamina,
     isMobile,
+    intensityScale = 1,
   }) => {
     return (
       <div data-testid="player-state-overlay" style={{ display: 'contents' }}>
         {/* Pain vignette - shows when pain >= 5 (see PainVignette.tsx) */}
-        <PainVignette pain={pain} isMobile={isMobile} />
+        <PainVignette
+          pain={pain}
+          isMobile={isMobile}
+          intensityScale={intensityScale}
+        />
 
         {/* Balance indicator - always visible, color-coded by state (see BalanceIndicator.tsx) */}
         <BalanceIndicator
@@ -113,13 +134,25 @@ export const PlayerStateOverlayHtml = React.memo<PlayerStateOverlayProps>(
         />
 
         {/* Consciousness blur - shows when consciousness <= 90 (see ConsciousnessBlur.tsx) */}
-        <ConsciousnessBlur consciousness={consciousness} isMobile={isMobile} />
+        <ConsciousnessBlur
+          consciousness={consciousness}
+          isMobile={isMobile}
+          intensityScale={intensityScale}
+        />
 
         {/* Blood loss warning - pulses when bloodLoss >= 50 (see BloodLossOverlayHtml.tsx) */}
-        <BloodLossOverlayHtml bloodLoss={bloodLoss} isMobile={isMobile} />
+        <BloodLossOverlayHtml
+          bloodLoss={bloodLoss}
+          isMobile={isMobile}
+          intensityScale={intensityScale}
+        />
 
         {/* Stamina warning - flashes when stamina < 20 (see StaminaWarning.tsx) */}
-        <StaminaWarning stamina={stamina} isMobile={isMobile} />
+        <StaminaWarning
+          stamina={stamina}
+          isMobile={isMobile}
+          intensityScale={intensityScale}
+        />
       </div>
     );
   },
@@ -133,7 +166,8 @@ export const PlayerStateOverlayHtml = React.memo<PlayerStateOverlayProps>(
       prevProps.consciousness === nextProps.consciousness &&
       prevProps.bloodLoss === nextProps.bloodLoss &&
       prevProps.stamina === nextProps.stamina &&
-      prevProps.isMobile === nextProps.isMobile
+      prevProps.isMobile === nextProps.isMobile &&
+      prevProps.intensityScale === nextProps.intensityScale
     );
   },
 );

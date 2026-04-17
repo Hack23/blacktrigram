@@ -23,3 +23,6 @@ export type { CombatLeftHUDProps } from "./CombatLeftHUD";
 
 export { CombatRightHUD } from "./CombatRightHUD";
 export type { CombatRightHUDProps } from "./CombatRightHUD";
+
+export { CombatPortraitStatusStrip } from "./CombatPortraitStatusStrip";
+export type { CombatPortraitStatusStripProps } from "./CombatPortraitStatusStrip";

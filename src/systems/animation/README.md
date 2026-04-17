@@ -196,6 +196,43 @@ Default configurations based on game-design.md:
 | hit            | 4      | 67ms             | No   | No            | 6        |
 | ko             | 30     | 500ms            | No   | No            | 7        |
 
+## 🎯 Technique → Animation Resolution
+
+Every `KoreanTechnique` carries an `animationId` that points to a purpose-built
+skeletal animation (e.g. `geon_heaven_strike`, `li_precision_jab`,
+`tae_joint_lock`). The single entry point for resolving a technique to a
+playable animation key is:
+
+```typescript
+import { resolveTechniqueAnimation } from "@/systems/animation";
+
+const animationName = resolveTechniqueAnimation(technique);
+setAttackAnimation(animationName);
+```
+
+Resolution order used by `resolveTechniqueAnimation` (declared in
+`AnimationRegistry.ts`):
+
+1. `technique.animationId` — most specific; guaranteed to match a real
+   `ALL_ANIMATIONS` entry for every trigram technique.
+2. `technique.id` — many technique ids are themselves registered animation
+   keys (e.g. `geon_heaven_strike`).
+3. Normalized `technique.name.english` — the spaced English name is
+   lowercased and non-alphanumeric characters become underscores
+   (`"Thunder Strike"` → `thunder_strike`) and matched against
+   `ALL_ANIMATIONS` exactly.
+4. Regex fallback (`TECHNIQUE_ANIMATION_FALLBACK`) — specific tokens
+   (heaven, thunder, nerve, pressure_point, solar_plexus, etc.) are matched
+   before the broad `/strike/`, `/punch/`, `/kick/` rules so stance-specific
+   names like `"Heaven Strike"` never collapse to the generic `jab` visual.
+5. Default → `"jab"`.
+
+> ⚠ Do **not** pass `technique.name.english` directly to
+> `getAnimationForTechnique` — that was the source of the "every attack looks
+> like a jab" bug. Use `resolveTechniqueAnimation(technique)` from both
+> Combat and Training screens (basic/space-bar, per-technique, and AI
+> fallback branches).
+
 ## 🔧 Custom Configurations
 
 ```typescript

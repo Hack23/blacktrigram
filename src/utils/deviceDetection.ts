@@ -156,8 +156,7 @@ function hasTouchSupport(): boolean {
   // Check for pointer events with touch
   if (
     typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(pointer: coarse)").matches
+    window.matchMedia?.("(pointer: coarse)")?.matches
   ) {
     return true;
   }

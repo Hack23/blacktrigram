@@ -35,6 +35,11 @@ import { getScreenSize } from "../../../../systems/ResponsiveScaling";
 import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimensions";
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
+import {
+  PORTRAIT_FORCE_MAX_WIDTH_PX,
+  PORTRAIT_HYSTERESIS_FACTOR,
+  portraitMobileControlsBottomBand,
+} from "../../../../utils/responsiveOrientationConstants";
 import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
@@ -61,6 +66,7 @@ export interface CombatLayout {
   readonly layoutConstants: LayoutConstants;
   readonly arenaBounds: ArenaBounds;
   readonly isMobile: boolean;
+  readonly isPortrait: boolean;
   readonly screenSize: ScreenSize;
 }
 
@@ -73,9 +79,19 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   // Determine screen size category using centralized scaling system
   const screenSize = useMemo(() => getScreenSize(width), [width]);
 
-  // Device detection has its own internal caching based on screen dimensions
-  // No need for additional React memoization here
-  const isMobile = shouldUseMobileControls();
+  // Portrait orientation detection. The hysteresis factor provides stability
+  // so viewports near 1:1 don't flap on every resize event.
+  // 세로 모드 감지
+  const isPortrait = height > width * PORTRAIT_HYSTERESIS_FACTOR;
+
+  // Device detection has its own internal caching based on screen dimensions.
+  // In addition to its user-agent result we force the mobile branch for any
+  // narrow portrait viewport so that devtools emulation and real rotated
+  // phones both render the mobile-optimized layout.
+  // 모바일 레이아웃 강제: 세로 + 좁은 화면
+  const isMobile =
+    shouldUseMobileControls() ||
+    (isPortrait && width < PORTRAIT_FORCE_MAX_WIDTH_PX);
 
   // Centralized layout constants for easier tweaking
   // Enhanced with tablet-specific values for better responsive support
@@ -87,11 +103,26 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
     [width, isMobile],
   );
 
-  // Arena bounds calculation using physics-first 4:3 aspect ratio sizing
-  // Arena size is based on resolution (6×4.5, 8×6, 10×7.5, 12×9, 14×10.5 meters)
-  // Mobile controls are determined separately by device detection
+  // Arena bounds calculation using physics-first aspect-ratio sizing
+  // Landscape mobile: 4:3 (width > height)
+  // Portrait mobile:  3:4 (height > width) — fits both fighters vertically
+  //                    without being occluded by bottom HUD + D-Pad
   const arenaBounds = useMemo<ArenaBounds>(() => {
-    const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
+    // In portrait mobile we render a compact two-player status strip
+    // directly below the top HUD to replace the collapsed side HUDs.
+    // Reserve its height here so the arena is pushed below it instead of
+    // being drawn underneath. Use a tighter strip on extra-small phones
+    // (< 380 px wide) to preserve the playable arena area.
+    const isExtraSmallWidth = width < 380;
+    const portraitStatusStripHeight =
+      isMobile && isPortrait
+        ? Math.max(isExtraSmallWidth ? 28 : 36, Math.round(height * 0.055))
+        : 0;
+
+    const arenaY =
+      layoutConstants.hudHeight +
+      portraitStatusStripHeight +
+      layoutConstants.padding;
 
     // Calculate world dimensions based on screen resolution (not device type)
     // All arenas are SQUARE for consistent combat mechanics
@@ -99,18 +130,32 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
 
     // Mobile-specific arena sizing for better screen fit
     if (isMobile) {
-      // Extra-small device detection for optimized clearances
-      const isExtraSmall = width < 380;
-      const minTopClearance = isExtraSmall ? 75 : 80;
-      const minBottomClearance = isExtraSmall ? 110 : 120;
+      const isExtraSmall = isExtraSmallWidth;
+      const minTopClearance =
+        (isExtraSmall ? 75 : 80) + portraitStatusStripHeight;
 
-      // Use shared mobile area calculation for consistency with training screen
+      // In portrait we must reserve space for the whole bottom band
+      // (technique bar + mobile controls + footer) or the arena ends up
+      // behind the D-Pad. See responsiveOrientationConstants.ts for the
+      // derivation of the mobile-controls reservation.
+      const minBottomClearance = isPortrait
+        ? portraitMobileControlsBottomBand(
+            layoutConstants.controlsHeight,
+            layoutConstants.footerHeight,
+            isExtraSmall,
+            "combat",
+          )
+        : isExtraSmall
+          ? 110
+          : 120;
+
       const mobileBounds = calculateMobileAreaBounds(
         width,
         height,
         minTopClearance,
         minBottomClearance,
         arenaY,
+        isPortrait ? "portrait" : "landscape",
       );
 
       // Mobile bounds already include world dimensions from resolution
@@ -151,12 +196,13 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       worldWidthMeters: worldDimensions.widthMeters,
       worldDepthMeters: worldDimensions.depthMeters,
     };
-  }, [width, height, layoutConstants, isMobile]);
+  }, [width, height, layoutConstants, isMobile, isPortrait]);
 
   return {
     layoutConstants,
     arenaBounds,
     isMobile,
+    isPortrait,
     screenSize,
   };
 }
