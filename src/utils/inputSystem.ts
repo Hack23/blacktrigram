@@ -201,6 +201,8 @@ export function usePlayerMovement(
   // Compute arena bounds synchronously when bounds dimensions change
   // Uses useMemo to ensure bounds are available immediately (not after effect runs)
   // Falls back to default arena bounds if invalid or missing
+  // Depend on the whole `bounds` object so the compiler's inferred property-access
+  // dependencies (bounds.worldWidthMeters / bounds.worldDepthMeters) are covered.
   const arenaBoundsResult = useMemo<{
     bounds: MovementArenaBounds | undefined;
     error?: Error;
@@ -245,7 +247,7 @@ export function usePlayerMovement(
         error: error instanceof Error ? error : new Error(String(error)),
       };
     }
-  }, [bounds?.worldWidthMeters, bounds?.worldDepthMeters]);
+  }, [bounds]);
 
   const arenaBounds = arenaBoundsResult.bounds;
 

@@ -205,6 +205,32 @@ export interface CombatScreen3DProps {
  * CombatScreen3D Component
  * Three.js-based combat screen with 3D characters and effects
  */
+
+/**
+ * AdaptiveQualityWrapper - Internal component to use adaptive quality hook
+ * Must be inside Canvas to use useFrame from @react-three/fiber
+ *
+ * Hoisted outside CombatScreen3D to avoid "Cannot create components during render"
+ * warnings from react-hooks/component-creation. Keeps the component type stable
+ * across renders of the parent.
+ */
+const AdaptiveQualityWrapper: React.FC<{
+  readonly enabled: boolean;
+  readonly isMobile: boolean;
+  readonly children: React.ReactNode;
+}> = ({ enabled, isMobile, children }) => {
+  // Monitor FPS and adjust quality dynamically
+  // Quality settings are logged but not currently applied to rendering
+  // Future: Pass quality settings to child components for dynamic adjustments
+  useAdaptiveQuality(enabled, isMobile, (newQuality) => {
+    if (import.meta.env.DEV) {
+      console.log(`[CombatScreen3D] Quality adjusted to: ${newQuality}`);
+    }
+  });
+
+  return <>{children}</>;
+};
+
 export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   players,
   onPlayerUpdate,
@@ -328,41 +354,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Adaptive quality - default to enabled on mobile, optional on desktop
   const shouldEnableAdaptiveQuality = enableAdaptiveQuality ?? isMobile;
 
-  /**
-   * AdaptiveQualityWrapper - Internal component to use adaptive quality hook
-   * Must be inside Canvas to use useFrame from @react-three/fiber
-   *
-   * Memoized with useMemo so the component type is stable across renders.
-   * Note: renderConfig is intentionally NOT in dependencies to prevent
-   * component recreation when performance settings change, which would
-   * reset the internal state of useAdaptiveQuality hook.
-   */
-  const AdaptiveQualityWrapper = useMemo<
-    React.FC<{ children: React.ReactNode }>
-  >(() => {
-    const Component: React.FC<{ children: React.ReactNode }> = ({
-      children,
-    }) => {
-      // Monitor FPS and adjust quality dynamically
-      // Quality settings are logged but not currently applied to rendering
-      // Future: Pass quality settings to child components for dynamic adjustments
-      useAdaptiveQuality(
-        shouldEnableAdaptiveQuality,
-        isMobile,
-        (newQuality) => {
-          if (import.meta.env.DEV) {
-            console.log(`[CombatScreen3D] Quality adjusted to: ${newQuality}`);
-          }
-        },
-      );
-
-      // Quality monitoring is active - quality changes logged in dev mode
-      return <>{children}</>;
-    };
-
-    return Component;
-  }, [shouldEnableAdaptiveQuality, isMobile]);
-
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
 
@@ -446,7 +437,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Current time for balance indicators and other time-dependent UI
   // Updated every 200ms to avoid calling Date.now() on every render (60fps)
-  const [currentTime, setCurrentTime] = useState(Date.now());
+  // Use lazy initializer so Date.now() is not called during render (React purity)
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
 
   // Match countdown state - DISABLED: skip countdown and start combat immediately
   // Using state for hasShownMatchCountdown to avoid ref access during render
@@ -682,7 +674,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // atan2(dx, dz) gives the Y-axis rotation needed to face direction (dx, dz)
   // This is the standard formula for rotating around Y to point at a target
   // NOTE: player1Rotation is calculated after usePlayerMovement below
-  const player1LastRotationRef = useRef<number>(0);
 
   const player2Rotation = useMemo(() => {
     const dx = player1Position3D[0] - player2Position3D[0];
@@ -946,14 +937,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       // velocity.x is lateral (left/right), velocity.y is forward/backward (Z in 3D)
       // Use velocity.y directly (not negated) so down arrow faces correctly
       const movementRotation = Math.atan2(player1Velocity.x, player1Velocity.y);
-      player1LastRotationRef.current = movementRotation;
       return movementRotation;
     } else {
       // When idle: face opponent
       const dx = player2Position3D[0] - player1Position3D[0];
       const dz = player2Position3D[2] - player1Position3D[2];
       const targetRotation = Math.atan2(dx, dz);
-      player1LastRotationRef.current = targetRotation;
       return targetRotation;
     }
   }, [player1IsMoving, player1Velocity, player1Position3D, player2Position3D]);
@@ -978,8 +967,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Track attack animation durations for physics synchronization
   // 물리 동기화를 위한 공격 애니메이션 지속시간 추적
-  const player1AttackDurationRef = useRef<number>(0.55);
-  const player2AttackDurationRef = useRef<number>(0.55);
+  // Use state so changes trigger re-render and propagate to useCombatAttackMovement
+  // (previously these were refs but that meant the hook received stale values until
+  // an unrelated re-render happened, and reading ref.current during render violated
+  // react-hooks/refs purity rules)
+  const [player1AttackDuration, setPlayer1AttackDuration] =
+    useState<number>(0.55);
+  const [player2AttackDuration, setPlayer2AttackDuration] =
+    useState<number>(0.55);
 
   // Refs to clear attack animations after completion
   const clearPlayer1AttackAnimation = useRef<() => void>(() => {
@@ -1194,12 +1189,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     player1AnimationType: getTechniqueAnimationType(player1TechniqueId),
     player1Stance: player1Data.currentStance,
     player1BasePosition: player1Position3D,
-    player1AnimationDuration: player1AttackDurationRef.current,
+    player1AnimationDuration: player1AttackDuration,
     player2Attacking: player2Animation.currentState === AnimationState.ATTACK,
     player2AnimationType: getTechniqueAnimationType(player2TechniqueId),
     player2Stance: validPlayers[1].currentStance,
     player2BasePosition: player2Position3D,
-    player2AnimationDuration: player2AttackDurationRef.current,
+    player2AnimationDuration: player2AttackDuration,
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1586,7 +1581,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         player1HitTriggerFrameRef.current = Math.round(attackFrames * 0.4);
         player1AttackHitFiredRef.current = false;
         // Store duration for physics hook
-        player1AttackDurationRef.current = attackDuration;
+        setPlayer1AttackDuration(attackDuration);
         player1Animation.transitionToAttack(attackDuration);
         combatActions.setExecutingTechnique(true);
 
@@ -2262,7 +2257,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             }
             const p2AttackAnim = getAnimation(p2AttackAnimName);
             const p2AttackDur = p2AttackAnim?.duration ?? 0.55;
-            player2AttackDurationRef.current = p2AttackDur;
+            setPlayer2AttackDuration(p2AttackDur);
             player2Animation.transitionToAttack(p2AttackDur);
           } else {
             setPlayer2AttackAnimation(aiFallbackAnim);
@@ -2271,7 +2266,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             }
             const p2FallbackAnim = getAnimation(aiFallbackAnim);
             const p2FallbackDur = p2FallbackAnim?.duration ?? 0.55;
-            player2AttackDurationRef.current = p2FallbackDur;
+            setPlayer2AttackDuration(p2FallbackDur);
             player2Animation.transitionToAttack(p2FallbackDur);
           }
           handleAIAttack(selectedTechnique, targetVitalPoint);
@@ -2295,7 +2290,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             }
             const p2TechAnim = getAnimation(p2TechAnimName);
             const p2TechDur = p2TechAnim?.duration ?? 0.6;
-            player2AttackDurationRef.current = p2TechDur;
+            setPlayer2AttackDuration(p2TechDur);
             player2Animation.transitionToAttack(p2TechDur);
           } else {
             setPlayer2AttackAnimation(aiFallbackAnim);
@@ -2304,7 +2299,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             }
             const p2FallbackAnim = getAnimation(aiFallbackAnim);
             const p2FallbackDur = p2FallbackAnim?.duration ?? 0.6;
-            player2AttackDurationRef.current = p2FallbackDur;
+            setPlayer2AttackDuration(p2FallbackDur);
             player2Animation.transitionToAttack(p2FallbackDur);
           }
           handleAITechnique(selectedTechnique, targetVitalPoint);
@@ -2379,7 +2374,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             }
             const p2CounterAnim = getAnimation(p2CounterAnimName);
             const p2CounterDur = p2CounterAnim?.duration ?? 0.6;
-            player2AttackDurationRef.current = p2CounterDur;
+            setPlayer2AttackDuration(p2CounterDur);
             player2Animation.transitionToAttack(p2CounterDur);
           } else {
             setPlayer2AttackAnimation(aiFallbackAnim);
@@ -2388,7 +2383,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             }
             const p2FallbackAnim = getAnimation(aiFallbackAnim);
             const p2FallbackDur = p2FallbackAnim?.duration ?? 0.6;
-            player2AttackDurationRef.current = p2FallbackDur;
+            setPlayer2AttackDuration(p2FallbackDur);
             player2Animation.transitionToAttack(p2FallbackDur);
           }
           handleAIAttack(selectedTechnique, targetVitalPoint);
@@ -2659,7 +2654,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <directionalLight position={[10, 10, 5]} intensity={1.2} />
 
         {/* Adaptive Quality Wrapper monitors FPS and adjusts quality */}
-        <AdaptiveQualityWrapper>
+        <AdaptiveQualityWrapper
+          enabled={shouldEnableAdaptiveQuality}
+          isMobile={isMobile}
+        >
           {/* Performance overlay (dev mode) - controlled by showPerformanceOverlay prop */}
           {showPerformanceOverlay && !showPerformanceMonitor && (
             <PerformanceOverlay3D />

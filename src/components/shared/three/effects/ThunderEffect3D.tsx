@@ -47,7 +47,9 @@ const LightningArc: React.FC<{
 }> = ({ start, end, intensity, color }) => {
   const lineRef = useRef<THREE.Line>(null);
 
-  // Create line object with useState to avoid React purity violations
+  // Create line object with useState lazy initializer. The instance is mutable
+  // THREE.js state which is intentionally modified in-place in useEffect/useFrame
+  // below (disposing and re-creating each frame would leak GPU resources).
   const [line] = useState(() => {
     const points: THREE.Vector3[] = [];
     const segments = 8;
@@ -78,7 +80,10 @@ const LightningArc: React.FC<{
     return new THREE.Line(geometry, material);
   });
 
-  // Update line geometry and material in-place when props change
+  // Update line geometry and material in-place when props change.
+  // THREE.js objects are mutable GPU resources and must be mutated in-place
+  // rather than replaced (disposing/recreating each frame would leak GPU memory).
+  // eslint-disable-next-line react-hooks/immutability
   useEffect(() => {
     const positions = line.geometry.attributes.position.array as Float32Array;
     
@@ -97,6 +102,7 @@ const LightningArc: React.FC<{
         point.z += (Math.random() - 0.5) * displacement;
       }
       
+      // eslint-disable-next-line react-hooks/immutability -- THREE.js buffer positions mutation is intentional
       positions[i * 3] = point.x;
       positions[i * 3 + 1] = point.y;
       positions[i * 3 + 2] = point.z;
@@ -111,11 +117,13 @@ const LightningArc: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start, end, intensity, color]); // line deliberately excluded to avoid re-creating
 
+  // eslint-disable-next-line react-hooks/immutability
   useFrame(() => {
     if (lineRef.current) {
-      // Flicker effect
+      // Flicker effect - mutating THREE.js material is the intended pattern
       const flicker = 0.8 + Math.random() * 0.2;
       const material = line.material as THREE.LineBasicMaterial;
+      // eslint-disable-next-line react-hooks/immutability
       material.opacity = flicker * intensity;
     }
   });
