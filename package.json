@@ -209,7 +209,7 @@
     "dependency-cruiser": "17.3.10",
     "dotenv": "17.4.2",
     "eslint": "10.2.0",
-    "eslint-plugin-react-hooks": "7.0.1",
+    "eslint-plugin-react-hooks": "7.1.0",
     "eslint-plugin-react-refresh": "0.5.2",
     "globals": "17.5.0",
     "jest-axe": "10.0.0",
