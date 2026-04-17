@@ -81,12 +81,20 @@ export function calculateMobileAreaBounds(
 ): MobileAreaBounds {
   const isPortrait = orientation === "portrait";
 
-  // Calculate available space for the area
-  // Extra-small devices (<380px) use tighter margins for more screen real estate
+  // Calculate available space for the area.
+  // Extra-small devices (<380px) use tighter margins for more screen real estate.
+  //
+  // Height reservation: the arena starts at `yOffset`, so the available
+  // vertical space is bounded by `height - yOffset - bottomClearance`.
+  // Falling back to `height - topClearance - bottomClearance` when a caller
+  // passes `yOffset < topClearance` keeps the legacy behaviour, but we must
+  // never let the arena overflow when `yOffset > topClearance` (which is the
+  // case for the updated combat/training layout hooks).
   const horizontalMargin = width < 380 ? 30 : 40; // 15px vs 20px per side
+  const effectiveTopReservation = Math.max(topClearance, yOffset);
   const availableHeight = Math.max(
     0,
-    height - topClearance - bottomClearance,
+    height - effectiveTopReservation - bottomClearance,
   );
   const availableWidth = Math.max(0, width - horizontalMargin);
 

@@ -76,19 +76,19 @@ export const StaminaWarning: React.FC<StaminaWarningProps> = ({
     // Calculate urgency based on how low stamina is (20-0% -> 0-1)
     const urgency = (criticalThreshold - clampedStamina) / criticalThreshold;
 
-    // Attenuation (e.g. 0.5 on portrait mobile) — clamped so border always
-    // renders at its natural width, only the glow + inset/opacity fades.
+    // Attenuation (e.g. 0.5 on portrait mobile). Applied to the glow and
+    // a separate `borderColor` alpha, but the border itself always renders
+    // at full opacity so the warning frame stays visible.
     const safeScale = Math.max(0, Math.min(1, intensityScale));
 
     // Mobile uses thinner border
     const borderWidth = isMobile ? "4px" : "6px";
 
-    // Use theme WARNING_YELLOW constant with proper conversion, with alpha
-    // attenuated by `intensityScale` so the flash is subtler when requested.
-    const warningColor = hexToRgbaString(
-      theme.colors.WARNING_YELLOW,
-      safeScale,
-    );
+    // Border stays at full alpha so the warning outline is always visible,
+    // regardless of `intensityScale`.
+    const borderColor = hexToRgbaString(theme.colors.WARNING_YELLOW, 1);
+    // Glow is attenuated so the overall flash is subtler when requested.
+    const glowColor = hexToRgbaString(theme.colors.WARNING_YELLOW, safeScale);
     // Animation speed increases with urgency
     const animationDuration = Math.max(0.6, 1.2 - urgency * 0.6);
 
@@ -96,8 +96,8 @@ export const StaminaWarning: React.FC<StaminaWarningProps> = ({
       position: "fixed" as const,
       inset: borderWidth,
       pointerEvents: "none" as const,
-      border: `${borderWidth} solid ${warningColor}`,
-      boxShadow: `0 0 ${Math.round(20 * safeScale)}px ${warningColor}`,
+      border: `${borderWidth} solid ${borderColor}`,
+      boxShadow: `0 0 ${Math.round(20 * safeScale)}px ${glowColor}`,
       animation: `staminaFlash ${animationDuration}s ease-in-out infinite`,
       transition: "border-color 0.3s ease-out",
       zIndex: 85, // Below balance indicator but above game content

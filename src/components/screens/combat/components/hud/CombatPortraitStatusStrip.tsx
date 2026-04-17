@@ -108,7 +108,10 @@ const PlayerPill: React.FC<{
       <div
         role="progressbar"
         aria-label={`Player ${side === "left" ? 1 : 2} health`}
-        aria-valuenow={Math.ceil(player.health)}
+        aria-valuenow={Math.max(
+          0,
+          Math.min(player.maxHealth, Math.ceil(player.health)),
+        )}
         aria-valuemin={0}
         aria-valuemax={player.maxHealth}
         style={{
@@ -137,7 +140,10 @@ const PlayerPill: React.FC<{
       <div
         role="progressbar"
         aria-label={`Player ${side === "left" ? 1 : 2} stamina`}
-        aria-valuenow={Math.ceil(player.stamina)}
+        aria-valuenow={Math.max(
+          0,
+          Math.min(player.maxStamina, Math.ceil(player.stamina)),
+        )}
         aria-valuemin={0}
         aria-valuemax={player.maxStamina}
         style={{
