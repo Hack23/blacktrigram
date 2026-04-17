@@ -500,6 +500,7 @@ src/components/screens/combat/components/effects/WaterRipple3D.tsx
 src/components/screens/combat/components/effects/WaterWave3D.test.tsx
 src/components/screens/combat/components/effects/WaterWave3D.tsx
 src/components/screens/combat/components/effects/index.ts
+src/components/screens/combat/components/effects/intensityScale.test.tsx
 src/components/screens/combat/components/feedback/MatchCountdown.test.tsx
 src/components/screens/combat/components/feedback/MatchCountdown.tsx
 src/components/screens/combat/components/feedback/RoundAnnouncement.test.tsx
@@ -512,6 +513,8 @@ src/components/screens/combat/components/hud/CombatBottomHUD.test.tsx
 src/components/screens/combat/components/hud/CombatBottomHUD.tsx
 src/components/screens/combat/components/hud/CombatLeftHUD.test.tsx
 src/components/screens/combat/components/hud/CombatLeftHUD.tsx
+src/components/screens/combat/components/hud/CombatPortraitStatusStrip.test.tsx
+src/components/screens/combat/components/hud/CombatPortraitStatusStrip.tsx
 src/components/screens/combat/components/hud/CombatRightHUD.test.tsx
 src/components/screens/combat/components/hud/CombatRightHUD.tsx
 src/components/screens/combat/components/hud/CombatTopHUD.test.tsx
@@ -547,6 +550,7 @@ src/components/screens/combat/hooks/useCombatAttackMovement.ts
 src/components/screens/combat/hooks/useCombatAudio.boneimpact.test.tsx
 src/components/screens/combat/hooks/useCombatAudio.test.tsx
 src/components/screens/combat/hooks/useCombatAudio.ts
+src/components/screens/combat/hooks/useCombatLayout.responsive.test.ts
 src/components/screens/combat/hooks/useCombatLayout.test.ts
 src/components/screens/combat/hooks/useCombatLayout.ts
 src/components/screens/combat/hooks/useCombatState.test.ts
@@ -1125,6 +1129,7 @@ src/systems/animation/core/TechniqueAnimationMapper.test.ts
 src/systems/animation/core/TechniqueAnimationMapper.ts
 src/systems/animation/core/TechniqueAnimationMapping.test.ts
 src/systems/animation/core/TechniqueAnimationMapping.ts
+src/systems/animation/core/TechniqueAnimationResolution.test.ts
 src/systems/animation/core/TrigramAnimationMapping.test.ts
 src/systems/animation/core/TrigramAnimationMapping.ts
 src/systems/animation/core/TrigramStanceTransitions.test.ts
@@ -1310,6 +1315,7 @@ src/types/constants/colors.ts
 src/types/constants/designSystem.test.ts
 src/types/constants/designSystem.ts
 src/types/constants/index.ts
+src/types/constants/layout.test.ts
 src/types/constants/layout.ts
 src/types/constants/performance.ts
 src/types/constants/typography.ts
@@ -1395,6 +1401,7 @@ src/utils/playerUtils.ts
 src/utils/responsiveLayout.test.ts
 src/utils/responsiveLayout.ts
 src/utils/responsiveLayoutHelpers.ts
+src/utils/responsiveOrientationConstants.ts
 src/utils/safeAreaUtils.ts
 src/utils/sharedPhysicsConfig.ts
 src/utils/skeletonScaling.test.ts

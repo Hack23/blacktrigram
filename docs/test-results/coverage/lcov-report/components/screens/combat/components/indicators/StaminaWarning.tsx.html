@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">72.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/16</span>
+                <span class='fraction'>13/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.5% </span>
+                <span class="strong">44.44% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/8</span>
+                <span class='fraction'>4/9</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">72.22% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/16</span>
+                <span class='fraction'>13/18</span>
             </div>
         
             
@@ -180,7 +180,36 @@
 <a name='L115'></a><a href='#L115'>115</a>
 <a name='L116'></a><a href='#L116'>116</a>
 <a name='L117'></a><a href='#L117'>117</a>
-<a name='L118'></a><a href='#L118'>118</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -232,6 +261,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
@@ -248,8 +278,16 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -329,6 +367,16 @@ export interface StaminaWarningProps {
    * @korean 모바일여부
    */
   readonly isMobile: boolean;
+&nbsp;
+  /**
+   * Multiplier applied to the warning's visual weight (0.0-1.0).
+   *
+   * Used to soften the fullscreen flash when the 3D arena is already
+   * visually compressed (e.g. portrait mobile). Default is `1.0`.
+   *
+   * @korean 효과강도배수
+   */
+  readonly intensityScale?: number;
 }
 &nbsp;
 /**
@@ -348,6 +396,7 @@ export interface StaminaWarningProps {
 export const StaminaWarning: React.FC&lt;StaminaWarningProps&gt; = ({
   stamina,
   isMobile,
+  intensityScale = 1,
 }) =&gt; {
   const theme = useKoreanTheme({ variant: "danger", size: "md", isMobile });
   
@@ -364,11 +413,19 @@ export const StaminaWarning: React.FC&lt;StaminaWarningProps&gt; = ({
     // Calculate urgency based on how low stamina is (20-0% -&gt; 0-1)
     const <span class="cstat-no" title="statement not covered" >urgency = (criticalThreshold - clampedStamina) / criticalThreshold;</span>
 &nbsp;
+    // Attenuation (e.g. 0.5 on portrait mobile). Applied to the glow and
+    // a separate `borderColor` alpha, but the border itself always renders
+    // at full opacity so the warning frame stays visible.
+    const safeScale = <span class="cstat-no" title="statement not covered" >Math.max(0, Math.min(1, intensityScale));</span>
+&nbsp;
     // Mobile uses thinner border
     const borderWidth = <span class="cstat-no" title="statement not covered" >isMobile ? "4px" : "6px";</span>
 &nbsp;
-    // Use theme WARNING_YELLOW constant with proper conversion
-    const warningColor = hexToRgbaString(theme.colors.WARNING_YELLOW, 1);
+    // Border stays at full alpha so the warning outline is always visible,
+    // regardless of `intensityScale`.
+    const borderColor = hexToRgbaString(theme.colors.WARNING_YELLOW, 1);
+    // Glow is attenuated so the overall flash is subtler when requested.
+    const glowColor = hexToRgbaString(theme.colors.WARNING_YELLOW, safeScale);
     // Animation speed increases with urgency
     const animationDuration = Math.max(0.6, 1.2 - urgency * 0.6);
 &nbsp;
@@ -376,13 +433,13 @@ export const StaminaWarning: React.FC&lt;StaminaWarningProps&gt; = ({
       position: "fixed" as const,
       inset: borderWidth,
       pointerEvents: "none" as const,
-      border: `${borderWidth} solid ${warningColor}`,
-      boxShadow: `0 0 20px ${warningColor}`,
+      border: `${borderWidth} solid ${borderColor}`,
+      boxShadow: `0 0 ${Math.round(20 * safeScale)}px ${glowColor}`,
       animation: `staminaFlash ${animationDuration}s ease-in-out infinite`,
       transition: "border-color 0.3s ease-out",
       zIndex: 85, // Below balance indicator but above game content
     };
-  }, [stamina, isMobile, theme.colors.WARNING_YELLOW]);
+  }, [stamina, isMobile, intensityScale, theme.colors.WARNING_YELLOW]);
 &nbsp;
   // Don't render if stamina is not critical
   <span class="missing-if-branch" title="else path not taken" >E</span>if (stamina &gt;= 20 || <span class="branch-1 cbranch-no" title="branch not covered" >!warningStyle) {</span>
@@ -421,7 +478,7 @@ StaminaWarning.displayName = "StaminaWarning";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-16T01:54:03.118Z
+                at 2026-04-17T01:15:47.268Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
