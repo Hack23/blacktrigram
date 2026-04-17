@@ -184,7 +184,7 @@ Built for **combat realism** and **authentic simulation**:
 
 ### 🎮 Rendering Engine
 
-![Three.js](https://img.shields.io/badge/Three.js-0.183-000000?style=for-the-badge&logo=three.js)
+![Three.js](https://img.shields.io/badge/Three.js-0.184-000000?style=for-the-badge&logo=three.js)
 ![React Three Fiber](https://img.shields.io/badge/R3F-9.5-00ffff?style=for-the-badge&logo=react)
 ![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript)
@@ -380,7 +380,7 @@ George Dorn provides detailed repository deep-dives based on actual code inspect
 
 **[Repository Deep-Dive](https://hack23.com/blog-george-dorn-trigram-code.html)**
 
-**Stack:** TypeScript 6.0, React 19, Three.js 0.183, Vite 8  
+**Stack:** TypeScript 6.0, React 19, Three.js 0.184, Vite 8  
 **Metrics:** 132 TypeScript files, 70 vital points system, 5 fighter archetypes
 
 Examined package.json dependencies, explored src/ structure, verified combat system implementation, and reviewed AI integrations.
