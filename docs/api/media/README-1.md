@@ -20,9 +20,32 @@
 
 ---
 
+## 🔐 Hack23 ISMS Policy Map
+
+All security, governance, and compliance skills anchor to the applicable Hack23 ISMS policy, ensuring every enforcement rule traces back to a governed source of truth.
+
+| Domain | Policy | Primary Skill |
+|---|---|---|
+| Governance baseline | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | [isms-compliance-checking](./isms-compliance-checking/SKILL.md) |
+| SDLC security | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | [secure-development-lifecycle](./secure-development-lifecycle/SKILL.md) |
+| Open source / supply chain | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) | [open-source-governance](./open-source-governance/SKILL.md) |
+| Vulnerability management | [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) | [vulnerability-management](./vulnerability-management/SKILL.md) |
+| Threat analysis | [Threat Modeling Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) | [threat-modeling-enforcement](./threat-modeling-enforcement/SKILL.md) |
+| Cryptography | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) | [secrets-management](./secrets-management/SKILL.md), [data-protection](./data-protection/SKILL.md) |
+| Access control | [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) | [secrets-management](./secrets-management/SKILL.md) |
+| Incident response | [Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) | [incident-response](./incident-response/SKILL.md) |
+| Data classification | [Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md) | [classification-framework-enforcement](./classification-framework-enforcement/SKILL.md), [gdpr-compliance](./gdpr-compliance/SKILL.md) |
+| AI governance | [AI Governance Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/AI_Policy.md) | [ai-governance](./ai-governance/SKILL.md) |
+| Risk management | [Risk Register](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Register.md) | [risk-assessment-frameworks](./risk-assessment-frameworks/SKILL.md) |
+| Change management | [Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) | [secure-development-lifecycle](./secure-development-lifecycle/SKILL.md) |
+| Business continuity | [Business Continuity Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Business_Continuity_Plan.md) | [classification-framework-enforcement](./classification-framework-enforcement/SKILL.md) |
+| Multi-framework compliance | [Compliance Checklist](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Compliance_Checklist.md) | [compliance-framework-alignment](./compliance-framework-alignment/SKILL.md) |
+
+---
+
 ## 📚 Available Skills
 
-Black Trigram includes **27 comprehensive skills** organized by domain:
+Black Trigram includes **29 comprehensive skills** organized by domain:
 
 ### 🔐 Security & Compliance
 
@@ -284,6 +307,53 @@ Black Trigram includes **27 comprehensive skills** organized by domain:
 - Quarterly risk review
 
 **Compliance:** ISO 27001 6.1/6.2, NIST CSF ID.RA, CIS Controls 7, ISO 31000
+
+---
+
+#### 13. [open-source-governance](./open-source-governance/SKILL.md)
+**Purpose**: Enforce Hack23 Open Source Policy — license compatibility, SBOM, SLSA provenance, OSSF Scorecard posture, community respect
+
+**Key Rules:**
+- License allow-list (MIT, Apache-2.0, BSD, ISC, 0BSD, Unlicense, CC0); blocked GPL/AGPL/LGPL/SSPL without CEO exception
+- OSSF Scorecard ≥ 8.0 with all critical checks green
+- Pinned dependencies (exact versions) + pinned GitHub Actions (commit SHAs)
+- CycloneDX SBOM per release; signed releases (Sigstore/cosign)
+- SECURITY.md current with disclosure contact + SLA
+- FOSSA + OSSF + CII Best Practices badges visible
+
+**Triggers:**
+- Adding / upgrading / removing dependencies
+- Consuming or contributing to third-party code
+- Preparing a release
+- Reviewing license / badge changes
+
+**Compliance:** ISO 27001 A.5.19-22, A.8.28, A.8.30; NIST CSF GV.SC, ID.AM-02, PR.DS-09; CIS 2, 7, 16, 18; SLSA L3; EU CRA Annex I
+
+**Reference**: [Hack23 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
+
+---
+
+#### 14. [threat-modeling-enforcement](./threat-modeling-enforcement/SKILL.md)
+**Purpose**: Systematic threat analysis for all significant changes using STRIDE, MITRE ATT&CK, and attack trees
+
+**Key Rules:**
+- STRIDE applied at every trust boundary in every architectural change
+- MITRE ATT&CK techniques referenced where applicable (web + supply chain)
+- Attack trees maintained for critical assets
+- Data Flow Diagrams (DFDs) updated in the same PR that changes architecture
+- Residual risk documented when a threat is not fully mitigated
+- THREAT_MODEL.md reviewed quarterly; updated post-incident
+
+**Triggers:**
+- New feature / component design
+- Changes to trust boundaries
+- Auth / crypto / data handling
+- CI/CD / build / deployment changes
+- Quarterly review
+
+**Compliance:** ISO 27001 A.5.7, A.8.25, A.8.27; NIST CSF ID.RA-03, PR.IP-7, GV.RM; CIS 14.3, 16.5, 18; NIST SSDF PW.1-2; EU CRA Annex I
+
+**Reference**: [Hack23 Threat Modeling Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)
 
 ---
 
@@ -914,5 +984,5 @@ Just as Korean martial arts teach precision, discipline, and adaptability, our s
 **Project**: Black Trigram (흑괘)  
 **Owner**: Hack23 AB  
 **License**: MIT  
-**Version**: 2.0  
-**Last Updated**: 2026-02-20
+**Version**: 2.1  
+**Last Updated**: 2026-04-17
