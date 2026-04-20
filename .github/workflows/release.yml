@@ -98,7 +98,7 @@ jobs:
           google-chrome --version
 
       - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: '.nvmrc'
           cache: "npm"
@@ -215,7 +215,7 @@ jobs:
           ref: ${{ github.event_name == 'push' && github.ref || github.event_name == 'workflow_dispatch' && github.event.inputs.version || '' }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: '.nvmrc'
           cache: "npm"
@@ -410,7 +410,7 @@ jobs:
           ref: ${{ github.event_name == 'push' && github.ref || format('refs/tags/{0}', needs.prepare.outputs.version) }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: '.nvmrc'
           cache: "npm"
