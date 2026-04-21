@@ -14,12 +14,12 @@
 | **[🌐 System Context](#-system-context)**                             | C4 Model         | High-level view showing actors (Player, CDNs) and the entirely front-end application                       |
 | **[🏢 Container View](#-container-view)**                             | C4 Model         | Frontend-only architecture: UI Layer, Game Logic, Three.js Renderer, Animation System, State Management    |
 | **[🧩 Component View](#-component-view)**                             | C4 Model         | Detailed breakdown: Combat System, Trigram System (8 stances), Vital Point System (70 points), Skeletal Animation (28 bones) |
-| **[🔧 File Structure](#-file-structure-q1-2026)**                     | Organization     | Q1 2026 project structure with systems/, components/, data/, types/ layout                                 |
+| **[🔧 File Structure](#-file-structure-q2-2026)**                     | Organization     | Q2 2026 project structure with systems/, components/, data/, types/ layout                                 |
 | **[🔄 Combat Flow Sequence](#-combat-flow-sequence)**                 | Sequence Diagram | Input → Trigram → Vital Point → Damage → Three.js rendering with skeletal animation                        |
 | **[🎬 Skeletal Animation](#-skeletal-animation-architecture)**        | Animation System | 28-bone hierarchy, 7 hand poses, muscle tension visualization                                              |
 | **[⚡ Performance Architecture](#-performance-architecture-q1-2026)** | Performance      | Three.js optimization, 60fps targets, instancing, LOD, benchmarks                                          |
 | **[📊 SWOT Analysis](#-swot-analysis)**                               | Strategy         | Q2 2026 status: Strengths (70/70 vital points, 100% combat realism), Weaknesses (niche market), Opportunities, Threats    |
-| **[📈 Game Status Report](game-status.md)**                           | Current Progress | Comprehensive status (75%+ test coverage, 13/13 combat realism systems, 8/8 trigram stances) |
+| **[📈 Game Status Report](game-status.md)**                           | Current Progress | Comprehensive status (72.34% line coverage per docs/coverage/coverage-summary.json, 13/13 combat realism systems, 8/8 trigram stances) |
 | **[🔮 Future Architecture](FUTURE_ARCHITECTURE.md)**                  | Roadmap          | Q2 2026+ evolution: Combat realism completion, VR/AR integration, advanced features                        |
 | **[🎯 Core Game Concepts](#-core-game-concepts)**                     | Game Design      | Player archetypes (5), trigram system (8), resources & mechanics                                           |
 | **[🏗️ Architecture Concepts](#-architecture-concepts)**               | Technical Design | Mindmap of system architecture layers and components                                                       |
@@ -1122,21 +1122,21 @@ src/
 
 **Three.js Components:**
 - `src/components/shared/three/` - 3D rendering components (Player3DUnified, StanceAura, SkeletalRig)
-- `src/components/screens/combat/` - CombatScreen3D implementation (production-ready, 42.52% line coverage per docs/coverage/coverage-summary.json)
+- `src/components/screens/combat/` - CombatScreen3D implementation (production-ready, 41.71% line coverage per docs/coverage/coverage-summary.json)
 - `src/utils/player3DHelpers.ts` - PlayerState to Three.js conversion utilities
 
-**Audio System (87.38% Line Coverage):**
+**Audio System (88.08% Line Coverage):**
 - `src/audio/AudioProvider.tsx` - React context provider and useAudio hook
 - `src/audio/AudioAssetRegistry.ts` - Sound library with damage-scaled audio
 - `src/audio/AudioManager.ts` - Audio playback with Web Audio API
 - `src/audio/BoneImpactAudioMap.ts` - Bone impact audio system (60% complete)
-- 87.38% line coverage across audio systems (790/904 lines, per docs/coverage/coverage-summary.json)
+- 88.08% line coverage across audio systems (843/957 lines, per docs/coverage/audio/index.html)
 
 **Test Coverage (Q2 2026):**
-- **Overall**: 75%+ line coverage (518 tests - Vitest unit + Cypress E2E)
+- **Overall**: 72.34% line coverage (17,451 / 24,121 lines, 518 tests - Vitest unit + Cypress E2E, per docs/coverage/coverage-summary.json)
 - **New Components**: 95% test coverage
 - **Core Systems**: >85% test coverage
-- **Audio System**: 87.38% line coverage (790/904 lines)
+- **Audio System**: 88.08% line coverage (843/957 lines)
 - **Combat Realism**: 518 tests passing (372 + 146 new)
 - **Grappling/Limb Exposure**: 132 comprehensive tests
 

@@ -34,9 +34,9 @@ This document provides a strategic analysis of the Black Trigram Korean martial 
 | **Player Archetypes** | 5/5 Complete | 🟢 Complete | game-design.md (무사, 암살자, 해커, 정보요원, 조직폭력배) |
 | **Skeletal Animation** | 28 bones + 7 hand poses | 🟢 Complete | skeletal.ts |
 | **Combat Realism** | 13/13 systems (100%) | 🟢 Complete | game-status.md |
-| **Test Coverage** | 73.17% (372 tests) | 🟢 Good | Coverage reports (392 components) |
+| **Test Coverage** | 72.34% (518 tests) | 🟢 Good | docs/coverage/coverage-summary.json (17,451 / 24,121 lines) |
 | **Desktop Performance** | 60fps | 🟢 Excellent | Performance benchmarks |
-| **Mobile Performance** | 30-45fps | ⚠️ Needs Work | Performance benchmarks |
+| **Mobile Performance** | 55fps+ | 🟢 Excellent | LOD, instancing & adaptive quality (game-status.md) |
 
 ## 📚 Related Strategic Documentation
 

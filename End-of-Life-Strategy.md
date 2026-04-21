@@ -124,12 +124,12 @@ mindmap
 
 | **Technology Category** | **Current Version**       | **Release Model**               | **EOL Timeline**   | **Migration Complexity**                                                                                                                                |
 | ----------------------- | ------------------------- | ------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **⚛️ React Framework**  | ^19.2.5 (Latest)          | Major annually, Minor quarterly | ~2027-2028         | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
-| **🎮 Three.js / R3F**   | 0.184.x / 9.6.x (Latest) | Major annually, Patch monthly   | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **⚡ Vite Build Tool**  | ^8.0.9 (Latest)            | Major annually                  | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **📝 TypeScript**       | ^6.0.3 (Latest)           | Major every ~12 months          | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
+| **⚛️ React Framework**  | 19.2.5 (Latest)          | Major annually, Minor quarterly | ~2027-2028         | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **🎮 Three.js / R3F**   | 0.184.0 / 9.6.0 (Latest) | Major annually, Patch monthly   | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
+| **⚡ Vite Build Tool**  | 8.0.9 (Latest)            | Major annually                  | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
+| **📝 TypeScript**       | 6.0.3 (Latest)           | Major every ~12 months          | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
 | **☕ Node.js Runtime**  | 25.x (CI); 26.x LTS (target) | Major every 6 months; even-numbered majors LTS | LTS 24.x: **Apr 2027**; LTS 26.x: **Apr 2028** | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
-| **🧪 Testing Stack**    | Vitest ^4.1.x + Cypress ^15.14.x | Major annually            | Active development | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
+| **🧪 Testing Stack**    | Vitest 4.1.4 + Cypress 15.14.0 | Major annually            | Active development | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
 
 ---
 
