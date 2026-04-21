@@ -13,13 +13,13 @@
 
 <p align="center">
   <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/Version-1.2-555?style=for-the-badge" alt="Version"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/Effective-2026--03--19-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.3-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2026--04--21-success?style=for-the-badge" alt="Effective Date"/></a>
   <a href="#"><img src="https://img.shields.io/badge/Review-Quarterly-orange?style=for-the-badge" alt="Review Cycle"/></a>
 </p>
 
-**Document Owner:** CEO | **Version:** 1.2 | **Last Updated:** 2026-03-19  
-**Review Cycle:** Quarterly | **Next Review:** 2026-06-19
+**Document Owner:** CEO | **Version:** 1.3 | **Last Updated:** 2026-04-21  
+**Review Cycle:** Quarterly | **Next Review:** 2026-07-21
 
 ---
 
@@ -91,7 +91,7 @@ _Supports CRA Annex V § 1 - Product Description Requirements_
 | Field                  | Value                                                                                                                                             |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 📦 Product             | Black Trigram (흑괘) - Korean Martial Arts Combat Simulator                                                                                       |
-| 🏷️ Version Tag         | 0.6.58 (reflects current project state)                                                                                                      |
+| 🏷️ Version Tag         | 0.7.24 (reflects current project state)                                                                                                      |
 | 🔗 Repository          | https://github.com/Hack23/blacktrigram                                                                                                            |
 | 📧 Security Contact    | security@hack23.org                                                                                                                               |
 | 🎯 Purpose (1–2 lines) | Educational 3D combat game teaching authentic Korean martial arts through realistic anatomical targeting and traditional Eight Trigram philosophy |
@@ -270,10 +270,10 @@ GitHub Attestations: `https://github.com/Hack23/blacktrigram/attestations`
 **🎯 Release Assets Structure:**
 
 ```
-blacktrigram-0.6.58.zip               # Main application bundle
-blacktrigram-0.6.58.zip.intoto.jsonl  # SLSA provenance attestation
-blacktrigram-0.6.58.spdx.json         # SPDX SBOM
-blacktrigram-0.6.58.spdx.json.intoto.jsonl  # SBOM attestation
+blacktrigram-0.7.24.zip               # Main application bundle
+blacktrigram-0.7.24.zip.intoto.jsonl  # SLSA provenance attestation
+blacktrigram-0.7.24.spdx.json         # SPDX SBOM
+blacktrigram-0.7.24.spdx.json.intoto.jsonl  # SBOM attestation
 ```
 
 **📋 Release Notes Format:**
@@ -304,7 +304,7 @@ blacktrigram-0.6.58.spdx.json.intoto.jsonl  # SBOM attestation
 
 Thanks to @dependabot[bot] for automated security updates!
 
-**Full Changelog**: https://github.com/Hack23/blacktrigram/compare/v0.6.57...v0.6.58
+**Full Changelog**: https://github.com/Hack23/blacktrigram/compare/v0.7.23...v0.7.24
 ```
 
 **🔍 Evidence Validation Commands:**
@@ -357,7 +357,7 @@ _Supports CRA Article 28 - EU Declaration of Conformity_
 > **📝 Complete when placing product on EU market**
 
 **🏢 Manufacturer:** Hack23 AB, Stockholm, Sweden  
-**📦 Product:** Black Trigram (흑괘) 0.6.58  
+**📦 Product:** Black Trigram (흑괘) 0.7.24  
 **📋 CRA Compliance:** Self-assessment documentation supporting CRA essential cybersecurity requirements evaluation  
 **🔍 Assessment:** Self-assessment documentation per Article 24 - Standard product classification  
 **📊 Standards:** ETSI EN 303 645 (IoT Security), ISO/IEC 27001 (ISMS), OWASP ASVS (Application Security), NIST SSDF (Secure Development)
@@ -422,7 +422,7 @@ CRA assessment updated only when changes constitute "substantial modification" u
 ```markdown
 ## Current CRA Self-Assessment Evidence
 
-**🏷️ Product Version:** 0.6.58
+**🏷️ Product Version:** 0.7.24
 **📦 CRA Technical Documentation:** This assessment + [Latest Release](https://github.com/Hack23/blacktrigram/releases/latest)
 **🛡️ Security Attestations:** [GitHub Attestations](https://github.com/Hack23/blacktrigram/attestations)
 **📊 Assessment Status:** ![CRA Status](https://img.shields.io/badge/CRA_Self_Assessment-DOCUMENTED-green)
@@ -503,6 +503,6 @@ CRA assessment updated only when changes constitute "substantial modification" u
 **Approved by:** James Pether Sörling, CEO  
 **Distribution:** Public  
 **Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels)  
-**Effective Date:** 2026-03-19  
+**Effective Date:** 2026-04-21  
 **CRA Alignment:** Template supports CRA Annex V technical documentation and self-assessment requirements
 **ISMS Integration:** Comprehensive alignment with public ISMS framework for operational excellence
