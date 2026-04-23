@@ -98,3 +98,27 @@ export function calculateDistance3DSquared(
 export function toRadians(degrees: number): number {
   return degrees * (Math.PI / 180);
 }
+
+/**
+ * Calculate the angle between two 3D vectors
+ * 
+ * Uses the dot product formula: dot(v1, v2) = |v1| * |v2| * cos(θ)
+ * 
+ * @param v1 - First vector [x, y, z]
+ * @param v2 - Second vector [x, y, z]
+ * @returns The angle in radians
+ */
+export function calculateAngle3D(
+  v1: [number, number, number],
+  v2: [number, number, number]
+): number {
+  const dot = v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+  const mag1 = Math.sqrt(v1[0] * v1[0] + v1[1] * v1[1] + v1[2] * v1[2]);
+  const mag2 = Math.sqrt(v2[0] * v2[0] + v2[1] * v2[1] + v2[2] * v2[2]);
+  
+  const EPSILON = 1e-10;
+  if (mag1 < EPSILON || mag2 < EPSILON) return 0;
+  
+  const cosTheta = Math.max(-1, Math.min(1, dot / (mag1 * mag2)));
+  return Math.acos(cosTheta);
+}

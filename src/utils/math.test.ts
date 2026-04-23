@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { calculateDistance3D, calculateDistance3DSquared, toRadians } from "./math";
+import { calculateDistance3D, calculateDistance3DSquared, toRadians, calculateAngle3D } from "./math";
 
 describe("Math Utilities", () => {
   describe("calculateDistance3D", () => {
@@ -72,6 +72,23 @@ describe("Math Utilities", () => {
       const degrees = 123.456;
       const expected = (degrees * Math.PI) / 180;
       expect(toRadians(degrees)).toBeCloseTo(expected, 10);
+    });
+  });
+
+  describe("calculateAngle3D", () => {
+    it("should calculate angle for orthogonal vectors (90 deg)", () => {
+      const angle = calculateAngle3D([1, 0, 0], [0, 1, 0]);
+      expect(angle).toBeCloseTo(Math.PI / 2, 5);
+    });
+
+    it("should calculate angle for same vectors (0 deg)", () => {
+      const angle = calculateAngle3D([1, 1, 1], [1, 1, 1]);
+      expect(angle).toBe(0);
+    });
+
+    it("should return 0 for zero vectors", () => {
+      const angle = calculateAngle3D([0, 0, 0], [1, 2, 3]);
+      expect(angle).toBe(0);
     });
   });
 });
