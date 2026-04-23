@@ -116,7 +116,8 @@ export function calculateAngle3D(
   const mag1 = Math.sqrt(v1[0] * v1[0] + v1[1] * v1[1] + v1[2] * v1[2]);
   const mag2 = Math.sqrt(v2[0] * v2[0] + v2[1] * v2[1] + v2[2] * v2[2]);
   
-  if (mag1 === 0 || mag2 === 0) return 0;
+  const EPSILON = 1e-10;
+  if (mag1 < EPSILON || mag2 < EPSILON) return 0;
   
   const cosTheta = Math.max(-1, Math.min(1, dot / (mag1 * mag2)));
   return Math.acos(cosTheta);
