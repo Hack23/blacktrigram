@@ -82,10 +82,10 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
       techniques.length * cardWidth + (techniques.length - 1) * gap,
     );
 
-    const reservedHudWidth = embedded ? (isMobile ? 180 : 260) : 0;
+    const reservedSideWidth = embedded ? (isMobile ? 96 : 190) : 0;
     const availableWidth = Math.max(
       cardWidth,
-      screenWidth - reservedHudWidth,
+      screenWidth - reservedSideWidth * 2,
     );
     const visualScale =
       totalWidth > 0 ? Math.min(1, availableWidth / totalWidth) : 1;
