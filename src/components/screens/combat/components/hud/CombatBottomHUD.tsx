@@ -119,6 +119,9 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
       maxMessageWidth,
       maxTechniqueBarWidth,
       messagePadding,
+      // Reserve horizontal space for the absolute Volume Control on the right
+      // (162px control width + a comfortable margin) so cards never sit under it.
+      volumeReserve: 180,
     };
   }, [width, height, positionScale]);
 
@@ -201,7 +204,9 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
         </div>
       )}
 
-      {/* Technique Bar - centered, embedded mode for proper containment */}
+      {/* Technique Bar - centered, embedded mode for proper containment.
+          Reserve space on the right for the absolute Volume Control so cards
+          never visually overlap the volume button. */}
       {visible && (
         <div
           style={{
@@ -211,6 +216,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             alignItems: "center",
             width: "100%",
             maxWidth: layout.maxTechniqueBarWidth,
+            marginRight: layout.volumeReserve,
           }}
           data-testid="combat-bottom-hud-technique-section"
         >

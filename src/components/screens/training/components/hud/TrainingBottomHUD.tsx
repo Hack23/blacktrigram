@@ -96,8 +96,13 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     // Resolution-based padding
     const padding = getResponsivePadding(width) * positionScale;
 
+    // Reserve horizontal space for the absolute Volume Control on the right
+    // (162px control width + comfortable margin). Mobile additionally reserves
+    // space on the left for the archetype selector.
+    const volumeReserve = 180;
+    const archetypeReserve = 180;
 
-    return { hudHeight, padding };
+    return { hudHeight, padding, volumeReserve, archetypeReserve };
   }, [width, height, positionScale]);
 
   return (
@@ -140,7 +145,10 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         </div>
       )}
 
-      {/* Technique Bar - centered, embedded mode for proper containment */}
+      {/* Technique Bar - centered, embedded mode for proper containment.
+          Reserve right space for the absolute Volume Control and (on mobile)
+          left space for the Archetype Selector so technique cards never sit
+          under the side controls. */}
       <div
         style={{
           pointerEvents: "all",
@@ -151,6 +159,8 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
           alignItems: "center",
           overflow: "visible",
           height: "100%",
+          marginRight: layout.volumeReserve,
+          marginLeft: showMobileControls ? layout.archetypeReserve : 0,
         }}
         data-testid="training-bottom-hud-technique-section"
       >

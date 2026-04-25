@@ -87,8 +87,13 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
       cardWidth,
       screenWidth - reservedSideWidth * 2,
     );
-    const visualScale =
+    const rawScale =
       totalWidth > 0 ? Math.min(1, availableWidth / totalWidth) : 1;
+    // Don't shrink cards below ~70% — at that point cards become unreadable.
+    // Instead enable horizontal scroll inside the technique section.
+    const minVisualScale = 0.7;
+    const shouldScroll = embedded && rawScale < minVisualScale;
+    const visualScale = shouldScroll ? 1 : rawScale;
 
     return {
       cardWidth,
@@ -96,6 +101,7 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
       gap,
       totalWidth,
       visualScale,
+      shouldScroll,
       startX: (screenWidth - totalWidth) / 2,
       startY: screenHeight - cardHeight - (isMobile ? 100 : 120),
     };
@@ -121,11 +127,16 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
       ? {
           position: "relative",
           display: "flex",
-          justifyContent: "center",
+          justifyContent: layout.shouldScroll ? "flex-start" : "center",
           width: "100%",
+          maxWidth: "100%",
           height: `${layout.cardHeight * layout.visualScale}px`,
           pointerEvents: "auto",
-          overflow: "visible",
+          overflowX: layout.shouldScroll ? "auto" : "visible",
+          overflowY: "visible",
+          // iOS momentum + scroll-snap for tactile feel
+          scrollSnapType: layout.shouldScroll ? "x proximity" : undefined,
+          WebkitOverflowScrolling: layout.shouldScroll ? "touch" : undefined,
         }
     : {
         position: "absolute",
@@ -150,7 +161,9 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
             gap: `${layout.gap}px`,
             justifyContent: "center",
             transform: `scale(${layout.visualScale})`,
-            transformOrigin: "center bottom",
+            transformOrigin: layout.shouldScroll ? "left center" : "center bottom",
+            paddingInline: layout.shouldScroll ? "8px" : undefined,
+            flexShrink: 0,
           }}
         >
           {techniques.map((technique, index) => {
@@ -159,7 +172,11 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
             const available = isAvailable(technique);
 
             return (
-              <div key={technique.id} data-testid={`technique-slot-${index}`}>
+              <div
+                key={technique.id}
+                data-testid={`technique-slot-${index}`}
+                style={layout.shouldScroll ? { scrollSnapAlign: "start" } : undefined}
+              >
                 <TechniqueCard
                   technique={technique}
                   isSelected={selectedIndex === index}
