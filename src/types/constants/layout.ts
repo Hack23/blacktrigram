@@ -53,8 +53,9 @@ export const HUD_SIDE_CONTROL_RESERVES = {
 /**
  * Minimum visual scale before technique cards become unreadable.
  *
- * Below 70%, labels and keyboard hints are difficult to scan during combat,
- * so embedded bars switch to horizontal scrolling instead of shrinking.
+ * The 70% threshold preserves readable Korean/English labels and keyboard
+ * hints on compact HUDs. Below this value, embedded bars switch to horizontal
+ * scrolling instead of shrinking so touch targets and text remain usable.
  *
  * Used by TechniqueBar when calculating whether embedded cards should scale
  * down or remain full size with horizontal scroll.

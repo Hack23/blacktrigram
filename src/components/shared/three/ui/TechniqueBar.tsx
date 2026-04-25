@@ -131,20 +131,20 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
   // Embedded mode: relative positioning inside parent container
   // Non-embedded: absolute positioning for standalone use
   const containerStyle: React.CSSProperties = embedded
-      ? {
-          position: "relative",
-          display: "flex",
-          justifyContent: layout.shouldScroll ? "flex-start" : "center",
-          width: "100%",
-          maxWidth: "100%",
-          height: `${layout.cardHeight * layout.visualScale}px`,
-          pointerEvents: "auto",
-          overflowX: layout.shouldScroll ? "auto" : "visible",
-          overflowY: "visible",
-          // iOS momentum + scroll-snap for tactile feel
-          scrollSnapType: layout.shouldScroll ? "x proximity" : undefined,
-          WebkitOverflowScrolling: layout.shouldScroll ? "touch" : undefined,
-        }
+    ? {
+        position: "relative",
+        display: "flex",
+        justifyContent: layout.shouldScroll ? "flex-start" : "center",
+        width: "100%",
+        maxWidth: "100%",
+        height: `${layout.cardHeight * layout.visualScale}px`,
+        pointerEvents: "auto",
+        overflowX: layout.shouldScroll ? "auto" : "visible",
+        overflowY: "visible",
+        // iOS momentum + scroll-snap for tactile feel
+        scrollSnapType: layout.shouldScroll ? "x proximity" : undefined,
+        WebkitOverflowScrolling: layout.shouldScroll ? "touch" : undefined,
+      }
     : {
         position: "absolute",
         left: "50%",
