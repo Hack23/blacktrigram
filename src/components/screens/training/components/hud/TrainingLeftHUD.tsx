@@ -72,6 +72,10 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
 
   const currentStance: TrigramStance =
     TRIGRAM_STANCES_ORDER[currentStanceIndex];
+  const anatomyControlsWidth =
+    layout.hudWidth > layout.padding * 2
+      ? layout.hudWidth - layout.padding * 2
+      : undefined;
 
   return (
     <BaseHUDContainer
@@ -98,7 +102,7 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
           visibleLayers={visibleAnatomyLayers as AnatomyLayer[]}
           onLayerToggle={onAnatomyLayerToggle}
           isMobile={isMobile}
-          width={Math.max(0, layout.hudWidth - layout.padding * 2)}
+          width={anatomyControlsWidth}
         />
       </div>
 

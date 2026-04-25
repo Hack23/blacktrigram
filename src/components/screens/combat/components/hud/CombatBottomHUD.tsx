@@ -35,6 +35,11 @@ import {
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 
+const getPercentRatio = (value: string): number => {
+  const percent = Number.parseFloat(value);
+  return Number.isFinite(percent) ? percent / 100 : 1;
+};
+
 export interface CombatBottomHUDProps {
   /** Screen width for layout calculations */
   readonly width: number;
@@ -115,10 +120,13 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
     // marginRight (volume control reserve). Pre-computing a numeric value here
     // ensures TechniqueBar's scale/scroll decision matches the real layout.
     const usableWidth = width - padding * 2;
-    const maxBarWidthPx = width < BREAKPOINTS.mobile ? usableWidth : usableWidth * 0.70;
+    const maxBarWidthPx = usableWidth * getPercentRatio(maxTechniqueBarWidth);
     const techniqueBarContainerWidth = Math.max(
       0,
-      maxBarWidthPx - HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+      Math.min(
+        maxBarWidthPx,
+        usableWidth - HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+      ),
     );
 
     return {
