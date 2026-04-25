@@ -178,7 +178,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         }}
         data-testid="training-bottom-hud-volume-section"
       >
-        <VolumeControl position="bottom-right" compact={true} />
+        <VolumeControl position="custom" compact={true} />
       </div>
 
       {/* Mobile Archetype Selector - bottom left corner */}

@@ -129,6 +129,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
           onStartTraining={onStartTraining}
           onStopTraining={onStopTraining}
           isMobile={isMobile}
+          variant="compact"
         />
       </div>
 

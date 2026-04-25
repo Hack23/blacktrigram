@@ -168,6 +168,26 @@ describe("TrainingControlsOverlayHtml", () => {
     expect(container).toHaveStyle({ width: "220px" });
   });
 
+  it("should fit compact top HUD layout without clipping", () => {
+    render(
+      <TrainingControlsOverlayHtml
+        isTraining={true}
+        onStartTraining={vi.fn()}
+        onStopTraining={vi.fn()}
+        isMobile={false}
+        variant="compact"
+      />
+    );
+
+    const container = screen.getByTestId("training-controls-html");
+    expect(container).toHaveStyle({
+      width: "210px",
+      height: "44px",
+      flexDirection: "row",
+    });
+    expect(screen.queryByText("Auto-restarts on mode change")).not.toBeInTheDocument();
+  });
+
   it("should show appropriate status text based on training state", () => {
     const { rerender } = render(
       <TrainingControlsOverlayHtml
@@ -192,4 +212,3 @@ describe("TrainingControlsOverlayHtml", () => {
     expect(screen.getByText("훈련 진행중 | Training Active")).toBeInTheDocument();
   });
 });
-

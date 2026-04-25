@@ -202,6 +202,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Screen size scaling for 4K and large displays
   // Uses SPACING_SCALE_MAP values: mobile=0.5, tablet=0.75, desktop=1.0, large=1.25, xlarge=1.5
   const positionScale = React.useMemo(() => {
+    if (isMobile) {
+      return 1.0;
+    }
+
     switch (screenSize) {
       case "mobile":
         return 1.0; // Mobile already has special handling
@@ -216,7 +220,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       default:
         return 1.0;
     }
-  }, [screenSize]);
+  }, [isMobile, screenSize]);
 
   // Training difficulty and vital point configuration
   const difficulty: DifficultyMode = "normal";

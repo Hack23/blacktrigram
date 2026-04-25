@@ -297,12 +297,12 @@ describe("TrainingBottomHUD", () => {
   });
 
   describe("Volume Control", () => {
-    it("should render volume control in bottom-right position", () => {
+    it("should let the HUD wrapper position the volume control", () => {
       render(<TrainingBottomHUD {...defaultProps} />);
       expect(screen.getByTestId("mock-volume-control")).toBeInTheDocument();
       expect(screen.getByTestId("mock-volume-control")).toHaveAttribute(
         "data-position",
-        "bottom-right",
+        "custom",
       );
     });
 

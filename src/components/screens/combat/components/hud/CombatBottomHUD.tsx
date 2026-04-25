@@ -239,7 +239,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
         }}
         data-testid="combat-bottom-hud-volume-section"
       >
-        <VolumeControl position="bottom-right" compact={true} />
+        <VolumeControl position="custom" compact={true} />
       </div>
     </div>
   );

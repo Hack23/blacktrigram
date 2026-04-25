@@ -82,15 +82,24 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
       techniques.length * cardWidth + (techniques.length - 1) * gap,
     );
 
+    const reservedHudWidth = embedded ? (isMobile ? 180 : 260) : 0;
+    const availableWidth = Math.max(
+      cardWidth,
+      screenWidth - reservedHudWidth,
+    );
+    const visualScale =
+      totalWidth > 0 ? Math.min(1, availableWidth / totalWidth) : 1;
+
     return {
       cardWidth,
       cardHeight,
       gap,
       totalWidth,
+      visualScale,
       startX: (screenWidth - totalWidth) / 2,
       startY: screenHeight - cardHeight - (isMobile ? 100 : 120),
     };
-  }, [techniques.length, isMobile, screenWidth, screenHeight]);
+  }, [techniques.length, isMobile, screenWidth, screenHeight, embedded]);
 
   // Check if player has sufficient resources for a technique
   const hasResources = (tech: Technique): boolean => {
@@ -109,13 +118,15 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
   // Embedded mode: relative positioning inside parent container
   // Non-embedded: absolute positioning for standalone use
   const containerStyle: React.CSSProperties = embedded
-    ? {
-        position: "relative",
-        display: "flex",
-        justifyContent: "center",
-        width: "100%",
-        pointerEvents: "auto",
-      }
+      ? {
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          width: "100%",
+          height: `${layout.cardHeight * layout.visualScale}px`,
+          pointerEvents: "auto",
+          overflow: "visible",
+        }
     : {
         position: "absolute",
         left: "50%",
@@ -138,6 +149,8 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
             display: "flex",
             gap: `${layout.gap}px`,
             justifyContent: "center",
+            transform: `scale(${layout.visualScale})`,
+            transformOrigin: "center bottom",
           }}
         >
           {techniques.map((technique, index) => {

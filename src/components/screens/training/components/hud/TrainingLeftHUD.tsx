@@ -98,6 +98,7 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
           visibleLayers={visibleAnatomyLayers as AnatomyLayer[]}
           onLayerToggle={onAnatomyLayerToggle}
           isMobile={isMobile}
+          width={Math.max(0, layout.hudWidth - layout.padding * 2)}
         />
       </div>
 
