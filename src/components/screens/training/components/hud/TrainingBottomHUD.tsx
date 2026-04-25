@@ -19,6 +19,7 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { PlayerArchetype } from "../../../../../types/common";
+import { HUD_SIDE_CONTROL_RESERVES } from "../../../../../types/constants/layout";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { SPACING, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import {
@@ -96,13 +97,12 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     // Resolution-based padding
     const padding = getResponsivePadding(width) * positionScale;
 
-    // Reserve horizontal space for the absolute Volume Control on the right
-    // (162px control width + comfortable margin). Mobile additionally reserves
-    // space on the left for the archetype selector.
-    const volumeReserve = 180;
-    const archetypeReserve = 180;
-
-    return { hudHeight, padding, volumeReserve, archetypeReserve };
+    return {
+      hudHeight,
+      padding,
+      volumeReserve: HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+      archetypeReserve: HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR,
+    };
   }, [width, height, positionScale]);
 
   return (

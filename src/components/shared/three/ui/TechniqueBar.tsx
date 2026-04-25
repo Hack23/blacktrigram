@@ -14,6 +14,10 @@
 import React, { useMemo } from "react";
 import { PlayerState } from "../../../../systems/player";
 import { Technique } from "../../../../types";
+import {
+  HUD_SIDE_CONTROL_RESERVES,
+  TECHNIQUE_BAR_MIN_READABLE_SCALE,
+} from "../../../../types/constants/layout";
 import { TechniqueCard } from "./TechniqueCard";
 
 /**
@@ -82,17 +86,20 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
       techniques.length * cardWidth + (techniques.length - 1) * gap,
     );
 
-    const reservedSideWidth = embedded ? (isMobile ? 96 : 190) : 0;
+    let reservedSideWidth = 0;
+    if (embedded) {
+      reservedSideWidth = isMobile
+        ? HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE
+        : HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_DESKTOP;
+    }
     const availableWidth = Math.max(
       cardWidth,
       screenWidth - reservedSideWidth * 2,
     );
     const rawScale =
       totalWidth > 0 ? Math.min(1, availableWidth / totalWidth) : 1;
-    // Don't shrink cards below ~70% — at that point cards become unreadable.
-    // Instead enable horizontal scroll inside the technique section.
-    const minVisualScale = 0.7;
-    const shouldScroll = embedded && rawScale < minVisualScale;
+    const shouldScroll =
+      embedded && rawScale < TECHNIQUE_BAR_MIN_READABLE_SCALE;
     const visualScale = shouldScroll ? 1 : rawScale;
 
     return {

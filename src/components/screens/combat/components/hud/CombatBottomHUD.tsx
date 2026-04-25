@@ -16,6 +16,7 @@
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
+import { HUD_SIDE_CONTROL_RESERVES } from "../../../../../types/constants/layout";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE ,
   OPACITY,
@@ -119,9 +120,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
       maxMessageWidth,
       maxTechniqueBarWidth,
       messagePadding,
-      // Reserve horizontal space for the absolute Volume Control on the right
-      // (162px control width + a comfortable margin) so cards never sit under it.
-      volumeReserve: 180,
+      volumeReserve: HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
     };
   }, [width, height, positionScale]);
 
