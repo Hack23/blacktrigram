@@ -21,7 +21,6 @@ import React from "react";
 import { PlayerArchetype } from "../../../../../types/common";
 import { TRAINING_TOP_HUD_HEIGHT_PERCENT } from "../../../../../types/constants/layout";
 import { SPACING, SPACING_NUMERIC, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
-import { HUD_HEIGHT } from "../../../../../types/LayoutTypes";
 import { getHUDHeight } from "../../../../../utils/responsiveLayout";
 import {
   ArchetypeSelectionButtons,
@@ -78,17 +77,13 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
 }) => {
   // Layout calculations for slim top bar
   const layout = React.useMemo(() => {
-    // Use the same percent-based formula as useHUDLayout so side HUDs sit flush
-    // below the top HUD without overlap. The shared `getHUDHeight` helper
-    // already applies a 40px minimum and 120px maximum.
-    // Mobile uses the design-system constant since percent-based on tall
-    // viewports may exceed it.
-    const hudHeight = isMobile
-      ? Math.max(
-          HUD_HEIGHT.TRAINING_TOP_MOBILE,
-          getHUDHeight(height, TRAINING_TOP_HUD_HEIGHT_PERCENT),
-        )
-      : getHUDHeight(height, TRAINING_TOP_HUD_HEIGHT_PERCENT) * positionScale;
+    // Use the exact same formula as useHUDLayout's `topOffset`
+    // (getHUDHeight(height, 0.06) * positionScale) so side HUDs start
+    // precisely where the top HUD ends on every viewport, including mobile.
+    // The shared `getHUDHeight` helper already applies a 40px minimum and
+    // 120px maximum, so no extra clamp is needed.
+    const hudHeight =
+      getHUDHeight(height, TRAINING_TOP_HUD_HEIGHT_PERCENT) * positionScale;
 
     const padding = isMobile ? SPACING_NUMERIC.xs : SPACING_NUMERIC.sm * positionScale;
     const gap = isMobile ? SPACING_NUMERIC.xs : SPACING_NUMERIC.sm * positionScale;

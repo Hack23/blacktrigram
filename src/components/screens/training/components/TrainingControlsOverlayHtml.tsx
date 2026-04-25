@@ -201,12 +201,15 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
   );
   },
   (prevProps, nextProps) => {
-    // Re-render when training state, mobile state, or callbacks change
+    // Re-render when training state, mobile state, variant, or callbacks change.
+    // variant must be compared so switching between "panel" and "compact"
+    // triggers a re-render and the layout updates accordingly.
     // Including callback props here avoids stale-closure issues where the
     // component would keep calling outdated handlers that reference old state.
     return (
       prevProps.isTraining === nextProps.isTraining &&
       prevProps.isMobile === nextProps.isMobile &&
+      prevProps.variant === nextProps.variant &&
       prevProps.onStartTraining === nextProps.onStartTraining &&
       prevProps.onStopTraining === nextProps.onStopTraining
     );

@@ -97,13 +97,27 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     // Resolution-based padding
     const padding = getResponsivePadding(width) * positionScale;
 
+    // Compute the actual pixel width available to TechniqueBar so it can make
+    // accurate scale/scroll decisions. The technique section has flex:1 but
+    // loses pixels to: HUD padding (both sides), the absolute volume control
+    // reserve, and (on mobile) the absolute archetype selector reserve.
+    const mobile = shouldShowMobileControls(width, isMobile);
+    const techniqueBarContainerWidth = Math.max(
+      0,
+      width -
+        padding * 2 -
+        HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL -
+        (mobile ? HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR : 0),
+    );
+
     return {
       hudHeight,
       padding,
       volumeReserve: HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
       archetypeReserve: HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR,
+      techniqueBarContainerWidth,
     };
-  }, [width, height, positionScale]);
+  }, [width, height, positionScale, isMobile]);
 
   return (
     <div
@@ -175,6 +189,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
           screenWidth={width}
           screenHeight={height}
           embedded={true}
+          containerWidth={layout.techniqueBarContainerWidth}
         />
       </div>
 

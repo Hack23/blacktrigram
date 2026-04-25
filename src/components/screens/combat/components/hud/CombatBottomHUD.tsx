@@ -110,6 +110,16 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
       ? `${SPACING_ADJUSTMENTS.compact} ${SPACING.sm}` 
       : `${SPACING.xs} ${SPACING.md}`;
 
+    // Actual pixel width available to TechniqueBar.
+    // The wrapper applies maxWidth ("100%" mobile / "70%" desktop) and
+    // marginRight (volume control reserve). Pre-computing a numeric value here
+    // ensures TechniqueBar's scale/scroll decision matches the real layout.
+    const usableWidth = width - padding * 2;
+    const maxBarWidthPx = width < BREAKPOINTS.mobile ? usableWidth : usableWidth * 0.70;
+    const techniqueBarContainerWidth = Math.max(
+      0,
+      maxBarWidthPx - HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+    );
 
     return {
       hudHeight,
@@ -121,6 +131,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
       maxTechniqueBarWidth,
       messagePadding,
       volumeReserve: HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+      techniqueBarContainerWidth,
     };
   }, [width, height, positionScale]);
 
@@ -230,6 +241,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             screenWidth={width}
             screenHeight={height}
             embedded={true}
+            containerWidth={layout.techniqueBarContainerWidth}
           />
         </div>
       )}
