@@ -55,8 +55,19 @@ export const HUD_SIDE_CONTROL_RESERVES = {
  *
  * Below 70%, labels and keyboard hints are difficult to scan during combat,
  * so embedded bars switch to horizontal scrolling instead of shrinking.
+ *
+ * Used by TechniqueBar when calculating whether embedded cards should scale
+ * down or remain full size with horizontal scroll.
  */
 export const TECHNIQUE_BAR_MIN_READABLE_SCALE = 0.7;
+
+/**
+ * Training top HUD height ratio.
+ *
+ * Must match the training context top offset used by useHUDLayout so the
+ * top HUD and side HUDs align without overlap across responsive breakpoints.
+ */
+export const TRAINING_TOP_HUD_HEIGHT_PERCENT = 0.06;
 
 /**
  * Top positioning for UI elements (in pixels)

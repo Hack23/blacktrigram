@@ -267,10 +267,10 @@ export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlP
   // Including callback prop prevents stale closures when parent provides
   // a new function that captures updated state.
   return (
-            prevProps.visibleLayers === nextProps.visibleLayers &&
-            prevProps.isMobile === nextProps.isMobile &&
-            prevProps.width === nextProps.width &&
-            prevProps.onLayerToggle === nextProps.onLayerToggle
+    prevProps.visibleLayers === nextProps.visibleLayers &&
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.width === nextProps.width &&
+    prevProps.onLayerToggle === nextProps.onLayerToggle
   );
 });
 
