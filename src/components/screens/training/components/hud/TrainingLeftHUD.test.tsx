@@ -143,14 +143,17 @@ describe("TrainingLeftHUD", () => {
       );
     });
 
-    it("should omit anatomy controls width when inner HUD width is non-positive", () => {
-      render(<TrainingLeftHUD {...defaultProps} width={20} />);
+    it.each([0, 20])(
+      "should omit anatomy controls width when viewport width %ipx leaves no usable inner width",
+      (viewportWidth) => {
+        render(<TrainingLeftHUD {...defaultProps} width={viewportWidth} />);
 
-      expect(screen.getByTestId("mock-anatomy-controls")).toHaveAttribute(
-        "data-width",
-        "",
-      );
-    });
+        expect(screen.getByTestId("mock-anatomy-controls")).toHaveAttribute(
+          "data-width",
+          "",
+        );
+      },
+    );
   });
 
   describe("Layout", () => {

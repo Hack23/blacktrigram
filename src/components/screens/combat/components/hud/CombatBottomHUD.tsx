@@ -30,15 +30,11 @@ import {
   getHUDHeight,
   getResponsiveFontSize,
   getResponsivePadding,
+  parsePercentageToRatio,
   shouldShowMobileControls,
 } from "../../../../../utils/responsiveLayout";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
-
-const getPercentRatio = (value: string): number => {
-  const percent = Number.parseFloat(value);
-  return Number.isFinite(percent) ? percent / 100 : 1;
-};
 
 export interface CombatBottomHUDProps {
   /** Screen width for layout calculations */
@@ -120,7 +116,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
     // marginRight (volume control reserve). Pre-computing a numeric value here
     // ensures TechniqueBar's scale/scroll decision matches the real layout.
     const usableWidth = width - padding * 2;
-    const maxBarWidthPx = usableWidth * getPercentRatio(maxTechniqueBarWidth);
+    const maxBarWidthPx = usableWidth * parsePercentageToRatio(maxTechniqueBarWidth);
     const techniqueBarContainerWidth = Math.max(
       0,
       Math.min(
