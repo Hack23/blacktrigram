@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -313,7 +313,15 @@
 <a name='L248'></a><a href='#L248'>248</a>
 <a name='L249'></a><a href='#L249'>249</a>
 <a name='L250'></a><a href='#L250'>250</a>
-<a name='L251'></a><a href='#L251'>251</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a>
+<a name='L255'></a><a href='#L255'>255</a>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -389,25 +397,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">94x</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">94x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">94x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -584,8 +598,9 @@
 &nbsp;
 import React from "react";
 import { PlayerArchetype } from "../../../../../types/common";
-import { HUD_HEIGHT } from "../../../../../types/LayoutTypes";
+import { TRAINING_TOP_HUD_HEIGHT_PERCENT } from "../../../../../types/constants/layout";
 import { SPACING, SPACING_NUMERIC, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
+import { getHUDHeight } from "../../../../../utils/responsiveLayout";
 import {
   ArchetypeSelectionButtons,
   ReturnToMenuButton,
@@ -627,6 +642,7 @@ export interface TrainingTopHUDProps {
  */
 export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
   width,
+  height,
   isMobile,
   positionScale,
   isTraining,
@@ -640,9 +656,13 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
 }) =&gt; {
   // Layout calculations for slim top bar
   const layout = React.useMemo(() =&gt; {
-    const hudHeight = isMobile
-      ? HUD_HEIGHT.TRAINING_TOP_MOBILE
-      : HUD_HEIGHT.TRAINING_TOP_DESKTOP * positionScale;
+    // Use the exact same formula as useHUDLayout's `topOffset`
+    // (getHUDHeight(height, 0.06) * positionScale) so side HUDs start
+    // precisely where the top HUD ends on every viewport, including mobile.
+    // The shared `getHUDHeight` helper already applies a 40px minimum and
+    // 120px maximum, so no extra clamp is needed.
+    const hudHeight =
+      getHUDHeight(height, TRAINING_TOP_HUD_HEIGHT_PERCENT) * positionScale;
 &nbsp;
     const padding = isMobile ? SPACING_NUMERIC.xs : SPACING_NUMERIC.sm * positionScale;
     const gap = isMobile ? SPACING_NUMERIC.xs : SPACING_NUMERIC.sm * positionScale;
@@ -655,7 +675,7 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
       fontSize,
       hudWidth: width,
     };
-  }, [width, isMobile, positionScale]);
+  }, [width, height, isMobile, positionScale]);
 &nbsp;
   return (
     &lt;div
@@ -694,6 +714,7 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
           onStartTraining={onStartTraining}
           onStopTraining={onStopTraining}
           isMobile={isMobile}
+          variant="compact"
         /&gt;
       &lt;/div&gt;
 &nbsp;
@@ -820,7 +841,7 @@ export default TrainingTopHUD;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-23T16:54:05.419Z
+                at 2026-04-25T10:44:46.806Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

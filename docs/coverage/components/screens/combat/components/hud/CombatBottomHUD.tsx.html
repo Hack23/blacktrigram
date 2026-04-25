@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>19/19</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>19/19</span>
             </div>
         
             
@@ -311,7 +311,30 @@
 <a name='L246'></a><a href='#L246'>246</a>
 <a name='L247'></a><a href='#L247'>247</a>
 <a name='L248'></a><a href='#L248'>248</a>
-<a name='L249'></a><a href='#L249'>249</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a>
+<a name='L255'></a><a href='#L255'>255</a>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a>
+<a name='L268'></a><a href='#L268'>268</a>
+<a name='L269'></a><a href='#L269'>269</a>
+<a name='L270'></a><a href='#L270'>270</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -423,7 +446,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -559,6 +597,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * CombatBottomHUD - Bottom bar for combat screen
  *
@@ -577,6 +619,7 @@
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
+import { HUD_SIDE_CONTROL_RESERVES } from "../../../../../types/constants/layout";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE ,
   OPACITY,
@@ -590,6 +633,7 @@ import {
   getHUDHeight,
   getResponsiveFontSize,
   getResponsivePadding,
+  parsePercentageToRatio,
   shouldShowMobileControls,
 } from "../../../../../utils/responsiveLayout";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
@@ -670,6 +714,19 @@ export const CombatBottomHUD: React.FC&lt;CombatBottomHUDProps&gt; = ({
       ? `${SPACING_ADJUSTMENTS.compact} ${SPACING.sm}` 
       : `${SPACING.xs} ${SPACING.md}`;
 &nbsp;
+    // Actual pixel width available to TechniqueBar.
+    // The wrapper applies maxWidth ("100%" mobile / "70%" desktop) and
+    // marginRight (volume control reserve). Pre-computing a numeric value here
+    // ensures TechniqueBar's scale/scroll decision matches the real layout.
+    const usableWidth = width - padding * 2;
+    const maxBarWidthPx = usableWidth * parsePercentageToRatio(maxTechniqueBarWidth);
+    const techniqueBarContainerWidth = Math.max(
+      0,
+      Math.min(
+        maxBarWidthPx,
+        usableWidth - HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+      ),
+    );
 &nbsp;
     return {
       hudHeight,
@@ -680,6 +737,8 @@ export const CombatBottomHUD: React.FC&lt;CombatBottomHUDProps&gt; = ({
       maxMessageWidth,
       maxTechniqueBarWidth,
       messagePadding,
+      volumeReserve: HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+      techniqueBarContainerWidth,
     };
   }, [width, height, positionScale]);
 &nbsp;
@@ -762,7 +821,9 @@ export const CombatBottomHUD: React.FC&lt;CombatBottomHUDProps&gt; = ({
         &lt;/div&gt;
       )}
 &nbsp;
-      {/* Technique Bar - centered, embedded mode for proper containment */}
+      {/* Technique Bar - centered, embedded mode for proper containment.
+          Reserve space on the right for the absolute Volume Control so cards
+          never visually overlap the volume button. */}
       {visible &amp;&amp; (
         &lt;div
           style={{
@@ -772,6 +833,7 @@ export const CombatBottomHUD: React.FC&lt;CombatBottomHUDProps&gt; = ({
             alignItems: "center",
             width: "100%",
             maxWidth: layout.maxTechniqueBarWidth,
+            marginRight: layout.volumeReserve,
           }}
           data-testid="combat-bottom-hud-technique-section"
         &gt;
@@ -786,6 +848,7 @@ export const CombatBottomHUD: React.FC&lt;CombatBottomHUDProps&gt; = ({
             screenWidth={width}
             screenHeight={height}
             embedded={true}
+            containerWidth={layout.techniqueBarContainerWidth}
           /&gt;
         &lt;/div&gt;
       )}
@@ -800,7 +863,7 @@ export const CombatBottomHUD: React.FC&lt;CombatBottomHUDProps&gt; = ({
         }}
         data-testid="combat-bottom-hud-volume-section"
       &gt;
-        &lt;VolumeControl position="bottom-right" compact={true} /&gt;
+        &lt;VolumeControl position="custom" compact={true} /&gt;
       &lt;/div&gt;
     &lt;/div&gt;
   );
@@ -814,7 +877,7 @@ export default CombatBottomHUD;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-23T16:54:05.419Z
+                at 2026-04-25T10:44:46.806Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

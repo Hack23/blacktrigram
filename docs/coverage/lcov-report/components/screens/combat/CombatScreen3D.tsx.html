@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.09% </span>
+                <span class="strong">41.6% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>325/772</span>
+                <span class='fraction'>322/774</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">29.53% </span>
+                <span class="strong">28.84% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>153/518</span>
+                <span class='fraction'>150/520</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.71% </span>
+                <span class="strong">41.2% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>312/748</span>
+                <span class='fraction'>309/750</span>
             </div>
         
             
@@ -3349,7 +3349,11 @@
 <a name='L3284'></a><a href='#L3284'>3284</a>
 <a name='L3285'></a><a href='#L3285'>3285</a>
 <a name='L3286'></a><a href='#L3286'>3286</a>
-<a name='L3287'></a><a href='#L3287'>3287</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L3287'></a><a href='#L3287'>3287</a>
+<a name='L3288'></a><a href='#L3288'>3288</a>
+<a name='L3289'></a><a href='#L3289'>3289</a>
+<a name='L3290'></a><a href='#L3290'>3290</a>
+<a name='L3291'></a><a href='#L3291'>3291</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3654,16 +3658,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -6939,21 +6947,25 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
   // Screen size scaling for 4K and large displays
   // Uses SPACING_SCALE_MAP values: mobile=0.5, tablet=0.75, desktop=1.0, large=1.25, xlarge=1.5
   const positionScale = useMemo(() =&gt; {
-    switch (screenSize) {
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (isMobile) {
+      return 1.0;
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    switch (screenSize) {</span>
       case "mobile":
-        return 1.0; // Mobile already has special handling
+<span class="cstat-no" title="statement not covered" >        return 1.0; // Mobile already has special handling</span>
       case "tablet":
-        return 1.0;
+<span class="cstat-no" title="statement not covered" >        return 1.0;</span>
       case "desktop":
-        return 1.0;
-<span class="branch-3 cbranch-no" title="branch not covered" >      case "large":</span>
+<span class="cstat-no" title="statement not covered" >        return 1.0;</span>
+      case "large":
 <span class="cstat-no" title="statement not covered" >        return 1.25;</span>
       case "xlarge":
-        return 1.5; // 4K displays need 1.5x offsets
-<span class="branch-5 cbranch-no" title="branch not covered" >      default:</span>
+<span class="cstat-no" title="statement not covered" >        return 1.5; // 4K displays need 1.5x offsets</span>
+      default:
 <span class="cstat-no" title="statement not covered" >        return 1.0;</span>
     }
-  }, [screenSize]);
+  }, [isMobile, screenSize]);
 &nbsp;
   // Camera and rendering configuration based on device
   // Use shared physics config for consistent camera setup across screens
@@ -9928,7 +9940,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-23T16:54:05.905Z
+                at 2026-04-25T10:44:47.263Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
