@@ -36,6 +36,8 @@ export interface AnatomyControlsOverlayHtmlProps {
   readonly onLayerToggle: (layer: AnatomyLayer) => void;
   /** Whether on mobile device */
   readonly isMobile?: boolean;
+  /** Optional width constraint from the parent HUD */
+  readonly width?: number;
 }
 
 /**
@@ -91,6 +93,7 @@ export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlP
     visibleLayers,
     onLayerToggle,
     isMobile = false,
+    width,
   }) => {
   // State for hover effects
   const [hoveredLayer, setHoveredLayer] = useState<AnatomyLayer | null>(null);
@@ -102,7 +105,7 @@ export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlP
     [onLayerToggle]
   );
 
-  const panelWidth = isMobile ? 220 : 260;
+  const panelWidth = width ?? (isMobile ? 220 : 260);
   const padding = getResponsiveSpacing("md", isMobile);
 
   // Enhanced panel styles with neon glow
@@ -115,7 +118,9 @@ export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlP
       depthLayers: 3,
     }),
     width: `${panelWidth}px`,
+    maxWidth: "100%",
     padding: `${padding}px`,
+    boxSizing: "border-box",
   };
 
   return (
@@ -264,6 +269,7 @@ export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlP
   return (
     prevProps.visibleLayers === nextProps.visibleLayers &&
     prevProps.isMobile === nextProps.isMobile &&
+    prevProps.width === nextProps.width &&
     prevProps.onLayerToggle === nextProps.onLayerToggle
   );
 });

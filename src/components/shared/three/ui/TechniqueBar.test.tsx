@@ -190,6 +190,88 @@ describe("TechniqueBar", () => {
       });
     });
 
+    describe("Embedded Scroll/Scale Behavior", () => {
+      // 5 desktop cards: 5×90 + 4×12 = 498px total; 3 desktop cards: 3×90 + 2×12 = 294px total
+      const fiveTechniques = [
+        ...mockTechniques,
+        createMockTechnique({ id: "technique-4", keyboardShortcut: "T" }),
+        createMockTechnique({ id: "technique-5", keyboardShortcut: "Y" }),
+      ];
+
+      it("should switch to horizontal scrolling when rawScale falls below TECHNIQUE_BAR_MIN_READABLE_SCALE", () => {
+        // 5 desktop cards total = 498px.
+        // containerWidth=300 → rawScale = 300/498 ≈ 0.60 < 0.70 → shouldScroll = true
+        const { container } = render(
+          <TechniqueBar
+            {...defaultProps}
+            techniques={fiveTechniques}
+            isMobile={false}
+            embedded={true}
+            containerWidth={300}
+          />
+        );
+        const bar = container.querySelector('[data-testid="technique-bar"]') as HTMLElement;
+        expect(bar.style.overflowX).toBe("auto");
+        // In scroll mode, visualScale is 1 so inner content is not shrunk
+        const innerDiv = bar.querySelector("div") as HTMLElement;
+        expect(innerDiv.style.transform).toBe("scale(1)");
+      });
+
+      it("should scale down without scrolling when rawScale is at or above TECHNIQUE_BAR_MIN_READABLE_SCALE", () => {
+        // 5 desktop cards total = 498px.
+        // containerWidth=400 → rawScale = 400/498 ≈ 0.80 ≥ 0.70 → shouldScroll = false
+        const { container } = render(
+          <TechniqueBar
+            {...defaultProps}
+            techniques={fiveTechniques}
+            isMobile={false}
+            embedded={true}
+            containerWidth={400}
+          />
+        );
+        const bar = container.querySelector('[data-testid="technique-bar"]') as HTMLElement;
+        expect(bar.style.overflowX).toBe("visible");
+        // Inner content should be scaled below 1
+        const innerDiv = bar.querySelector("div") as HTMLElement;
+        expect(innerDiv.style.transform).toMatch(/^scale\(0\.\d+\)$/);
+      });
+
+      it("should not scroll when not in embedded mode even if rawScale is low", () => {
+        // Non-embedded never scrolls regardless of width
+        const { container } = render(
+          <TechniqueBar
+            {...defaultProps}
+            techniques={fiveTechniques}
+            isMobile={false}
+            embedded={false}
+            screenWidth={300}
+          />
+        );
+        const bar = container.querySelector('[data-testid="technique-bar"]') as HTMLElement;
+        // Non-embedded mode: absolute positioning, no overflowX style
+        expect(bar.style.overflowX).toBe("");
+        const innerDiv = bar.querySelector("div") as HTMLElement;
+        expect(innerDiv.style.transform).toBe("");
+        expect(innerDiv.style.transformOrigin).toBe("");
+      });
+
+      it("should use containerWidth over screenWidth for scale/scroll decision when embedded", () => {
+        // Wide screenWidth but narrow containerWidth forces scrolling
+        // 3 desktop cards total = 294px; containerWidth=180 → rawScale ≈ 0.61 < 0.70
+        const { container } = render(
+          <TechniqueBar
+            {...defaultProps}
+            isMobile={false}
+            embedded={true}
+            screenWidth={1920}
+            containerWidth={180}
+          />
+        );
+        const bar = container.querySelector('[data-testid="technique-bar"]') as HTMLElement;
+        expect(bar.style.overflowX).toBe("auto");
+      });
+    });
+
     describe("Dynamic Card Count", () => {
       it("should adjust layout for 5 techniques", () => {
         const fiveTechniques = [

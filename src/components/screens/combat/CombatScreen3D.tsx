@@ -302,6 +302,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Screen size scaling for 4K and large displays
   // Uses SPACING_SCALE_MAP values: mobile=0.5, tablet=0.75, desktop=1.0, large=1.25, xlarge=1.5
   const positionScale = useMemo(() => {
+    if (isMobile) {
+      return 1.0;
+    }
+
     switch (screenSize) {
       case "mobile":
         return 1.0; // Mobile already has special handling
@@ -316,7 +320,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       default:
         return 1.0;
     }
-  }, [screenSize]);
+  }, [isMobile, screenSize]);
 
   // Camera and rendering configuration based on device
   // Use shared physics config for consistent camera setup across screens

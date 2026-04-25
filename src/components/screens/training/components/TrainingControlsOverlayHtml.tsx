@@ -40,6 +40,8 @@ export interface TrainingControlsOverlayHtmlProps {
   readonly onStopTraining: () => void;
   /** Whether on mobile device */
   readonly isMobile: boolean;
+  /** Compact mode for embedding inside the slim top HUD */
+  readonly variant?: "panel" | "compact";
 }
 
 /**
@@ -70,10 +72,12 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
     onStartTraining,
     onStopTraining,
     isMobile,
+    variant = "panel",
   }) => {
-  const panelWidth = isMobile ? 200 : 220;
-  const panelHeight = isMobile ? 90 : 100;
-  const padding = getResponsiveSpacing("sm", isMobile);
+  const isCompact = variant === "compact";
+  const panelWidth = isCompact ? (isMobile ? 180 : 210) : isMobile ? 200 : 220;
+  const panelHeight = isCompact ? (isMobile ? 40 : 44) : isMobile ? 90 : 100;
+  const padding = isCompact ? getResponsiveSpacing("xs", isMobile) : getResponsiveSpacing("sm", isMobile);
 
   // Use Korean colors for border based on training state
   const stateColor = isTraining ? KOREAN_COLORS.ACCENT_GREEN : KOREAN_COLORS.ACCENT_RED;
@@ -93,6 +97,13 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
     padding: `${padding}px`,
     border: `2px solid ${borderColor}`,
     position: "relative",
+    display: "flex",
+    flexDirection: isCompact ? "row" : "column",
+    alignItems: isCompact ? "center" : "stretch",
+    justifyContent: isCompact ? "space-between" : "flex-start",
+    gap: `${padding}px`,
+    boxSizing: "border-box",
+    fontFamily: FONT_FAMILY.KOREAN,
   };
 
   // Enhanced button styles (memoized, interaction states handled internally by getKoreanButtonWithGlow)
@@ -106,21 +117,23 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
     [isTraining]
   );
 
-  const titleFontSize = isMobile ? 13 : 14;
+  const titleFontSize = isCompact ? (isMobile ? 11 : 12) : isMobile ? 13 : 14;
   const infoFontSize = isMobile ? 9 : 10;
 
   return (
     <div style={panelStyle} data-testid="training-controls-html">
       {/* Header with bilingual status */}
-      <div style={{ marginBottom: `${SPACING.SM}px` }}>
+      <div style={{ marginBottom: isCompact ? 0 : `${SPACING.SM}px`, minWidth: 0 }}>
         <div
           style={{
             fontSize: `${titleFontSize}px`,
             fontWeight: "bold",
             color: hexToRgbaString(stateColor),
-            fontFamily: FONT_FAMILY.KOREAN,
             textShadow: getNeonTextShadow(stateColor, isTraining ? "medium" : "subtle"),
             transition: getSmoothTransition("all", "normal"),
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
           {formatBilingualText(
@@ -136,8 +149,8 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
         className={`status-indicator ${isTraining ? "active" : "inactive"}`}
         style={{
           position: "absolute",
-          top: "12px",
-          right: "12px",
+          top: isCompact ? "6px" : "12px",
+          right: isCompact ? "6px" : "12px",
         }}
       />
 
@@ -150,7 +163,10 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
           // Note: fontSize from buttonStyles is intentionally overridden with titleFontSize
           // to maintain consistent sizing with the training header/title typography
           fontSize: `${titleFontSize}px`,
-          height: "35px",
+          height: isCompact ? "30px" : "35px",
+          minWidth: isCompact ? "72px" : undefined,
+          padding: isCompact ? "4px 8px" : buttonStyles.padding,
+          flexShrink: 0,
         }}
         data-testid="training-toggle-button"
         data-training-state={isTraining ? "active" : "inactive"}
@@ -166,7 +182,7 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
       </button>
 
       {/* Info text about auto-restart with Korean colors */}
-      {!isTraining && (
+      {!isCompact && !isTraining && (
         <div
           style={{
             fontSize: `${infoFontSize}px`,
@@ -185,12 +201,15 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
   );
   },
   (prevProps, nextProps) => {
-    // Re-render when training state, mobile state, or callbacks change
+    // Re-render when training state, mobile state, variant, or callbacks change.
+    // variant must be compared so switching between "panel" and "compact"
+    // triggers a re-render and the layout updates accordingly.
     // Including callback props here avoids stale-closure issues where the
     // component would keep calling outdated handlers that reference old state.
     return (
       prevProps.isTraining === nextProps.isTraining &&
       prevProps.isMobile === nextProps.isMobile &&
+      prevProps.variant === nextProps.variant &&
       prevProps.onStartTraining === nextProps.onStartTraining &&
       prevProps.onStopTraining === nextProps.onStopTraining
     );

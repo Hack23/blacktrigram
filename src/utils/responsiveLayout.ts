@@ -14,6 +14,25 @@
 export const MIN_TOUCH_TARGET_SIZE = 44;
 
 /**
+ * Convert a CSS percentage string (for example "70%") into a decimal ratio.
+ *
+ * Invalid or non-finite percentage values fall back to `1` so responsive
+ * layout calculations preserve full-width behaviour instead of producing NaN.
+ *
+ * @param value - CSS percentage string
+ * @returns Decimal ratio (e.g. "70%" -> 0.7)
+ */
+export function parsePercentageToRatio(value: string): number {
+  const trimmedValue = value.trim();
+  if (!trimmedValue.endsWith('%')) {
+    return 1;
+  }
+
+  const percent = Number.parseFloat(trimmedValue.slice(0, -1));
+  return Number.isFinite(percent) ? percent / 100 : 1;
+}
+
+/**
  * Validate if an element meets minimum touch target requirements
  * 
  * @param width - Element width in pixels

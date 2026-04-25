@@ -14,6 +14,10 @@
 import React, { useMemo } from "react";
 import { PlayerState } from "../../../../systems/player";
 import { Technique } from "../../../../types";
+import {
+  HUD_SIDE_CONTROL_RESERVES,
+  TECHNIQUE_BAR_MIN_READABLE_SCALE,
+} from "../../../../types/constants/layout";
 import { TechniqueCard } from "./TechniqueCard";
 
 /**
@@ -49,6 +53,20 @@ export interface TechniqueBarProps {
 
   /** Whether to use embedded mode (relative positioning, no absolute) */
   readonly embedded?: boolean;
+
+  /**
+   * Actual available pixel width of the container when in embedded mode.
+   *
+   * Embedded parents (TrainingBottomHUD, CombatBottomHUD) reserve space for
+   * side controls via margins/padding, so the real container width is smaller
+   * than `screenWidth`. Passing the pre-computed pixel width here ensures
+   * the rawScale / shouldScroll decision is accurate and prevents cards from
+   * overflowing back under side controls.
+   *
+   * When omitted in embedded mode, the component falls back to
+   * `screenWidth − 2 × HUD_SIDE_CONTROL_RESERVES` (previous behaviour).
+   */
+  readonly containerWidth?: number;
 }
 
 /**
@@ -71,6 +89,7 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
   screenWidth,
   screenHeight,
   embedded = false,
+  containerWidth,
 }) => {
   // Calculate card sizing and spacing
   const layout = useMemo(() => {
@@ -82,15 +101,38 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
       techniques.length * cardWidth + (techniques.length - 1) * gap,
     );
 
+    // When embedded and the parent supplies its actual pixel width, use that
+    // directly so rawScale / shouldScroll reflects the real available space.
+    // Falls back to screenWidth − 2× side-reserve when containerWidth is not
+    // provided (non-embedded or legacy callers).
+    let availableWidth: number;
+    if (embedded && containerWidth !== undefined) {
+      availableWidth = Math.max(cardWidth, containerWidth);
+    } else {
+      const reservedSideWidth = embedded
+        ? (isMobile
+            ? HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE
+            : HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_DESKTOP)
+        : 0;
+      availableWidth = Math.max(cardWidth, screenWidth - reservedSideWidth * 2);
+    }
+    const rawScale =
+      totalWidth > 0 ? Math.min(1, availableWidth / totalWidth) : 1;
+    const shouldScroll =
+      embedded && rawScale < TECHNIQUE_BAR_MIN_READABLE_SCALE;
+    const visualScale = shouldScroll ? 1 : rawScale;
+
     return {
       cardWidth,
       cardHeight,
       gap,
       totalWidth,
+      visualScale,
+      shouldScroll,
       startX: (screenWidth - totalWidth) / 2,
       startY: screenHeight - cardHeight - (isMobile ? 100 : 120),
     };
-  }, [techniques.length, isMobile, screenWidth, screenHeight]);
+  }, [techniques.length, isMobile, screenWidth, screenHeight, embedded, containerWidth]);
 
   // Check if player has sufficient resources for a technique
   const hasResources = (tech: Technique): boolean => {
@@ -112,9 +154,16 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
     ? {
         position: "relative",
         display: "flex",
-        justifyContent: "center",
+        justifyContent: layout.shouldScroll ? "flex-start" : "center",
         width: "100%",
+        maxWidth: "100%",
+        height: `${layout.cardHeight * layout.visualScale}px`,
         pointerEvents: "auto",
+        overflowX: layout.shouldScroll ? "auto" : "visible",
+        overflowY: "visible",
+        // iOS momentum + scroll-snap for tactile feel
+        scrollSnapType: layout.shouldScroll ? "x proximity" : undefined,
+        WebkitOverflowScrolling: layout.shouldScroll ? "touch" : undefined,
       }
     : {
         position: "absolute",
@@ -138,6 +187,14 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
             display: "flex",
             gap: `${layout.gap}px`,
             justifyContent: "center",
+            transform: embedded ? `scale(${layout.visualScale})` : undefined,
+            transformOrigin: embedded
+              ? layout.shouldScroll
+                ? "left center"
+                : "center bottom"
+              : undefined,
+            paddingInline: layout.shouldScroll ? "8px" : undefined,
+            flexShrink: 0,
           }}
         >
           {techniques.map((technique, index) => {
@@ -146,7 +203,11 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
             const available = isAvailable(technique);
 
             return (
-              <div key={technique.id} data-testid={`technique-slot-${index}`}>
+              <div
+                key={technique.id}
+                data-testid={`technique-slot-${index}`}
+                style={layout.shouldScroll ? { scrollSnapAlign: "start" } : undefined}
+              >
                 <TechniqueCard
                   technique={technique}
                   isSelected={selectedIndex === index}

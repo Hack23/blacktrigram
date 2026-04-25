@@ -19,8 +19,9 @@
 
 import React from "react";
 import { PlayerArchetype } from "../../../../../types/common";
-import { HUD_HEIGHT } from "../../../../../types/LayoutTypes";
+import { TRAINING_TOP_HUD_HEIGHT_PERCENT } from "../../../../../types/constants/layout";
 import { SPACING, SPACING_NUMERIC, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
+import { getHUDHeight } from "../../../../../utils/responsiveLayout";
 import {
   ArchetypeSelectionButtons,
   ReturnToMenuButton,
@@ -62,6 +63,7 @@ export interface TrainingTopHUDProps {
  */
 export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
   width,
+  height,
   isMobile,
   positionScale,
   isTraining,
@@ -75,9 +77,13 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
 }) => {
   // Layout calculations for slim top bar
   const layout = React.useMemo(() => {
-    const hudHeight = isMobile
-      ? HUD_HEIGHT.TRAINING_TOP_MOBILE
-      : HUD_HEIGHT.TRAINING_TOP_DESKTOP * positionScale;
+    // Use the exact same formula as useHUDLayout's `topOffset`
+    // (getHUDHeight(height, 0.06) * positionScale) so side HUDs start
+    // precisely where the top HUD ends on every viewport, including mobile.
+    // The shared `getHUDHeight` helper already applies a 40px minimum and
+    // 120px maximum, so no extra clamp is needed.
+    const hudHeight =
+      getHUDHeight(height, TRAINING_TOP_HUD_HEIGHT_PERCENT) * positionScale;
 
     const padding = isMobile ? SPACING_NUMERIC.xs : SPACING_NUMERIC.sm * positionScale;
     const gap = isMobile ? SPACING_NUMERIC.xs : SPACING_NUMERIC.sm * positionScale;
@@ -90,7 +96,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
       fontSize,
       hudWidth: width,
     };
-  }, [width, isMobile, positionScale]);
+  }, [width, height, isMobile, positionScale]);
 
   return (
     <div
@@ -129,6 +135,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
           onStartTraining={onStartTraining}
           onStopTraining={onStopTraining}
           isMobile={isMobile}
+          variant="compact"
         />
       </div>
 

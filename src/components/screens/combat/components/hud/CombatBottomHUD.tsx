@@ -16,6 +16,7 @@
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
+import { HUD_SIDE_CONTROL_RESERVES } from "../../../../../types/constants/layout";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE ,
   OPACITY,
@@ -29,6 +30,7 @@ import {
   getHUDHeight,
   getResponsiveFontSize,
   getResponsivePadding,
+  parsePercentageToRatio,
   shouldShowMobileControls,
 } from "../../../../../utils/responsiveLayout";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
@@ -109,6 +111,19 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
       ? `${SPACING_ADJUSTMENTS.compact} ${SPACING.sm}` 
       : `${SPACING.xs} ${SPACING.md}`;
 
+    // Actual pixel width available to TechniqueBar.
+    // The wrapper applies maxWidth ("100%" mobile / "70%" desktop) and
+    // marginRight (volume control reserve). Pre-computing a numeric value here
+    // ensures TechniqueBar's scale/scroll decision matches the real layout.
+    const usableWidth = width - padding * 2;
+    const maxBarWidthPx = usableWidth * parsePercentageToRatio(maxTechniqueBarWidth);
+    const techniqueBarContainerWidth = Math.max(
+      0,
+      Math.min(
+        maxBarWidthPx,
+        usableWidth - HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+      ),
+    );
 
     return {
       hudHeight,
@@ -119,6 +134,8 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
       maxMessageWidth,
       maxTechniqueBarWidth,
       messagePadding,
+      volumeReserve: HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+      techniqueBarContainerWidth,
     };
   }, [width, height, positionScale]);
 
@@ -201,7 +218,9 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
         </div>
       )}
 
-      {/* Technique Bar - centered, embedded mode for proper containment */}
+      {/* Technique Bar - centered, embedded mode for proper containment.
+          Reserve space on the right for the absolute Volume Control so cards
+          never visually overlap the volume button. */}
       {visible && (
         <div
           style={{
@@ -211,6 +230,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             alignItems: "center",
             width: "100%",
             maxWidth: layout.maxTechniqueBarWidth,
+            marginRight: layout.volumeReserve,
           }}
           data-testid="combat-bottom-hud-technique-section"
         >
@@ -225,6 +245,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             screenWidth={width}
             screenHeight={height}
             embedded={true}
+            containerWidth={layout.techniqueBarContainerWidth}
           />
         </div>
       )}
@@ -239,7 +260,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
         }}
         data-testid="combat-bottom-hud-volume-section"
       >
-        <VolumeControl position="bottom-right" compact={true} />
+        <VolumeControl position="custom" compact={true} />
       </div>
     </div>
   );

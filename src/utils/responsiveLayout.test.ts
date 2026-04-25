@@ -18,10 +18,25 @@ import {
   getResponsiveSize,
   getStanceSelectorLayout,
   isValidTouchTarget,
+  parsePercentageToRatio,
   shouldShowMobileControls,
 } from './responsiveLayout';
 
 describe('responsiveLayout utilities', () => {
+  describe('parsePercentageToRatio', () => {
+    it('should convert percentage strings to decimal ratios', () => {
+      expect(parsePercentageToRatio('70%')).toBe(0.7);
+      expect(parsePercentageToRatio('100%')).toBe(1);
+    });
+
+    it('should fall back to full width for invalid percentage strings', () => {
+      expect(parsePercentageToRatio('auto')).toBe(1);
+      expect(parsePercentageToRatio('70')).toBe(1);
+      expect(parsePercentageToRatio('70px')).toBe(1);
+      expect(parsePercentageToRatio('')).toBe(1);
+    });
+  });
+
   describe('isValidTouchTarget', () => {
     it('should validate minimum touch target size (44x44px)', () => {
       expect(isValidTouchTarget(44, 44)).toBe(true);

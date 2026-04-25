@@ -17,8 +17,12 @@ afterEach(() => {
 
 // Mock the child components
 vi.mock("../AnatomyControlsOverlayHtml", () => ({
-  default: ({ isMobile }: { isMobile: boolean }) => (
-    <div data-testid="mock-anatomy-controls" data-mobile={isMobile}>
+  default: ({ isMobile, width }: { isMobile: boolean; width?: number }) => (
+    <div
+      data-testid="mock-anatomy-controls"
+      data-mobile={isMobile}
+      data-width={width ?? ""}
+    >
       Anatomy Controls
     </div>
   ),
@@ -138,6 +142,18 @@ describe("TrainingLeftHUD", () => {
         "jin",
       );
     });
+
+    it.each([0, 20])(
+      "should omit anatomy controls width when viewport width %ipx leaves no usable inner width",
+      (viewportWidth) => {
+        render(<TrainingLeftHUD {...defaultProps} width={viewportWidth} />);
+
+        expect(screen.getByTestId("mock-anatomy-controls")).toHaveAttribute(
+          "data-width",
+          "",
+        );
+      },
+    );
   });
 
   describe("Layout", () => {

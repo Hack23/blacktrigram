@@ -30,6 +30,47 @@ export const LAYOUT_BOTTOM_POSITIONS = {
 } as const;
 
 /**
+ * Shared horizontal reservations for HUD side controls.
+ *
+ * These values keep centered technique cards readable while preserving space
+ * for absolutely positioned controls such as the compact volume control and
+ * mobile archetype selector.
+ */
+export const HUD_SIDE_CONTROL_RESERVES = {
+  /** Compact volume control width (162px) plus interaction margin. */
+  VOLUME_CONTROL: 180,
+
+  /** Mobile archetype selector reserve in the training bottom HUD. */
+  ARCHETYPE_SELECTOR: 180,
+
+  /** Embedded mobile technique bar side reserve for compact controls. */
+  TECHNIQUE_BAR_MOBILE: 96,
+
+  /** Embedded desktop technique bar side reserve for side HUD controls. */
+  TECHNIQUE_BAR_DESKTOP: 190,
+} as const;
+
+/**
+ * Minimum visual scale before technique cards become unreadable.
+ *
+ * The 70% threshold preserves readable Korean/English labels and keyboard
+ * hints on compact HUDs. Below this value, embedded bars switch to horizontal
+ * scrolling instead of shrinking so touch targets and text remain usable.
+ *
+ * Used by TechniqueBar when calculating whether embedded cards should scale
+ * down or remain full size with horizontal scroll.
+ */
+export const TECHNIQUE_BAR_MIN_READABLE_SCALE = 0.7;
+
+/**
+ * Training top HUD height ratio.
+ *
+ * Must match the training context top offset used by useHUDLayout so the
+ * top HUD and side HUDs align without overlap across responsive breakpoints.
+ */
+export const TRAINING_TOP_HUD_HEIGHT_PERCENT = 0.06;
+
+/**
  * Top positioning for UI elements (in pixels)
  * Used for elements positioned from the top of the screen
  */

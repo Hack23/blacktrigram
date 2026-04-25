@@ -19,6 +19,7 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { PlayerArchetype } from "../../../../../types/common";
+import { HUD_SIDE_CONTROL_RESERVES } from "../../../../../types/constants/layout";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { SPACING, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import {
@@ -88,6 +89,10 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
 }) => {
   // isMobile only used for showing mobile controls
   const showMobileControls = shouldShowMobileControls(width, isMobile);
+  const showArchetypeSelector =
+    showMobileControls &&
+    onArchetypeSelect !== undefined &&
+    selectedArchetype !== undefined;
 
   const layout = React.useMemo(() => {
     // Resolution-based HUD height (11% of screen height, 40-120px range)
@@ -96,9 +101,26 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     // Resolution-based padding
     const padding = getResponsivePadding(width) * positionScale;
 
+    // Compute the actual pixel width available to TechniqueBar so it can make
+    // accurate scale/scroll decisions. The technique section has flex:1 but
+    // loses pixels to: HUD padding (both sides), the absolute volume control
+    // reserve, and (on mobile) the absolute archetype selector reserve.
+    const techniqueBarContainerWidth = Math.max(
+      0,
+      width -
+        padding * 2 -
+        HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL -
+        (showArchetypeSelector ? HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR : 0),
+    );
 
-    return { hudHeight, padding };
-  }, [width, height, positionScale]);
+    return {
+      hudHeight,
+      padding,
+      volumeReserve: HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+      archetypeReserve: HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR,
+      techniqueBarContainerWidth,
+    };
+  }, [width, height, positionScale, showArchetypeSelector]);
 
   return (
     <div
@@ -140,7 +162,10 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         </div>
       )}
 
-      {/* Technique Bar - centered, embedded mode for proper containment */}
+      {/* Technique Bar - centered, embedded mode for proper containment.
+          Reserve right space for the absolute Volume Control and (on mobile)
+          left space for the Archetype Selector so technique cards never sit
+          under the side controls. */}
       <div
         style={{
           pointerEvents: "all",
@@ -151,6 +176,8 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
           alignItems: "center",
           overflow: "visible",
           height: "100%",
+          marginRight: layout.volumeReserve,
+          marginLeft: showArchetypeSelector ? layout.archetypeReserve : 0,
         }}
         data-testid="training-bottom-hud-technique-section"
       >
@@ -165,6 +192,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
           screenWidth={width}
           screenHeight={height}
           embedded={true}
+          containerWidth={layout.techniqueBarContainerWidth}
         />
       </div>
 
@@ -178,11 +206,11 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         }}
         data-testid="training-bottom-hud-volume-section"
       >
-        <VolumeControl position="bottom-right" compact={true} />
+        <VolumeControl position="custom" compact={true} />
       </div>
 
       {/* Mobile Archetype Selector - bottom left corner */}
-      {showMobileControls && onArchetypeSelect && selectedArchetype && (
+      {showArchetypeSelector && (
         <div
           style={{
             position: "absolute",
