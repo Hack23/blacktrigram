@@ -106,7 +106,7 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
     // Falls back to screenWidth − 2× side-reserve when containerWidth is not
     // provided (non-embedded or legacy callers).
     let availableWidth: number;
-    if (embedded && containerWidth != null) {
+    if (embedded && containerWidth !== undefined) {
       availableWidth = Math.max(cardWidth, containerWidth);
     } else {
       const reservedSideWidth = embedded

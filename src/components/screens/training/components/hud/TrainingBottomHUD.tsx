@@ -101,13 +101,13 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     // accurate scale/scroll decisions. The technique section has flex:1 but
     // loses pixels to: HUD padding (both sides), the absolute volume control
     // reserve, and (on mobile) the absolute archetype selector reserve.
-    const mobile = shouldShowMobileControls(width, isMobile);
+    const showsMobileControls = shouldShowMobileControls(width, isMobile);
     const techniqueBarContainerWidth = Math.max(
       0,
       width -
         padding * 2 -
         HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL -
-        (mobile ? HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR : 0),
+        (showsMobileControls ? HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR : 0),
     );
 
     return {
