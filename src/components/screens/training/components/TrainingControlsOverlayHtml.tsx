@@ -129,7 +129,6 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
             fontSize: `${titleFontSize}px`,
             fontWeight: "bold",
             color: hexToRgbaString(stateColor),
-            fontFamily: FONT_FAMILY.KOREAN,
             textShadow: getNeonTextShadow(stateColor, isTraining ? "medium" : "subtle"),
             transition: getSmoothTransition("all", "normal"),
             overflow: "hidden",
