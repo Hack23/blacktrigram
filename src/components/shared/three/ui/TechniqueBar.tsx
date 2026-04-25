@@ -187,8 +187,12 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
             display: "flex",
             gap: `${layout.gap}px`,
             justifyContent: "center",
-            transform: `scale(${layout.visualScale})`,
-            transformOrigin: layout.shouldScroll ? "left center" : "center bottom",
+            transform: embedded ? `scale(${layout.visualScale})` : undefined,
+            transformOrigin: embedded
+              ? layout.shouldScroll
+                ? "left center"
+                : "center bottom"
+              : undefined,
             paddingInline: layout.shouldScroll ? "8px" : undefined,
             flexShrink: 0,
           }}

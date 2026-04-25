@@ -89,6 +89,10 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
 }) => {
   // isMobile only used for showing mobile controls
   const showMobileControls = shouldShowMobileControls(width, isMobile);
+  const showArchetypeSelector =
+    showMobileControls &&
+    onArchetypeSelect !== undefined &&
+    selectedArchetype !== undefined;
 
   const layout = React.useMemo(() => {
     // Resolution-based HUD height (11% of screen height, 40-120px range)
@@ -101,13 +105,12 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     // accurate scale/scroll decisions. The technique section has flex:1 but
     // loses pixels to: HUD padding (both sides), the absolute volume control
     // reserve, and (on mobile) the absolute archetype selector reserve.
-    const showsMobileControls = shouldShowMobileControls(width, isMobile);
     const techniqueBarContainerWidth = Math.max(
       0,
       width -
         padding * 2 -
         HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL -
-        (showsMobileControls ? HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR : 0),
+        (showArchetypeSelector ? HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR : 0),
     );
 
     return {
@@ -117,7 +120,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
       archetypeReserve: HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR,
       techniqueBarContainerWidth,
     };
-  }, [width, height, positionScale, isMobile]);
+  }, [width, height, positionScale, showArchetypeSelector]);
 
   return (
     <div
@@ -174,7 +177,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
           overflow: "visible",
           height: "100%",
           marginRight: layout.volumeReserve,
-          marginLeft: showMobileControls ? layout.archetypeReserve : 0,
+          marginLeft: showArchetypeSelector ? layout.archetypeReserve : 0,
         }}
         data-testid="training-bottom-hud-technique-section"
       >
@@ -207,7 +210,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
       </div>
 
       {/* Mobile Archetype Selector - bottom left corner */}
-      {showMobileControls && onArchetypeSelect && selectedArchetype && (
+      {showArchetypeSelector && (
         <div
           style={{
             position: "absolute",

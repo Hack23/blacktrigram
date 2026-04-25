@@ -250,6 +250,9 @@ describe("TechniqueBar", () => {
         const bar = container.querySelector('[data-testid="technique-bar"]') as HTMLElement;
         // Non-embedded mode: absolute positioning, no overflowX style
         expect(bar.style.overflowX).toBe("");
+        const innerDiv = bar.querySelector("div") as HTMLElement;
+        expect(innerDiv.style.transform).toBe("");
+        expect(innerDiv.style.transformOrigin).toBe("");
       });
 
       it("should use containerWidth over screenWidth for scale/scroll decision when embedded", () => {

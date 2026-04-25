@@ -13,6 +13,7 @@ import {
   PlayerArchetype,
   TrigramStance,
 } from "../../../../../types/common";
+import { HUD_SIDE_CONTROL_RESERVES } from "../../../../../types/constants/layout";
 import { TrainingBottomHUD } from "./TrainingBottomHUD";
 
 // Cleanup after each test
@@ -28,12 +29,14 @@ vi.mock("../../../../shared/three/ui/TechniqueBar", () => ({
     screenWidth,
     screenHeight,
     embedded,
+    containerWidth,
   }: {
     selectedIndex: number;
     isMobile: boolean;
     screenWidth: number;
     screenHeight: number;
     embedded?: boolean;
+    containerWidth?: number;
   }) => (
     <div
       data-testid="mock-technique-bar"
@@ -42,6 +45,7 @@ vi.mock("../../../../shared/three/ui/TechniqueBar", () => ({
       data-screen-width={screenWidth}
       data-screen-height={screenHeight}
       data-embedded={embedded}
+      data-container-width={containerWidth}
     >
       Technique Bar
     </div>
@@ -329,6 +333,45 @@ describe("TrainingBottomHUD", () => {
         "training-bottom-hud-technique-section",
       );
       expect(section).toHaveStyle({ pointerEvents: "all" });
+    });
+
+    it("should not reserve archetype space when mobile selector props are absent", () => {
+      render(<TrainingBottomHUD {...defaultProps} width={390} isMobile={true} />);
+
+      const section = screen.getByTestId(
+        "training-bottom-hud-technique-section",
+      );
+      expect(section).toHaveStyle({ marginLeft: "0px" });
+      expect(screen.getByTestId("mock-technique-bar")).toHaveAttribute(
+        "data-container-width",
+        "194",
+      );
+    });
+
+    it("should reserve archetype space only when the mobile selector is rendered", () => {
+      render(
+        <TrainingBottomHUD
+          {...defaultProps}
+          width={390}
+          isMobile={true}
+          selectedArchetype={PlayerArchetype.MUSA}
+          onArchetypeSelect={vi.fn()}
+        />,
+      );
+
+      expect(
+        screen.getByTestId("training-bottom-hud-archetype-section"),
+      ).toBeInTheDocument();
+      const section = screen.getByTestId(
+        "training-bottom-hud-technique-section",
+      );
+      expect(section).toHaveStyle({
+        marginLeft: `${HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR}px`,
+      });
+      expect(screen.getByTestId("mock-technique-bar")).toHaveAttribute(
+        "data-container-width",
+        "14",
+      );
     });
   });
 });

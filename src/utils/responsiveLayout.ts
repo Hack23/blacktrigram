@@ -23,7 +23,12 @@ export const MIN_TOUCH_TARGET_SIZE = 44;
  * @returns Decimal ratio (e.g. "70%" -> 0.7)
  */
 export function parsePercentageToRatio(value: string): number {
-  const percent = Number.parseFloat(value);
+  const trimmedValue = value.trim();
+  if (!trimmedValue.endsWith('%')) {
+    return 1;
+  }
+
+  const percent = Number.parseFloat(trimmedValue.slice(0, -1));
   return Number.isFinite(percent) ? percent / 100 : 1;
 }
 

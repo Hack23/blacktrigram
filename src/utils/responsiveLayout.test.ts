@@ -31,6 +31,8 @@ describe('responsiveLayout utilities', () => {
 
     it('should fall back to full width for invalid percentage strings', () => {
       expect(parsePercentageToRatio('auto')).toBe(1);
+      expect(parsePercentageToRatio('70')).toBe(1);
+      expect(parsePercentageToRatio('70px')).toBe(1);
       expect(parsePercentageToRatio('')).toBe(1);
     });
   });
