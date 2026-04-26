@@ -4,7 +4,7 @@
  * Tests the integration of pain and consciousness systems with the combat system.
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayerArchetype, DamageType } from "@/types";
 import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "./player";
@@ -22,6 +22,11 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
     player1 = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
     player2 = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
     // Clear all player injuries between tests to prevent leakage
+    playerInjuryManager.clearAll();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
     playerInjuryManager.clearAll();
   });
 
@@ -113,6 +118,7 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
     it("should apply pain overload stun at high pain", () => {
       // Start with high pain
       const highPainPlayer = { ...player2, pain: 85 };
+      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.29);
 
       const mockResult: CombatResult = {
         hit: true,
@@ -129,23 +135,45 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
         isBlocked: false,
       };
 
-      // Test multiple times due to probabilistic stun
-      let stunOccurred = false;
-      for (let i = 0; i < 20; i++) {
-        const { updatedDefender } = combatSystem.applyCombatResult(
-          mockResult,
-          player1,
-          highPainPlayer
-        );
+      const { updatedDefender } = combatSystem.applyCombatResult(
+        mockResult,
+        player1,
+        highPainPlayer
+      );
 
-        if (updatedDefender.isStunned) {
-          stunOccurred = true;
-          break;
-        }
-      }
+      // 0.29 is below the overload stun chance (30%), so the stun should occur deterministically.
+      expect(randomSpy).toHaveBeenCalled();
+      expect(updatedDefender.pain).toBeGreaterThanOrEqual(80);
+      expect(updatedDefender.isStunned).toBe(true);
+    });
 
-      // With 30% chance over 20 attempts, should stun at least once
-      expect(stunOccurred).toBe(true);
+    it("should not apply pain overload stun when roll exceeds stun chance", () => {
+      const highPainPlayer = { ...player2, pain: 85 };
+      vi.spyOn(Math, "random").mockReturnValue(0.99);
+
+      const mockResult: CombatResult = {
+        hit: true,
+        damage: 20,
+        criticalHit: false,
+        vitalPointHit: false,
+        effects: [],
+        timestamp: Date.now(),
+        technique: {} as any,
+        attacker: player1,
+        defender: highPainPlayer,
+        success: true,
+        isCritical: false,
+        isBlocked: false,
+      };
+
+      const { updatedDefender } = combatSystem.applyCombatResult(
+        mockResult,
+        player1,
+        highPainPlayer
+      );
+
+      expect(updatedDefender.pain).toBeGreaterThanOrEqual(80);
+      expect(updatedDefender.isStunned).toBe(false);
     });
   });
 
