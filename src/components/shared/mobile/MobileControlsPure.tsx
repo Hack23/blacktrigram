@@ -78,6 +78,23 @@ const DIRECTIONS: readonly DirectionConfig[] = [
 ] as const;
 
 /**
+ * Fallback CSS-pixel viewport used only when a parent does not provide live
+ * dimensions. 390×844 approximates a mid-size modern phone viewport and avoids
+ * oversizing controls on compact devices.
+ */
+const DEFAULT_MOBILE_VIEWPORT = {
+  width: 390,
+  height: 844,
+} as const;
+
+/**
+ * D-Pad diameter target as a ratio of the shortest viewport side. 34% keeps the
+ * full radial control reachable by thumb while each directional button remains
+ * at or above the 44px WCAG touch target minimum after clamping.
+ */
+const DPAD_SHORTEST_SIDE_RATIO = 0.34;
+
+/**
  * MobileControlsOverlay - Floating mobile controls rendered outside Canvas
  *
  * Positions D-Pad on left, Action buttons on right, floating above BottomHUD.
@@ -92,8 +109,8 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
       disabled = false,
       bottom = 160,
       opacity = 0.85,
-      viewportWidth = 390,
-      viewportHeight = 844,
+      viewportWidth = DEFAULT_MOBILE_VIEWPORT.width,
+      viewportHeight = DEFAULT_MOBILE_VIEWPORT.height,
     }) => {
       const [activeDirection, setActiveDirection] = useState<Direction | null>(
         null,
@@ -106,7 +123,10 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
       const controlLayout = useMemo(() => {
         const shortestSide = Math.min(viewportWidth, viewportHeight);
         const dpadSize = Math.round(
-          Math.max(112, Math.min(140, shortestSide * 0.34)),
+          Math.max(
+            112,
+            Math.min(140, shortestSide * DPAD_SHORTEST_SIDE_RATIO),
+          ),
         );
         const buttonSize = Math.max(44, Math.round(dpadSize * 0.34));
         const radius = dpadSize * 0.32;

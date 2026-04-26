@@ -30,6 +30,16 @@ export const LAYOUT_BOTTOM_POSITIONS = {
 } as const;
 
 /**
+ * Mobile touch controls placement ratios:
+ * - 24% on short landscape viewports keeps controls below the arena center
+ *   while preserving thumb reach.
+ * - 17% on tall portrait viewports lowers controls toward the nav/home area
+ *   without colliding with the bottom HUD or browser safe area.
+ */
+const MOBILE_CONTROLS_SHORT_VIEWPORT_RATIO = 0.24;
+const MOBILE_CONTROLS_TALL_VIEWPORT_RATIO = 0.17;
+
+/**
  * Shared horizontal reservations for HUD side controls.
  *
  * These values keep centered technique cards readable while preserving space
@@ -116,13 +126,21 @@ export function getMobileControlsBottom(viewportHeight?: number): number {
   }
 
   if (viewportHeight < 500) {
-    return Math.round(Math.max(96, Math.min(120, viewportHeight * 0.24)));
+    return Math.round(
+      Math.max(
+        96,
+        Math.min(120, viewportHeight * MOBILE_CONTROLS_SHORT_VIEWPORT_RATIO),
+      ),
+    );
   }
 
   return Math.round(
     Math.max(
       128,
-      Math.min(LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS, viewportHeight * 0.17),
+      Math.min(
+        LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS,
+        viewportHeight * MOBILE_CONTROLS_TALL_VIEWPORT_RATIO,
+      ),
     ),
   );
 }
