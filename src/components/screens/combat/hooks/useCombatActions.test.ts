@@ -8,7 +8,7 @@ import { CombatSystem } from "@/systems/CombatSystem";
 import { HitEffectType } from "@/systems/effects";
 import { DamageType, PlayerArchetype, TrigramStance } from "@/types";
 import { act, renderHook } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useCombatActions } from "./useCombatActions";
 import { useCombatState } from "./useCombatState";
 
@@ -17,6 +17,7 @@ describe("useCombatActions", () => {
   let mockCombatSystem: CombatSystem;
 
   beforeEach(() => {
+    vi.useFakeTimers();
     mockCombatSystem = new CombatSystem();
 
     const mockPlayer1 = {
@@ -88,6 +89,14 @@ describe("useCombatActions", () => {
         worldDepthMeters: 6,
       },
     };
+  });
+
+  afterEach(() => {
+    act(() => {
+      vi.runOnlyPendingTimers();
+    });
+    vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   describe("handleAttack", () => {
@@ -353,14 +362,19 @@ describe("useCombatActions", () => {
     });
 
     it("should trigger screen shake", () => {
+      const setScreenShakeMock = vi.spyOn(
+        mockConfig.combatActions,
+        "setScreenShake",
+      );
       const { result } = renderHook(() => useCombatActions(mockConfig));
 
       act(() => {
         result.current.handleTechniqueExecute();
+        vi.advanceTimersByTime(200);
       });
 
-      // Screen shake should be set through combatActions
-      expect(mockConfig.combatActions.setScreenShake).toBeDefined();
+      expect(setScreenShakeMock).toHaveBeenCalledTimes(5);
+      expect(setScreenShakeMock).toHaveBeenLastCalledWith({ x: 0, y: 0 });
     });
   });
 
