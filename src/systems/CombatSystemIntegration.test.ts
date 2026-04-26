@@ -117,7 +117,7 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
     it("should apply pain overload stun at high pain", () => {
       // Start with high pain
       const highPainPlayer = { ...player2, pain: 85 };
-      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.29);
+      const mockRandom = vi.spyOn(Math, "random").mockReturnValue(0.29);
 
       const mockResult: CombatResult = {
         hit: true,
@@ -141,7 +141,7 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
       );
 
       // 0.29 is below the overload stun chance (30%), so the stun should occur deterministically.
-      expect(randomSpy).toHaveBeenCalled();
+      expect(mockRandom).toHaveBeenCalled();
       expect(updatedDefender.pain).toBeGreaterThanOrEqual(80);
       expect(updatedDefender.isStunned).toBe(true);
     });
