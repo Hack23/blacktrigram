@@ -79,8 +79,9 @@ const DIRECTIONS: readonly DirectionConfig[] = [
 
 /**
  * Fallback CSS-pixel viewport used only when a parent does not provide live
- * dimensions. 390×844 approximates a mid-size modern phone viewport and avoids
- * oversizing controls on compact devices.
+ * dimensions. 390×844 matches the common iPhone 13/14/15 CSS viewport class
+ * and approximates many mid-size Android portrait viewports, avoiding oversized
+ * controls on compact devices.
  */
 const DEFAULT_MOBILE_VIEWPORT = {
   width: 390,

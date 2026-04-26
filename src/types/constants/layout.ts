@@ -31,13 +31,20 @@ export const LAYOUT_BOTTOM_POSITIONS = {
 
 /**
  * Mobile touch controls placement ratios:
- * - 24% on short landscape viewports keeps controls below the arena center
- *   while preserving thumb reach.
- * - 17% on tall portrait viewports lowers controls toward the nav/home area
- *   without colliding with the bottom HUD or browser safe area.
+ * - 24% on short landscape viewports, clamped to 96–120 px, keeps controls
+ *   below the arena center while preserving thumb reach.
+ * - 17% on tall portrait viewports, clamped to 128–200 px, lowers controls
+ *   toward the nav/home area without colliding with the bottom HUD or browser
+ *   safe area.
  */
-const MOBILE_CONTROLS_SHORT_VIEWPORT_RATIO = 0.24;
-const MOBILE_CONTROLS_TALL_VIEWPORT_RATIO = 0.17;
+export const MOBILE_CONTROLS_PLACEMENT = {
+  SHORT_VIEWPORT_RATIO: 0.24,
+  TALL_VIEWPORT_RATIO: 0.17,
+  SHORT_MIN: 96,
+  SHORT_MAX: 120,
+  TALL_MIN: 128,
+  TALL_MAX: LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS,
+} as const;
 
 /**
  * Shared horizontal reservations for HUD side controls.
@@ -128,18 +135,21 @@ export function getMobileControlsBottom(viewportHeight?: number): number {
   if (viewportHeight < 500) {
     return Math.round(
       Math.max(
-        96,
-        Math.min(120, viewportHeight * MOBILE_CONTROLS_SHORT_VIEWPORT_RATIO),
+        MOBILE_CONTROLS_PLACEMENT.SHORT_MIN,
+        Math.min(
+          MOBILE_CONTROLS_PLACEMENT.SHORT_MAX,
+          viewportHeight * MOBILE_CONTROLS_PLACEMENT.SHORT_VIEWPORT_RATIO,
+        ),
       ),
     );
   }
 
   return Math.round(
     Math.max(
-      128,
+      MOBILE_CONTROLS_PLACEMENT.TALL_MIN,
       Math.min(
-        LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS,
-        viewportHeight * MOBILE_CONTROLS_TALL_VIEWPORT_RATIO,
+        MOBILE_CONTROLS_PLACEMENT.TALL_MAX,
+        viewportHeight * MOBILE_CONTROLS_PLACEMENT.TALL_VIEWPORT_RATIO,
       ),
     ),
   );
