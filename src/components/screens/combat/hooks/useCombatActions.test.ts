@@ -10,6 +10,7 @@ import { DamageType, PlayerArchetype, TrigramStance } from "@/types";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  SCREEN_SHAKE_FRAME_COUNT,
   SCREEN_SHAKE_FRAME_INTERVAL_MS,
   useCombatActions,
 } from "./useCombatActions";
@@ -363,7 +364,8 @@ describe("useCombatActions", () => {
     });
 
     it("should trigger screen shake", () => {
-      const screenShakeSequenceMs = SCREEN_SHAKE_FRAME_INTERVAL_MS * 4;
+      const screenShakeSequenceMs =
+        SCREEN_SHAKE_FRAME_INTERVAL_MS * (SCREEN_SHAKE_FRAME_COUNT - 1);
       const setScreenShakeMock = vi.fn();
       const config = {
         ...mockConfig,
@@ -379,7 +381,7 @@ describe("useCombatActions", () => {
         vi.advanceTimersByTime(screenShakeSequenceMs);
       });
 
-      expect(setScreenShakeMock).toHaveBeenCalledTimes(5);
+      expect(setScreenShakeMock).toHaveBeenCalledTimes(SCREEN_SHAKE_FRAME_COUNT);
       expect(setScreenShakeMock).toHaveBeenLastCalledWith({ x: 0, y: 0 });
     });
   });

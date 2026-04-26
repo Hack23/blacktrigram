@@ -117,10 +117,10 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
     it("should apply pain overload stun at high pain", () => {
       // Start with high pain
       const highPainPlayer = { ...player2, pain: 85 };
-      const rollBelowStunThreshold = 0.29;
+      const stunSuccessRoll = 0.29;
       const mockRandom = vi
         .spyOn(Math, "random")
-        .mockReturnValue(rollBelowStunThreshold);
+        .mockReturnValue(stunSuccessRoll);
 
       const mockResult: CombatResult = {
         hit: true,
@@ -150,8 +150,8 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
 
     it("should not apply pain overload stun when roll exceeds stun chance", () => {
       const highPainPlayer = { ...player2, pain: 85 };
-      const rollAboveStunThreshold = 0.99;
-      vi.spyOn(Math, "random").mockReturnValue(rollAboveStunThreshold);
+      const stunFailureRoll = 0.99;
+      vi.spyOn(Math, "random").mockReturnValue(stunFailureRoll);
 
       const mockResult: CombatResult = {
         hit: true,

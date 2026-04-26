@@ -70,6 +70,7 @@ import { CombatActions, CombatScreenState } from "./useCombatState";
 const HIT_Y_VARIATION_RANGE = 0.4;
 
 export const SCREEN_SHAKE_FRAME_INTERVAL_MS = 50;
+export const SCREEN_SHAKE_FRAME_COUNT = 5;
 
 /**
  * Calculate randomized hit position based on defender position
@@ -728,7 +729,7 @@ export function useCombatActions(
       { x: shakeIntensity * 0.5, y: shakeIntensity * 0.3 },
       { x: -shakeIntensity * 0.3, y: -shakeIntensity * 0.6 },
       { x: 0, y: 0 },
-    ];
+    ].slice(0, SCREEN_SHAKE_FRAME_COUNT);
 
     shakeFrames.forEach((shake, index) => {
       setTimeout(
