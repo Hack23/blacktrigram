@@ -360,6 +360,7 @@ describe("useCombatActions", () => {
     });
 
     it("should trigger screen shake", () => {
+      const screenShakeSequenceMs = 200;
       const setScreenShakeMock = vi.fn();
       const config = {
         ...mockConfig,
@@ -372,7 +373,7 @@ describe("useCombatActions", () => {
 
       act(() => {
         result.current.handleTechniqueExecute();
-        vi.advanceTimersByTime(200);
+        vi.advanceTimersByTime(screenShakeSequenceMs);
       });
 
       expect(setScreenShakeMock).toHaveBeenCalledTimes(5);
