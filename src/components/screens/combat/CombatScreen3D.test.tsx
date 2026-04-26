@@ -329,6 +329,8 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
+        width={375}
+        height={667}
       />,
     );
 

@@ -211,7 +211,7 @@ canvas {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
   background: linear-gradient(
@@ -231,8 +231,10 @@ canvas {
 
 .error-boundary__container {
   width: min(100%, 640px);
+  max-height: calc(100vh - 2rem);
   max-height: calc(100dvh - 2rem);
   padding: clamp(1rem, 5vw, 2rem);
+  background: rgba(0, 0, 0, 0.88);
   background: color-mix(in srgb, var(--color-primary-black) 88%, transparent);
   border: 2px solid var(--color-danger);
   border-radius: 12px;

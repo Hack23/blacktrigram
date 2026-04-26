@@ -125,7 +125,9 @@ export function getTechniqueBarBottom(isMobile: boolean): number {
  * use a tighter 96–120 px band.
  *
  * @param viewportHeight - Optional current viewport height in pixels.
- *                         When omitted or &gt;= 500, returns the default 200 px.
+ *                         When omitted or NaN, returns the 200 px default.
+ *                         Numeric heights >= 500 use the tall viewport ratio
+ *                         clamped to 128–200 px.
  * @returns Bottom position in pixels
  */
 export function getMobileControlsBottom(viewportHeight?: number): number {
