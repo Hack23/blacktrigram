@@ -1438,20 +1438,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         {/* NOTE: Mobile controls moved OUTSIDE Canvas for reliable touch events */}
         {/* See MobileControlsPure component rendered after HUDs */}
 
-        {/* Post-processing Effects - lightweight only */}
-        {isMobile ? (
-          <EffectComposer multisampling={0}>
-            <Bloom
-              luminanceThreshold={0.9}
-              luminanceSmoothing={0.9}
-              mipmapBlur
-              intensity={0.8}
-              radius={0.4}
-            />
-            <Noise opacity={0.03} />
-            <Vignette eskil={false} offset={0.1} darkness={0.3} />
-          </EffectComposer>
-        ) : (
+        {/* Post-processing Effects - desktop high tier only for Android WebGL stability */}
+        {performanceSettings.postProcessing && (
           <EffectComposer multisampling={4}>
             <Bloom
               luminanceThreshold={0.9}
@@ -1597,6 +1585,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               disabled={!mobileControlsEnabled}
               bottom={getMobileControlsBottom(height)}
               opacity={0.85}
+              viewportWidth={width}
+              viewportHeight={height}
             />
 
             <StanceWheelPure

@@ -60,13 +60,18 @@ vi.mock("@react-three/drei", () => ({
 // Mock @react-three/postprocessing
 vi.mock("@react-three/postprocessing", () => ({
   EffectComposer: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
+    <div data-testid="effect-composer">{children}</div>
   ),
   Bloom: () => null,
   SSAO: () => null,
   Vignette: () => null,
   ChromaticAberration: () => null,
   Noise: () => null,
+}));
+
+// Mock device detection for deterministic desktop/high-tier assertions
+vi.mock("../../../utils/deviceDetection", () => ({
+  shouldUseMobileControls: () => false,
 }));
 
 // Mock Three.js
@@ -589,6 +594,7 @@ describe("TrainingScreen3D", () => {
 
       expect(container).toBeTruthy();
       expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+      expect(screen.getByTestId("effect-composer")).toBeInTheDocument();
     });
 
     it("should render correctly at tablet resolution", () => {
@@ -603,6 +609,7 @@ describe("TrainingScreen3D", () => {
 
       expect(container).toBeTruthy();
       expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+      expect(screen.queryByTestId("effect-composer")).not.toBeInTheDocument();
     });
 
     it("should render correctly at mobile resolution", () => {
@@ -617,6 +624,7 @@ describe("TrainingScreen3D", () => {
 
       expect(container).toBeTruthy();
       expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+      expect(screen.queryByTestId("effect-composer")).not.toBeInTheDocument();
     });
   });
 });

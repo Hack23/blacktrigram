@@ -30,6 +30,24 @@ export const LAYOUT_BOTTOM_POSITIONS = {
 } as const;
 
 /**
+ * Mobile touch controls placement ratios:
+ * - 24% on short landscape viewports, clamped to 96–120 px, keeps controls
+ *   below the arena center while preserving thumb reach.
+ * - 17% on tall portrait viewports, clamped to 128–200 px, lowers controls
+ *   toward the nav/home area without colliding with the bottom HUD or browser
+ *   safe area.
+ */
+export const MOBILE_CONTROLS_PLACEMENT = {
+  SHORT_VIEWPORT_RATIO: 0.24,
+  TALL_VIEWPORT_RATIO: 0.17,
+  SHORT_MIN: 96,
+  SHORT_MAX: 120,
+  TALL_MIN: 128,
+  /** 200 px upper bound intentionally matches LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS. */
+  TALL_MAX: LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS,
+} as const;
+
+/**
  * Shared horizontal reservations for HUD side controls.
  *
  * These values keep centered technique cards readable while preserving space
@@ -101,21 +119,43 @@ export function getTechniqueBarBottom(isMobile: boolean): number {
 /**
  * Get mobile controls bottom position.
  *
- * Returns the standard 200 px band for comfortable D-Pad / ActionButton
- * reach on portrait phones, tablets and desktops. On short viewports
- * (height &lt; 500 px, typical of a phone rotated to landscape) the band
- * is reduced to 120 px so the virtual controls do not dominate the
- * vertical real estate nor crowd the arena.
+ * Returns a viewport-responsive band for comfortable D-Pad / ActionButton
+ * reach without pushing controls into the arena center. Short landscape
+ * viewports use a 96–120 px clamped band, while tall numeric viewports use a
+ * 128–200 px clamped band.
  *
  * @param viewportHeight - Optional current viewport height in pixels.
- *                         When omitted or &gt;= 500, returns the default 200 px.
- * @returns Bottom position in pixels (120 for short viewports, 200 otherwise)
+ *                         When omitted or NaN, returns the 200 px default.
+ *                         Numeric heights >= 500 use the tall viewport ratio
+ *                         clamped to 128–200 px.
+ * @returns Bottom position in pixels
  */
 export function getMobileControlsBottom(viewportHeight?: number): number {
-  if (typeof viewportHeight === "number" && viewportHeight < 500) {
-    return Math.round(LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS * 0.6);
+  if (typeof viewportHeight !== "number" || Number.isNaN(viewportHeight)) {
+    return LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS;
   }
-  return LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS;
+
+  if (viewportHeight < 500) {
+    return Math.round(
+      Math.max(
+        MOBILE_CONTROLS_PLACEMENT.SHORT_MIN,
+        Math.min(
+          MOBILE_CONTROLS_PLACEMENT.SHORT_MAX,
+          viewportHeight * MOBILE_CONTROLS_PLACEMENT.SHORT_VIEWPORT_RATIO,
+        ),
+      ),
+    );
+  }
+
+  return Math.round(
+    Math.max(
+      MOBILE_CONTROLS_PLACEMENT.TALL_MIN,
+      Math.min(
+        MOBILE_CONTROLS_PLACEMENT.TALL_MAX,
+        viewportHeight * MOBILE_CONTROLS_PLACEMENT.TALL_VIEWPORT_RATIO,
+      ),
+    ),
+  );
 }
 
 /**

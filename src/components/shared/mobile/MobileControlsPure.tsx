@@ -13,7 +13,7 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react";
-import { KOREAN_COLORS } from "@/types/constants";
+import { KOREAN_COLORS, FONT_FAMILY } from "@/types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { triggerHaptic } from "../../../utils/haptics";
 
@@ -50,6 +50,10 @@ export interface MobileControlsOverlayProps {
   readonly bottom?: number;
   /** Opacity (default: 0.85) */
   readonly opacity?: number;
+  /** Viewport width for responsive control sizing */
+  readonly viewportWidth?: number;
+  /** Viewport height for responsive control sizing */
+  readonly viewportHeight?: number;
 }
 
 /**
@@ -74,6 +78,24 @@ const DIRECTIONS: readonly DirectionConfig[] = [
 ] as const;
 
 /**
+ * Fallback CSS-pixel viewport used only when a parent does not provide live
+ * dimensions. 390×844 matches the common iPhone 13/14/15 CSS viewport class
+ * and approximates many mid-size Android portrait viewports, avoiding oversized
+ * controls on compact devices.
+ */
+const DEFAULT_MOBILE_VIEWPORT = {
+  width: 390,
+  height: 844,
+} as const;
+
+/**
+ * D-Pad diameter target as a ratio of the shortest viewport side. 34% keeps the
+ * full radial control reachable by thumb while each directional button remains
+ * at or above the 44px WCAG touch target minimum after clamping.
+ */
+const DPAD_SHORTEST_SIDE_RATIO = 0.34;
+
+/**
  * MobileControlsOverlay - Floating mobile controls rendered outside Canvas
  *
  * Positions D-Pad on left, Action buttons on right, floating above BottomHUD.
@@ -88,6 +110,8 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
       disabled = false,
       bottom = 160,
       opacity = 0.85,
+      viewportWidth = DEFAULT_MOBILE_VIEWPORT.width,
+      viewportHeight = DEFAULT_MOBILE_VIEWPORT.height,
     }) => {
       const [activeDirection, setActiveDirection] = useState<Direction | null>(
         null,
@@ -95,10 +119,39 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
       const [attackPressed, setAttackPressed] = useState(false);
       const [blockPressed, setBlockPressed] = useState(false);
 
-      // D-Pad sizing
-      const dpadSize = 140;
-      const buttonSize = dpadSize * 0.3;
-      const radius = dpadSize * 0.32;
+      // D-Pad/action sizing scales down on narrow mobile screens while
+      // preserving WCAG touch target minimums.
+      const controlLayout = useMemo(() => {
+        const shortestSide = Math.min(viewportWidth, viewportHeight);
+        const dpadSize = Math.round(
+          Math.max(
+            112,
+            Math.min(140, shortestSide * DPAD_SHORTEST_SIDE_RATIO),
+          ),
+        );
+        const buttonSize = Math.max(44, Math.round(dpadSize * 0.34));
+        const buttonPlacementRadius = dpadSize * 0.32;
+        const attackSize = Math.round(
+          Math.max(64, Math.min(80, dpadSize * 0.58)),
+        );
+        const blockSize = Math.round(
+          Math.max(54, Math.min(65, dpadSize * 0.47)),
+        );
+        const sidePadding = Math.round(
+          Math.max(12, Math.min(20, viewportWidth * 0.04)),
+        );
+
+        return {
+          dpadSize,
+          buttonSize,
+          buttonPlacementRadius,
+          attackSize,
+          blockSize,
+          sidePadding,
+          overlayHeight: dpadSize + 32,
+          actionGap: Math.max(8, Math.round(dpadSize * 0.08)),
+        };
+      }, [viewportHeight, viewportWidth]);
 
       // Handle D-Pad press
       const handleDPadStart = useCallback(
@@ -185,11 +238,11 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
             bottom: `${bottom}px`,
             left: 0,
             right: 0,
-            height: `${dpadSize + 40}px`,
+            height: `${controlLayout.overlayHeight}px`,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "flex-end",
-            padding: "0 20px",
+            padding: `0 ${controlLayout.sidePadding}px`,
             pointerEvents: "none",
             zIndex: 1000,
             opacity: disabled ? 0.4 : opacity,
@@ -200,8 +253,8 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
           <div
             style={{
               position: "relative",
-              width: `${dpadSize}px`,
-              height: `${dpadSize}px`,
+              width: `${controlLayout.dpadSize}px`,
+              height: `${controlLayout.dpadSize}px`,
               pointerEvents: "auto",
               touchAction: "none",
             }}
@@ -214,8 +267,8 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                width: `${dpadSize * 0.9}px`,
-                height: `${dpadSize * 0.9}px`,
+                width: `${controlLayout.dpadSize * 0.9}px`,
+                height: `${controlLayout.dpadSize * 0.9}px`,
                 borderRadius: "50%",
                 background: `radial-gradient(circle, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95)} 100%)`,
                 border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5)}`,
@@ -226,8 +279,8 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
             {/* Direction Buttons */}
             {DIRECTIONS.map((config) => {
               const radian = (config.angle - 90) * (Math.PI / 180);
-              const x = Math.cos(radian) * radius;
-              const y = Math.sin(radian) * radius;
+              const x = Math.cos(radian) * controlLayout.buttonPlacementRadius;
+              const y = Math.sin(radian) * controlLayout.buttonPlacementRadius;
               const isActive = activeDirection === config.direction;
 
               return (
@@ -241,17 +294,19 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
                   onMouseLeave={handleDPadEnd}
                   style={{
                     position: "absolute",
-                    left: `calc(50% + ${x}px - ${buttonSize / 2}px)`,
-                    top: `calc(50% + ${y}px - ${buttonSize / 2}px)`,
-                    width: `${buttonSize}px`,
-                    height: `${buttonSize}px`,
+                    left: `calc(50% + ${x}px - ${controlLayout.buttonSize / 2}px)`,
+                    top: `calc(50% + ${y}px - ${controlLayout.buttonSize / 2}px)`,
+                    width: `${controlLayout.buttonSize}px`,
+                    height: `${controlLayout.buttonSize}px`,
                     borderRadius: "50%",
                     background: isActive
                       ? `radial-gradient(circle, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)} 0%, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.7)} 100%)`
                       : `radial-gradient(circle, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9)} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9)} 100%)`,
                     border: `2px solid ${hexToRgbaString(isActive ? KOREAN_COLORS.ACCENT_GOLD : KOREAN_COLORS.PRIMARY_CYAN, isActive ? 1 : 0.7)}`,
                     fontSize: "14px",
-                    color: isActive ? "#000" : "#fff",
+                    color: isActive
+                      ? hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 1)
+                      : hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -265,7 +320,7 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
                     outline: "none",
                     WebkitTapHighlightColor: "transparent",
                   }}
-                  aria-label={`Move ${config.direction}`}
+                  aria-label={`이동 ${config.direction} | Move ${config.direction}`}
                   data-testid={`mobile-dpad-${config.direction}`}
                 >
                   {config.symbol}
@@ -286,7 +341,7 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
                 background: activeDirection
                   ? hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.9)
                   : hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6),
-                border: "2px solid rgba(255,255,255,0.8)",
+                border: `2px solid ${hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 0.8)}`,
                 transition: "background 0.15s ease",
               }}
             />
@@ -297,7 +352,7 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "12px",
+              gap: `${controlLayout.actionGap}px`,
               pointerEvents: "auto",
               touchAction: "none",
             }}
@@ -312,15 +367,15 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
               onMouseUp={handleAttackEnd}
               onMouseLeave={handleAttackEnd}
               style={{
-                width: "80px",
-                height: "80px",
+                width: `${controlLayout.attackSize}px`,
+                height: `${controlLayout.attackSize}px`,
                 borderRadius: "50%",
                 background: attackPressed
                   ? `radial-gradient(circle, ${hexToRgbaString(KOREAN_COLORS.PRIMARY_RED, 1)} 0%, ${hexToRgbaString(KOREAN_COLORS.PRIMARY_RED, 0.7)} 100%)`
-                  : `radial-gradient(circle, rgba(255, 80, 80, 0.9) 0%, rgba(180, 40, 40, 0.9) 100%)`,
+                  : `radial-gradient(circle, ${hexToRgbaString(KOREAN_COLORS.PRIMARY_RED, 0.9)} 0%, ${hexToRgbaString(KOREAN_COLORS.NEGATIVE_RED_DARK, 0.9)} 100%)`,
                 border: `3px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_RED, 1)}`,
                 fontSize: "28px",
-                color: "#fff",
+                color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -334,6 +389,7 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
                 outline: "none",
                 WebkitTapHighlightColor: "transparent",
                 fontWeight: "bold",
+                fontFamily: FONT_FAMILY.KOREAN,
               }}
               aria-label="공격 | Attack"
               data-testid="mobile-attack-button"
@@ -350,16 +406,16 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
               onMouseUp={handleBlockEnd}
               onMouseLeave={handleBlockEnd}
               style={{
-                width: "65px",
-                height: "65px",
+                width: `${controlLayout.blockSize}px`,
+                height: `${controlLayout.blockSize}px`,
                 borderRadius: "50%",
                 marginLeft: "auto",
                 background: blockPressed
                   ? `radial-gradient(circle, ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)} 0%, ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7)} 100%)`
-                  : `radial-gradient(circle, rgba(0, 200, 200, 0.8) 0%, rgba(0, 120, 120, 0.8) 100%)`,
+                  : `radial-gradient(circle, ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)} 0%, ${hexToRgbaString(KOREAN_COLORS.KI_LOW, 0.8)} 100%)`,
                 border: `3px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)}`,
                 fontSize: "22px",
-                color: "#fff",
+                color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -372,6 +428,7 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
                   : `0 0 10px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`,
                 outline: "none",
                 WebkitTapHighlightColor: "transparent",
+                fontFamily: FONT_FAMILY.KOREAN,
               }}
               aria-label="방어 | Block"
               data-testid="mobile-block-button"

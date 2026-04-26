@@ -58,13 +58,18 @@ vi.mock("@react-three/drei", () => ({
 // Mock @react-three/postprocessing
 vi.mock("@react-three/postprocessing", () => ({
   EffectComposer: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
+    <div data-testid="effect-composer">{children}</div>
   ),
   Bloom: () => null,
   SSAO: () => null,
   Vignette: () => null,
   ChromaticAberration: () => null,
   Noise: () => null,
+}));
+
+// Mock device detection for deterministic desktop/high-tier assertions
+vi.mock("../../../utils/deviceDetection", () => ({
+  shouldUseMobileControls: () => false,
 }));
 
 // Mock Three.js
@@ -329,10 +334,13 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
+        width={375}
+        height={667}
       />,
     );
 
     expect(container).toBeTruthy();
+    expect(screen.queryByTestId("effect-composer")).not.toBeInTheDocument();
   });
 
   it("should render Three.js canvas", () => {
@@ -583,6 +591,7 @@ describe("CombatScreen3D", () => {
     );
 
     expect(container).toBeTruthy();
+    expect(screen.queryByTestId("effect-composer")).not.toBeInTheDocument();
   });
 
   it("should render with tablet dimensions", () => {
@@ -601,6 +610,7 @@ describe("CombatScreen3D", () => {
     );
 
     expect(container).toBeTruthy();
+    expect(screen.queryByTestId("effect-composer")).not.toBeInTheDocument();
   });
 
   it("should render with desktop dimensions", () => {
@@ -619,6 +629,7 @@ describe("CombatScreen3D", () => {
     );
 
     expect(container).toBeTruthy();
+    expect(screen.getByTestId("effect-composer")).toBeInTheDocument();
   });
 
   it("should handle exactly 2 players", () => {

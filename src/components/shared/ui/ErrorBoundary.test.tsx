@@ -53,7 +53,7 @@ describe("ErrorBoundary", () => {
       expect(screen.getByText(/오류 발생.*Error Occurred/)).toBeInTheDocument();
     });
 
-    it("should display error message from caught error", () => {
+    it("should display a neutral recovery message instead of raw error details", () => {
       const errorMessage = "Custom error message";
       const customError = new Error(errorMessage);
 
@@ -63,10 +63,13 @@ describe("ErrorBoundary", () => {
         </ErrorBoundary>
       );
 
-      expect(screen.getByText(errorMessage)).toBeInTheDocument();
+      expect(
+        screen.getByText(/화면을 복구할 수 없습니다.*screen could not recover/),
+      ).toBeInTheDocument();
+      expect(screen.queryByText(errorMessage)).not.toBeInTheDocument();
     });
 
-    it("should display empty message when error message is empty string", () => {
+    it("should display the neutral recovery message when error message is empty string", () => {
       const errorWithoutMessage = new Error();
       errorWithoutMessage.message = "";
 
@@ -76,11 +79,10 @@ describe("ErrorBoundary", () => {
         </ErrorBoundary>
       );
 
-      // Empty string message displays as empty (not "Unknown error occurred")
       const errorMessage = screen.getByTestId("error-boundary").querySelector(".error-boundary__message");
       expect(errorMessage).toBeInTheDocument();
       if (errorMessage) {
-        expect(errorMessage.textContent).toBe("");
+        expect(errorMessage.textContent).toContain("화면을 복구할 수 없습니다");
       }
     });
 
@@ -312,7 +314,10 @@ describe("ErrorBoundary", () => {
         </ErrorBoundary>
       );
 
-      expect(screen.getByText("No stack")).toBeInTheDocument();
+      expect(
+        screen.getByText(/화면을 복구할 수 없습니다.*screen could not recover/),
+      ).toBeInTheDocument();
+      expect(screen.queryByText("No stack")).not.toBeInTheDocument();
     });
 
     it("should handle empty string error message", () => {
@@ -326,11 +331,10 @@ describe("ErrorBoundary", () => {
         </ErrorBoundary>
       );
 
-      // Empty string message displays as empty
       const errorMessage = screen.getByTestId("error-boundary").querySelector(".error-boundary__message");
       expect(errorMessage).toBeInTheDocument();
       if (errorMessage) {
-        expect(errorMessage.textContent).toBe("");
+        expect(errorMessage.textContent).toContain("screen could not recover");
       }
     });
 

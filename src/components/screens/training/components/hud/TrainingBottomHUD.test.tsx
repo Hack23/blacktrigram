@@ -344,7 +344,7 @@ describe("TrainingBottomHUD", () => {
       expect(section).toHaveStyle({ marginLeft: "0px" });
       expect(screen.getByTestId("mock-technique-bar")).toHaveAttribute(
         "data-container-width",
-        "194",
+        "278",
       );
     });
 
@@ -366,11 +366,11 @@ describe("TrainingBottomHUD", () => {
         "training-bottom-hud-technique-section",
       );
       expect(section).toHaveStyle({
-        marginLeft: `${HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR}px`,
+        marginLeft: `${HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE}px`,
       });
       expect(screen.getByTestId("mock-technique-bar")).toHaveAttribute(
         "data-container-width",
-        "14",
+        "182",
       );
     });
   });
