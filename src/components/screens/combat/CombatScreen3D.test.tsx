@@ -333,6 +333,7 @@ describe("CombatScreen3D", () => {
     );
 
     expect(container).toBeTruthy();
+    expect(screen.queryByTestId("effect-composer")).not.toBeInTheDocument();
   });
 
   it("should render Three.js canvas", () => {
@@ -602,6 +603,7 @@ describe("CombatScreen3D", () => {
     );
 
     expect(container).toBeTruthy();
+    expect(screen.queryByTestId("effect-composer")).not.toBeInTheDocument();
   });
 
   it("should render with desktop dimensions", () => {
