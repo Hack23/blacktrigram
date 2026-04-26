@@ -409,20 +409,15 @@ export function useCombatActions(
   // Refs to track knockback recovery timeouts for cleanup
   const player1KnockbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const player2KnockbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const screenShakeTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>> | null>(
-    null,
+  const screenShakeTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(
+    new Set(),
   );
 
-  const getScreenShakeTimeouts = useCallback(() => {
-    screenShakeTimeoutsRef.current ??= new Set();
-    return screenShakeTimeoutsRef.current;
-  }, []);
-
   const clearScreenShakeTimeouts = useCallback(() => {
-    screenShakeTimeoutsRef.current?.forEach((timeoutId) => {
+    screenShakeTimeoutsRef.current.forEach((timeoutId) => {
       clearTimeout(timeoutId);
     });
-    screenShakeTimeoutsRef.current?.clear();
+    screenShakeTimeoutsRef.current.clear();
   }, []);
 
   // Cleanup timeouts on unmount
@@ -749,15 +744,14 @@ export function useCombatActions(
     ].slice(0, SCREEN_SHAKE_FRAME_COUNT);
 
     shakeFrames.forEach((shake, index) => {
-      const screenShakeTimeouts = getScreenShakeTimeouts();
       const timeoutId = setTimeout(
         () => {
-          screenShakeTimeoutsRef.current?.delete(timeoutId);
+          screenShakeTimeoutsRef.current.delete(timeoutId);
           combatActions.setScreenShake(shake);
         },
         index * SCREEN_SHAKE_FRAME_INTERVAL_MS,
       );
-      screenShakeTimeouts.add(timeoutId);
+      screenShakeTimeoutsRef.current.add(timeoutId);
     });
 
     const distance = Math.sqrt(
@@ -800,7 +794,6 @@ export function useCombatActions(
     combatState.roundEnded,
     combatActions,
     clearScreenShakeTimeouts,
-    getScreenShakeTimeouts,
     onPlayerUpdate,
     addCombatMessage,
     addHitEffect,
