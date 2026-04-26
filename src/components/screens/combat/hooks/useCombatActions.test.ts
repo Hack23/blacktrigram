@@ -8,8 +8,12 @@ import { CombatSystem } from "@/systems/CombatSystem";
 import { HitEffectType } from "@/systems/effects";
 import { DamageType, PlayerArchetype, TrigramStance } from "@/types";
 import { act, renderHook } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useCombatActions } from "./useCombatActions";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  SCREEN_SHAKE_FRAME_COUNT,
+  SCREEN_SHAKE_FRAME_INTERVAL_MS,
+  useCombatActions,
+} from "./useCombatActions";
 import { useCombatState } from "./useCombatState";
 
 describe("useCombatActions", () => {
@@ -17,6 +21,7 @@ describe("useCombatActions", () => {
   let mockCombatSystem: CombatSystem;
 
   beforeEach(() => {
+    vi.useFakeTimers();
     mockCombatSystem = new CombatSystem();
 
     const mockPlayer1 = {
@@ -88,6 +93,12 @@ describe("useCombatActions", () => {
         worldDepthMeters: 6,
       },
     };
+  });
+
+  afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   describe("handleAttack", () => {
@@ -353,14 +364,47 @@ describe("useCombatActions", () => {
     });
 
     it("should trigger screen shake", () => {
-      const { result } = renderHook(() => useCombatActions(mockConfig));
+      const screenShakeSequenceMs =
+        SCREEN_SHAKE_FRAME_INTERVAL_MS * (SCREEN_SHAKE_FRAME_COUNT - 1);
+      const setScreenShakeMock = vi.fn();
+      const config = {
+        ...mockConfig,
+        combatActions: {
+          ...mockConfig.combatActions,
+          setScreenShake: setScreenShakeMock,
+        },
+      };
+      const { result } = renderHook(() => useCombatActions(config));
 
       act(() => {
         result.current.handleTechniqueExecute();
+        vi.advanceTimersByTime(screenShakeSequenceMs);
       });
 
-      // Screen shake should be set through combatActions
-      expect(mockConfig.combatActions.setScreenShake).toBeDefined();
+      expect(setScreenShakeMock).toHaveBeenCalledTimes(SCREEN_SHAKE_FRAME_COUNT);
+      expect(setScreenShakeMock).toHaveBeenLastCalledWith({ x: 0, y: 0 });
+    });
+
+    it("should clear pending screen shake timers on unmount", () => {
+      const screenShakeSequenceMs =
+        SCREEN_SHAKE_FRAME_INTERVAL_MS * (SCREEN_SHAKE_FRAME_COUNT - 1);
+      const setScreenShakeMock = vi.fn();
+      const config = {
+        ...mockConfig,
+        combatActions: {
+          ...mockConfig.combatActions,
+          setScreenShake: setScreenShakeMock,
+        },
+      };
+      const { result, unmount } = renderHook(() => useCombatActions(config));
+
+      act(() => {
+        result.current.handleTechniqueExecute();
+        unmount();
+        vi.advanceTimersByTime(screenShakeSequenceMs);
+      });
+
+      expect(setScreenShakeMock).not.toHaveBeenCalled();
     });
   });
 

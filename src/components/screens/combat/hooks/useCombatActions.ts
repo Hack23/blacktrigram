@@ -69,6 +69,21 @@ import { CombatActions, CombatScreenState } from "./useCombatState";
  */
 const HIT_Y_VARIATION_RANGE = 0.4;
 
+export const SCREEN_SHAKE_FRAME_INTERVAL_MS = 50;
+export const SCREEN_SHAKE_FRAME_COUNT = 5;
+
+/**
+ * Clears every timeout in a tracked set and empties the set afterwards.
+ *
+ * @param timeoutIds Timeout identifiers to clear and remove
+ */
+function clearTimeoutSet(timeoutIds: Set<ReturnType<typeof setTimeout>>): void {
+  timeoutIds.forEach((timeoutId) => {
+    clearTimeout(timeoutId);
+  });
+  timeoutIds.clear();
+}
+
 /**
  * Calculate randomized hit position based on defender position
  * Adds vertical variation to simulate different strike heights
@@ -406,10 +421,15 @@ export function useCombatActions(
   // Refs to track knockback recovery timeouts for cleanup
   const player1KnockbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const player2KnockbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const screenShakeTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(
+    new Set(),
+  );
 
   // Cleanup timeouts on unmount
   useEffect(() => {
+    const screenShakeTimeouts = screenShakeTimeoutsRef.current;
     return () => {
+      clearTimeoutSet(screenShakeTimeouts);
       if (player1KnockbackTimeoutRef.current) {
         clearTimeout(player1KnockbackTimeoutRef.current);
       }
@@ -719,6 +739,7 @@ export function useCombatActions(
     addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[0], 1.5);
 
     // Screen shake effect for impact
+    clearTimeoutSet(screenShakeTimeoutsRef.current);
     const shakeIntensity = 8;
     const shakeFrames = [
       { x: shakeIntensity, y: -shakeIntensity * 0.5 },
@@ -726,10 +747,18 @@ export function useCombatActions(
       { x: shakeIntensity * 0.5, y: shakeIntensity * 0.3 },
       { x: -shakeIntensity * 0.3, y: -shakeIntensity * 0.6 },
       { x: 0, y: 0 },
-    ];
+    ].slice(0, SCREEN_SHAKE_FRAME_COUNT);
 
     shakeFrames.forEach((shake, index) => {
-      setTimeout(() => combatActions.setScreenShake(shake), index * 50);
+      const timeoutId = setTimeout(
+        () => {
+          // Completed timers are removed so cleanup only tracks pending callbacks.
+          screenShakeTimeoutsRef.current.delete(timeoutId);
+          combatActions.setScreenShake(shake);
+        },
+        index * SCREEN_SHAKE_FRAME_INTERVAL_MS,
+      );
+      screenShakeTimeoutsRef.current.add(timeoutId);
     });
 
     const distance = Math.sqrt(
