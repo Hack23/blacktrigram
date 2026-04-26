@@ -120,9 +120,9 @@ export function getTechniqueBarBottom(isMobile: boolean): number {
  * Get mobile controls bottom position.
  *
  * Returns a viewport-responsive band for comfortable D-Pad / ActionButton
- * reach without pushing controls into the arena center. Tall phones use a
- * lower 17% band, large displays cap at 200 px, and short landscape phones
- * use a tighter 96–120 px band.
+ * reach without pushing controls into the arena center. Short landscape
+ * viewports use a 96–120 px clamped band, while tall numeric viewports use a
+ * 128–200 px clamped band.
  *
  * @param viewportHeight - Optional current viewport height in pixels.
  *                         When omitted or NaN, returns the 200 px default.
