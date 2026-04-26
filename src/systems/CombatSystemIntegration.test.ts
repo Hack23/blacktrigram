@@ -144,6 +144,7 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
       );
 
       expect(mockRandom).toHaveBeenCalled();
+      expect(mockRandom).toHaveReturnedWith(stunSuccessRoll);
       expect(updatedDefender.pain).toBeGreaterThanOrEqual(80);
       expect(updatedDefender.isStunned).toBe(true);
     });
@@ -177,6 +178,7 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
       );
 
       expect(mockRandom).toHaveBeenCalled();
+      expect(mockRandom).toHaveReturnedWith(stunFailureRoll);
       expect(updatedDefender.pain).toBeGreaterThanOrEqual(80);
       expect(updatedDefender.isStunned).toBe(false);
     });
