@@ -72,6 +72,11 @@ const HIT_Y_VARIATION_RANGE = 0.4;
 export const SCREEN_SHAKE_FRAME_INTERVAL_MS = 50;
 export const SCREEN_SHAKE_FRAME_COUNT = 5;
 
+/**
+ * Clears every timeout in a tracked set and empties the set afterwards.
+ *
+ * @param timeoutIds Timeout identifiers to clear and remove
+ */
 function clearTimeoutSet(timeoutIds: Set<ReturnType<typeof setTimeout>>): void {
   timeoutIds.forEach((timeoutId) => {
     clearTimeout(timeoutId);
@@ -747,7 +752,7 @@ export function useCombatActions(
     shakeFrames.forEach((shake, index) => {
       const timeoutId = setTimeout(
         () => {
-          // Completed timers remove themselves so cleanup only tracks pending callbacks.
+          // Completed timers are removed so cleanup only tracks pending callbacks.
           screenShakeTimeoutsRef.current.delete(timeoutId);
           combatActions.setScreenShake(shake);
         },
