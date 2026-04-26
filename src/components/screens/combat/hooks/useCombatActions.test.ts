@@ -9,7 +9,10 @@ import { HitEffectType } from "@/systems/effects";
 import { DamageType, PlayerArchetype, TrigramStance } from "@/types";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { useCombatActions } from "./useCombatActions";
+import {
+  SCREEN_SHAKE_FRAME_INTERVAL_MS,
+  useCombatActions,
+} from "./useCombatActions";
 import { useCombatState } from "./useCombatState";
 
 describe("useCombatActions", () => {
@@ -360,8 +363,7 @@ describe("useCombatActions", () => {
     });
 
     it("should trigger screen shake", () => {
-      // Matches the final scheduled screen-shake callback delay in useCombatActions
-      const screenShakeSequenceMs = 200;
+      const screenShakeSequenceMs = SCREEN_SHAKE_FRAME_INTERVAL_MS * 4;
       const setScreenShakeMock = vi.fn();
       const config = {
         ...mockConfig,

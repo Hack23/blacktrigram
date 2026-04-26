@@ -69,6 +69,8 @@ import { CombatActions, CombatScreenState } from "./useCombatState";
  */
 const HIT_Y_VARIATION_RANGE = 0.4;
 
+export const SCREEN_SHAKE_FRAME_INTERVAL_MS = 50;
+
 /**
  * Calculate randomized hit position based on defender position
  * Adds vertical variation to simulate different strike heights
@@ -729,7 +731,10 @@ export function useCombatActions(
     ];
 
     shakeFrames.forEach((shake, index) => {
-      setTimeout(() => combatActions.setScreenShake(shake), index * 50);
+      setTimeout(
+        () => combatActions.setScreenShake(shake),
+        index * SCREEN_SHAKE_FRAME_INTERVAL_MS,
+      );
     });
 
     const distance = Math.sqrt(
