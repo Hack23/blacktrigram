@@ -15,7 +15,16 @@
 
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
-import { TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE, FONT_SIZE_MULTIPLIERS, LAYOUT_MULTIPLIERS } from "../../../../../types/constants/designSystem";
+import {
+  BORDERS,
+  FONT_SIZE_MULTIPLIERS,
+  GRADIENTS,
+  HIERARCHY,
+  HUD_STYLE,
+  LAYOUT_MULTIPLIERS,
+  TYPOGRAPHY,
+  TYPOGRAPHY_NUMERIC,
+} from "../../../../../types/constants/designSystem";
 import {
   getHUDHeight,
   getResponsiveFontSize,
