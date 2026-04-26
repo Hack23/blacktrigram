@@ -67,6 +67,7 @@ vi.mock("@react-three/postprocessing", () => ({
   Noise: () => null,
 }));
 
+// Mock device detection for deterministic desktop/high-tier assertions
 vi.mock("../../../utils/deviceDetection", () => ({
   shouldUseMobileControls: () => false,
 }));
