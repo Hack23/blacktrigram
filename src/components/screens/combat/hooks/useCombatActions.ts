@@ -72,6 +72,13 @@ const HIT_Y_VARIATION_RANGE = 0.4;
 export const SCREEN_SHAKE_FRAME_INTERVAL_MS = 50;
 export const SCREEN_SHAKE_FRAME_COUNT = 5;
 
+function clearTimeoutSet(timeoutIds: Set<ReturnType<typeof setTimeout>>): void {
+  timeoutIds.forEach((timeoutId) => {
+    clearTimeout(timeoutId);
+  });
+  timeoutIds.clear();
+}
+
 /**
  * Calculate randomized hit position based on defender position
  * Adds vertical variation to simulate different strike heights
@@ -413,17 +420,11 @@ export function useCombatActions(
     new Set(),
   );
 
-  const clearScreenShakeTimeouts = useCallback(() => {
-    screenShakeTimeoutsRef.current.forEach((timeoutId) => {
-      clearTimeout(timeoutId);
-    });
-    screenShakeTimeoutsRef.current.clear();
-  }, []);
-
   // Cleanup timeouts on unmount
   useEffect(() => {
+    const screenShakeTimeouts = screenShakeTimeoutsRef.current;
     return () => {
-      clearScreenShakeTimeouts();
+      clearTimeoutSet(screenShakeTimeouts);
       if (player1KnockbackTimeoutRef.current) {
         clearTimeout(player1KnockbackTimeoutRef.current);
       }
@@ -431,7 +432,7 @@ export function useCombatActions(
         clearTimeout(player2KnockbackTimeoutRef.current);
       }
     };
-  }, [clearScreenShakeTimeouts]);
+  }, []);
 
   // Player attack handler
   const handleAttack = useCallback(
@@ -733,7 +734,7 @@ export function useCombatActions(
     addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[0], 1.5);
 
     // Screen shake effect for impact
-    clearScreenShakeTimeouts();
+    clearTimeoutSet(screenShakeTimeoutsRef.current);
     const shakeIntensity = 8;
     const shakeFrames = [
       { x: shakeIntensity, y: -shakeIntensity * 0.5 },
@@ -746,6 +747,7 @@ export function useCombatActions(
     shakeFrames.forEach((shake, index) => {
       const timeoutId = setTimeout(
         () => {
+          // Completed timers remove themselves so cleanup only tracks pending callbacks.
           screenShakeTimeoutsRef.current.delete(timeoutId);
           combatActions.setScreenShake(shake);
         },
@@ -793,7 +795,6 @@ export function useCombatActions(
     combatState.roundStarted,
     combatState.roundEnded,
     combatActions,
-    clearScreenShakeTimeouts,
     onPlayerUpdate,
     addCombatMessage,
     addHitEffect,
