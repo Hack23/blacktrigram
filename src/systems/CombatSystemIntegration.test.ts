@@ -146,12 +146,15 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
       expect(mockRandom).toHaveBeenCalled();
       expect(updatedDefender.pain).toBeGreaterThanOrEqual(80);
       expect(updatedDefender.isStunned).toBe(true);
+      mockRandom.mockRestore();
     });
 
     it("should not apply pain overload stun when roll exceeds stun chance", () => {
       const highPainPlayer = { ...player2, pain: 85 };
       const stunFailureRoll = 0.99;
-      vi.spyOn(Math, "random").mockReturnValue(stunFailureRoll);
+      const mockRandom = vi
+        .spyOn(Math, "random")
+        .mockReturnValue(stunFailureRoll);
 
       const mockResult: CombatResult = {
         hit: true,
@@ -176,6 +179,7 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
 
       expect(updatedDefender.pain).toBeGreaterThanOrEqual(80);
       expect(updatedDefender.isStunned).toBe(false);
+      mockRandom.mockRestore();
     });
   });
 
