@@ -129,7 +129,7 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
           ),
         );
         const buttonSize = Math.max(44, Math.round(dpadSize * 0.34));
-        const radius = dpadSize * 0.32;
+        const buttonPlacementRadius = dpadSize * 0.32;
         const attackSize = Math.round(
           Math.max(64, Math.min(80, dpadSize * 0.58)),
         );
@@ -143,7 +143,7 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
         return {
           dpadSize,
           buttonSize,
-          radius,
+          buttonPlacementRadius,
           attackSize,
           blockSize,
           sidePadding,
@@ -278,8 +278,8 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
             {/* Direction Buttons */}
             {DIRECTIONS.map((config) => {
               const radian = (config.angle - 90) * (Math.PI / 180);
-              const x = Math.cos(radian) * controlLayout.radius;
-              const y = Math.sin(radian) * controlLayout.radius;
+              const x = Math.cos(radian) * controlLayout.buttonPlacementRadius;
+              const y = Math.sin(radian) * controlLayout.buttonPlacementRadius;
               const isActive = activeDirection === config.direction;
 
               return (
