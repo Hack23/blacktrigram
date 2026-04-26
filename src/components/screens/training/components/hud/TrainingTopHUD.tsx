@@ -110,7 +110,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: `${layout.padding}px ${SPACING_ADJUSTMENTS.horizontalEmphasis}`,
+        padding: `${layout.padding}px`,
         pointerEvents: "none",
         boxSizing: "border-box",
         borderBottom: BORDERS.default,

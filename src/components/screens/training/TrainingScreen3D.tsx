@@ -1585,6 +1585,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               disabled={!mobileControlsEnabled}
               bottom={getMobileControlsBottom(height)}
               opacity={0.85}
+              viewportWidth={width}
+              viewportHeight={height}
             />
 
             <StanceWheelPure

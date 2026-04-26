@@ -3252,6 +3252,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             onAttack={handleMobileAttack}
             onBlock={handleMobileBlock}
             bottom={getMobileControlsBottom(height)}
+            viewportWidth={width}
+            viewportHeight={height}
           />
 
           <StanceWheelPure

@@ -85,7 +85,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </h1>
 
             <p className="error-boundary__message">
-              {this.state.error?.message ?? "Unknown error occurred"}
+              화면을 복구할 수 없습니다. 다시 시작하거나 이전 화면으로 돌아가세요. | The screen could not recover. Restart or go back.
             </p>
 
             <div className="error-boundary__actions">

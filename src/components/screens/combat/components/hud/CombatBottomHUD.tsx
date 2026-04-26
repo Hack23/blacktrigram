@@ -117,11 +117,15 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
     // ensures TechniqueBar's scale/scroll decision matches the real layout.
     const usableWidth = width - padding * 2;
     const maxBarWidthPx = usableWidth * parsePercentageToRatio(maxTechniqueBarWidth);
+    const volumeReserve = showMobileControls
+      ? HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE
+      : HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL;
+
     const techniqueBarContainerWidth = Math.max(
       0,
       Math.min(
         maxBarWidthPx,
-        usableWidth - HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+        usableWidth - volumeReserve,
       ),
     );
 
@@ -134,10 +138,10 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
       maxMessageWidth,
       maxTechniqueBarWidth,
       messagePadding,
-      volumeReserve: HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL,
+      volumeReserve,
       techniqueBarContainerWidth,
     };
-  }, [width, height, positionScale]);
+  }, [width, height, positionScale, showMobileControls]);
 
   // Only show last 3 combat messages
   const recentMessages = combatMessages.slice(-3);

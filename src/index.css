@@ -211,32 +211,47 @@ canvas {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100vw;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--color-danger) 0%, #4b0000 100%);
+  min-height: 100dvh;
+  background: linear-gradient(
+    135deg,
+    var(--color-danger) 0%,
+    var(--color-bg-dark) 100%
+  );
   color: var(--color-text-primary);
-  padding: 2rem;
+  padding: max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
   text-align: center;
   font-family: var(--font-korean);
+  box-sizing: border-box;
 }
 
 .error-boundary__container {
-  max-width: 600px;
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.8);
+  width: min(100%, 640px);
+  max-height: calc(100dvh - 2rem);
+  padding: clamp(1rem, 5vw, 2rem);
+  background: color-mix(in srgb, var(--color-primary-black) 88%, transparent);
   border: 2px solid var(--color-danger);
-  border-radius: 8px;
+  border-radius: 12px;
+  overflow: auto;
+  box-sizing: border-box;
 }
 
 .error-boundary__title {
-  font-size: 2rem;
+  font-size: clamp(1.45rem, 7vw, 2rem);
   margin-bottom: 1rem;
   color: var(--color-danger);
+  line-height: 1.2;
 }
 
 .error-boundary__message {
   margin-bottom: 1.5rem;
-  font-size: 1.1rem;
-  color: #ffcccc;
+  font-size: clamp(0.95rem, 4vw, 1.1rem);
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
 }
 
 .error-boundary__actions {
@@ -244,16 +259,20 @@ canvas {
   gap: 1rem;
   justify-content: center;
   margin-top: 2rem;
+  flex-wrap: wrap;
 }
 
 .error-boundary__button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  min-height: 48px;
+  min-width: min(100%, 10rem);
+  padding: 0.75rem 1.25rem;
+  font-size: clamp(0.95rem, 4vw, 1rem);
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
   transition: transform 0.2s ease;
+  font-family: var(--font-korean);
 }
 
 .error-boundary__button:hover:not(:disabled) {
@@ -275,7 +294,7 @@ canvas {
   margin-top: 2rem;
   text-align: left;
   font-size: 0.9rem;
-  color: #cccccc;
+  color: var(--color-text-secondary);
 }
 
 .error-boundary__details summary {
@@ -291,6 +310,26 @@ canvas {
   overflow: auto;
   max-height: 200px;
   font-size: 0.8rem;
+}
+
+@media (max-width: 480px) {
+  .error-boundary {
+    justify-content: flex-start;
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+
+  .error-boundary__container {
+    margin-top: min(18vh, 8rem);
+  }
+
+  .error-boundary__actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .error-boundary__button {
+    width: 100%;
+  }
 }
 
 /* LoadingState styles */
