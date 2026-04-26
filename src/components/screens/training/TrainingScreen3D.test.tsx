@@ -69,6 +69,10 @@ vi.mock("@react-three/postprocessing", () => ({
   Noise: () => null,
 }));
 
+vi.mock("../../../utils/deviceDetection", () => ({
+  shouldUseMobileControls: () => false,
+}));
+
 // Mock Three.js
 vi.mock("three", () => ({
   Group: class MockGroup {},
@@ -589,6 +593,7 @@ describe("TrainingScreen3D", () => {
 
       expect(container).toBeTruthy();
       expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+      expect(screen.getByTestId("effect-composer")).toBeInTheDocument();
     });
 
     it("should render correctly at tablet resolution", () => {

@@ -108,12 +108,9 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     const volumeReserve = showMobileControls
       ? HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE
       : HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL;
-    const archetypeReserve =
-      showMobileControls && showArchetypeSelector
-        ? HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE
-        : showArchetypeSelector
-          ? HUD_SIDE_CONTROL_RESERVES.ARCHETYPE_SELECTOR
-          : 0;
+    const archetypeReserve = showArchetypeSelector
+      ? HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE
+      : 0;
 
     const techniqueBarContainerWidth = Math.max(
       0,

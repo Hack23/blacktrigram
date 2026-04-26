@@ -220,6 +220,7 @@ canvas {
     var(--color-bg-dark) 100%
   );
   color: var(--color-text-primary);
+  padding: 1rem;
   padding: max(1rem, env(safe-area-inset-top))
     max(1rem, env(safe-area-inset-right))
     max(1rem, env(safe-area-inset-bottom))
