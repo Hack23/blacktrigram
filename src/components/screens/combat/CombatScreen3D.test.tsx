@@ -58,7 +58,7 @@ vi.mock("@react-three/drei", () => ({
 // Mock @react-three/postprocessing
 vi.mock("@react-three/postprocessing", () => ({
   EffectComposer: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
+    <div data-testid="effect-composer">{children}</div>
   ),
   Bloom: () => null,
   SSAO: () => null,
@@ -583,6 +583,7 @@ describe("CombatScreen3D", () => {
     );
 
     expect(container).toBeTruthy();
+    expect(screen.queryByTestId("effect-composer")).not.toBeInTheDocument();
   });
 
   it("should render with tablet dimensions", () => {

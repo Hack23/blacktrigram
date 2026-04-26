@@ -60,7 +60,7 @@ vi.mock("@react-three/drei", () => ({
 // Mock @react-three/postprocessing
 vi.mock("@react-three/postprocessing", () => ({
   EffectComposer: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
+    <div data-testid="effect-composer">{children}</div>
   ),
   Bloom: () => null,
   SSAO: () => null,
@@ -603,6 +603,7 @@ describe("TrainingScreen3D", () => {
 
       expect(container).toBeTruthy();
       expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+      expect(screen.queryByTestId("effect-composer")).not.toBeInTheDocument();
     });
 
     it("should render correctly at mobile resolution", () => {
@@ -617,6 +618,7 @@ describe("TrainingScreen3D", () => {
 
       expect(container).toBeTruthy();
       expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+      expect(screen.queryByTestId("effect-composer")).not.toBeInTheDocument();
     });
   });
 });
