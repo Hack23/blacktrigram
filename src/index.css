@@ -221,13 +221,18 @@ canvas {
   );
   color: var(--color-text-primary);
   padding: 1rem;
-  padding: max(1rem, env(safe-area-inset-top))
-    max(1rem, env(safe-area-inset-right))
-    max(1rem, env(safe-area-inset-bottom))
-    max(1rem, env(safe-area-inset-left));
   text-align: center;
   font-family: var(--font-korean);
   box-sizing: border-box;
+}
+
+@supports (padding: max(1rem, env(safe-area-inset-top))) {
+  .error-boundary {
+    padding: max(1rem, env(safe-area-inset-top))
+      max(1rem, env(safe-area-inset-right))
+      max(1rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+  }
 }
 
 .error-boundary__container {

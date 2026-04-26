@@ -108,6 +108,8 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     const volumeReserve = showMobileControls
       ? HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE
       : HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL;
+    // showArchetypeSelector is only true with mobile controls, so the mobile
+    // technique-bar reserve is the only reachable archetype selector reserve.
     const archetypeReserve = showArchetypeSelector
       ? HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE
       : 0;
