@@ -409,10 +409,21 @@ export function useCombatActions(
   // Refs to track knockback recovery timeouts for cleanup
   const player1KnockbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const player2KnockbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const screenShakeTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(
+    new Set(),
+  );
+
+  const clearScreenShakeTimeouts = useCallback(() => {
+    screenShakeTimeoutsRef.current.forEach((timeoutId) => {
+      clearTimeout(timeoutId);
+    });
+    screenShakeTimeoutsRef.current.clear();
+  }, []);
 
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
+      clearScreenShakeTimeouts();
       if (player1KnockbackTimeoutRef.current) {
         clearTimeout(player1KnockbackTimeoutRef.current);
       }
@@ -420,7 +431,7 @@ export function useCombatActions(
         clearTimeout(player2KnockbackTimeoutRef.current);
       }
     };
-  }, []);
+  }, [clearScreenShakeTimeouts]);
 
   // Player attack handler
   const handleAttack = useCallback(
@@ -722,6 +733,7 @@ export function useCombatActions(
     addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[0], 1.5);
 
     // Screen shake effect for impact
+    clearScreenShakeTimeouts();
     const shakeIntensity = 8;
     const shakeFrames = [
       { x: shakeIntensity, y: -shakeIntensity * 0.5 },
@@ -732,10 +744,14 @@ export function useCombatActions(
     ].slice(0, SCREEN_SHAKE_FRAME_COUNT);
 
     shakeFrames.forEach((shake, index) => {
-      setTimeout(
-        () => combatActions.setScreenShake(shake),
+      const timeoutId = setTimeout(
+        () => {
+          screenShakeTimeoutsRef.current.delete(timeoutId);
+          combatActions.setScreenShake(shake);
+        },
         index * SCREEN_SHAKE_FRAME_INTERVAL_MS,
       );
+      screenShakeTimeoutsRef.current.add(timeoutId);
     });
 
     const distance = Math.sqrt(
@@ -777,6 +793,7 @@ export function useCombatActions(
     combatState.roundStarted,
     combatState.roundEnded,
     combatActions,
+    clearScreenShakeTimeouts,
     onPlayerUpdate,
     addCombatMessage,
     addHitEffect,

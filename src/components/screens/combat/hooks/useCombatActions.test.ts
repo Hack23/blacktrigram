@@ -384,6 +384,28 @@ describe("useCombatActions", () => {
       expect(setScreenShakeMock).toHaveBeenCalledTimes(SCREEN_SHAKE_FRAME_COUNT);
       expect(setScreenShakeMock).toHaveBeenLastCalledWith({ x: 0, y: 0 });
     });
+
+    it("should clear pending screen shake timers on unmount", () => {
+      const screenShakeSequenceMs =
+        SCREEN_SHAKE_FRAME_INTERVAL_MS * (SCREEN_SHAKE_FRAME_COUNT - 1);
+      const setScreenShakeMock = vi.fn();
+      const config = {
+        ...mockConfig,
+        combatActions: {
+          ...mockConfig.combatActions,
+          setScreenShake: setScreenShakeMock,
+        },
+      };
+      const { result, unmount } = renderHook(() => useCombatActions(config));
+
+      act(() => {
+        result.current.handleTechniqueExecute();
+        unmount();
+        vi.advanceTimersByTime(screenShakeSequenceMs);
+      });
+
+      expect(setScreenShakeMock).not.toHaveBeenCalled();
+    });
   });
 
   describe("handleStanceSwitch", () => {

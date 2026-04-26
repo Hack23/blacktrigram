@@ -4,7 +4,7 @@
  * Tests the integration of pain and consciousness systems with the combat system.
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayerArchetype, DamageType } from "@/types";
 import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "./player";
@@ -23,6 +23,10 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
     player2 = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
     // Clear all player injuries between tests to prevent leakage
     playerInjuryManager.clearAll();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   describe("Pain Integration", () => {
@@ -142,7 +146,6 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
       expect(mockRandom).toHaveBeenCalled();
       expect(updatedDefender.pain).toBeGreaterThanOrEqual(80);
       expect(updatedDefender.isStunned).toBe(true);
-      mockRandom.mockRestore();
     });
 
     it("should not apply pain overload stun when roll exceeds stun chance", () => {
@@ -173,9 +176,9 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
         highPainPlayer
       );
 
+      expect(mockRandom).toHaveBeenCalled();
       expect(updatedDefender.pain).toBeGreaterThanOrEqual(80);
       expect(updatedDefender.isStunned).toBe(false);
-      mockRandom.mockRestore();
     });
   });
 
