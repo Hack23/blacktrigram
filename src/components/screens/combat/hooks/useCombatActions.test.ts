@@ -92,9 +92,7 @@ describe("useCombatActions", () => {
   });
 
   afterEach(() => {
-    act(() => {
-      vi.runOnlyPendingTimers();
-    });
+    vi.clearAllTimers();
     vi.useRealTimers();
     vi.restoreAllMocks();
   });
@@ -362,11 +360,15 @@ describe("useCombatActions", () => {
     });
 
     it("should trigger screen shake", () => {
-      const setScreenShakeMock = vi.spyOn(
-        mockConfig.combatActions,
-        "setScreenShake",
-      );
-      const { result } = renderHook(() => useCombatActions(mockConfig));
+      const setScreenShakeMock = vi.fn();
+      const config = {
+        ...mockConfig,
+        combatActions: {
+          ...mockConfig.combatActions,
+          setScreenShake: setScreenShakeMock,
+        },
+      };
+      const { result } = renderHook(() => useCombatActions(config));
 
       act(() => {
         result.current.handleTechniqueExecute();
