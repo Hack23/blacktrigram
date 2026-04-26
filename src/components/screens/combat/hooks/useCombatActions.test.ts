@@ -360,6 +360,7 @@ describe("useCombatActions", () => {
     });
 
     it("should trigger screen shake", () => {
+      // Five screen-shake frames are scheduled at 50ms intervals: 0, 50, 100, 150, and 200ms
       const screenShakeSequenceMs = 200;
       const setScreenShakeMock = vi.fn();
       const config = {
