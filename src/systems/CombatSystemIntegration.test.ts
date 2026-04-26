@@ -27,7 +27,6 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    playerInjuryManager.clearAll();
   });
 
   describe("Pain Integration", () => {
