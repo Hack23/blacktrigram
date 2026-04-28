@@ -11,9 +11,11 @@
 
 <p align="center">
   <a href="#"><img src="https://img.shields.io/badge/Owner-James_Pether_Sörling-0A66C2?style=for-the-badge" alt="Owner"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/Effective-2025--01--15-success?style=for-the-badge" alt="Effective Date"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/Review-Quarterly-orange?style=for-the-badge" alt="Review Cycle"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.1-555?style=for-the-badge" alt="Version 1.1"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2026--04--21-success?style=for-the-badge" alt="Effective 2026-04-21"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Review_Cycle-Quarterly-orange?style=for-the-badge" alt="Quarterly review cycle"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Next_Review-2026--07--21-blue?style=for-the-badge" alt="Next review 2026-07-21"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Classification-Public-lightgrey?style=for-the-badge" alt="Public classification"/></a>
 </p>
 
 ---
@@ -30,7 +32,7 @@ This project is under active development, and we provide security updates for th
 
 ## Reporting a Vulnerability
 
-We take the security of the lambda-in-private-vpc project seriously. If you have found a potential security vulnerability, we kindly ask you to report it privately, so that we can assess and address the issue before it becomes publicly known.
+We take the security of the **Black Trigram (흑괘)** project seriously. If you have found a potential security vulnerability, we kindly ask you to report it privately, so that we can assess and address the issue before it becomes publicly known.
 
 ### What Constitutes a Vulnerability
 
@@ -69,6 +71,31 @@ Upon receipt of a vulnerability report, our team will:
 We appreciate your effort in helping us maintain a secure and reliable project. If your report results in a confirmed security fix, we will recognize your contribution in the release notes and/or a public acknowledgment, unless you request to remain anonymous.
 
 Thank you for helping us keep the game project and its users safe.
+
+---
+
+## 🛡️ Supply Chain Security
+
+Black Trigram applies defense-in-depth supply-chain controls aligned with the [Hack23 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md), [Vulnerability Management Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md), and [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md):
+
+| Control | Implementation | Workflow |
+|---|---|---|
+| **OSSF Scorecard** | Automated weekly scoring; SARIF uploaded to GitHub code scanning and results published to the OpenSSF API | [`scorecards.yml`](./.github/workflows/scorecards.yml) |
+| **OpenSSF Best Practices** | Project ID **10777** maintained at passing tier | [bestpractices.dev/projects/10777](https://www.bestpractices.dev/projects/10777) |
+| **SLSA Level 3 Provenance** | Every release ships a signed `intoto.jsonl` build attestation | [`/attestations`](https://github.com/Hack23/blacktrigram/attestations) |
+| **CycloneDX SBOM** | SPDX + CycloneDX SBOM published with every GitHub Release | [`release.yml`](./.github/workflows/release.yml) |
+| **CodeQL SAST** | Pull-request and weekly scheduled runs across JavaScript/TypeScript | [`codeql.yml`](./.github/workflows/codeql.yml) |
+| **OWASP ZAP DAST** | Active dynamic scan against the deployed game on each release | [`zap-scan.yml`](./.github/workflows/zap-scan.yml) |
+| **Lighthouse Performance & Security** | Best-practices, performance, accessibility, SEO budgets enforced | [`lighthouse-performance.yml`](./.github/workflows/lighthouse-performance.yml) |
+| **Accessibility (WCAG 2.1 AA)** | Automated axe-core checks on every PR | [`accessibility-test.yml`](./.github/workflows/accessibility-test.yml) |
+| **Dependency Review** | GitHub Dependency Review on every PR; blocks high-severity vulns | [`dependency-review.yml`](./.github/workflows/dependency-review.yml) |
+| **Dependabot** | Weekly updates with auto-merge for low-risk patches | [`.github/dependabot.yml`](./.github/dependabot.yml) |
+| **Pinned GitHub Actions** | All third-party actions pinned to commit SHAs | [`WORKFLOWS.md`](./WORKFLOWS.md) |
+| **Signed commits** | All maintainer commits signed with verified GPG/SSH keys | [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) |
+| **Hardened runners** | `step-security/harden-runner` enforced on every workflow | All workflows |
+| **Asset audit** | Image, audio, and video assets scanned for license/integrity | [`audit-assets.yml`](./.github/workflows/audit-assets.yml) |
+
+📊 Live status: see the consolidated badge wall in [`README.md`](./README.md) and the full pipeline catalogue in [`WORKFLOWS.md`](./WORKFLOWS.md).
 
 ---
 
@@ -119,6 +146,6 @@ Our commitment to transparency means all security policies, risk assessments, an
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: Standard](https://img.shields.io/badge/A-Standard-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
-**📅 Effective Date:** 2025-01-15  
-**⏰ Next Review:** 2025-04-15  
+**📅 Effective Date:** 2026-04-21  
+**⏰ Next Review:** 2026-07-21  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![AWS Well-Architected](https://img.shields.io/badge/AWS-Well_Architected-orange?style=flat-square&logo=amazon-aws&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)

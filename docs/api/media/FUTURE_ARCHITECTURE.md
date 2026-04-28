@@ -100,7 +100,7 @@ graph TD
 
 | Phase | Version | Timeline | Focus | Status |
 |-------|---------|----------|-------|--------|
-| **Beta** | v0.9.x | Q1 2026 | Combat realism completion | ✅ 100% Complete (13/13 systems) |
+| **Beta** | v0.7.32 | Q2 2026 | Combat realism completion | ✅ 100% Complete (13/13 systems) — shipped early |
 | **v1.0 Release** | v1.0.0 | Q2-Q3 2026 | Production-ready game | 🔄 In Progress |
 | **Post-1.0** | v1.1-v1.9 | Q4 2026-Q4 2027 | Polish, content, balance | 📋 Planned |
 | **v2.0** | v2.0.0 | Q1 2028 | Multiplayer, backend, progression | 📋 Future |
@@ -2087,7 +2087,7 @@ xychart-beta
 - **Quality**: 9.0/10 minimum overall rating
 - **Performance**: 60fps desktop, 55fps+ mobile sustained
 - **Testing**: 80%+ code coverage
-- **Completion**: 100% combat realism systems (12/12)
+- **Completion**: 100% combat realism systems (13/13)
 - **Bugs**: Zero critical bugs at launch
 - **Documentation**: Complete user manual and API docs
 

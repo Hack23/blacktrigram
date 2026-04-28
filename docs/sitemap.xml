@@ -6623,7 +6623,25 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/api/media/BCPPlan.md</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/media/CODE_OF_CONDUCT.md</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/api/media/COMBAT_ARCHITECTURE.md</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/media/CONTRIBUTING.md</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -6635,13 +6653,13 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/api/media/COPILOT_MCP_SETUP.md</loc>
+    <loc>https://blacktrigram.com/api/media/CRA-ASSESSMENT.md</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/api/media/CRA-ASSESSMENT.md</loc>
+    <loc>https://blacktrigram.com/api/media/DATA_MODEL.md</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -6659,6 +6677,24 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/api/media/End-of-Life-Strategy.md</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/media/FinancialSecurityPlan.md</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/media/FLOWCHART.md</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/api/media/FUTURE_ARCHITECTURE.md</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
@@ -6666,6 +6702,12 @@
   </url>
   <url>
     <loc>https://blacktrigram.com/api/media/FUTURE_SECURITY_ARCHITECTURE.md</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/media/FUTURE_THREAT_MODEL.md</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -6684,6 +6726,12 @@
   </url>
   <url>
     <loc>https://blacktrigram.com/api/media/ISMS_REFERENCE_MAPPING.md</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/media/MINDMAP.md</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -6720,6 +6768,18 @@
   </url>
   <url>
     <loc>https://blacktrigram.com/api/media/SECURITY.md</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/media/STATEDIAGRAM.md</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/media/SWOT.md</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -26419,73 +26479,73 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_002622.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_153650.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_002654.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_153722.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_002806.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_153834.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_002847.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_153916.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_002941.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_154013.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_003018.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_154059.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_003026.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_154108.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_003059.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_154145.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_003115.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_154204.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_003124.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_154213.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_003154.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_154242.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_003230.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_04282026_154323.html</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>

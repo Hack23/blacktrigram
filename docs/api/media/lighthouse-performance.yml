@@ -1,0 +1,35 @@
+name: Lighthouse Performance Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL to test (default is the GitHub Pages site)"
+        required: true
+        default: "https://hack23.github.io/game/"
+
+# Restrict permissions to minimum required
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    name: Lighthouse Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@8d3c67de8e2fe68ef647c8db1e6a09f647780f40 # v2.19.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Audit URLs using Lighthouse
+        uses: treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18 # v9
+        with:
+          urls: |
+            ${{ github.event.inputs.url }}
+          budgetPath: ./budget.json # test performance budgets
+          uploadArtifacts: true # save results as an action artifacts
+          temporaryPublicStorage: true # upload lighthouse report to the temporary storage

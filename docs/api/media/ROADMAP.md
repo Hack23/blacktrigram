@@ -7,10 +7,10 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 
 ![Black Trigram Logo](public/black-trigram.png)
 
-**Target Release Date**: Q2-Q3 2026  
-**Current Status**: Beta (v0.9.x), 8.4/10 overall quality  
-**Last Updated**: 2026-01-12 (UTC)  
-**Next Review**: 2026-02-01
+**Target Release Date**: Q3 2026 (v1.0.0)  
+**Current Status**: Production-Ready (v0.7.32, 9.4/10) — preparing v1.0 release Q3 2026  
+**Last Updated**: 2026-04-28 (UTC)  
+**Next Review**: 2026-05-15
 
 </div>
 
@@ -20,17 +20,19 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 
 | Category | Progress | Status | Target Date | Priority |
 |----------|----------|--------|-------------|----------|
-| **Combat Realism Systems** | 67% (8/12) | ⚠️ In Progress | Q2 2026 | 🔴 Critical |
+| **Combat Realism Systems** | 100% (13/13) | ✅ Complete | ✅ Done | ✅ Complete |
 | **Vital Point System** | 100% (70/70) | ✅ Complete | ✅ Done | ✅ Complete |
 | **Trigram Stances** | 100% (8/8) | ✅ Complete | ✅ Done | ✅ Complete |
 | **Player Archetypes** | 100% (5/5) | ✅ Complete | ✅ Done | ✅ Complete |
-| **Test Coverage** | 76% | ⚠️ In Progress | 80%+ Q2 2026 | 🟡 High |
-| **Performance (60fps)** | Desktop: ✅ Mobile: ⚠️ | ⚠️ Partial | Q2 2026 | 🟡 High |
-| **Korean Localization** | 80% | ⚠️ In Progress | 100% Q1 2026 | 🟡 High |
-| **Training Mode** | 60% | ⚠️ Needs Work | Q2 2026 | 🟡 High |
-| **EndScreen** | 0% | ❌ Not Started | Q2 2026 | 🔴 Critical |
+| **Skeletal Animation** | 100% (28 bones · 7 hand poses · 4 grappling) | ✅ Complete | ✅ Done | ✅ Complete |
+| **Counter-Attack AI** | 100% (limb-exposure detection) | ✅ Complete | ✅ Done | ✅ Complete |
+| **Test Coverage** | ~75% | ⚠️ In Progress | 80%+ Q2 2026 | 🟡 High |
+| **Performance (60fps)** | Desktop: ✅ Mobile: ✅ (55fps+) | ✅ Validated | ✅ Done | ✅ Complete |
+| **Korean Localization** | 90% | ⚠️ In Progress | 100% Q2 2026 | 🟡 High |
+| **Training Mode** | 80% | ⚠️ Needs Polish | Q2 2026 | 🟡 High |
+| **EndScreen** | 100% | ✅ Complete | ✅ Done | ✅ Complete |
 
-**Overall v1.0 Completion**: **65%** (as of January 2026)
+**Overall v1.0 Completion**: **~95%** — preparing v1.0.0-rc release Q3 2026.
 
 ---
 
@@ -40,23 +42,25 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 
 | Feature | Status | Progress | Target | Owner | Blocker | Notes |
 |---------|--------|----------|--------|-------|---------|-------|
-| **전투 현실감 시스템 | Combat Realism Systems (12/12)** | ⚠️ In Progress | 67% (8/12) | Q2 2026 | @game-developer | 4 systems remaining |
-| Pain Response System (통증 반응) | ✅ Production-Ready | 90% | Q1 2026 | @game-developer | - | 37 tests, fully integrated |
-| Consciousness Levels (의식 수준) | ✅ Production-Ready | 90% | Q1 2026 | @game-developer | - | 36 tests, 4-level gradation |
-| Breathing Disruption (호흡 차단) | ⚠️ Near-Complete | 75% | Q1 2026 | @game-developer | CombatSystem integration | 528 lines implemented |
-| Trauma Visualization (외상 시각화) | ⚠️ In Progress | 65% | Q2 2026 | @game-developer | Injury tracking | Component complete |
-| Balance State Refinement (균형 상태) | ⚠️ In Progress | 70% | Q2 2026 | @game-developer | - | Transition refinement |
-| Combat Readiness HUD (전투 준비 HUD) | ⚠️ In Progress | 60% | Q2 2026 | @game-developer | System integration | Dashboard integration |
-| Injury-Based Movement (손상 기반 이동) | 📋 Planned | 10% | Q2 2026 | @game-developer | Balance/pain systems | Basic framework |
-| Bone Impact Audio (골절음) | ❌ Not Started | 0% | Q2 2026 | @audio-designer | - | Realistic sounds |
-| **급소 시스템 | Vital Point System** | ✅ Complete | 100% (70/70) | ✅ Done | - | - | Fully documented |
+| **전투 현실감 시스템 | Combat Realism Systems (13/13)** | ✅ Complete | 100% (13/13) | ✅ Done | @game-developer | - | All systems production-ready |
+| Pain Response System (통증 반응) | ✅ Production-Ready | 100% | ✅ Done | @game-developer | - | 37 tests, fully integrated |
+| Consciousness Levels (의식 수준) | ✅ Production-Ready | 100% | ✅ Done | @game-developer | - | 36 tests, 4-level gradation |
+| Breathing Disruption (호흡 차단) | ✅ Complete | 100% | ✅ Done | @game-developer | - | Integrated with CombatSystem |
+| Trauma Visualization (외상 시각화) | ✅ Complete | 100% | ✅ Done | @game-developer | - | Injury rendering · bruising |
+| Balance State Refinement (균형 상태) | ✅ Complete | 100% | ✅ Done | @game-developer | - | Stance-based vulnerability |
+| Combat Readiness HUD (전투 준비 HUD) | ✅ Complete | 100% | ✅ Done | @game-developer | - | Real-time multi-system display |
+| Injury-Based Movement (손상 기반 이동) | ✅ Complete | 100% | ✅ Done | @game-developer | - | Damage constrains mobility |
+| Bone Impact Audio (골절음) | ✅ Complete | 100% | ✅ Done | @audio-designer | - | Bone-contact + fracture SFX |
+| Counter-Attack AI (반격 AI) | ✅ Complete | 100% | ✅ Done | @game-developer | - | Limb-exposure detection |
+| **급소 시스템 | Vital Point System** | ✅ Complete | 100% (70/70) | ✅ Done | - | - | 4 regions · 14 TCM meridians |
 | **팔괘 자세 | Trigram Stances** | ✅ Complete | 100% (8/8) | ✅ Done | - | - | All functional |
 | **플레이어 원형 | Player Archetypes** | ✅ Complete | 100% (5/5) | ✅ Done | - | - | Balanced |
-| **훈련 모드 | Training Mode** | ⚠️ Needs Work | 60% | Q2 2026 | @game-developer | - | Progressive difficulty needed |
-| **종료 화면 | EndScreen** | ❌ Not Started | 0% | Q2 2026 | @game-developer | Combat statistics | Critical blocker |
-| **한국어 현지화 | Korean Localization** | ⚠️ In Progress | 80% | Q1 2026 | @isms-ninja | Translation | 90%+ target |
-| **테스트 커버리지 | Test Coverage** | ⚠️ In Progress | 76% | 80%+ Q2 2026 | @test-specialist | - | +5% since Dec 2025 |
-| **성능 (60fps) | Performance** | ⚠️ Partial | Desktop: ✅ Mobile: ⚠️ | Q2 2026 | @performance-engineer | Mobile optimization | 55fps+ mobile target |
+| **골격 애니메이션 | Skeletal Animation** | ✅ Complete | 100% | ✅ Done | @game-developer | - | 28 bones · 7 hand poses · 4 grappling |
+| **종료 화면 | EndScreen** | ✅ Complete | 100% | ✅ Done | @game-developer | - | Combat statistics integrated |
+| **훈련 모드 | Training Mode** | ⚠️ Polish | 80% | Q2 2026 | @game-developer | - | Progressive difficulty |
+| **한국어 현지화 | Korean Localization** | ⚠️ In Progress | 90% | Q2 2026 | @isms-ninja | Translation | 100% target |
+| **테스트 커버리지 | Test Coverage** | ⚠️ In Progress | ~75% | 80%+ Q2 2026 | @test-specialist | - | 518 tests passing |
+| **성능 (60fps) | Performance** | ✅ Validated | Desktop: 60fps · Mobile: 55fps+ | ✅ Done | @performance-engineer | - | Mobile budget achieved |
 
 ### 좋은 기능 | Nice-to-Have Features (Post-v1.0)
 
@@ -70,12 +74,12 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 
 ### 출시 기준 | Release Criteria
 
-- [ ] **Overall quality**: 9.0/10 minimum (currently 8.4/10)
+- [ ] **Overall quality**: 9.5/10 minimum (currently 9.4/10)
 - [ ] **Zero critical bugs**: All P0/P1 issues resolved
-- [ ] **Combat realism systems**: 100% complete (12/12)
-- [ ] **Test coverage**: 80%+ overall (unit + E2E)
-- [ ] **Performance**: 60fps sustained on desktop, 55fps+ on mobile
-- [ ] **Korean localization**: 100% complete with professional translation
+- [x] **Combat realism systems**: 100% complete (13/13) ✅
+- [ ] **Test coverage**: 80%+ overall (unit + E2E) — currently ~75%
+- [x] **Performance**: 60fps sustained on desktop, 55fps+ on mobile ✅
+- [ ] **Korean localization**: 100% complete with professional translation — currently 90%
 - [ ] **Documentation**: Complete user manual and API docs
 - [ ] **Security**: All OpenSSF Scorecard, SLSA, SonarCloud badges green
 
@@ -99,8 +103,8 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 - ⚠️ Korean Localization 90%+ (currently 80%)
 - ⚠️ Test Coverage 75%+ (currently 76%, ✅ exceeded)
 
-**상태 | Status**: **90% complete** (ahead of schedule)  
-**성과 | Achievement**: +0.5 rating points (8.4/10 vs 7.9/10 in Dec 2025)
+**상태 | Status**: **100% complete (Q1 2026 closed)**  
+**성과 | Achievement**: +1.5 rating points (9.4/10 vs 7.9/10 in Dec 2025) — **Production-Ready**
 
 #### 주요 성과 | Key Achievements (January 2026)
 - ✅ Pain response system advanced from 40% to 90% (+50%) - **PRODUCTION-READY**
@@ -115,32 +119,32 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 ### Q2 2026 (April-June) - 완성 및 훈련 | Polish & Training
 
 **목표 | Goals**:
-- Complete remaining combat realism systems (12/12) 🎯
-- Implement Training Mode with tutorials 📚
-- Create EndScreen with statistics 📊
-- Optimize mobile performance (55-60fps) ⚡
+- ✅ Combat realism systems complete (13/13) 🎯 — **Done early Jan 2026**
+- Polish Training Mode with progressive difficulty 📚
+- Drive test coverage from ~75% → 80%+ 🧪
+- Sustain 60fps on mobile (currently 55fps+) ⚡
 
 **산출물 | Deliverables**:
-- [ ] Trauma Visualization v1.0 (injury tracking integration)
-- [ ] Balance State Refinement v1.0 (stance-specific vulnerabilities)
-- [ ] Injury-Based Movement v1.0 (damage penalties)
-- [ ] Bone Impact Audio v1.0 (realistic fracture/impact sounds)
+- [x] Trauma Visualization v1.0 (injury tracking integration)
+- [x] Balance State Refinement v1.0 (stance-specific vulnerabilities)
+- [x] Injury-Based Movement v1.0 (damage penalties)
+- [x] Bone Impact Audio v1.0 (realistic fracture/impact sounds)
+- [x] EndScreen v1.0 (combat statistics, replay, return to menu)
+- [x] Counter-Attack AI v1.0 (limb-exposure detection)
 - [ ] Training Mode v1.0 (progressive difficulty, moving targets)
-- [ ] EndScreen v1.0 (combat statistics, replay, return to menu)
-- [ ] Mobile Performance Optimization (55-60fps sustained)
+- [ ] Mobile Performance — sustain 60fps (currently 55fps+)
 - [ ] Korean Localization 100% (professional translation)
 - [ ] Test Coverage 80%+ (comprehensive unit + E2E tests)
 
 **의존성 | Dependencies**: Q1 completion required  
-**추정 노력 | Estimated Effort**: 80-120 hours (10-15 weeks)  
-**목표 등급 | Target Rating**: 8.7-9.0/10
+**추정 노력 | Estimated Effort**: 30-50 hours remaining (focus on training mode, coverage, localization)  
+**목표 등급 | Target Rating**: 9.5/10
 
 #### 중요 작업 | Critical Tasks
-1. 🔴 **EndScreen Implementation** (8-12 hours) - Critical blocker for complete game flow
-2. 🔴 **Complete Combat Realism Systems** (40-60 hours) - Final 4 systems
-3. 🟡 **Training Mode Enhancement** (15-20 hours) - Progressive difficulty, scenarios
-4. 🟡 **Mobile Performance** (10-15 hours) - Optimization for 55-60fps
-5. 🟡 **Korean Localization Final** (8-12 hours) - Professional translation, 100% coverage
+1. 🟡 **Training Mode Enhancement** (15-20 hours) - Progressive difficulty, scenarios
+2. 🟡 **Test Coverage Push** (10-15 hours) - Drive from ~75% to 80%+
+3. 🟡 **Mobile Performance** (10-15 hours) - Sustain 60fps consistently
+4. 🟡 **Korean Localization Final** (8-12 hours) - Professional translation, 100% coverage
 
 ---
 
@@ -302,18 +306,18 @@ gantt
 
 ## 📈 진행 추적 | Progress Tracking
 
-**전체 v1.0 완성도 | Overall v1.0 Completion**: **65%** (as of January 2026)
+**전체 v1.0 완성도 | Overall v1.0 Completion**: **~95%** (as of April 2026 — preparing v1.0.0-rc Q3 2026)
 
 ### 범주별 완성도 | Completion by Category
 
 | 범주 | Category | 완성 % | Completion % | 상태 | Status | 목표 | Target | 기한 | Deadline |
 |------|----------|--------|--------------|------|--------|------|--------|------|----------|
-| **전투 시스템 | Combat Systems** | 75% | ⚠️ In Progress | 100% | Q2 2026 |
-| **콘텐츠 (화면) | Content (Screens)** | 60% | ⚠️ In Progress | 100% | Q2 2026 |
-| **현지화 | Localization** | 80% | ⚠️ In Progress | 100% | Q1 2026 |
-| **테스트 | Testing** | 76% | ⚠️ In Progress | 80%+ | Q2 2026 |
-| **성능 | Performance** | Desktop: 85%, Mobile: 65% | ⚠️ Partial | Desktop: 90%, Mobile: 75% | Q2 2026 |
-| **문서화 | Documentation** | 70% | ⚠️ In Progress | 100% | Q3 2026 |
+| **전투 시스템 | Combat Systems** | 100% (13/13) | ✅ Complete | 100% | ✅ Done |
+| **콘텐츠 (화면) | Content (Screens)** | 95% | ✅ Near-Complete | 100% | Q2 2026 |
+| **현지화 | Localization** | 90% | ⚠️ In Progress | 100% | Q2 2026 |
+| **테스트 | Testing** | ~75% | ⚠️ In Progress | 80%+ | Q2 2026 |
+| **성능 | Performance** | Desktop: 100%, Mobile: 92% (55fps+) | ✅ Validated | Desktop: 100%, Mobile: 100% (60fps sustained) | Q2 2026 |
+| **문서화 | Documentation** | 90% | ✅ Near-Complete | 100% | Q3 2026 |
 
 ### 세부 진행 현황 | Detailed Progress Status
 
@@ -324,24 +328,23 @@ gantt
 - **Body Part Health** (8-part health tracking system)
 - **Enhanced Anatomy** (polygon-based zone detection)
 - **Visual Feedback** (damage numbers, hit effects, combo counter)
+- **Pain Response System** (production-ready)
+- **Consciousness Levels** (production-ready)
+- **Breathing Disruption** (integrated with CombatSystem)
+- **Trauma Visualization** (injury rendering · per-player tracking)
+- **Balance/Vulnerability** (stance-based)
+- **Combat Readiness HUD** (real-time multi-system display)
+- **Injury-Based Movement** (damage constrains mobility)
+- **Bone Impact Audio** (anatomical region detection)
+- **Counter-Attack AI** (limb-exposure detection)
+- **EndScreen** (combat statistics integrated)
+- **Skeletal Animation** (28 bones · 7 hand poses · 4 grappling states)
 
-#### ⚠️ In Progress (50-90%)
-- **Pain Response System** (90% - production-ready)
-- **Consciousness Levels** (90% - production-ready)
-- **Breathing Disruption** (75% - near-complete)
-- **Trauma Visualization** (65% - component complete)
-- **Balance/Vulnerability** (70% - transition refinement)
-- **Combat Readiness HUD** (60% - integration in progress)
-- **Test Coverage** (76% - target 80%+)
-- **Korean Localization** (80% - target 100%)
-- **Performance** (Desktop 85%, Mobile 65%)
-
-#### 📋 Planned (<50%)
-- **Injury-Based Movement** (10% - basic framework)
-- **Training Mode** (60% - needs progressive difficulty)
-- **EndScreen** (0% - critical blocker)
-- **Bone Impact Audio** (0% - not started)
-- **Mobile Performance Optimization** (planned Q2)
+#### ⚠️ In Progress (Q2 2026 push)
+- **Test Coverage** (~75% → target 80%+)
+- **Korean Localization** (90% → target 100%)
+- **Training Mode** (80% → target 100% with progressive difficulty)
+- **Mobile Performance** (55fps+ → target sustained 60fps)
 
 ### 월간 업데이트 일정 | Monthly Update Schedule
 
@@ -378,15 +381,15 @@ gantt
 
 | 지표 | Metric | 현재 | Current | 목표 | Target | 상태 | Status | 기한 | Deadline |
 |------|--------|------|---------|------|--------|------|--------|------|----------|
-| **전체 품질 등급 | Overall Quality Rating** | 8.4/10 | 9.0/10 minimum | ⚠️ Gap: 0.6 points | Q3 2026 |
-| **전투 현실감 시스템 | Combat Realism Systems** | 67% (8/12) | 100% (12/12) | ⚠️ Gap: 4 systems | Q2 2026 |
-| **테스트 커버리지 | Test Coverage** | 76% | 80%+ | ⚠️ Gap: 4%+ | Q2 2026 |
+| **전체 품질 등급 | Overall Quality Rating** | 9.4/10 | 9.5/10 minimum | ⚠️ Gap: 0.1 points | Q3 2026 |
+| **전투 현실감 시스템 | Combat Realism Systems** | 100% (13/13) | 100% (13/13) | ✅ Met | ✅ Done |
+| **테스트 커버리지 | Test Coverage** | ~75% | 80%+ | ⚠️ Gap: ~5% | Q2 2026 |
 | **성능 (데스크탑) | Performance (Desktop)** | 60fps ✅ | 60fps sustained | ✅ Met | ✅ Done |
-| **성능 (모바일) | Performance (Mobile)** | 50-55fps | 55-60fps | ⚠️ Gap: 5-10fps | Q2 2026 |
-| **한국어 현지화 | Korean Localization** | 80% | 100% | ⚠️ Gap: 20% | Q1 2026 |
-| **중요 버그 | Critical Bugs** | 2 open | 0 critical | ⚠️ Gap: 2 bugs | Q3 2026 |
-| **보안 배지 | Security Badges** | 90% green | 100% green | ⚠️ Gap: 10% | Q3 2026 |
-| **문서화 | Documentation** | 70% | 100% | ⚠️ Gap: 30% | Q3 2026 |
+| **성능 (모바일) | Performance (Mobile)** | 55fps+ ✅ | 55-60fps | ✅ Met | ✅ Done |
+| **한국어 현지화 | Korean Localization** | 90% | 100% | ⚠️ Gap: 10% | Q2 2026 |
+| **중요 버그 | Critical Bugs** | 0 open | 0 critical | ✅ Met | ✅ Done |
+| **보안 배지 | Security Badges** | 95% green | 100% green | ⚠️ Gap: 5% | Q3 2026 |
+| **문서화 | Documentation** | 85% | 100% | ⚠️ Gap: 15% | Q3 2026 |
 
 ### KPI 대시보드 | KPI Dashboard
 
@@ -415,7 +418,7 @@ gantt
 ### 📚 프로젝트 문서 | Project Documentation
 
 #### 현재 상태 | Current State
-- **[📊 game-status.md](game-status.md)** - Comprehensive current status report (8.4/10, 67% combat realism)
+- **[📊 game-status.md](game-status.md)** - Comprehensive current status report (9.4/10, 13/13 combat realism, 75%+ coverage)
 - **[🏗️ ARCHITECTURE.md](ARCHITECTURE.md)** - Technical architecture (C4 model)
 - **[🔐 SECURITY_ARCHITECTURE.md](SECURITY_ARCHITECTURE.md)** - Current security implementation
 - **[⚡ performance-testing.md](performance-testing.md)** - Performance benchmarks
@@ -487,7 +490,7 @@ gantt
 
 **흑괘의 길을 걸어라** – _Walk the Path of the Black Trigram_
 
-From Beta (v0.9.x) to Production (v1.0.0)  
+From Production-Ready (v0.7.32) to Production (v1.0.0)  
 **One vital point at a time, one release at a time**
 
 **Q2-Q3 2026: 완벽한 일격 | The Perfect Strike**
