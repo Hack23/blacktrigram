@@ -2,9 +2,9 @@
 
 **🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) documentation requirements.
 
-**Version**: 0.5.37  
-**Last Updated**: January 2026  
-**Status**: ✅ Production Ready
+**Version**: 0.7.32  
+**Last Updated**: 2026-04-21  
+**Status**: ✅ Production-Ready (13/13 combat realism systems · 100%)
 
 This document is the **single source of truth** for all game controls in Black Trigram. It describes the currently implemented control scheme and clearly marks planned future enhancements.
 

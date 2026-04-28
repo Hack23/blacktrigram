@@ -10,11 +10,11 @@
 
 | Document                                      | Focus            | Description                                    |
 | --------------------------------------------- | ---------------- | ---------------------------------------------- |
-| [Current SWOT](SWOT.md)                       | 📊 Q1 2026 State | Current strategic analysis with Q1 2026 measured data: 8.4/10, 70/70 vital points, 73.17% test coverage     |
+| [Current SWOT](SWOT.md)                       | 📊 Q1 2026 State | Current strategic analysis with Q2 2026 measured data: 9.4/10, 70/70 vital points, ~75% test coverage, 13/13 combat systems     |
 | [Future Architecture](FUTURE_ARCHITECTURE.md) | 🚀 AWS Backend   | AWS serverless architecture: Cognito, DynamoDB, Lambda, API Gateway, ~$350/mo @ 10K users             |
 | [Future Mindmap](FUTURE_MINDMAP.md)           | 🧠 Roadmap       | Technology evolution planning v1.0 → v2.0 → v3.0 → v4.0                  |
 | [Security Architecture](SECURITY_ARCHITECTURE.md) | 🛡️ Security  | Security controls and ISMS compliance (ISO 27001, NIST CSF 2.0, CIS Controls v8.1)           |
-| [Game Status](game-status.md)                | 📊 Q1 2026 Metrics | 73.17% test coverage, 8/12 combat systems (67%), 5/5 archetypes, 28-bone skeletal |
+| [Game Status](game-status.md)                | 📊 Q1 2026 Metrics | ~75% test coverage, 13/13 combat systems (100%), 5/5 archetypes, 28-bone skeletal |
 | [Vision 2026-2034](VISION_2026_2034.md)      | 🔮 Long-term     | 8-year roadmap to 1M users, $4.5M/mo revenue by 2034 |
 
 ---
@@ -117,7 +117,7 @@ quadrantChart
 
 | Strength                              | Impact | Strategic Value                                                |
 | ------------------------------------- | ------ | -------------------------------------------------------------- |
-| **Proven Frontend Architecture (Q1 2026)**     | High   | Solid foundation: 8.4/10 beta, 73.17% test coverage, 70/70 vital points complete - reduces risk for backend integration         |
+| **Proven Frontend Architecture (Q1 2026)**     | High   | Solid foundation: 9.4/10 production-ready, ~75% test coverage, 70/70 vital points + 13/13 combat systems complete - reduces risk for backend integration         |
 | **Authentic Korean Martial Arts (100% Complete)**    | High   | Unique positioning: Only game with 70 authentic vital points (백회혈, 인영, 명문), 8 trigrams (팔괘), 5 archetypes (무사, 암살자, 해커, 정보요원, 조직폭력배) - cultural authenticity + educational value   |
 | **AWS Serverless Backend (v2.0 2028)**          | High   | Supports complex multiplayer, cloud saves, payments with superior scalability (~$350/mo @ 10K users, 98.2% gross margin), auto-scaling eliminates capacity planning         |
 | **Security-First Design (ISMS-Aligned)**            | High   | ISMS compliance built-in (ISO 27001, NIST CSF 2.0, CIS Controls v8.1), easier to add authentication + payments, AWS security services (WAF, GuardDuty, Security Hub)         |

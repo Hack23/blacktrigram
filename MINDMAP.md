@@ -1,7 +1,7 @@
 # 🧠 Black Trigram (흑괘) Concept Map
 
 **Last Updated:** 2026-04-21  
-**Product Version:** 0.7.24  
+**Product Version:** 0.7.32  
 **Status:** Production-Ready
 
 **🔐 ISMS Alignment:** This document follows [Hack23 Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) architecture documentation requirements.
