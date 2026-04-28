@@ -1,7 +1,7 @@
 # 📊 Black Trigram (흑괘) Data Model
 
 **Last Updated:** 2026-04-21  
-**Product Version:** 0.7.24  
+**Product Version:** 0.7.32  
 **Status:** Production-Ready
 
 ## 📚 Related Documentation

@@ -1,106 +1,296 @@
+<!-- SPDX-FileCopyrightText: 2024-2026 Hack23 AB -->
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+
 <p align="center">
-  <img src="https://hack23.com/icon-192.png" alt="Hack23 Logo" width="192" height="192">
+  <img src="https://hack23.com/icon-192.png" alt="Hack23 AB Logo — Korean martial arts simulator publisher" width="192" height="192">
 </p>
 
-<div align="center">
+<h1 align="center">🥋 Black Trigram (흑괘)</h1>
 
-# 🥋 Black Trigram (흑괘)
+<p align="center">
+  <strong>Korean Martial Arts Combat Simulator — Eight Trigrams · 70 Vital Points · 51 Authentic Techniques</strong><br>
+  <em>어둠의 무예로 완벽한 일격을 추구하라 — "Master the dark arts through the pursuit of the perfect strike"</em>
+</p>
 
-### _어둠의 무예로 완벽한 일격을 추구하라_
+<p align="center">
+  <a href="https://blacktrigram.com/"><img src="https://img.shields.io/badge/🎮_Play-blacktrigram.com-FFD700?style=for-the-badge&labelColor=000000" alt="Play Black Trigram live at blacktrigram.com"/></a>
+  <a href="https://hack23.github.io/blacktrigram/"><img src="https://img.shields.io/badge/📘_API_Docs-TypeDoc-00FFFF?style=for-the-badge&labelColor=000000&logo=typescript&logoColor=white" alt="TypeDoc API documentation for Black Trigram"/></a>
+  <a href="https://www.npmjs.com/package/blacktrigram"><img src="https://img.shields.io/badge/📦_npm-blacktrigram-CB3837?style=for-the-badge&labelColor=000000&logo=npm&logoColor=white" alt="Black Trigram on npm"/></a>
+  <a href="https://deepwiki.com/Hack23/blacktrigram"><img src="https://img.shields.io/badge/🤖_Ask_DeepWiki-blacktrigram-7B1FA2?style=for-the-badge&labelColor=000000" alt="Ask DeepWiki about Black Trigram"/></a>
+</p>
 
-_"Master the dark arts through the pursuit of the perfect strike"_
-**[🎮 Enter the Dojang](https://blacktrigram.com/)**
+<table>
+  <tr>
+    <td width="180" align="center" valign="top">
+      <a href="https://blacktrigram.com/"><img src="public/black-trigram.png" alt="Black Trigram (흑괘) game logo — Korean martial arts" width="160"/></a>
+      <div>
+        <a href="https://blacktrigram.com/"><img src="https://img.shields.io/website?url=https%3A%2F%2Fblacktrigram.com&style=flat-square&label=blacktrigram.com" alt="blacktrigram.com website status"/></a>
+      </div>
+      <div>
+        <a href="https://www.npmjs.com/package/blacktrigram"><img src="https://img.shields.io/npm/v/blacktrigram.svg?style=flat-square&color=CB3837&logo=npm&logoColor=white" alt="npm package version 0.7.32"/></a>
+      </div>
+      <div>
+        <a href="https://www.npmjs.com/package/blacktrigram"><img src="https://img.shields.io/npm/dm/blacktrigram.svg?style=flat-square&color=CB3837&label=npm%20downloads" alt="npm monthly downloads"/></a>
+      </div>
+      <div>
+        <a href="https://github.com/Hack23/blacktrigram/releases"><img src="https://img.shields.io/github/v/release/Hack23/blacktrigram?style=flat-square&color=FFD700&logo=github&logoColor=white" alt="Latest GitHub release"/></a>
+      </div>
+      <div>
+        <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node-%E2%89%A525-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js 25 or later required"/></a>
+      </div>
+    </td>
+    <td>
+      <p><strong>🥋 Korean martial arts · ☯️ Eight Trigrams (팔괘) · 🎯 70 vital points (급소) · ⚔️ 51 techniques · 🎮 Three.js / React Three Fiber · 📱 60fps desktop · 55fps+ mobile</strong></p>
+      <p><strong>Black Trigram (흑괘)</strong> is a production-ready 3D precision combat simulator that turns authentic Korean martial arts — Hapkido (합기도), Taekwondo (태권도), Taekkyeon (택견), Kuk Sool Won, Tang Soo Do, Hwa Rang Do, Ssireum, Subak, Yudo, and Gongkwon Yusul — into a typed, deterministic, browser-native combat experience. Eight I&nbsp;Ching trigram stances drive a 70-point anatomical targeting system across 5 distinct fighter archetypes, with skeletal animation (28 bones · 7 hand poses · 4 grappling states), counter-attack AI with limb-exposure detection, and a complete 13/13 combat-realism stack covering pain, consciousness, breathing, balance, trauma visualization, and bone-impact audio.</p>
+      <p>Built on <strong>React 19</strong>, <strong>Three.js 0.184</strong>, <strong>@react-three/fiber 9</strong>, <strong>@react-three/drei 10</strong>, <strong>TypeScript 6.0.3</strong>, and <strong>Vite 8</strong>. Frontend-only architecture deployed on <strong>AWS CloudFront + S3 (multi-region)</strong> with <strong>Route 53</strong> health-checked failover to <strong>GitHub Pages</strong> — zero backend, zero PII, WCAG 2.1 AA accessible, GDPR-clean, and aligned with the full Hack23 ISMS, ISO 27001:2022, NIST CSF 2.0, CIS Controls v8.1, EU CRA, and NIS2.</p>
+      <div>
+        <a href="https://github.com/Hack23/blacktrigram"><img src="https://img.shields.io/badge/📦_Repo-Hack23%2Fblacktrigram-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub repository Hack23/blacktrigram"/></a>
+        <a href="https://blacktrigram.com/"><img src="https://img.shields.io/badge/🎮_Live_Game-blacktrigram.com-FFD700?style=flat-square&labelColor=000000" alt="Live game at blacktrigram.com"/></a>
+        <a href="https://hack23.github.io/blacktrigram/"><img src="https://img.shields.io/badge/📘_API-TypeDoc-00FFFF?style=flat-square&labelColor=000000&logo=typescript&logoColor=white" alt="TypeDoc API reference"/></a>
+        <a href="https://github.com/Hack23/ISMS-PUBLIC"><img src="https://img.shields.io/badge/🔐_ISMS-PUBLIC-0066CC?style=flat-square&logo=github&logoColor=white" alt="Hack23 ISMS-PUBLIC repository"/></a>
+      </div>
+      <div>
+        <a href="https://blacktrigram.com/"><strong>🎮 Play</strong></a> ·
+        <a href="https://hack23.github.io/blacktrigram/"><strong>📘 API</strong></a> ·
+        <a href="ROADMAP.md"><strong>🗺️ Roadmap</strong></a> ·
+        <a href="SECURITY_ARCHITECTURE.md"><strong>🛡️ Security</strong></a> ·
+        <a href="THREAT_MODEL.md"><strong>🎯 Threat Model</strong></a> ·
+        <a href="game-status.md"><strong>📊 Status</strong></a>
+      </div>
+    </td>
+  </tr>
+</table>
 
-![Dark Trigram Logo](public/black-trigram.png)
+<!-- ─────────────────────────────────────────────────────────────────────────── -->
+<!-- Supply chain · OpenSSF · SLSA -->
+<!-- ─────────────────────────────────────────────────────────────────────────── -->
 
-[![GitHub Release](https://img.shields.io/github/v/release/Hack23/blacktrigram)](https://github.com/Hack23/blacktrigram/releases)
-[![NPM Release](https://img.shields.io/npm/v/blacktrigram.svg)](https://www.npmjs.com/package/blacktrigram)
-[![License](https://img.shields.io/github/license/Hack23/blacktrigram.svg)](https://github.com/Hack23/blacktrigram/raw/master/LICENSE.md)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Hack23/blacktrigram/badge)](https://scorecard.dev/viewer/?uri=github.com/Hack23/blacktrigram)
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/10777/badge)](https://bestpractices.coreinfrastructure.org/projects/10777)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/10777/badge)](https://www.bestpractices.dev/projects/10777)
 [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/blacktrigram/attestations)
 [![Scorecard supply-chain security](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/scorecards.yml)
+[![License](https://img.shields.io/github/license/Hack23/blacktrigram)](https://github.com/Hack23/blacktrigram/blob/main/LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram?ref=badge_shield)
+[![CLA assistant](https://cla-assistant.io/readme/badge/Hack23/blacktrigram)](https://cla-assistant.io/Hack23/blacktrigram)
+
+<!-- CI workflows -->
+[![CodeQL](https://github.com/Hack23/blacktrigram/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/codeql.yml)
 [![Test & Report](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/test-and-report.yml)
+[![Dependency Review](https://github.com/Hack23/blacktrigram/actions/workflows/dependency-review.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/dependency-review.yml)
+[![Lighthouse Performance](https://github.com/Hack23/blacktrigram/actions/workflows/lighthouse-performance.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/lighthouse-performance.yml)
+[![ZAP Scan](https://github.com/Hack23/blacktrigram/actions/workflows/zap-scan.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/zap-scan.yml)
+[![Accessibility Test](https://github.com/Hack23/blacktrigram/actions/workflows/accessibility-test.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/accessibility-test.yml)
+[![Release](https://github.com/Hack23/blacktrigram/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/release.yml)
+[![Deploy S3](https://github.com/Hack23/blacktrigram/actions/workflows/deploy-s3.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/deploy-s3.yml)
+[![Audit Assets](https://github.com/Hack23/blacktrigram/actions/workflows/audit-assets.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/audit-assets.yml)
+[![Screenshot Analysis](https://github.com/Hack23/blacktrigram/actions/workflows/screenshot-analysis.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/screenshot-analysis.yml)
 
-**📚 Documentation:**
-[![API Documentation](https://img.shields.io/badge/API_Docs-TypeDoc-blue?style=flat&logo=typescript)](https://hack23.github.io/blacktrigram/)
-[![Documentation](https://github.com/Hack23/blacktrigram/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/Hack23/blacktrigram/actions/workflows/docs.yml)
-[![TypeDoc](https://img.shields.io/badge/TypeDoc-100%25-success?style=flat&logo=typescript)](https://hack23.github.io/blacktrigram/)
-
-**📋 Test Documentation:**
-[![E2E Test Plan](https://img.shields.io/badge/E2E-Test_Plan-00D9FF?style=flat&logo=cypress)](E2ETestPlan.md)
-[![Unit Test Plan](https://img.shields.io/badge/Unit-Test_Plan-4FC08D?style=flat&logo=vitest)](UnitTestPlan.md)
-
-[![Performance Testing](https://img.shields.io/badge/Performance-Documented-blue?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/Hack23/blacktrigram/blob/main/performance-testing.md)
-[![Lighthouse](https://img.shields.io/badge/Lighthouse-Score_90+-success?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/Hack23/blacktrigram/blob/main/performance-testing.md)
-[![Performance Budget](https://img.shields.io/badge/Performance_Budget-Monitored-blue?style=flat-square&logo=lighthouse&logoColor=white)](./budget.json)
-
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
+<!-- SonarCloud -->
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
-[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/Hack23/blacktrigramsvg)](https://isitmaintained.com/project/Hack23/blacktrigram "Average time to resolve an issue")
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Hack23/blacktrigram)
-[![Percentage of issues still open](https://isitmaintained.com/badge/open/Hack23/blacktrigramsvg)](https://isitmaintained.com/project/Hack23/blacktrigram "Percentage of issues still open")
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHack23%2Fblacktrigramsvg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram?ref=badge_shield)
-[![CLA assistant](https://cla-assistant.io/readme/badge/Hack23/blacktrigram)](https://cla-assistant.io/Hack23/blacktrigram)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)
 
-**🔐 ISMS Framework Compliance:**
-[![Information Security Policy](https://img.shields.io/badge/ISMS-Information%20Security%20Policy-0066CC?style=flat-square&logo=shield&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
-[![Secure Development Policy](https://img.shields.io/badge/ISMS-Secure%20Development%20Policy-00AA00?style=flat-square&logo=code&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
-[![Threat Modeling](https://img.shields.io/badge/ISMS-Threat%20Modeling-FF6B6B?style=flat-square&logo=target&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md)
-[![Vulnerability Management](https://img.shields.io/badge/ISMS-Vulnerability%20Management-FFA500?style=flat-square&logo=bug&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md)
-[![Open Source Policy](https://img.shields.io/badge/ISMS-Open%20Source%20Policy-FFD700?style=flat-square&logo=open-source-initiative&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
-[![Transparency Plan](https://img.shields.io/badge/ISMS-Transparency%20Plan-9370DB?style=flat-square&logo=eye&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/ISMS_Transparency_Plan.md)
+<!-- Documentation & meta -->
+[![API Documentation](https://img.shields.io/badge/API-TypeDoc-blue?style=flat-square&logo=typescript&logoColor=white)](https://hack23.github.io/blacktrigram/)
+[![Performance Budget](https://img.shields.io/badge/Performance-Budget_Monitored-blue?style=flat-square&logo=lighthouse&logoColor=white)](./budget.json)
+[![Lighthouse 90+](https://img.shields.io/badge/Lighthouse-90%2B-success?style=flat-square&logo=lighthouse&logoColor=white)](./performance-testing.md)
+[![Average resolution time](https://isitmaintained.com/badge/resolution/Hack23/blacktrigram.svg)](https://isitmaintained.com/project/Hack23/blacktrigram "Average time to resolve an issue")
+[![Open issues](https://isitmaintained.com/badge/open/Hack23/blacktrigram.svg)](https://isitmaintained.com/project/Hack23/blacktrigram "Percentage of issues still open")
 
-_An immersive 3D precision combat game powered by Three.js, inspired by Korean martial arts philosophy and the I Ching_
-
-</div>
+<!-- ISMS framework alignment -->
+[![Hack23 ISMS](https://img.shields.io/badge/Hack23-ISMS--PUBLIC-0066CC?style=flat-square&logo=github&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC)
+[![ISO 27001:2022](https://img.shields.io/badge/ISO_27001-2022-blue?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Compliance_Checklist.md)
+[![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0-blueviolet?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Compliance_Checklist.md)
+[![CIS Controls v8.1](https://img.shields.io/badge/CIS_Controls-v8.1-009688?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Compliance_Checklist.md)
+[![GDPR](https://img.shields.io/badge/GDPR-Compliant-2E7D32?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md)
+[![NIS2](https://img.shields.io/badge/NIS2-Aligned-2E7D32?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
+[![EU CRA](https://img.shields.io/badge/EU_CRA-Self--Assessed-2E7D32?style=flat-square)](./CRA-ASSESSMENT.md)
 
 ---
 
-## ⚡ Combat Mastery
+## 🎯 Why This Exists
 
-**Black Trigram** is a **realistic combat simulator** that teaches authentic Korean martial arts through precise anatomical targeting. Master traditional vital-point techniques via modern 3D combat mechanics powered by Three.js across 5 distinct fighter archetypes.
+> **"어둠 속에서 완벽한 일격을 찾아라"** — _"In darkness, seek the perfect strike."_
 
-### 🎯 Combat Disciplines
+Authentic Korean martial arts deserve more than a flashy combo system. **Black Trigram (흑괘)** is the cultural-tech sister project to **[Riksdagsmonitor](https://github.com/Hack23/riksdagsmonitor)** and **[EU Parliament Monitor](https://github.com/Hack23/euparliamentmonitor)** in the Hack23 portfolio: where those projects apply structured intelligence tradecraft to democratic transparency, **Black Trigram** applies the same engineering rigor to combat simulation — turning the I Ching's Eight Trigrams (☰☱☲☳☴☵☶☷), 70 anatomically-precise vital points (급소) across 4 body regions and 14 TCM meridians, and 51 traditional techniques into a typed, testable, deterministic, accessible, browser-first **Korean martial arts simulator**.
+
+It is a **complete 13/13 combat-realism platform** — body-part health, vital-point targeting, enhanced anatomy, visual feedback, pain response, consciousness levels, breathing disruption, trauma visualization, balance/vulnerability, combat-readiness HUD, injury-based movement, bone-impact audio, and counter-attack AI with limb-exposure detection — running at **60fps on desktop and 55fps+ on mobile**, validated across 518 tests (372 unit + 146 new), with **75%+ coverage**, **WCAG 2.1 AA** accessibility, and full **OWASP / OSSF / SLSA 3** supply-chain hardening.
+
+| Pillar | What it means in this project |
+|---|---|
+| 🥋 **Cultural Authenticity** | Hangul + Revised Romanization + meaning for every term. 51 techniques sourced from Hapkido, Taekwondo, Taekkyeon, Kuk Sool Won, Tang Soo Do, Hwa Rang Do, Gumdo, Ssireum, Subak, Yudo, Gongkwon Yusul. 127 medical references underpin the 70 vital points. |
+| 🎯 **Anatomical Precision** | 70/70 vital points, 4 body regions, 5 severity levels, 14 TCM meridians, 28-bone skeletal animation, 7 hand poses, 4 grappling states. Counter-attack AI with limb-exposure detection. |
+| ⚙️ **Engineering Rigor** | TypeScript strict mode, React 19, Three.js 0.184, R3F 9, Drei 10, Vite 8 — 60fps desktop, 55fps+ mobile, 75%+ test coverage, 518 tests, deterministic combat math. |
+| 🔐 **Radical Transparency** | Frontend-only · zero backend · zero PII · public ISMS · CodeQL · ZAP DAST · Lighthouse · OSSF Scorecard · SLSA 3 attestations · CycloneDX SBOM. |
+
+**📊 Production-readiness snapshot (v0.7.32)** — see [`game-status.md`](./game-status.md) and [`ARCHITECTURE.md`](./ARCHITECTURE.md):
+
+| Metric | Value | Source |
+|---|---|---|
+| Product version | **0.7.32** | [`package.json`](./package.json) |
+| Overall quality | **9.4 / 10 — Production-Ready** | game-status.md |
+| Combat realism systems | **13 / 13 (100%)** | game-status.md |
+| Vital points | **70 / 70** (4 regions · 5 severity · 14 TCM meridians · 127 medical refs) | game-status.md |
+| Trigram stances | **8 / 8** | game-status.md |
+| Player archetypes | **5 / 5** | game-status.md |
+| Techniques | **51** across 4 categories | game-status.md |
+| Skeletal animation | **28 bones · 7 hand poses · 4 grappling states** | game-status.md |
+| Tests passing | **518** (372 + 146 new) | game-status.md |
+| Test coverage | **~75%** (target 80%+) | game-status.md |
+| Performance | **60fps desktop · 55fps+ mobile** (validated) | performance-testing.md |
+| Accessibility | **WCAG 2.1 AA** | accessibility-test.yml |
+| Last architecture review | **2026-04-21**, Architecture v2.1 | ARCHITECTURE.md |
+
+---
+
+## 🌐 Explore the Platform
+
+The published game is the audience-facing companion to this open-source TypeScript / React Three Fiber package. Bookmark these entry points:
+
+<table>
+  <tr>
+    <td width="140" align="center" valign="top">
+      <a href="https://blacktrigram.com/"><img src="https://img.shields.io/badge/🎮-Play_Now-FFD700?style=for-the-badge&labelColor=000000" alt="Play Black Trigram"/></a>
+    </td>
+    <td>
+      <strong><a href="https://blacktrigram.com/">🎮 Live Game — blacktrigram.com</a></strong><br>
+      The production WebGL build. Eight Trigram stances, 70 vital points, 5 fighter archetypes, full 3D skeletal combat. Hardware-accelerated Three.js · 60fps desktop, 55fps+ mobile · WCAG 2.1 AA accessibility · keyboard, mouse, touch, and gesture controls. Hosted from <strong>AWS CloudFront + S3</strong> (multi-region) with <strong>Route 53</strong> health-checked DNS failover to GitHub Pages.
+    </td>
+  </tr>
+  <tr>
+    <td width="140" align="center" valign="top">
+      <a href="https://hack23.github.io/blacktrigram/"><img src="https://img.shields.io/badge/📘-API_Docs-00FFFF?style=for-the-badge&labelColor=000000&logo=typescript&logoColor=white" alt="API documentation"/></a>
+    </td>
+    <td>
+      <strong><a href="https://hack23.github.io/blacktrigram/">📘 TypeDoc API Reference</a></strong><br>
+      Strict TypeDoc output covering every public type, interface, hook, component, and system: Eight Trigram philosophy, vital-point system (all 70 points), combat math (damage / accuracy / counter-attack), 5 archetypes, audio engine, and Korean–English bilingual JSDoc. Strict <code>notDocumented:true</code> validation drives 100% public-API coverage.
+    </td>
+  </tr>
+  <tr>
+    <td width="140" align="center" valign="top">
+      <a href="SECURITY_ARCHITECTURE.md"><img src="https://img.shields.io/badge/🛡️-Security_Architecture-DC143C?style=for-the-badge&labelColor=000000" alt="Security architecture"/></a>
+    </td>
+    <td>
+      <strong><a href="SECURITY_ARCHITECTURE.md">🛡️ Security Architecture</a></strong><br>
+      Trust boundaries, browser-only sandbox model, CSP, SRI, no-PII data flows, cryptography choices, supply-chain controls (OSSF Scorecard, SLSA 3, SBOM, Dependabot, CodeQL, ZAP). Aligned with <a href="https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md">Hack23 Information Security Policy</a> and <a href="https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md">Secure Development Policy</a>.
+    </td>
+  </tr>
+  <tr>
+    <td width="140" align="center" valign="top">
+      <a href="THREAT_MODEL.md"><img src="https://img.shields.io/badge/🎯-Threat_Model-FF6B6B?style=for-the-badge&labelColor=000000" alt="STRIDE threat model"/></a>
+    </td>
+    <td>
+      <strong><a href="THREAT_MODEL.md">🎯 STRIDE Threat Model</a></strong><br>
+      STRIDE-per-trust-boundary analysis with MITRE ATT&CK mapping, attack trees for the most likely abuse paths (e.g. dependency injection, supply-chain compromise, XSS via user-uploaded content — none accepted), and explicit residual-risk acceptance. Aligned with <a href="https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md">Hack23 Threat Modeling Policy</a>.
+    </td>
+  </tr>
+  <tr>
+    <td width="140" align="center" valign="top">
+      <a href="ROADMAP.md"><img src="https://img.shields.io/badge/🗺️-Roadmap-2E7D32?style=for-the-badge&labelColor=000000" alt="Black Trigram roadmap to v1.0"/></a>
+    </td>
+    <td>
+      <strong><a href="ROADMAP.md">🗺️ Roadmap to v1.0 (Q3 2026)</a></strong><br>
+      Production-Ready release plan. Combat realism complete (13/13). Remaining: training-mode polish, Korean localization to 100%, mobile performance budget tightening, v1.0.0-rc validation. See also <a href="VISION_2026_2034.md">VISION_2026_2034.md</a> for the 8-year strategic plan and <a href="FUTURE_ARCHITECTURE.md">FUTURE_ARCHITECTURE.md</a> for the post-v1.0 architecture.
+    </td>
+  </tr>
+  <tr>
+    <td width="140" align="center" valign="top">
+      <a href="game-status.md"><img src="https://img.shields.io/badge/📊-Status_Report-0A66C2?style=for-the-badge&labelColor=000000" alt="Game status report"/></a>
+    </td>
+    <td>
+      <strong><a href="game-status.md">📊 Comprehensive Status Report</a></strong><br>
+      Source-of-truth metrics: 13/13 combat realism, 70/70 vital points, 28-bone skeletal animation, 51 techniques, 518 tests, 75%+ coverage, 60fps / 55fps+ mobile. Updated 2026-04-21 alongside ARCHITECTURE.md and THREAT_MODEL.md.
+    </td>
+  </tr>
+  <tr>
+    <td width="140" align="center" valign="top">
+      <a href="https://www.npmjs.com/package/blacktrigram"><img src="https://img.shields.io/badge/📦-npm_Package-CB3837?style=for-the-badge&labelColor=000000&logo=npm&logoColor=white" alt="npm package blacktrigram"/></a>
+    </td>
+    <td>
+      <strong><a href="https://www.npmjs.com/package/blacktrigram">📦 npm: <code>blacktrigram</code></a></strong><br>
+      Reusable game systems, combat mechanics, animation framework, and Korean martial arts data, published as ESM with strict TypeScript types. Subpath exports: <code>blacktrigram/systems</code>, <code>/types</code>, <code>/audio</code>, <code>/utils</code>, <code>/components</code>, <code>/hooks</code>, <code>/data</code>. Each release ships with an <strong>SLSA 3</strong> provenance attestation and a <strong>CycloneDX SBOM</strong>.
+    </td>
+  </tr>
+  <tr>
+    <td width="140" align="center" valign="top">
+      <a href="https://deepwiki.com/Hack23/blacktrigram"><img src="https://img.shields.io/badge/🤖-DeepWiki-7B1FA2?style=for-the-badge&labelColor=000000" alt="DeepWiki for Black Trigram"/></a>
+    </td>
+    <td>
+      <strong><a href="https://deepwiki.com/Hack23/blacktrigram">🤖 Ask DeepWiki</a></strong><br>
+      AI-indexed knowledge base over the entire Black Trigram repository. Best for natural-language deep-dives into combat math, archetypes, vital-point algorithms, animation rigging, or Three.js performance choices.
+    </td>
+  </tr>
+</table>
+
+---
+
+## ⚡ Combat Pipeline — at a Glance
+
+The combat loop is fully deterministic, frame-accurate, and side-effect-isolated. Player input is normalised, fed through the active trigram stance, validated against vital-point geometry, scored for damage, and rendered in Three.js — all within a single 16.6 ms frame budget.
+
+```mermaid
+flowchart LR
+    A[🎮 Input<br/>Keyboard · Touch · Gesture] --> B[☯️ Trigram Stance<br/>건태리진손감간곤]
+    B --> C[🦴 Skeletal Pose<br/>28 bones · 7 hand poses]
+    C --> D[🎯 Vital-Point Targeter<br/>70 points · 4 regions · 14 meridians]
+    D --> E[⚔️ Damage Calculator<br/>severity · accuracy · archetype bonus]
+    E --> F[🩸 Body-Part Health<br/>pain · consciousness · breathing · balance]
+    F --> G[🤖 Counter-Attack AI<br/>limb-exposure detection]
+    G --> H[🎨 Three.js Render<br/>60fps · trauma · particles · shaders]
+    F --> I[🔊 Audio Engine<br/>bone impact · breath · 국악]
+    H --> J[♿ WCAG 2.1 AA HUD<br/>combat readiness · haptics]
+    I --> J
+
+    classDef korean fill:#000000,stroke:#FFD700,color:#FFD700,stroke-width:2px
+    classDef tech fill:#001a1a,stroke:#00FFFF,color:#00FFFF,stroke-width:2px
+    classDef combat fill:#1a0000,stroke:#FF6B6B,color:#FF6B6B,stroke-width:2px
+    class A,J tech
+    class B,C,D korean
+    class E,F,G,H,I combat
+```
+
+See [`COMBAT_ARCHITECTURE.md`](COMBAT_ARCHITECTURE.md) for the full pipeline (3,300+ lines), [`FLOWCHART.md`](FLOWCHART.md) for business / combat process flows, and [`STATEDIAGRAM.md`](STATEDIAGRAM.md) for the complete state machine.
+
+---
+
+## 🥋 Combat Disciplines
+
+**Black Trigram** is a **realistic Korean martial arts simulator** that teaches authentic vital-point combat through precise anatomical targeting. Master traditional techniques via modern 3D combat mechanics across 5 distinct fighter archetypes.
 
 <table>
 <tr>
 <td align="center" width="25%">
 
-**🎯 정격자**
-_Jeonggyeokja_
-**Precision Striker**
-
+**🎯 정격자**<br>
+_Jeonggyeokja_<br>
+**Precision Striker**<br>
 _Every strike targets anatomical weak points_
 
 </td>
 <td align="center" width="25%">
 
-**⚔️ 비수**
-_Bisu_
-**Lethal Technique**
-
+**⚔️ 비수**<br>
+_Bisu_<br>
+**Lethal Technique**<br>
 _Decisive unarmed combat methods_
 
 </td>
 <td align="center" width="25%">
 
-**🥷 암살자**
-_Amsalja_
-**Shadow Assassin**
-
+**🥷 암살자**<br>
+_Amsalja_<br>
+**Shadow Assassin**<br>
 _Silent takedown techniques_
 
 </td>
 <td align="center" width="25%">
 
-**💀 급소격**
-_Geupsogyeok_
-**Vital Point Strike**
-
+**💀 급소격**<br>
+_Geupsogyeok_<br>
+**Vital Point Strike**<br>
 _70 anatomical targets for incapacitation_
 
 </td>
@@ -109,173 +299,152 @@ _70 anatomical targets for incapacitation_
 
 ---
 
+## 🎭 Player Archetypes
+
+Master combat through **5 distinct fighting philosophies** — each with unique vital-point bonuses, archetype-specific techniques, and signature visual effects:
+
+<div align="center">
+
+| Archetype | Korean / English | Combat Philosophy | Special Focus |
+| :---: | :---: | :---: | :---: |
+| 🏯 | **무사 (Musa)** · _Traditional Warrior_ | Honor through strength | Military discipline, overwhelming force |
+| 🥷 | **암살자 (Amsalja)** · _Shadow Assassin_ | Efficiency through invisibility | Stealth approaches, instant takedowns |
+| 💻 | **해커 (Hacker)** · _Cyber Warrior_ | Information as power | Environmental manipulation, tech-assisted strikes |
+| 🕵️ | **정보요원 (Jeongbo Yowon)** · _Intelligence Operative_ | Knowledge through observation | Psychological manipulation, precise timing |
+| ⚡ | **조직폭력배 (Jojik Pokryeokbae)** · _Organized Crime_ | Survival through ruthlessness | Dirty fighting, improvised weapons |
+
+</div>
+
+---
+
+## ☯️ Eight Trigrams (팔괘) — Combat Stance System
+
+Master **70 authentic vital points (급소)** distributed across the I Ching's eight trigrams. Each stance shapes the active hitbox geometry, technique pool, defensive posture, and audio profile:
+
+<div align="center">
+
+| Trigram | Korean / Meaning | Combat Focus | Combat Effects |
+| :---: | :---: | :---: | :---: |
+| ☰ | **건 (Geon)** — _Heaven_ | Bone-striking force | Fractures, structural damage |
+| ☱ | **태 (Tae)** — _Lake_ | Joint manipulation | Dislocations, mobility loss |
+| ☲ | **리 (Li)** — _Fire_ | Precise nerve strikes | Temporary paralysis, numbness |
+| ☳ | **진 (Jin)** — _Thunder_ | Stunning techniques | Disorientation, knockouts |
+| ☴ | **손 (Son)** — _Wind_ | Continuous pressure | Gradual incapacitation |
+| ☵ | **감 (Gam)** — _Water_ | Blood-flow restriction | Circulation disruption |
+| ☶ | **간 (Gan)** — _Mountain_ | Defensive counters | Counter-attacks, blocks |
+| ☷ | **곤 (Gon)** — _Earth_ | Ground techniques | Throws, takedowns |
+
+</div>
+
+### 💪 Realistic Body Mechanics (13/13 systems · 100% complete)
+
+- 🩸 **Authentic Trauma** — Realistic injury visualization, blood, bruising progression
+- 🦴 **Bone-Impact Audio** — Genuine bone-contact and fracture sounds
+- 🫁 **Breathing Disruption** — Respiratory targeting affects stamina and accuracy
+- ⚖️ **Balance System** — Stance- and momentum-physics-driven vulnerability windows
+- 🧠 **Consciousness Levels** — 4-level progressive awareness impairment
+- 😵 **Pain Response** — Physiological pain accumulation affecting performance
+- 🦵 **Injury-Based Movement** — Damage to limbs constrains mobility and stance access
+- 🎯 **Vital-Point Targeter** — 70 points · 4 regions · 5 severity tiers · 14 TCM meridians
+- 🤖 **Counter-Attack AI** — Limb-exposure detection triggers archetype-aware ripostes
+
+---
+
 ## 📸 Concept
 
 <div align="center">
 
-<img src="public/CyberpunkTeamDynamics.png" alt="Cyberpunk Team Dynamics Screenshot" width="600" />
-<img src="public/PlayerArchetypesExplained.png" alt="Player Archetypes Explained Screenshot" width="600" />
-<img src="public/PlayerArchetypesOverview.png" alt="Player Archetypes Overview Screenshot" width="600" />
+<img src="public/CyberpunkTeamDynamics.png" alt="Cyberpunk team dynamics — Black Trigram fighter selection screen" width="600" />
+<img src="public/PlayerArchetypesExplained.png" alt="Player archetypes explained — Musa, Amsalja, Hacker, Jeongbo Yowon, Jojik Pokryeokbae" width="600" />
+<img src="public/PlayerArchetypesOverview.png" alt="Player archetypes overview with Korean martial arts philosophy" width="600" />
 
 </div>
 
 ---
 
-## 🌟 Authentic Combat Features
+## 🚀 Technical Stack
 
-### 🥋 Player Archetypes
-
-Master combat through 5 distinct fighting philosophies:
-
-<div align="center">
-
-| Archetype |                           Name                            |        Combat Philosophy        |                   Special Focus                   |
-| :-------: | :-------------------------------------------------------: | :-----------------------------: | :-----------------------------------------------: |
-|    🏯     |         **무사 (Musa)**<br/>_Traditional Warrior_         |     Honor through strength      |      Military discipline, overwhelming force      |
-|    🥷     |        **암살자 (Amsalja)**<br/>_Shadow Assassin_         | Efficiency through invisibility |       Stealth approaches, instant takedowns       |
-|    💻     |           **해커 (Hacker)**<br/>_Cyber Warrior_           |      Information as power       | Environmental manipulation, tech-assisted strikes |
-|    🕵️     | **정보요원 (Jeongbo Yowon)**<br/>_Intelligence Operative_ |  Knowledge through observation  |    Psychological manipulation, precise timing     |
-|    ⚡     | **조직폭력배 (Jojik Pokryeokbae)**<br/>_Organized Crime_  |  Survival through ruthlessness  |        Dirty fighting, improvised weapons         |
-
-</div>
-
-### 🎯 Anatomical Targeting System
-
-Master **70 authentic vital points** for combat effectiveness:
-
-<div align="center">
-
-| Trigram |           Name            |      Combat Focus      |        Combat Effects         |
-| :-----: | :-----------------------: | :--------------------: | :---------------------------: |
-|    ☰    | **건 (Geon)** – _Heaven_  |  Bone-striking force   | Fractures, structural damage  |
-|    ☱    |   **태 (Tae)** – _Lake_   |   Joint manipulation   |  Dislocations, mobility loss  |
-|    ☲    |   **리 (Li)** – _Fire_    | Precise nerve strikes  | Temporary paralysis, numbness |
-|    ☳    | **진 (Jin)** – _Thunder_  |  Stunning techniques   |   Disorientation, knockouts   |
-|    ☴    |   **손 (Son)** – _Wind_   |  Continuous pressure   |    Gradual incapacitation     |
-|    ☵    |  **감 (Gam)** – _Water_   | Blood flow restriction |    Circulation disruption     |
-|    ☶    | **간 (Gan)** – _Mountain_ |   Defensive counters   |    Counter-attacks, blocks    |
-|    ☷    |  **곤 (Gon)** – _Earth_   |   Ground techniques    |       Throws, takedowns       |
-
-</div>
-
-### 💪 Realistic Body Mechanics
-
-- **🩸 Authentic Trauma** – Realistic injury visualization and blood
-- **🦴 Bone Impact Audio** – Genuine bone contact and fracture sounds
-- **🫁 Breathing Disruption** – Respiratory system targeting
-- **⚖️ Balance System** – Realistic stance and momentum physics
-- **🧠 Consciousness States** – Progressive awareness impairment
-- **😵 Pain Response** – Physiological pain affecting performance
-
-### 🎯 Combat Specializations
-
-- **🎯 Anatomical Precision** – 70 target points for tactical advantage
-- **🇰🇷 Traditional Korean Arts** – Authentic techniques from 태권도, 합기도, 택견
-- **⚫ Advanced Techniques** – Professional combat methods from 5 distinct archetypes
-- **🥋 Combat Application** – Real martial arts effectiveness
-
----
-
-## 🚀 Technical Excellence
-
-Built for **combat realism** and **authentic simulation**:
+Built for **combat realism**, **60fps performance**, and **production-grade engineering**:
 
 <div align="center">
 
 ### 🎮 Rendering Engine
 
-![Three.js](https://img.shields.io/badge/Three.js-0.184-000000?style=for-the-badge&logo=three.js)
-![React Three Fiber](https://img.shields.io/badge/R3F-9.5-00ffff?style=for-the-badge&logo=react)
-![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178c6?style=for-the-badge&logo=typescript)
+![Three.js 0.184](https://img.shields.io/badge/Three.js-0.184-000000?style=for-the-badge&logo=three.js&logoColor=white)
+![React Three Fiber 9](https://img.shields.io/badge/R3F-9.x-00FFFF?style=for-the-badge&logo=react&logoColor=black)
+![@react-three/drei 10](https://img.shields.io/badge/Drei-10.x-FFD700?style=for-the-badge&logo=react&logoColor=black)
+![React 19](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![TypeScript 6.0](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
-### ⚡ Performance Optimized
+### ⚡ Build & Performance
 
-![Vite](https://img.shields.io/badge/Vite-8.x-646cff?style=for-the-badge&logo=vite)
-![WebGL](https://img.shields.io/badge/WebGL-Hardware_Accelerated-990000?style=for-the-badge)
-![Web Audio](https://img.shields.io/badge/Audio-Web_Audio_API-ff9500?style=for-the-badge)
-![60fps](https://img.shields.io/badge/Target-60fps-4caf50?style=for-the-badge)
+![Vite 8](https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Node 25+](https://img.shields.io/badge/Node-%E2%89%A525-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![WebGL 2](https://img.shields.io/badge/WebGL-2.0-990000?style=for-the-badge)
+![Web Audio](https://img.shields.io/badge/Audio-Web_Audio_API-FF9500?style=for-the-badge)
+![60fps Desktop](https://img.shields.io/badge/Desktop-60fps-4CAF50?style=for-the-badge)
+![55fps+ Mobile](https://img.shields.io/badge/Mobile-55fps%2B-4CAF50?style=for-the-badge)
+
+### 🧪 Quality & Testing
+
+![Vitest](https://img.shields.io/badge/Vitest-Unit-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)
+![Cypress](https://img.shields.io/badge/Cypress-E2E-17202C?style=for-the-badge&logo=cypress&logoColor=white)
+![518 Tests](https://img.shields.io/badge/Tests-518_Passing-2E7D32?style=for-the-badge)
+![Coverage 75%+](https://img.shields.io/badge/Coverage-75%25%2B-2E7D32?style=for-the-badge&logo=vitest&logoColor=white)
+![WCAG 2.1 AA](https://img.shields.io/badge/A11y-WCAG_2.1_AA-1976D2?style=for-the-badge)
 
 ### 🎨 3D Visual Effects
 
-![Three.js 3D](https://img.shields.io/badge/3D_Models-Three.js-9c27b0?style=for-the-badge)
-![Particles](https://img.shields.io/badge/Particles-Instanced-ff5722?style=for-the-badge)
-![Shaders](https://img.shields.io/badge/Shaders-Korean_Themed-ffd700?style=for-the-badge)
+![3D Models](https://img.shields.io/badge/3D_Models-Three.js-9C27B0?style=for-the-badge)
+![Skeletal](https://img.shields.io/badge/Skeleton-28_bones-FFD700?style=for-the-badge&labelColor=000000)
+![Particles](https://img.shields.io/badge/Particles-Instanced-FF5722?style=for-the-badge)
+![Shaders](https://img.shields.io/badge/Shaders-Korean_Cyberpunk-FFD700?style=for-the-badge&labelColor=000000)
 
 </div>
 
-### 🎯 Combat Components
+### 🎯 Core Combat Components
 
-- **VitalPointTargeter** – Interactive anatomical targeting system
-- **CombatTracker** – Real-time damage and status monitoring
-- **TechniqueCalculator** – Precise combat effectiveness calculations
-- **CombatAnalyzer** – Post-match technique analysis
-- **ThreeJS Renderer** – Hardware-accelerated 3D combat visualization
+- **`VitalPointTargeter`** — Interactive 70-point anatomical targeting with polygon-based zone detection
+- **`CombatTracker`** — Real-time damage, pain, consciousness, breathing, and balance monitoring
+- **`TechniqueCalculator`** — Deterministic damage / accuracy / counter-attack math (51 techniques)
+- **`CombatAnalyzer`** — Post-match technique-effectiveness analysis
+- **`ThreeJSRenderer`** — Hardware-accelerated 3D combat visualization with skeletal animation (28 bones)
+- **`CounterAttackAI`** — Archetype-aware riposte system with limb-exposure detection
 
 ---
 
 ## 🎮 Combat Controls
 
-> **📖 Complete Control Reference**: See [`CONTROLS.md`](/CONTROLS.md) for comprehensive control documentation
+> **📖 Full reference:** [`CONTROLS.md`](./CONTROLS.md) — single source of truth for all keyboard, mouse, touch, gesture, and haptic controls.
 
-### ⌨️ Desktop Input System (Currently Implemented)
+### ⌨️ Desktop (currently implemented)
 
-- **🏃 Movement**: `WASD` or `Arrow Keys` – 8-directional tactical positioning and footwork
-- **⚔️ Stances**: `1–8` (Eight Trigram-based combat stances)
-  - `1` ☰ Geon (Heaven) - Bone-striking force
-  - `2` ☱ Tae (Lake) - Joint manipulation  
-  - `3` ☲ Li (Fire) - Precise nerve strikes
-  - `4` ☳ Jin (Thunder) - Stunning techniques
-  - `5` ☴ Son (Wind) - Continuous pressure
-  - `6` ☵ Gam (Water) - Adaptive counters
-  - `7` ☶ Gan (Mountain) - Defensive mastery
-  - `8` ☷ Gon (Earth) - Ground control
-- **🛡️ Guard**: `B` – Defensive positioning and blocks
-- **⚡ Attack**: `Space` – Execute current stance technique
-- **🎯 Vital Strike**: `V` – Toggle 70-point anatomical targeting overlay
-- **⏸️ Pause**: `ESC` or `M` – Pause menu / Return to intro
+- **🏃 Movement** — `WASD` / `Arrow Keys` — 8-directional tactical positioning
+- **☯️ Stances** — `1`–`8` (Eight Trigrams)
+  - `1` ☰ Geon (Heaven) — bone-striking force
+  - `2` ☱ Tae (Lake) — joint manipulation
+  - `3` ☲ Li (Fire) — precise nerve strikes
+  - `4` ☳ Jin (Thunder) — stunning techniques
+  - `5` ☴ Son (Wind) — continuous pressure
+  - `6` ☵ Gam (Water) — adaptive counters
+  - `7` ☶ Gan (Mountain) — defensive mastery
+  - `8` ☷ Gon (Earth) — ground control
+- **🛡️ Guard** — `B` — defensive positioning and blocks
+- **⚡ Attack** — `Space` — execute current stance technique
+- **🎯 Vital Strike** — `V` — toggle 70-point anatomical targeting overlay
+- **⏸️ Pause** — `ESC` / `M` — pause menu / return to intro
 
-### 📱 Mobile Touch Controls (375x667+ screens)
+### 📱 Mobile Touch (auto-displayed on screens < 768px)
 
-**Virtual Controls** (Auto-displayed on screens < 768px width):
+- **🕹️ Virtual D-Pad** (bottom-left, 140×140 px, 48 px buttons exceeding the 44 px iOS guideline) — 8-directional movement with Korean arrows (↑ ↗ → ↘ ↓ ↙ ← ↖)
+- **⚡ Action Buttons** (bottom-right) — 80×80 px gold Attack ⚡, 70×70 px blue Block 🛡️
+- **☯️ Stance Wheel** (bottom-center, 200 px diameter) — 8 trigrams with hangul: 건 태 리 진 손 감 간 곤
+- All controls are **safe-area aware** (34 px bottom inset for notched devices)
 
-- **🕹️ Virtual D-Pad** (Bottom-Left) – 8-directional movement control
-  - 140x140px touch-optimized size
-  - 48px minimum button targets (exceeds iOS 44px guideline)
-  - Tap directional buttons for tactical positioning
-  - Korean arrow indicators (↑ ↗ → ↘ ↓ ↙ ← ↖)
-  - Safe area aware positioning (34px from bottom)
-  
-- **⚡ Action Buttons** (Bottom-Right)
-  - **Attack Button** (80x80px, Gold ⚡) – Execute current stance technique
-  - **Block Button** (70x70px, Blue 🛡️) – Activate defensive guard
-  - Safe area aware positioning (34px from bottom)
-  
-- **☯️ Stance Wheel** (Bottom-Center)
-  - Tap to expand circular selector (200px diameter)
-  - 8 trigram stances (☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷)
-  - Korean names: 건 태 리 진 손 감 간 곤
-  - Safe area aware positioning
+### 👆 Gesture & Haptic Feedback
 
-**Gesture Controls**:
-
-- **Swipe Right →** – Advance toward opponent
-- **Swipe Left ←** – Retreat from opponent
-- **Swipe Up ↑** – High attack execution
-- **Swipe Down ↓** – Low attack execution
-- **Two-Finger Tap 🤞** – Toggle vital point targeting mode
-
-**Haptic Feedback**:
-- Light vibration (10ms) on D-pad movement and stance selection
-- Medium vibration (50ms) on attack execution
-- Heavy vibration (100ms) on critical hits and vital point strikes
-
-### 🩸 Combat Feedback
-
-- **💥 Impact Effects**: Bone contact sounds and visual trauma
-- **🩸 Injury System**: Realistic bleeding and damage progression
-- **😵 Incapacitation**: Visual indicators of combat effectiveness
-- **⚖️ Balance**: Physical stance and vulnerability windows
+- **Swipe →** advance · **← retreat** · **↑ high attack** · **↓ low attack** · **two-finger tap** toggles vital-point mode
+- **Haptics:** 10 ms light (movement / stance), 50 ms medium (attack), 100 ms heavy (vital-point hits)
 
 ---
 
@@ -283,50 +452,45 @@ Built for **combat realism** and **authentic simulation**:
 
 ### 🎯 해부학 연구 (Anatomical Study)
 
-- **📚 급소학습 (Vital Point Study)** – 70 anatomical target points
-- **🎯 정밀타격 (Precision Striking)** – Accurate targeting techniques
-- **⚫ 고급기법 (Advanced Techniques)** – Professional combat methods
-- **🥋 실전응용 (Practical Application)** – Combat effectiveness training
+- **📚 급소학습** — 70 anatomical target points
+- **🎯 정밀타격** — accurate targeting techniques
+- **⚫ 고급기법** — professional combat methods
+- **🥋 실전응용** — combat-effectiveness training
 
 ### ⚔️ 무술 기법 (Martial Techniques)
 
-- **🥋 기본기 (Fundamentals)** – Basic striking and positioning
-- **🔢 팔괘술 (Eight Trigram Arts)** – Traditional Korean combat philosophy
-- **🔗 연계기법 (Combination Techniques)** – Flowing technique sequences
-- **🎯 정밀술 (Precision Arts)** – Exact targeting and timing
+- **🥋 기본기** — fundamentals: striking and positioning
+- **🔢 팔괘술** — Eight Trigram Arts: traditional Korean combat philosophy
+- **🔗 연계기법** — combination techniques: flowing technique sequences
+- **🎯 정밀술** — precision arts: exact targeting and timing
 
 ### 🥊 실전 훈련 (Combat Training)
 
-- **👤 일대일 (One-on-One)** – Single opponent combat simulation
-- **🏢 환경전투 (Environmental Combat)** – Using surroundings tactically
-- **🧘 정신수양 (Mental Cultivation)** – Psychological combat preparation
-- **🏃 연속대전 (Continuous Combat)** – Multiple opponent scenarios
+- **👤 일대일** — single-opponent simulation
+- **🏢 환경전투** — environmental combat (using surroundings tactically)
+- **🧘 정신수양** — mental cultivation: psychological combat preparation
+- **🏃 연속대전** — continuous combat: multiple-opponent scenarios
 
 ### 🎭 원형 특화 (Archetype Mastery)
 
-- **🏯 무사도 (Warrior's Way)** – Traditional warrior discipline training
-- **🥷 암영술 (Shadow Arts)** – Stealth and assassination techniques
-- **💻 사이버전 (Cyber Warfare)** – Tech-enhanced combat methods
-- **🕵️ 정보전 (Intelligence Warfare)** – Psychological and strategic combat
-- **⚡ 거리술 (Street Arts)** – Underground survival combat
+- **🏯 무사도** — traditional warrior discipline · **🥷 암영술** — shadow arts · **💻 사이버전** — cyber warfare · **🕵️ 정보전** — intelligence warfare · **⚡ 거리술** — street arts
 
 ---
 
 ## 📝 Architecture & Development Insights
 
-Explore in-depth technical analysis and architectural insights about Black Trigram through blog posts by our development team.
+In-depth technical and cultural analysis from the Hack23 development team.
 
-### ⭐ Simon Moon's Architecture Chronicles
+### ⭐ Simon Moon — Architecture Chronicles
 
 <div align="center">
 
-_System Architect | Pattern Recognition Expert | Philosopher-Engineer_
-
+_System Architect · Pattern Recognition Expert · Philosopher-Engineer_<br>
 [**View Agent Profile**](https://github.com/Hack23/homepage/blob/master/.github/agents/simon-moon.md)
 
 </div>
 
-Simon Moon reveals the hidden structures and sacred geometry in Black Trigram's architecture through the Law of Fives and numerological patterns.
+Simon Moon reveals the hidden structures and sacred geometry in Black Trigram's architecture through the **Law of Fives** and numerological patterns.
 
 <table>
 <tr>
@@ -336,7 +500,7 @@ Simon Moon reveals the hidden structures and sacred geometry in Black Trigram's 
 
 **[Five Fighters, Sacred Geometry](https://hack23.com/blog-trigram-architecture.html)**
 
-Five fighter archetypes discovered through combat domain analysis. Cultural authenticity meeting mechanical depth with zero backend architecture.
+Five fighter archetypes discovered through combat-domain analysis. Cultural authenticity meeting mechanical depth — with **zero backend** architecture.
 
 </td>
 <td width="33%" valign="top">
@@ -345,7 +509,7 @@ Five fighter archetypes discovered through combat domain analysis. Cultural auth
 
 **[70 Vital Points & Physics](https://hack23.com/blog-trigram-combat.html)**
 
-Traditional Korean martial arts mapped to 70 biomechanical vital points. Five collision systems with anatomical precision and respect for cultural tradition.
+Traditional Korean martial arts mapped to **70 biomechanical vital points**. Five collision systems with anatomical precision and respect for cultural tradition.
 
 </td>
 <td width="33%" valign="top">
@@ -354,23 +518,22 @@ Traditional Korean martial arts mapped to 70 biomechanical vital points. Five co
 
 **[VR Martial Arts & Immersive Combat](https://hack23.com/blog-trigram-future.html)**
 
-Five-year evolution roadmap from immersive 3D fighter to VR martial arts training platform. Korean martial arts preservation through immersive technology.
+Five-year evolution roadmap from immersive 3D fighter to **VR martial arts training platform**. Korean martial arts preservation through immersive technology.
 
 </td>
 </tr>
 </table>
 
-### 🔍 George Dorn's Code Analysis
+### 🔍 George Dorn — Code Analysis
 
 <div align="center">
 
-_Developer | Repository Inspector | Code Archaeologist_
-
+_Developer · Repository Inspector · Code Archaeologist_<br>
 [**View Agent Profile**](https://github.com/Hack23/homepage/blob/master/.github/agents/george-dorn.md)
 
 </div>
 
-George Dorn provides detailed repository deep-dives based on actual code inspection, not assumptions. Each analysis includes cloned repositories, file counts, dependency reviews, and verified metrics.
+George Dorn provides repository deep-dives based on **actual code inspection**, not assumptions. Each analysis includes cloned repositories, file counts, dependency reviews, and verified metrics.
 
 <table>
 <tr>
@@ -380,10 +543,10 @@ George Dorn provides detailed repository deep-dives based on actual code inspect
 
 **[Repository Deep-Dive](https://hack23.com/blog-george-dorn-trigram-code.html)**
 
-**Stack:** TypeScript 6.0, React 19, Three.js 0.184, Vite 8  
-**Metrics:** 132 TypeScript files, 70 vital points system, 5 fighter archetypes
+**Stack:** TypeScript 6.0.3 · React 19 · Three.js 0.184 · Vite 8<br>
+**Metrics:** 132+ TypeScript files · 70 vital points · 5 archetypes · 28-bone skeletal animation · 51 techniques
 
-Examined package.json dependencies, explored src/ structure, verified combat system implementation, and reviewed AI integrations.
+Examined `package.json` dependencies, explored `src/` structure, verified combat-system implementation, and reviewed AI integrations.
 
 </td>
 <td width="50%" valign="top">
@@ -392,9 +555,9 @@ Examined package.json dependencies, explored src/ structure, verified combat sys
 
 **[Combat Code: TypeScript vs. Martial Arts Physics](https://hack23.com/blog-trigram-architecture.html#george-dorn-implementation)**
 
-George's technical commentary reveals collision detection challenges, performance optimization for 60fps combat, and Easter eggs hidden throughout the codebase.
+George's technical commentary on collision-detection challenges, performance optimization for 60fps combat, and Easter eggs hidden throughout the codebase.
 
-**Easter Eggs:** Land exactly 23 hits → FNORD victory screen. Konami code unlocks "Hagbard Mode". Health at 23% → UI pulses urgently.
+**Easter Eggs:** land exactly **23 hits** → FNORD victory screen · Konami code unlocks "Hagbard Mode" · health at **23%** → UI pulses urgently.
 
 </td>
 </tr>
@@ -402,9 +565,7 @@ George's technical commentary reveals collision detection challenges, performanc
 
 <div align="center">
 
-### 🌟 Explore More Insights
-
-**[📚 Full Security Blog](https://hack23.com/blog.html)** — 50+ posts covering cybersecurity, ISMS policies, and software architecture through radical transparency
+**[📚 Full Hack23 Blog](https://hack23.com/blog.html)** — 50+ posts on cybersecurity, ISMS policy, and software architecture through radical transparency.
 
 _"Code is reality made computational. If it doesn't work, nothing else matters."_ — **George Dorn**
 
@@ -412,138 +573,29 @@ _"Code is reality made computational. If it doesn't work, nothing else matters."
 
 ---
 
-## 📚 Documentation
-
-### API Reference
-
-Complete TypeDoc API documentation with Korean martial arts context is available:
-
-**[📘 View API Documentation](https://hack23.github.io/blacktrigram/)**
-
-The API documentation includes:
-
-- **📖 Core Types**: All enums, interfaces, and type definitions with Korean-English bilingual descriptions
-- **🥋 Eight Trigram System**: Complete I Ching philosophy and stance mechanics
-- **🎯 Vital Point System**: All 70 Korean vital points with anatomical details
-- **⚔️ Combat System**: Combat mechanics, damage calculation, and technique execution
-- **👤 Player Archetypes**: Detailed descriptions of all 5 fighter types
-- **🎨 UI Components**: Component usage examples and props documentation
-- **🔧 Utilities**: Helper functions and system utilities
-
-### Key Documentation Sections
-
-- **Korean Martial Arts Concepts**: Traditional philosophy integrated with modern combat
-- **I Ching (易經) Integration**: How the Eight Trigrams influence combat flow
-- **Anatomical Targeting**: Realistic vital point system based on Korean martial arts
-- **Combat Calculations**: Damage, accuracy, and effectiveness algorithms
-- **Security Notes**: Critical functions with security considerations
-
-### Documentation Coverage
-
-- ✅ **100% of core types** documented with examples
-- ✅ **All system classes** with comprehensive JSDoc
-- ✅ **Korean-English bilingual** terminology throughout
-- ✅ **Usage examples** for complex functions
-- ✅ **Philosophy context** for martial arts concepts
-
-**Validation Approach**: Strict TypeDoc validation is enabled (`notDocumented: true`) to track documentation progress. This generates ~2,250 warnings initially, which are being addressed incrementally. The strict approach ensures all new exports are documented from the start, maintaining high documentation standards as the codebase evolves.
-
-### Building Documentation Locally
-
-```bash
-# Generate TypeDoc documentation
-npm run docs
-
-# View documentation
-open docs/api/index.html
-```
-
-### UI/UX Architecture Documentation
-
-> **📋 Planned:** Comprehensive guides for developers building Korean-themed cyberpunk interfaces are being developed. See [ARCHITECTURE.md](ARCHITECTURE.md) and [CONTROLS.md](CONTROLS.md) for current UI/UX patterns.
-
----
-
-## 🔐 Commitment to Transparency and Security
-
-At Hack23 AB, we believe that true security comes through transparency and demonstrable practices. Our Information Security Management System (ISMS) is publicly available, showcasing our commitment to security excellence and organizational transparency.
-
-<table>
-  <tr>
-    <td width="50%">
-      <div align="center">
-        <h3>📋 Public ISMS Repository</h3>
-        <p>Complete Information Security Management System documentation</p>
-        <a href="https://github.com/Hack23/ISMS-PUBLIC">
-          <img src="https://img.shields.io/badge/ISMS-PUBLIC-0066CC?style=for-the-badge&logo=github&logoColor=white" alt="ISMS Public Repository">
-        </a>
-      </div>
-    </td>
-    <td width="50%">
-      <div align="center">
-        <h3>🔒 Information Security Policy</h3>
-        <p>Enterprise-grade security framework and governance</p>
-        <a href="https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md">
-          <img src="https://img.shields.io/badge/Security-Policy-DC143C?style=for-the-badge&logo=shield&logoColor=white" alt="Information Security Policy">
-        </a>
-      </div>
-    </td>
-  </tr>
-</table>
-
-**📊 ISMS Reference Mapping**: For a complete mapping of all ISMS policies referenced by Black Trigram, see [ISMS_REFERENCE_MAPPING.md](./ISMS_REFERENCE_MAPPING.md)
-
-### 🏆 Security Through Transparency
-
-Our approach to cybersecurity consulting is built on a foundation of transparent practices:
-
-- **🔍 Open Documentation**: Complete ISMS framework available for review
-- **📋 Policy Transparency**: Detailed security policies and procedures publicly accessible  
-- **🎯 Demonstrable Expertise**: Our own security implementation serves as a live demonstration
-- **🔄 Continuous Improvement**: Public documentation enables community feedback and enhancement
+## 🩸 Combat Realism Systems — 13 / 13 Complete (100%)
 
 <div align="center">
-  <p><em>"Our commitment to transparency extends to our security practices - demonstrating that true security comes from robust processes, continuous improvement, and a culture where security considerations are integrated into every business decision."</em></p>
-  <p><strong>— James Pether Sörling, CEO/Founder</strong></p>
+
+| System | Status | Notes |
+|---|---|---|
+| **Body-Part Health** | ✅ | 8-part damage tracking |
+| **Vital-Point Targeting** | ✅ | 70 authentic Korean vital points |
+| **Enhanced Anatomy** | ✅ | Polygon-based zone detection |
+| **Visual Feedback** | ✅ | Damage numbers, hit effects, combos |
+| **Pain Response** | ✅ | Realistic pain accumulation (production-tested) |
+| **Consciousness Levels** | ✅ | 4-level awareness system |
+| **Breathing Disruption** | ✅ | Respiratory targeting affects stamina/accuracy |
+| **Trauma Visualization** | ✅ | Injury rendering, bruising progression |
+| **Balance / Vulnerability** | ✅ | Stance-based weakness windows |
+| **Combat-Readiness HUD** | ✅ | Real-time multi-system status display |
+| **Injury-Based Movement** | ✅ | Damage constrains mobility and stance access |
+| **Bone-Impact Audio** | ✅ | Bone-contact and fracture sounds |
+| **Counter-Attack AI** | ✅ | Limb-exposure detection · archetype-aware ripostes |
+
+**[📊 Detailed Status Report →](game-status.md)** · **[🗺️ v1.0 Roadmap →](ROADMAP.md)** · **[⚔️ Combat Architecture →](COMBAT_ARCHITECTURE.md)**
+
 </div>
-
----
-
-
-
-## 🔧 Development Features
-
-### 🎯 Anatomical Data Integration
-
-```typescript
-// Authentic vital point data with combat applications
-interface VitalPoint {
-  name: { korean: string; english: string; technique: string };
-  location: AnatomicalPosition;
-  effectiveness: CombatEffectiveness;
-  difficulty: PrecisionRequired;
-  method: CombatTechnique[];
-  archetypeBonus: ArchetypeModifier[]; // Special bonuses for different fighter types
-}
-```
-
-### 🩸 Combat Mechanics System
-
-```typescript
-// Realistic body mechanics for authentic combat
-interface CombatState {
-  health: number; // Physical condition remaining
-  consciousness: number; // Awareness and responsiveness
-  pain: number; // Pain levels affecting performance
-  balance: CombatStability; // Physical stability in combat
-  stamina: number; // Energy and endurance
-  technique: number; // Skill and precision level
-  archetype: PlayerArchetype; // Current fighter specialization
-}
-
-// Player archetype system
-type PlayerArchetype = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
-```
 
 ---
 
@@ -551,283 +603,179 @@ type PlayerArchetype = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
 
 ### 📋 Prerequisites
 
-- **Node.js 25+** (Current) - [Download Node.js](https://nodejs.org/)
-- **npm 11+** (included with Node.js 25)
-- Modern browser with WebGL 2.0 support
+- **Node.js 25+** — [download](https://nodejs.org/)
+- **npm 11+** (bundled with Node 25)
+- Modern browser with **WebGL 2.0** support
 
-### 🌐 Enter the Dojang
+### 🌐 Play Now
 
-**[🎮 Begin Combat Training](https://hack23.github.io/blacktrigram/)**
+**[🎮 Play live → blacktrigram.com](https://blacktrigram.com/)** · **[🎮 GitHub Pages mirror → hack23.github.io/blacktrigram](https://hack23.github.io/blacktrigram/)**
 
 ### 🔧 Local Development
 
 ```bash
-# Clone repository
+# Clone
 git clone https://github.com/Hack23/blacktrigram.git
 cd blacktrigram
 
-# Install dependencies (requires Node.js 25+)
+# Install (requires Node ≥ 25)
 npm install
 
-# Start combat simulation
+# Start the dojang
 npm run dev
 
-# Build for deployment
+# Production build
 npm run build
 
-# Run combat testing
-npm run test
-npm run test:combat
+# Run tests
+npm run test           # Vitest unit
+npm run test:systems   # combat-system focused
+npm run test:e2e       # Cypress E2E
+
+# Generate API docs (TypeDoc)
+npm run docs
+```
+
+### 📦 Use as a Library
+
+```bash
+npm install blacktrigram
+```
+
+```ts
+// ESM with strict TypeScript types
+import { CombatSystem, VitalPoints } from 'blacktrigram/systems';
+import type { TrigramStance, PlayerArchetype } from 'blacktrigram/types';
 ```
 
 ---
 
-## 📚 Documentation & Further Reading
+## 🔐 Security, Compliance & ISMS Alignment
 
-Game/frontend will be open source with commercial backend supporting multiplayer functionality, rankings and subscriptions to fund development and runtime of backend. Will enable progressions and persistent state of game.
+At Hack23 AB we believe **true security comes through transparency and demonstrable practices**. Black Trigram is governed by the public **[ISMS-PUBLIC](https://github.com/Hack23/ISMS-PUBLIC)** framework, aligned with **ISO 27001:2022**, **NIST CSF 2.0**, **CIS Controls v8.1**, **EU CRA**, **NIS2**, and **GDPR**.
 
+### 🛡️ Supply-Chain Security (SLSA 3)
 
-🔗 **Architecture & Design**
+- **OSSF Scorecard** — automated weekly via [`scorecards.yml`](./.github/workflows/scorecards.yml)
+- **OpenSSF Best Practices** — [project ID 10777](https://www.bestpractices.dev/projects/10777)
+- **SLSA 3 Provenance** — every release attested → [`/attestations`](https://github.com/Hack23/blacktrigram/attestations)
+- **CycloneDX SBOM** — published with each GitHub Release
+- **CodeQL SAST** — [`codeql.yml`](./.github/workflows/codeql.yml)
+- **OWASP ZAP DAST** — [`zap-scan.yml`](./.github/workflows/zap-scan.yml)
+- **Lighthouse Performance** — [`lighthouse-performance.yml`](./.github/workflows/lighthouse-performance.yml)
+- **Accessibility (WCAG 2.1 AA)** — [`accessibility-test.yml`](./.github/workflows/accessibility-test.yml)
+- **Dependency Review** — [`dependency-review.yml`](./.github/workflows/dependency-review.yml)
+- **Dependabot + auto-merge** for low-risk updates
+- **All GitHub Actions pinned to commit SHAs** — see [`WORKFLOWS.md`](./WORKFLOWS.md)
 
-- [📐 ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/ARCHITECTURE.md)
-  _High-level C4 models, container/component views, and system context._
-- [📈 FUTURE_ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/FUTURE_ARCHITECTURE.md)
-  _Vision for upcoming architectural enhancements and PWA integration._
-- [API Docs](https://blacktrigram.com/api/)
-  _Detailed API reference for all components, types, and functions in the application._
+### 📜 Hack23 ISMS Policy Anchors
 
+| Policy | Alignment |
+|---|---|
+| [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | Master security governance |
+| [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | SDLC, code review, testing, threat modeling |
+| [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) | License compliance, OSSF Scorecard, SBOM |
+| [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) | CodeQL, ZAP, Dependabot, SLA |
+| [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) | TLS 1.3, SRI, no client secrets |
+| [Threat Modeling](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Threat_Modeling.md) | STRIDE per trust boundary |
+| [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) | GitHub branch protection, signed commits |
+| [Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) | CDN, WAF, CSP, HSTS, SRI |
+| [Backup & Recovery Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) | Multi-region S3 + GitHub Pages DR |
+| [Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) | Security disclosure, runbooks |
+| [Risk Register](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Risk_Register.md) | Project risks tracked centrally |
+| [Compliance Checklist](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Compliance_Checklist.md) | ISO 27001 · NIST CSF · CIS v8.1 mapping |
+| [Security Metrics](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Security_Metrics.md) | KPIs and dashboards |
+| [AI Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/AI_Policy.md) | Copilot governance, EU AI Act, NIST AI RMF |
+| [Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md) | Public · no PII |
+| [ISMS Transparency Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/ISMS_Transparency_Plan.md) | Public-disclosure strategy |
+| [CLASSIFICATION.md](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) | Business-impact analysis |
 
-🔗 **Combat & Mechanics**
-
-- [🗺️ **ROADMAP.md**](https://github.com/Hack23/blacktrigram/blob/main/ROADMAP.md)
-  _**v1.0 release timeline (Q2-Q3 2026), quarterly milestones, and combat realism system tracking.**_
-- [📊 **game-status.md**](https://github.com/Hack23/blacktrigram/blob/main/game-status.md)
-  _**Current metrics: 8.4/10 quality, 76% test coverage, 67% combat realism (8/12 systems)**._
-- [🥋 COMBAT_ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md)
-  _In-depth battleflow, trigram integration, vital-point targeting, and damage pipeline._
-- [🗺️ game-design.md](https://github.com/Hack23/blacktrigram/blob/main/game-design.md)
-  _Overall game mechanics, archetype breakdowns, and design decisions._
-
-🔗 **Assets & Media**
-
-- [🖼️ ART_ASSETS.md](https://github.com/Hack23/blacktrigram/blob/main/ART_ASSETS.md)
-  _Guidelines for sprite sheets, particle textures, color palettes, and UI icons._
-- [🎵 AUDIO_ASSETS.md](https://github.com/Hack23/blacktrigram/blob/main/AUDIO_ASSETS.md)
-  _List of traditional Korean instrument loops, impact SFX, and mixing notes._
-- [🎵 VIDEO_ASSETS.md](https://github.com/Hack23/blacktrigram/blob/main/VIDEO_ASSETS.md)
-  _Black Trigram: The Path of Shadows 🌑⚡🗡️ .Scene 1: Initiation Under Neon Skies 🌑🗡️🌆_
-
-
-
-
-🔒 **CI/CD & Security Features**
-
-- [🔒 development.md](https://github.com/Hack23/blacktrigram/blob/main/development.md)
-  _The development implements comprehensive security measures._
-- [🤖 Copilot MCP Setup](.github/COPILOT_MCP_SETUP.md)
-  _Model Context Protocol servers for enhanced Copilot capabilities._
-- **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review
-- **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
-- **📦 Dependency Protection** - Automated dependency vulnerability checks
-- **🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
-- **📋 Security Policies** - GitHub security advisories and vulnerability reporting
-- **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
-- **📄 SBOM Generation** - Software Bill of Materials for transparency
-- **🔏 Build Attestations** - Cryptographic proof of build integrity
-- **🏆 Artifact Verification** - SLSA-compliant build provenance
-- **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
-- **⚡ Lighthouse Performance** - [Automated performance and accessibility audits](./performance-testing.md)
-
-🤖 **GitHub Copilot Custom Agents & Skills**
-
-- [🎯 **Custom Agents Guide**](.github/agents/README.md)
-  _10 specialized agents for development, testing, security, documentation, and Korean martial arts expertise._
-- [⚡ **Agent Skills Catalog**](.github/skills/README.md)
-  _7 automatic enforcement skills for security, architecture, Korean theming, testing, performance, and Three.js best practices._
-- [📋 **Agent Capabilities Matrix**](.github/agents/AGENT_CAPABILITIES.md)
-  _Comprehensive coordination guide for all agents and their specialized capabilities._
-- [📊 **Agent Skills Implementation Report**](.github/AGENT_SKILLS_IMPLEMENTATION.md)
-  _Complete implementation details of the agent skills system with compliance frameworks._
-
-
----
-
-## 🎯 Combat Philosophy
-
-> **"어둠 속에서 완벽한 일격을 찾아라"** > _"In darkness, seek the perfect strike"_
-
-Each technique focuses on:
-
-- **정확한 타격 (Precise Targeting)** – Exact anatomical vulnerable points
-- **최대 효과 (Maximum Effectiveness)** – One-strike incapacitation
-- **전투 심리 (Combat Psychology)** – Mental preparation for combat
-- **전통 지식 (Traditional Knowledge)** – Authentic Korean martial arts
-- **원형 특화 (Archetype Specialization)** – Unique approach per fighter type
-
----
-
-## 🏆 Combat Achievements
-
-### 🎯 Combat Mastery
-
-- **🎓 급소대가 (Vital Point Master)** – Master all 70 vital-point targets
-- **🩸 전투전문가 (Combat Expert)** – Execute optimal combat techniques
-- **⚫ 고수 (Advanced Practitioner)** – Complete advanced technique training
-- **🔪 완벽한 무사 (Perfect Warrior)** – Achieve flawless combat records
-
-### 🥋 Martial Proficiency
-
-- **🎯 정밀타격사 (Precision Striker)** – Perfect vital-point targeting accuracy
-- **⚖️ 균형대사 (Balance Master)** – Master all stance & footwork patterns
-- **🧘 정신수양사 (Mental Cultivator)** – Complete psychological combat training
-- **🇰🇷 무도학자 (Martial Scholar)** – Understand Korean martial arts philosophy
-
-### 🎭 Archetype Mastery
-
-- **🏯 무사완성 (Warrior Perfection)** – Master traditional warrior discipline
-- **🥷 그림자대사 (Shadow Master)** – Perfect stealth & assassination arts
-- **💻 사이버무사 (Cyber Warrior)** – Tech-enhanced combat mastery
-- **🕵️ 정보대가 (Intelligence Master)** – Psychological warfare expertise
-- **⚡ 거리왕 (Street King)** – Underground combat supremacy
-
----
+**📊 Full project ↔ ISMS mapping:** [`ISMS_REFERENCE_MAPPING.md`](./ISMS_REFERENCE_MAPPING.md)
 
 <div align="center">
-
-## 🌟 Ready to Master Korean Martial Arts?
-
-**[🎮 Enter the Dojang](https://hack23.github.io/blacktrigram/)**
-
-_Experience authentic Korean combat techniques with anatomical precision across 5 unique fighting archetypes_
-
----
-
-### Built with 🎯 Combat Precision and 🇰🇷 Traditional Authenticity
-
-**🥋 무도의 길을 걸어라 (Walk the Path of Martial Arts) 🥋**
-
+<em>"Our commitment to transparency extends to our security practices — true security comes from robust processes, continuous improvement, and a culture where security considerations are integrated into every business decision."</em><br>
+<strong>— James Pether Sörling, CEO/Founder, Hack23 AB</strong>
 </div>
 
 ---
 
-## 🩸 Combat Realism Systems (8/12 Complete - 67%)
+## 🏗️ Hack23 Portfolio — Sister Projects
 
-<div align="center">
+Black Trigram is part of the **Hack23 portfolio** — a connected suite of open-source platforms applying transparent engineering and structured-intelligence tradecraft to high-stakes domains:
 
-| System | Status | Completion | Description |
-|--------|--------|------------|-------------|
-| **Body Part Health** | ✅ Complete | 100% | 8-part damage tracking system |
-| **Vital Point Targeting** | ✅ Complete | 100% | 70 authentic Korean vital points |
-| **Enhanced Anatomy** | ✅ Complete | 95% | Polygon-based zone detection |
-| **Visual Feedback** | ✅ Complete | 90% | Damage numbers, hit effects, combos |
-| **Pain Response** | ✅ Complete | 90% | Realistic pain accumulation |
-| **Consciousness Levels** | ✅ Complete | 90% | 4-level awareness system |
-| **Breathing Disruption** | ⚠️ Near-Complete | 75% | Respiratory targeting |
-| **Trauma Visualization** | ⚠️ In Progress | 65% | Injury rendering system |
-| **Balance/Vulnerability** | ⚠️ In Progress | 70% | Stance-based weaknesses |
-| **Combat Readiness HUD** | ⚠️ In Progress | 60% | Real-time status display |
-| **Injury-Based Movement** | 📋 Planned | 10% | Damage affects mobility |
-| **Bone Impact Audio** | 📋 Planned | 0% | Realistic fracture sounds |
+| Project | Description |
+|---|---|
+| 🥋 [**Black Trigram**](https://github.com/Hack23/blacktrigram) | _This repo_ — Korean martial arts simulator (Three.js / R3F / TypeScript) |
+| 🕵️ [**Citizen Intelligence Agency**](https://github.com/Hack23/cia) | Swedish political-intelligence and accountability platform |
+| 📊 [**CIA Compliance Manager**](https://github.com/Hack23/cia-compliance-manager) | CIA-triad compliance dashboard with business-impact mapping |
+| 🗳️ [**Riksdagsmonitor**](https://github.com/Hack23/riksdagsmonitor) | Swedish Parliament monitor — autonomous AI newsroom in 14 languages |
+| 🏛️ [**EU Parliament Monitor**](https://github.com/Hack23/euparliamentmonitor) | European Parliament political-intelligence platform |
+| 🛰️ [**European Parliament MCP Server**](https://github.com/Hack23/European-Parliament-MCP-Server) | TypeScript MCP server exposing EP open data to LLMs |
+| 🌐 [**Hack23 Homepage**](https://github.com/Hack23/homepage) | Hack23 AB corporate site — radical transparency in practice |
+| 🔐 [**ISMS-PUBLIC**](https://github.com/Hack23/ISMS-PUBLIC) | Public Information Security Management System framework |
 
-**[📊 Detailed Status Report →](game-status.md)** | **[🗺️ v1.0 Roadmap →](ROADMAP.md)**
-
-</div>
+🌐 **Hack23 AB** — [hack23.com](https://hack23.com/) · [Blog](https://hack23.com/blog.html) · [Security Posture](https://hack23.com/security.html)
 
 ---
 
-## 🗺️ Roadmap to v1.0
+## 📚 Documentation Map
 
-### Release Timeline: Q2-Q3 2026
+### 🗺️ Planning & Status
 
-Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Currently at **version 0.6.5** with **8.4/10 overall quality** and **65% completion**. Roadmap milestones may reference an internal **beta track (v0.9.x)** that reflects feature-completeness targets, while **0.6.5** remains the latest public release version.
+- [🗺️ **ROADMAP.md**](./ROADMAP.md) — v1.0 release plan (Q3 2026), milestones, system tracking
+- [📊 **game-status.md**](./game-status.md) — comprehensive metrics (9.4/10 · 13/13 combat realism · 75%+ coverage)
+- [🔮 **VISION_2026_2034.md**](./VISION_2026_2034.md) — 8-year strategic vision
+- [🎮 **game-design.md**](./game-design.md) — game mechanics, archetypes, design decisions
 
-<div align="center">
+### 🏛️ Architecture (C4 Model)
 
-### Q1 2026 (Current) - Combat Realism Foundation ✅
-- ✅ Pain Response System (90% production-ready)
-- ✅ Consciousness Levels (90% production-ready)
-- ✅ Breathing Disruption (75% near-complete)
-- ⚠️ Test Coverage 76% (target: 80%+)
-
-### Q2 2026 (Apr-Jun) - Feature Completion 🎯
-- 🎯 Complete remaining combat realism systems (4/12)
-- 🎯 Training Mode with progressive difficulty
-- 🎯 EndScreen with combat statistics
-- 🎯 Mobile performance optimization (55-60fps)
-- 🎯 Korean localization 100%
-
-### Q3 2026 (Jul-Sep) - Release Candidate 🚀
-- 🚀 v1.0.0-rc.1 Release Candidate
-- 🚀 User acceptance testing
-- 🚀 Complete documentation and marketing materials
-- 🚀 Security audit and compliance verification
-
-### Success Criteria for v1.0
-- [ ] 9.0/10+ overall quality
-- [ ] 100% combat realism systems (12/12)
-- [ ] 80%+ test coverage
-- [ ] 60fps desktop, 55fps+ mobile
-- [ ] Zero critical bugs
-- [ ] Complete Korean/English localization
-
-</div>
-
-**[📋 View Complete Roadmap with Dependencies →](ROADMAP.md)**
-
-**[📊 Current Detailed Status Report →](game-status.md)**
-
----
-
-## 📚 Related Documents
-
-### 🗺️ Planning & Progress
-- [🗺️ **v1.0 Roadmap**](./ROADMAP.md) - **Complete v1.0 release timeline (Q2-Q3 2026)**
-- [📊 **Game Status Report**](./game-status.md) - **Current metrics (8.4/10, 76% coverage, 67% combat realism)**
-- [🔮 **Vision 2026-2034**](./VISION_2026_2034.md) - **8-year strategic vision and evolution roadmap**
-- [🎮 Game Design](./game-design.md) - Overall game mechanics
-- [🖼️ Art Assets](./ART_ASSETS.md) - Visual asset guidelines
-- [🎵 Audio Assets](./AUDIO_ASSETS.md) - Sound design documentation
-- [🎬 Video Assets](./VIDEO_ASSETS.md) - Cinematic content
+- [📐 **ARCHITECTURE.md**](./ARCHITECTURE.md) — current C4 context · container · component
+- [⚔️ **COMBAT_ARCHITECTURE.md**](./COMBAT_ARCHITECTURE.md) — full combat pipeline (3,300+ lines)
+- [📊 **DATA_MODEL.md**](./DATA_MODEL.md) — data structures and relationships
+- [🔄 **FLOWCHART.md**](./FLOWCHART.md) — combat / business process flows
+- [🎛️ **STATEDIAGRAM.md**](./STATEDIAGRAM.md) — game and combat state machines
+- [🧠 **MINDMAP.md**](./MINDMAP.md) — conceptual relationships
+- [📈 **SWOT.md**](./SWOT.md) — strategic analysis
+- [🚀 **FUTURE_ARCHITECTURE.md**](./FUTURE_ARCHITECTURE.md) — post-v1.0 evolution roadmap
 
 ### 🔐 Security & Compliance
-- [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Enterprise-grade security framework
-- [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Complete security implementation
-- [🔮 Future Security Architecture](./FUTURE_SECURITY_ARCHITECTURE.md) - Planned security enhancements
-- [🎯 Threat Model](./THREAT_MODEL.md) - STRIDE analysis and attack trees
-- [📋 CRA Assessment](./CRA-ASSESSMENT.md) - EU Cyber Resilience Act compliance
-- [🔒 Security Policy](./SECURITY.md) - Vulnerability reporting and disclosure
-- [🗺️ ISMS Reference Mapping](./ISMS_REFERENCE_MAPPING.md) - Complete ISMS policy mapping
 
-### 🛠️ Development & Architecture
-- [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC
-- [📐 Architecture](./ARCHITECTURE.md) - High-level system design
-- [🚀 **Future Architecture**](./FUTURE_ARCHITECTURE.md) - **Evolutionary architecture roadmap (2026-2034)**
-- [⚔️ Combat Architecture](./COMBAT_ARCHITECTURE.md) - Combat system mechanics
-- [🔄 Workflows](./WORKFLOWS.md) - CI/CD security automation
-- [🔧 Development Guide](./development.md) - Security features and testing
-- [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Business impact analysis
+- [🔒 **SECURITY.md**](./SECURITY.md) — vulnerability disclosure, supported versions, SLA
+- [🛡️ **SECURITY_ARCHITECTURE.md**](./SECURITY_ARCHITECTURE.md) — implemented security design
+- [🚀 **FUTURE_SECURITY_ARCHITECTURE.md**](./FUTURE_SECURITY_ARCHITECTURE.md) — planned security improvements
+- [🎯 **THREAT_MODEL.md**](./THREAT_MODEL.md) — STRIDE analysis and attack trees
+- [🚀 **FUTURE_THREAT_MODEL.md**](./FUTURE_THREAT_MODEL.md) — evolved threats
+- [📋 **CRA-ASSESSMENT.md**](./CRA-ASSESSMENT.md) — EU Cyber Resilience Act readiness
+- [🗺️ **ISMS_REFERENCE_MAPPING.md**](./ISMS_REFERENCE_MAPPING.md) — repo ↔ ISMS-PUBLIC cross-reference
+- [🔄 **WORKFLOWS.md**](./WORKFLOWS.md) — CI/CD security automation
+- [♻️ **BCPPlan.md**](./BCPPlan.md) — Business Continuity Plan (multi-region failover)
+- [🏁 **End-of-Life-Strategy.md**](./End-of-Life-Strategy.md) — sunset and migration plan
 
-### 📊 Testing & Quality
-- [🧪 Unit Test Plan](./UnitTestPlan.md) - Comprehensive unit testing strategy (76% coverage)
-- [🎯 E2E Test Plan](./E2ETestPlan.md) - End-to-end testing documentation
-- [⚡ Performance Testing](./performance-testing.md) - Lighthouse & load testing
-- [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
+### 🛠️ Development, Testing & Assets
 
-### 🎮 Game Design & Assets
-- _Moved to Planning & Progress section above_
+- [🔧 **development.md**](./development.md) — dev environment, security features, testing
+- [🧪 **UnitTestPlan.md**](./UnitTestPlan.md) — unit-testing strategy (Vitest)
+- [🎯 **E2ETestPlan.md**](./E2ETestPlan.md) — end-to-end testing (Cypress)
+- [⚡ **performance-testing.md**](./performance-testing.md) — Lighthouse + load testing
+- [🎮 **CONTROLS.md**](./CONTROLS.md) — complete controls reference (desktop · mobile · gestures · haptics)
+- [🖼️ **ART_ASSETS.md**](./ART_ASSETS.md) — sprites, particles, palettes
+- [🎵 **AUDIO_ASSETS.md**](./AUDIO_ASSETS.md) — Korean instruments, impact SFX, mixing
+- [🎬 **VIDEO_ASSETS.md**](./VIDEO_ASSETS.md) — cinematic content
+- [💰 **FinancialSecurityPlan.md**](./FinancialSecurityPlan.md) — financial-security plan
 
-### 🌐 ISMS Public Repository
-- [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source governance
-- [🤖 AI Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/AI_Policy.md) - AI governance framework
-- [🌐 ISMS Transparency Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/ISMS_Transparency_Plan.md) - Public disclosure strategy
-- [📊 Security Metrics](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Security_Metrics.md) - Performance measurement
+### 🤖 GitHub Copilot Custom Agents
+
+- [🎯 **Custom Agents Guide**](.github/agents/README.md) — specialized agents for development, testing, security, documentation, and Korean martial arts expertise
+- [⚡ **Agent Skills Catalog**](.github/skills/README.md) — automatic enforcement skills
+- [📋 **Agent Capabilities Matrix**](.github/agents/AGENT_CAPABILITIES.md) — coordination guide
+- [📊 **Agent Skills Implementation**](.github/AGENT_SKILLS_IMPLEMENTATION.md) — implementation report
 
 ---
 
-## 🥋 Black Trigram Project Classification
+## 🥋 Project Classification
 
-### 🎯 Project Classification
-[![Project Type](https://img.shields.io/badge/Type-Frontend_Apps-yellow?style=for-the-badge&logo=window-maximize&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#project-type-classifications)
+### 🎯 Project Type
+[![Project Type](https://img.shields.io/badge/Type-Frontend_App-yellow?style=for-the-badge&logo=window-maximize&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#project-type-classifications)
 [![Process Type](https://img.shields.io/badge/Process-Marketing-blueviolet?style=for-the-badge&logo=bullhorn&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#project-type-classifications)
 
 ### 🔒 Security Classification
@@ -839,29 +787,54 @@ Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Curre
 [![RTO](https://img.shields.io/badge/RTO-Medium_(4--24hrs)-lightgreen?style=for-the-badge&logo=clock&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#rto-classifications)
 [![RPO](https://img.shields.io/badge/RPO-Daily_(4--24hrs)-lightblue?style=for-the-badge&logo=database&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#rpo-classifications)
 
+The frontend is statically deployed to **AWS CloudFront + S3** in multiple AWS regions with **Route 53** health-checked failover to **GitHub Pages** as disaster-recovery — supporting the RTO/RPO commitments above with no backend dependencies. See [`BCPPlan.md`](./BCPPlan.md) and [`SECURITY_ARCHITECTURE.md`](./SECURITY_ARCHITECTURE.md).
+
 ### 💰 Business Impact Analysis Matrix
 
-| Impact Category | Financial | Operational | Reputational | Regulatory |
-|-----------------|-----------|-------------|--------------|------------|
-| **🔒 Confidentiality** | [![Negligible - No impact](https://img.shields.io/badge/Negligible-No_impact-lightgrey?style=for-the-badge&logo=dollar-sign&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#financial-impact-levels) | [![Negligible - No impact](https://img.shields.io/badge/Negligible-No_impact-lightgrey?style=for-the-badge&logo=exclamation-triangle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Low - Limited visibility](https://img.shields.io/badge/Low-Limited_visibility-lightgreen?style=for-the-badge&logo=newspaper&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![Negligible - No implications](https://img.shields.io/badge/Negligible-No_implications-lightgrey?style=for-the-badge&logo=gavel&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#regulatory-impact-levels) |
-| **✅ Integrity** | [![Negligible - No impact](https://img.shields.io/badge/Negligible-No_impact-lightgrey?style=for-the-badge&logo=dollar-sign&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#financial-impact-levels) | [![Moderate - Reduced productivity](https://img.shields.io/badge/Moderate-Reduced_productivity-yellow?style=for-the-badge&logo=trending-down&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Moderate - Industry attention](https://img.shields.io/badge/Moderate-Industry_attention-yellow?style=for-the-badge&logo=newspaper&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![Negligible - No implications](https://img.shields.io/badge/Negligible-No_implications-lightgrey?style=for-the-badge&logo=gavel&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#regulatory-impact-levels) |
-| **⏱️ Availability** | [![Negligible - No impact](https://img.shields.io/badge/Negligible-No_impact-lightgrey?style=for-the-badge&logo=dollar-sign&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#financial-impact-levels) | [![Low - Minor inconvenience](https://img.shields.io/badge/Low-Minor_inconvenience-lightgreen?style=for-the-badge&logo=stop-circle&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#operational-impact-levels) | [![Low - Limited visibility](https://img.shields.io/badge/Low-Limited_visibility-lightgreen?style=for-the-badge&logo=newspaper&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#reputational-impact-levels) | [![Negligible - No implications](https://img.shields.io/badge/Negligible-No_implications-lightgrey?style=for-the-badge&logo=gavel&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#regulatory-impact-levels) |
+| Impact | Financial | Operational | Reputational | Regulatory |
+|---|---|---|---|---|
+| **🔒 Confidentiality** | Negligible | Negligible | Low | Negligible |
+| **✅ Integrity** | Negligible | Moderate | Moderate | Negligible |
+| **⏱️ Availability** | Negligible | Low | Low | Negligible |
 
-### 🛡️ Security Investment Returns
-[![ROI Level](https://img.shields.io/badge/ROI-Minimal-lightgrey?style=for-the-badge&logo=chart-line&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#security-investment-returns)
+### 🛡️ Security Investment & Strategic Position
+
+[![ROI](https://img.shields.io/badge/ROI-Minimal-lightgrey?style=for-the-badge&logo=chart-line&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#security-investment-returns)
 [![Risk Mitigation](https://img.shields.io/badge/Risk_Mitigation-15%25_Reduction-lightgrey?style=for-the-badge&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#security-investment-returns)
-[![Breach Prevention](https://img.shields.io/badge/Breach_Prevention-Under_$200_Savings-lightgrey?style=for-the-badge&logo=lock&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#security-investment-returns)
-
-### 🎯 Competitive Differentiation
 [![Market Position](https://img.shields.io/badge/Position-Competitive-green?style=for-the-badge&logo=trending-up&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#competitive-differentiation)
-[![Customer Trust](https://img.shields.io/badge/Trust-Standard_scores-green?style=for-the-badge&logo=handshake&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#competitive-differentiation)
-[![Regulatory Access](https://img.shields.io/badge/Access-Standard_access-green?style=for-the-badge&logo=key&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#competitive-differentiation)
-
-### 📈 Porter's Five Forces Strategic Impact
-[![Buyer Power](https://img.shields.io/badge/Buyer_Power-Moderate-yellow?style=flat-square&logo=users&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#porters-five-forces)
-[![Supplier Power](https://img.shields.io/badge/Supplier_Power-Reduced-lightgreen?style=flat-square&logo=handshake&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#porters-five-forces)
-[![Entry Barriers](https://img.shields.io/badge/Entry_Barriers-Moderate-yellow?style=flat-square&logo=shield-alt&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#porters-five-forces)
-[![Substitute Threat](https://img.shields.io/badge/Substitute_Threat-High-orange?style=flat-square&logo=shield&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#porters-five-forces)
-[![Rivalry](https://img.shields.io/badge/Rivalry-Competitive_Advantage-green?style=flat-square&logo=trophy&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#porters-five-forces)
+[![Customer Trust](https://img.shields.io/badge/Trust-Standard-green?style=for-the-badge&logo=handshake&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#competitive-differentiation)
 
 ---
+
+## 🤝 Contributing
+
+We welcome contributions in code, documentation, Korean cultural review, accessibility audits, and security research.
+
+- 📋 [`CONTRIBUTING.md`](./CONTRIBUTING.md) — contribution workflow
+- 🤝 [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) — community standards
+- 🔒 [`SECURITY.md`](./SECURITY.md) — responsible disclosure (use the dedicated channel; do **not** file public issues)
+- ✍️ All commits must be signed; first-time contributors sign the [CLA](https://cla-assistant.io/Hack23/blacktrigram)
+
+---
+
+## 📜 License
+
+**Apache License 2.0** — see [`LICENSE`](./LICENSE).
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FHack23%2Fblacktrigram?ref=badge_large)
+
+---
+
+<div align="center">
+
+## 🌟 Ready to Master Korean Martial Arts?
+
+**[🎮 Play → blacktrigram.com](https://blacktrigram.com/)** · **[📘 API Docs](https://hack23.github.io/blacktrigram/)** · **[📦 npm](https://www.npmjs.com/package/blacktrigram)** · **[🤖 DeepWiki](https://deepwiki.com/Hack23/blacktrigram)**
+
+_Experience authentic Korean combat techniques with anatomical precision across **5 unique fighting archetypes**, **8 trigram stances**, and **70 vital points**._
+
+### Built with 🎯 Combat Precision · 🇰🇷 Cultural Authenticity · 🔐 Radical Transparency
+
+**🥋 흑괘의 길을 걸어라 — Walk the Path of the Black Trigram 🥋**
+
+</div>

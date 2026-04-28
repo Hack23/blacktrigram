@@ -91,7 +91,7 @@ _Supports CRA Annex V § 1 - Product Description Requirements_
 | Field                  | Value                                                                                                                                             |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 📦 Product             | Black Trigram (흑괘) - Korean Martial Arts Combat Simulator                                                                                       |
-| 🏷️ Version Tag         | 0.7.24 (reflects current project state)                                                                                                      |
+| 🏷️ Version Tag         | 0.7.32 (reflects current project state)                                                                                                      |
 | 🔗 Repository          | https://github.com/Hack23/blacktrigram                                                                                                            |
 | 📧 Security Contact    | security@hack23.org                                                                                                                               |
 | 🎯 Purpose (1–2 lines) | Educational 3D combat game teaching authentic Korean martial arts through realistic anatomical targeting and traditional Eight Trigram philosophy |
@@ -270,10 +270,10 @@ GitHub Attestations: `https://github.com/Hack23/blacktrigram/attestations`
 **🎯 Release Assets Structure:**
 
 ```
-blacktrigram-0.7.24.zip               # Main application bundle
-blacktrigram-0.7.24.zip.intoto.jsonl  # SLSA provenance attestation
-blacktrigram-0.7.24.spdx.json         # SPDX SBOM
-blacktrigram-0.7.24.spdx.json.intoto.jsonl  # SBOM attestation
+blacktrigram-0.7.32.zip               # Main application bundle
+blacktrigram-0.7.32.zip.intoto.jsonl  # SLSA provenance attestation
+blacktrigram-0.7.32.spdx.json         # SPDX SBOM
+blacktrigram-0.7.32.spdx.json.intoto.jsonl  # SBOM attestation
 ```
 
 **📋 Release Notes Format:**
@@ -304,7 +304,7 @@ blacktrigram-0.7.24.spdx.json.intoto.jsonl  # SBOM attestation
 
 Thanks to @dependabot[bot] for automated security updates!
 
-**Full Changelog**: https://github.com/Hack23/blacktrigram/compare/v0.7.23...v0.7.24
+**Full Changelog**: https://github.com/Hack23/blacktrigram/compare/v0.7.31...v0.7.32
 ```
 
 **🔍 Evidence Validation Commands:**
@@ -357,7 +357,7 @@ _Supports CRA Article 28 - EU Declaration of Conformity_
 > **📝 Complete when placing product on EU market**
 
 **🏢 Manufacturer:** Hack23 AB, Stockholm, Sweden  
-**📦 Product:** Black Trigram (흑괘) 0.7.24  
+**📦 Product:** Black Trigram (흑괘) 0.7.32  
 **📋 CRA Compliance:** Self-assessment documentation supporting CRA essential cybersecurity requirements evaluation  
 **🔍 Assessment:** Self-assessment documentation per Article 24 - Standard product classification  
 **📊 Standards:** ETSI EN 303 645 (IoT Security), ISO/IEC 27001 (ISMS), OWASP ASVS (Application Security), NIST SSDF (Secure Development)
@@ -422,7 +422,7 @@ CRA assessment updated only when changes constitute "substantial modification" u
 ```markdown
 ## Current CRA Self-Assessment Evidence
 
-**🏷️ Product Version:** 0.7.24
+**🏷️ Product Version:** 0.7.32
 **📦 CRA Technical Documentation:** This assessment + [Latest Release](https://github.com/Hack23/blacktrigram/releases/latest)
 **🛡️ Security Attestations:** [GitHub Attestations](https://github.com/Hack23/blacktrigram/attestations)
 **📊 Assessment Status:** ![CRA Status](https://img.shields.io/badge/CRA_Self_Assessment-DOCUMENTED-green)
