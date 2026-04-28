@@ -1,15 +1,87 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": [
-    "./src/main.tsx",
-    "./src/index.ts",
-    "./scripts/capture-screenshots.ts",
-    "./eslint.config.js"
+    "src/main.tsx",
+    "src/index.ts",
+    "vite.config.ts",
+    "vite.lib.config.ts",
+    "vitest.config.ts",
+    "cypress.config.ts",
+    "eslint.config.js",
+    "vite-plugins/**/*.ts",
+    "generate-sitemaps.js",
+    "scripts/**/*.{ts,js,cjs,mjs}",
+    "cypress/e2e/**/*.{ts,cy.ts,spec.ts}",
+    "cypress/support/**/*.ts",
+    "cypress/plugins/**/*.{ts,js}",
+    "src/test/setup.ts",
+    "src/**/*.{test,spec}.{ts,tsx}",
+    "src/**/__tests__/**/*.{ts,tsx}",
+    "src/audio/index.ts",
+    "src/data/index.ts",
+    "src/hooks/index.ts",
+    "src/systems/index.ts",
+    "src/systems/ai/index.ts",
+    "src/systems/animation/index.ts",
+    "src/systems/audio/index.ts",
+    "src/systems/bodypart/index.ts",
+    "src/systems/breathing/index.ts",
+    "src/systems/combat/index.ts",
+    "src/systems/movement/index.ts",
+    "src/systems/physics/index.ts",
+    "src/systems/trigram/index.ts",
+    "src/systems/trigram/techniques/index.ts",
+    "src/systems/vitalpoint/index.ts",
+    "src/components/index.ts",
+    "src/components/effects/index.ts",
+    "src/components/ui/combat/index.ts",
+    "src/components/screens/combat/index.ts",
+    "src/components/screens/combat/components/index.ts",
+    "src/components/screens/combat/components/hud/index.ts",
+    "src/components/screens/combat/components/effects/index.ts",
+    "src/components/screens/combat/helpers/index.ts",
+    "src/components/screens/training/index.ts",
+    "src/components/screens/training/components/index.ts",
+    "src/components/screens/training/components/hud/index.ts",
+    "src/components/screens/endscreen/index.ts",
+    "src/components/screens/endscreen/components/index.ts",
+    "src/components/screens/controls/components/index.ts",
+    "src/components/screens/philosophy/components/index.ts",
+    "src/components/screens/philosophy/hooks/index.ts",
+    "src/components/shared/base/index.ts",
+    "src/components/shared/mobile/index.ts",
+    "src/components/shared/three/index.ts",
+    "src/components/shared/three/optimization/index.ts",
+    "src/utils/index.ts",
+    "src/utils/performance/index.ts",
+    "src/types/index.ts",
+    "src/types/constants/index.ts"
   ],
-  "project": ["**/*.{ts,tsx}"],
-  "ignore": ["src/systems/animation/**/*.test.ts", "typedoc.json"],
-  "ignoreBinaries": ["dot"],
-  "ignoreUnresolved": [],
+  "project": [
+    "src/**/*.{ts,tsx}",
+    "scripts/**/*.{ts,js,cjs,mjs}",
+    "cypress/**/*.ts",
+    "vite-plugins/**/*.ts",
+    "*.config.{ts,js,cjs,mjs}",
+    "*.{ts,js,cjs,mjs}"
+  ],
+  "ignore": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "lib/**",
+    "coverage/**",
+    "docs/**",
+    "public/**",
+    "screenshots/**",
+    "typedoc.json"
+  ],
+  "ignoreBinaries": [
+    "dot",
+    "gzip",
+    "bash",
+    "start-server-and-test"
+  ],
   "ignoreExportsUsedInFile": {
     "interface": true,
     "type": true
@@ -18,20 +90,42 @@
     "cypress-junit-reporter",
     "mocha-junit-reporter",
     "mochawesome",
+    "mochawesome-merge",
+    "mochawesome-report-generator",
+    "cypress-multi-reporters",
     "vite-bundle-analyzer",
-    "typedoc-plugin-mermaid"
+    "typedoc-plugin-mermaid",
+    "typedoc-plugin-markdown",
+    "typedoc-plugin-missing-exports",
+    "postprocessing"
   ],
   "rules": {
     "duplicates": "warn"
   },
+  "typescript": {
+    "config": [
+      "tsconfig.json",
+      "tsconfig.app.json",
+      "tsconfig.lib.json",
+      "tsconfig.node.json",
+      "tsconfig.test.json"
+    ]
+  },
   "eslint": {
     "config": ["eslint.config.js"]
+  },
+  "vite": {
+    "config": ["vite.config.ts", "vite.lib.config.ts"]
+  },
+  "vitest": {
+    "config": ["vitest.config.ts"]
   },
   "cypress": {
     "entry": [
       "cypress.config.ts",
-      "cypress/e2e/*.spec.ts",
-      "cypress/support/*.ts"
+      "cypress/e2e/**/*.{spec,cy}.{ts,tsx}",
+      "cypress/support/**/*.ts",
+      "cypress/plugins/**/*.{ts,js}"
     ]
   }
 }
