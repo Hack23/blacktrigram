@@ -119,12 +119,6 @@ function getDefaultFocusStyle(): FocusIndicatorStyle {
 }
 
 /**
- * Default focus indicator style (WCAG 2.1 Level AA compliant)
- * @deprecated Use getDefaultFocusStyle() instead for lazy computation
- */
-export const DEFAULT_FOCUS_STYLE: FocusIndicatorStyle = getDefaultFocusStyle();
-
-/**
  * Get focus indicator CSS style object
  *
  * @param isFocused - Whether element is currently focused

@@ -547,8 +547,7 @@ describe("AnimationRegistry - Uniqueness Validation", () => {
           (n) =>
             !n.startsWith("stance_") &&
             !n.endsWith("_left") &&
-            !n.endsWith("_right") &&
-            !n.includes("_legacy"),
+            !n.endsWith("_right"),
         );
         if (filtered.length > 1) {
           trueDuplicates.push(filtered);

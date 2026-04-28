@@ -28,28 +28,12 @@
 import { useMemo } from 'react';
 import { shouldUseMobileControls, getSafeAreaInsets as getDeviceSafeAreaInsets } from '../utils/deviceDetection';
 import {
-  RESPONSIVE_BREAKPOINTS,
   getScreenSize,
   calculateResponsiveValues,
   createTransitionString,
 } from '../systems/ResponsiveScaling';
 
 import type { ScreenSize } from '../systems/ResponsiveScaling';
-
-/**
- * Breakpoints for responsive design
- * @deprecated Use RESPONSIVE_BREAKPOINTS from ResponsiveScaling instead
- */
-export const BREAKPOINTS = {
-  /** Extra small mobile devices (iPhone SE) */
-  MOBILE_SMALL: 375,
-  /** Standard mobile devices */
-  MOBILE: RESPONSIVE_BREAKPOINTS.MOBILE,
-  /** Tablet devices */
-  TABLET: RESPONSIVE_BREAKPOINTS.TABLET,
-  /** Desktop devices */
-  DESKTOP: RESPONSIVE_BREAKPOINTS.LARGE,
-} as const;
 
 /**
  * Touch target sizes following iOS Human Interface Guidelines

@@ -249,7 +249,7 @@ function calculateHitAccuracy(
     // Convert reach from meters to training scene units.
     // Training scenes are authored in real-world meters, so we intentionally
     // use a 1:1 conversion here (METERS_TO_TRAINING_UNITS = 1.0).
-    // Combat AI uses METERS_TO_PIXELS_SCALE (100) for pixel coordinates.
+    // Combat AI works in pixel coordinates with a dynamic px/m ratio.
     const reachInUnits = maxReachMeters * METERS_TO_TRAINING_UNITS;
 
     // STRICT DISTANCE CHECK (matches CombatSystem behavior):
@@ -263,7 +263,7 @@ function calculateHitAccuracy(
     return Math.max(0.7, 1.0 - (effectiveDistance / reachInUnits) * 0.3);
   }
 
-  // Fallback: use default punch reach (0.7 meters) for legacy behavior
+  // Fallback: use default punch reach (0.7 meters) when no reach config is supplied.
   const defaultReach = 0.7 * METERS_TO_TRAINING_UNITS;
   if (effectiveDistance > defaultReach) {
     return 0; // Out of reach = miss

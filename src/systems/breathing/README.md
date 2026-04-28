@@ -197,16 +197,6 @@ const updatedPlayer = updateBreathingDisruption(
 - Applies gradual recovery when torso health > 50%
 - Maintains effect state for ongoing disruption
 
-#### `upgradeLegacyBreathlessness()`
-
-Convert legacy breathlessness effects to new system:
-
-```typescript
-const upgraded = upgradeLegacyBreathlessness(player, timestamp);
-```
-
-Automatically upgrades old-style breathlessness status effects to use the new breathing disruption system with proper stamina regen penalties.
-
 ## 🔄 Integration with Combat System
 
 ### Vital Point Strike Flow

@@ -19,7 +19,6 @@ export {
   applyBreathingDisruptionFromVitalPoint,
   applyBreathingDisruptionFromTorsoDamage,
   updateBreathingDisruption,
-  upgradeLegacyBreathlessness,
 } from "./integration";
 
 export {

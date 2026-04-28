@@ -94,7 +94,6 @@ describe("TechniqueCard", () => {
     isMobile: false,
     playerArchetype: PlayerArchetype.MUSA,
     playerStance: TrigramStance.GEON,
-    position: { x: 0, y: 0 },
   };
 
   beforeEach(() => {

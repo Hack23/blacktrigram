@@ -105,15 +105,6 @@ export const BASE_MOVEMENT_ACCELERATION = 30.0 as const;
 export const REFERENCE_PIXELS_PER_METER = 100 as const;
 
 /**
- * @deprecated Use `bounds.width / bounds.worldWidthMeters` for dynamic conversion.
- * This constant is kept for backward compatibility only.
- *
- * Legacy conversion factor from meters to pixels. The actual ratio now varies
- * by screen resolution and arena size.
- */
-export const METERS_TO_PIXELS_SCALE = 100 as const;
-
-/**
  * Conversion factor from meters to training scene units.
  *
  * **Korean**: 미터-훈련 단위 변환
@@ -171,12 +162,6 @@ export const METERS_TO_TRAINING_UNITS = 1.0 as const;
  * @korean 기본몸체반경
  */
 export const DEFAULT_BODY_RADIUS_METERS = 0.23 as const;
-
-/**
- * @deprecated Use DEFAULT_BODY_RADIUS_METERS or calculateBodyRadius() instead.
- * Kept for backward compatibility.
- */
-export const BODY_RADIUS_METERS = DEFAULT_BODY_RADIUS_METERS;
 
 /**
  * Standard arena sizes in meters (4:3 aspect ratio).

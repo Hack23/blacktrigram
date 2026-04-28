@@ -11,7 +11,6 @@ import {
   applyBreathingDisruptionFromVitalPoint,
   applyBreathingDisruptionFromTorsoDamage,
   updateBreathingDisruption,
-  upgradeLegacyBreathlessness,
 } from "./integration";
 import {
   BreathingDisruptionSystem,
@@ -20,7 +19,6 @@ import {
 import { createMockPlayerState } from "../../test/test-utils";
 import { VitalPointCategory, VitalPointEffectType, VitalPointSeverity, TrigramStance } from "../../types";
 import { VitalPoint } from "../vitalpoint/types";
-import { EffectIntensity } from "../effects";
 
 describe("Breathing Disruption Integration", () => {
   let mockPlayer: ReturnType<typeof createMockPlayerState>;
@@ -344,74 +342,6 @@ describe("Breathing Disruption Integration", () => {
       if (effect) {
         expect(Math.abs(effect.endTime - initialEndTime)).toBeLessThan(1);
       }
-    });
-  });
-
-  describe("Legacy Effect Upgrade", () => {
-    it("should upgrade legacy breathlessness effects to new system", () => {
-      // Create player with legacy breathlessness effect
-      const legacyEffect = {
-        id: "legacy_breathless",
-        type: VitalPointEffectType.BREATHLESSNESS,
-        intensity: EffectIntensity.HIGH,
-        duration: 3000,
-        description: { korean: "호흡 곤란", english: "Breathing difficulty" },
-        stackable: false,
-        source: "Legacy Strike",
-        startTime: timestamp,
-        endTime: timestamp + 3000,
-      };
-
-      const playerWithLegacy = {
-        ...mockPlayer,
-        statusEffects: [legacyEffect],
-      };
-
-      const upgraded = upgradeLegacyBreathlessness(playerWithLegacy, timestamp);
-
-      const activeEffect = BreathingDisruptionSystem.getActiveEffect(upgraded);
-      expect(activeEffect).toBeDefined();
-      expect(activeEffect?.level).toBe(BreathingDisruptionLevel.SEVERELY_WINDED);
-      if (activeEffect) {
-        expect("staminaRegenMultiplier" in activeEffect).toBe(true);
-      }
-    });
-
-    it("should map legacy intensity to appropriate disruption level", () => {
-      const testCases = [
-        { intensity: EffectIntensity.LOW, expectedLevel: BreathingDisruptionLevel.WINDED },
-        { intensity: EffectIntensity.MEDIUM, expectedLevel: BreathingDisruptionLevel.GASPING },
-        { intensity: EffectIntensity.HIGH, expectedLevel: BreathingDisruptionLevel.SEVERELY_WINDED },
-      ];
-
-      for (const { intensity, expectedLevel } of testCases) {
-        const legacyEffect = {
-          id: "legacy_test",
-          type: VitalPointEffectType.BREATHLESSNESS,
-          intensity,
-          duration: 3000,
-          description: { korean: "테스트", english: "Test" },
-          stackable: false,
-          source: "Test",
-          startTime: timestamp,
-          endTime: timestamp + 3000,
-        };
-
-        const playerWithLegacy = {
-          ...mockPlayer,
-          statusEffects: [legacyEffect],
-        };
-
-        const upgraded = upgradeLegacyBreathlessness(playerWithLegacy, timestamp);
-        const activeEffect = BreathingDisruptionSystem.getActiveEffect(upgraded);
-
-        expect(activeEffect?.level).toBe(expectedLevel);
-      }
-    });
-
-    it("should not modify player state when no legacy effects exist", () => {
-      const upgraded = upgradeLegacyBreathlessness(mockPlayer, timestamp);
-      expect(upgraded).toBe(mockPlayer); // Should return same reference
     });
   });
 

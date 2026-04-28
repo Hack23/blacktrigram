@@ -221,7 +221,6 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
                   isMobile={isMobile}
                   playerArchetype={player.archetype}
                   playerStance={player.currentStance}
-                  position={{ x: cardX, y: 0 }}
                 />
               </div>
             );
