@@ -80,7 +80,7 @@ Black Trigram applies defense-in-depth supply-chain controls aligned with the [H
 
 | Control | Implementation | Workflow |
 |---|---|---|
-| **OSSF Scorecard** | Automated weekly scoring; results published to `dependabot` and the dashboard | [`scorecards.yml`](./.github/workflows/scorecards.yml) |
+| **OSSF Scorecard** | Automated weekly scoring; SARIF uploaded to GitHub code scanning and results published to the OpenSSF API | [`scorecards.yml`](./.github/workflows/scorecards.yml) |
 | **OpenSSF Best Practices** | Project ID **10777** maintained at passing tier | [bestpractices.dev/projects/10777](https://www.bestpractices.dev/projects/10777) |
 | **SLSA Level 3 Provenance** | Every release ships a signed `intoto.jsonl` build attestation | [`/attestations`](https://github.com/Hack23/blacktrigram/attestations) |
 | **CycloneDX SBOM** | SPDX + CycloneDX SBOM published with every GitHub Release | [`release.yml`](./.github/workflows/release.yml) |

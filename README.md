@@ -629,8 +629,8 @@ npm run build
 
 # Run tests
 npm run test           # Vitest unit
-npm run test:combat    # combat-system focused
-npm run cypress:run    # Cypress E2E
+npm run test:systems   # combat-system focused
+npm run test:e2e       # Cypress E2E
 
 # Generate API docs (TypeDoc)
 npm run docs

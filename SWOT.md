@@ -57,9 +57,9 @@ This document provides a strategic analysis of the Black Trigram Korean martial 
 
 ## SWOT Overview
 
-### Q1 2026 SWOT Quadrant Chart
+### Q2 2026 SWOT Quadrant Chart
 
-**Strategic Context:** This quadrant chart visualizes Black Trigram's Q1 2026 strategic positioning based on **actual measured metrics** from game-status.md: 9.4/10 overall rating, ~75% test coverage, 70/70 vital points (100% complete), 8/8 trigram stances functional, 100% combat realism systems complete (13/13), 60fps desktop performance, 55fps+ mobile performance.
+**Strategic Context:** This quadrant chart visualizes Black Trigram's Q2 2026 strategic positioning based on **actual measured metrics** from game-status.md: 9.4/10 overall rating, ~75% test coverage, 70/70 vital points (100% complete), 8/8 trigram stances functional, 100% combat realism systems complete (13/13), 60fps desktop performance, 55fps+ mobile performance.
 
 ```mermaid
 %%{init: {
@@ -86,7 +86,7 @@ This document provides a strategic analysis of the Black Trigram Korean martial 
   }
 }}%%
 quadrantChart
-    title Black Trigram (흑괘) Q1 2026 SWOT Analysis
+    title Black Trigram (흑괘) Q2 2026 SWOT Analysis
     x-axis Internal --> External
     y-axis Negative --> Positive
     quadrant-1 Opportunities
@@ -455,8 +455,8 @@ Black Trigram has established several key strengths that provide a solid foundat
 | Weakness Category | Impact | Key Metric | Source | Mitigation Plan |
 |-------------------|--------|------------|--------|-----------------|
 | **No Backend/Persistence** | High | Session-only storage, no cloud saves | Architecture review | AWS backend v2.0 (2028), IndexedDB v1.0 |
-| **Mobile Performance** | High | 30-45fps (target: 55-60fps) | Performance benchmarks | Optimization Q2-Q3 2026 |
-| **Combat Realism Incomplete** | Medium | 100% complete (13/13 systems) | game-status.md | Complete Q2-Q3 2026 |
+| **Mobile Performance Headroom** | Medium | 55fps+ achieved (target: sustained 60fps) | Performance benchmarks | Continued optimization Q2-Q3 2026 |
+| **Test Coverage Gap** | Medium | ~75% (target: 80%+ for v1.0) | game-status.md / vitest report | Coverage push Q2 2026 |
 | **No Monetization** | Medium | $0 revenue, no payment system | Business analysis | Ethical F2P planned post-v1.0 |
 | **Unknown Brand** | High | 0 players, no community | Market analysis | Community building 2026-2027 |
 | **Niche Market** | Medium | Korean martial arts focus | Market analysis | Expand to broader martial arts |
@@ -473,17 +473,16 @@ mindmap
       id1.3[No multiplayer capability]
       id1.4[Limited long-term engagement]
       id1.5[AWS backend planned v2.0 2028]
-    id2(Mobile Performance 30-45fps)
-      id2.1[Target: 55-60fps not achieved]
-      id2.2[Mobile browser optimization needed]
+    id2(Mobile Performance Headroom)
+      id2.1[Currently 55fps+, target sustained 60fps]
+      id2.2[Mobile browser optimization continues]
       id2.3[Particle system overhead]
       id2.4[Q2-Q3 2026 optimization priority]
-    id3(Combat Realism 100% Complete)
-      id3.1[13/13 systems complete]
-      id3.2[Injury-based movement 10%]
-      id3.3[Bone impact audio 0%]
-      id3.4[Trauma visualization 65%]
-      id3.5[Complete by v1.0 Q2-Q3 2026]
+    id3(Test Coverage Gap ~75%)
+      id3.1[Target 80%+ for v1.0]
+      id3.2[Coverage push Q2 2026]
+      id3.3[Combat realism: 13/13 ✅ complete]
+      id3.4[518 tests passing today]
     id4(No Monetization Yet)
       id4.1[No payment system]
       id4.2[No revenue stream]
