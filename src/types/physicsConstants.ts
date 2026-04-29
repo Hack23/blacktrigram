@@ -119,7 +119,7 @@ export const REFERENCE_PIXELS_PER_METER = 100 as const;
  * @category Coordinate Constants
  * @korean 미터-픽셀변환 (구형)
  */
-export const METERS_TO_PIXELS_SCALE = 100 as const;
+export const METERS_TO_PIXELS_SCALE = REFERENCE_PIXELS_PER_METER;
 
 /**
  * Conversion factor from meters to training scene units.

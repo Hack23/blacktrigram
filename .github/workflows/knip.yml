@@ -60,7 +60,22 @@ jobs:
             if [ -f knip-report.json ] && [ -s knip-report.json ]; then
               node -e '
                 const fs = require("fs");
-                const data = JSON.parse(fs.readFileSync("knip-report.json", "utf8"));
+                const raw = fs.readFileSync("knip-report.json", "utf8");
+                let data;
+                try {
+                  data = JSON.parse(raw);
+                } catch (err) {
+                  console.log("_Knip JSON report could not be parsed (non-JSON output, likely a Knip runtime error). See the text report below._");
+                  console.log("");
+                  console.log("<details><summary>Parse error</summary>");
+                  console.log("");
+                  console.log("```");
+                  console.log(String(err && err.message ? err.message : err));
+                  console.log("```");
+                  console.log("");
+                  console.log("</details>");
+                  process.exit(0);
+                }
                 const counts = { files: 0, dependencies: 0, devDependencies: 0, unlisted: 0, binaries: 0, unresolved: 0, exports: 0, types: 0, enumMembers: 0, duplicates: 0 };
                 for (const it of data.issues || []) {
                   for (const k of Object.keys(counts)) {

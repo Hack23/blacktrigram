@@ -547,7 +547,11 @@ describe("AnimationRegistry - Uniqueness Validation", () => {
           (n) =>
             !n.startsWith("stance_") &&
             !n.endsWith("_left") &&
-            !n.endsWith("_right"),
+            !n.endsWith("_right") &&
+            // Intentional backward-compat aliases (e.g. `gan_rock_defense_legacy`
+            // → canonical `gan_rock_defense`) share bone rotations with their
+            // canonical entry by design and must not count as true duplicates.
+            !n.endsWith("_legacy"),
         );
         if (filtered.length > 1) {
           trueDuplicates.push(filtered);

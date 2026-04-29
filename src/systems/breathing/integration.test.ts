@@ -11,13 +11,21 @@ import {
   applyBreathingDisruptionFromVitalPoint,
   applyBreathingDisruptionFromTorsoDamage,
   updateBreathingDisruption,
+  upgradeLegacyBreathlessness,
 } from "./integration";
 import {
   BreathingDisruptionSystem,
   BreathingDisruptionLevel,
 } from "./BreathingDisruptionSystem";
 import { createMockPlayerState } from "../../test/test-utils";
-import { VitalPointCategory, VitalPointSeverity, TrigramStance } from "../../types";
+import {
+  VitalPointCategory,
+  VitalPointSeverity,
+  TrigramStance,
+  VitalPointEffectType,
+} from "../../types";
+import { EffectIntensity } from "../effects";
+import { StatusEffect } from "../types";
 import { VitalPoint } from "../vitalpoint/types";
 
 describe("Breathing Disruption Integration", () => {
@@ -365,6 +373,76 @@ describe("Breathing Disruption Integration", () => {
       const avgTime = (endTime - startTime) / iterations;
 
       expect(avgTime).toBeLessThan(0.1); // Average < 0.1ms per update (60fps compatible)
+    });
+  });
+
+  describe("upgradeLegacyBreathlessness (deprecated migration shim)", () => {
+    const buildLegacyBreathlessness = (
+      intensity: EffectIntensity
+    ): StatusEffect => ({
+      id: `legacy-breathlessness-${intensity}`,
+      type: VitalPointEffectType.BREATHLESSNESS,
+      intensity,
+      duration: 5000,
+      description: {
+        korean: "\uad6c\ud615 \ud638\ud761\uace4\ub780",
+        english: "Legacy breathlessness",
+      },
+      stackable: false,
+      source: "legacy-test",
+      startTime: 0,
+      endTime: 5000,
+    });
+
+    it("returns the same player reference when there are no legacy effects", () => {
+      const result = upgradeLegacyBreathlessness(mockPlayer, timestamp);
+      expect(result).toBe(mockPlayer);
+    });
+
+    it("upgrades a legacy BREATHLESSNESS effect to a BreathingDisruptionEffect", () => {
+      const legacy = buildLegacyBreathlessness(EffectIntensity.MEDIUM);
+      const playerWithLegacy = {
+        ...mockPlayer,
+        statusEffects: [...mockPlayer.statusEffects, legacy],
+      };
+
+      const upgraded = upgradeLegacyBreathlessness(playerWithLegacy, timestamp);
+
+      // Legacy effect must be removed.
+      expect(
+        upgraded.statusEffects.some((e) => e.id === legacy.id)
+      ).toBe(false);
+
+      // A new disruption effect with a `level` field must be present.
+      const newEffect = upgraded.statusEffects.find(
+        (e) =>
+          e.type === VitalPointEffectType.BREATHLESSNESS && "level" in e
+      );
+      expect(newEffect).toBeDefined();
+      expect(newEffect && "level" in newEffect).toBe(true);
+    });
+
+    it("preserves already-upgraded breathing disruption effects", () => {
+      const upgradedEffect = BreathingDisruptionSystem.createEffect(
+        BreathingDisruptionLevel.WINDED,
+        "existing",
+        timestamp
+      );
+      const playerWithUpgraded = {
+        ...mockPlayer,
+        statusEffects: [...mockPlayer.statusEffects, upgradedEffect],
+      };
+
+      const result = upgradeLegacyBreathlessness(
+        playerWithUpgraded,
+        timestamp
+      );
+
+      // No legacy effects → same reference returned.
+      expect(result).toBe(playerWithUpgraded);
+      expect(
+        result.statusEffects.some((e) => e.id === upgradedEffect.id)
+      ).toBe(true);
     });
   });
 });
