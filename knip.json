@@ -11,7 +11,7 @@
     "vite-plugins/**/*.ts",
     "generate-sitemaps.js",
     "scripts/**/*.{ts,js,cjs,mjs}",
-    "cypress/e2e/**/*.{ts,cy.ts,spec.ts}",
+    "cypress/e2e/**/*.{spec,cy}.{ts,tsx}",
     "cypress/support/**/*.ts",
     "cypress/plugins/**/*.{ts,js}",
     "src/test/setup.ts",

@@ -36,6 +36,15 @@ import {
 import type { ScreenSize } from '../systems/ResponsiveScaling';
 
 /**
+ * Width breakpoint (in CSS pixels) below which devices are treated as
+ * extra-small mobile (e.g. iPhone SE). Kept local to this hook because the
+ * wider responsive scaling system uses a different bucketing scheme
+ * (mobile / tablet / desktop / large / xlarge) that does not expose this
+ * sub-mobile threshold.
+ */
+const SMALL_MOBILE_MAX_WIDTH = 375;
+
+/**
  * Touch target sizes following iOS Human Interface Guidelines
  */
 export interface TouchTargets {
@@ -178,8 +187,8 @@ export function useResponsiveLayout(
     // Device type detection using robust device detection utility
     // Combines user-agent and screen size for reliable mobile detection
     const isMobile = shouldUseMobileControls();
-    // 375px = iPhone SE / extra-small mobile devices breakpoint
-    const isSmallMobile = width <= 375;
+    // Extra-small mobile (e.g. iPhone SE) detection
+    const isSmallMobile = width <= SMALL_MOBILE_MAX_WIDTH;
     const isTablet = screenSize === 'tablet';
     const isDesktop = screenSize === 'desktop' || screenSize === 'large' || screenSize === 'xlarge';
     const isLandscape = width > height;
