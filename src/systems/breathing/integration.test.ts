@@ -454,7 +454,8 @@ describe("Breathing Disruption Integration", () => {
         );
         expect(newEffect).toBeDefined();
         expect(
-          (newEffect as { readonly level: BreathingDisruptionLevel }).level
+          (newEffect as unknown as { readonly level: BreathingDisruptionLevel })
+            .level
         ).toBe(expectedLevel);
       }
     );
