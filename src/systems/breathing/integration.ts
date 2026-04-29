@@ -378,15 +378,22 @@ export function upgradeLegacyBreathlessness(
   const legacyEffect = legacyEffects[0]; // Use first/strongest effect
   let level: BreathingDisruptionLevel;
 
-  // Map legacy intensity to new disruption levels
+  // Map legacy intensity to new disruption levels.
+  // Legacy `BREATHLESSNESS` effects can carry any `EffectIntensity` value
+  // (see `EffectIntensity` enum in `systems/effects.ts` — `weak`, `minor`,
+  // `low`, `medium`, `moderate`, `high`, `severe`, `critical`, `extreme`).
+  // Highest-tier intensities (`extreme`, `critical`, `severe`, `high`) map
+  // to `SEVERELY_WINDED`; mid-tier (`moderate`, `medium`) map to `GASPING`;
+  // everything else (`low`, `minor`, `weak`, unknown) maps to `WINDED`.
   switch (legacyEffect.intensity) {
-    case "high":
-    case "severe":
+    case "extreme":
     case "critical":
+    case "severe":
+    case "high":
       level = BreathingDisruptionLevel.SEVERELY_WINDED;
       break;
-    case "medium":
     case "moderate":
+    case "medium":
       level = BreathingDisruptionLevel.GASPING;
       break;
     default:

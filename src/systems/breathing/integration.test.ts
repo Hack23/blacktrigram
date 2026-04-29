@@ -422,6 +422,43 @@ describe("Breathing Disruption Integration", () => {
       expect(newEffect && "level" in newEffect).toBe(true);
     });
 
+    // Table-driven mapping: lock down the legacy intensity → disruption level
+    // contract for every `EffectIntensity` value the data model can produce.
+    // Highest-tier (EXTREME / CRITICAL / SEVERE / HIGH) → SEVERELY_WINDED;
+    // mid-tier (MODERATE / MEDIUM) → GASPING; everything else → WINDED.
+    it.each([
+      [EffectIntensity.EXTREME, BreathingDisruptionLevel.SEVERELY_WINDED],
+      [EffectIntensity.CRITICAL, BreathingDisruptionLevel.SEVERELY_WINDED],
+      [EffectIntensity.SEVERE, BreathingDisruptionLevel.SEVERELY_WINDED],
+      [EffectIntensity.HIGH, BreathingDisruptionLevel.SEVERELY_WINDED],
+      [EffectIntensity.MODERATE, BreathingDisruptionLevel.GASPING],
+      [EffectIntensity.MEDIUM, BreathingDisruptionLevel.GASPING],
+      [EffectIntensity.LOW, BreathingDisruptionLevel.WINDED],
+      [EffectIntensity.MINOR, BreathingDisruptionLevel.WINDED],
+      [EffectIntensity.WEAK, BreathingDisruptionLevel.WINDED],
+    ] as const)(
+      "maps legacy intensity %s to BreathingDisruptionLevel %s",
+      (intensity, expectedLevel) => {
+        const legacy = buildLegacyBreathlessness(intensity);
+        const upgraded = upgradeLegacyBreathlessness(
+          {
+            ...mockPlayer,
+            statusEffects: [...mockPlayer.statusEffects, legacy],
+          },
+          timestamp
+        );
+
+        const newEffect = upgraded.statusEffects.find(
+          (e) =>
+            e.type === VitalPointEffectType.BREATHLESSNESS && "level" in e
+        );
+        expect(newEffect).toBeDefined();
+        expect(
+          (newEffect as { readonly level: BreathingDisruptionLevel }).level
+        ).toBe(expectedLevel);
+      }
+    );
+
     it("preserves already-upgraded breathing disruption effects", () => {
       const upgradedEffect = BreathingDisruptionSystem.createEffect(
         BreathingDisruptionLevel.WINDED,
