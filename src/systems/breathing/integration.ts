@@ -21,11 +21,13 @@
 
 import { VitalPoint } from "../vitalpoint/types";
 import { PlayerState } from "../player";
+import { StatusEffect } from "../types";
 import {
   BreathingDisruptionSystem,
   BreathingDisruptionLevel,
   BreathingDisruptionEffect,
 } from "./BreathingDisruptionSystem";
+import { VitalPointEffectType } from "@/types";
 
 /**
  * Torso vital point IDs that cause breathing disruption.
@@ -330,4 +332,75 @@ export function updateBreathingDisruption(
 
   // No recovery, effect continues normally
   return player;
+}
+
+/**
+ * Replace legacy BREATHLESSNESS effects with new breathing disruption system.
+ *
+ * **Korean**: 구형 호흡곤란 효과를 신규 시스템으로 전환
+ *
+ * Upgrades old-style breathlessness status effects to use the new
+ * breathing disruption system with proper stamina regen penalties.
+ *
+ * @deprecated Retained as a backward-compatibility migration helper for
+ * consumers still producing legacy `BREATHLESSNESS` status effects without a
+ * `level` field. New code should produce {@link BreathingDisruptionEffect}
+ * instances directly via {@link BreathingDisruptionSystem.createEffect}. This
+ * helper will be removed in a future major release.
+ *
+ * @param player - Player state with legacy effects
+ * @param timestamp - Current game time
+ * @returns Player state with upgraded breathing disruption effects
+ */
+export function upgradeLegacyBreathlessness(
+  player: PlayerState,
+  timestamp: number
+): PlayerState {
+  // Find legacy breathlessness effects (without breathing disruption level)
+  const legacyEffects = player.statusEffects.filter(
+    (effect): effect is StatusEffect =>
+      effect.type === VitalPointEffectType.BREATHLESSNESS &&
+      !("level" in effect)
+  );
+
+  if (legacyEffects.length === 0) {
+    return player;
+  }
+
+  // Remove legacy effects
+  const nonLegacyEffects = player.statusEffects.filter(
+    (effect) =>
+      effect.type !== VitalPointEffectType.BREATHLESSNESS ||
+      "level" in effect
+  );
+
+  // Create new breathing disruption effect based on legacy effect intensity
+  const legacyEffect = legacyEffects[0]; // Use first/strongest effect
+  let level: BreathingDisruptionLevel;
+
+  // Map legacy intensity to new disruption levels
+  switch (legacyEffect.intensity) {
+    case "high":
+    case "severe":
+    case "critical":
+      level = BreathingDisruptionLevel.SEVERELY_WINDED;
+      break;
+    case "medium":
+    case "moderate":
+      level = BreathingDisruptionLevel.GASPING;
+      break;
+    default:
+      level = BreathingDisruptionLevel.WINDED;
+  }
+
+  const newEffect = BreathingDisruptionSystem.createEffect(
+    level,
+    legacyEffect.source || "Legacy Effect",
+    timestamp
+  );
+
+  return {
+    ...player,
+    statusEffects: [...nonLegacyEffects, newEffect],
+  };
 }

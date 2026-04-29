@@ -57,6 +57,10 @@ import {
   JIN_THUNDER_FLASH_ANIMATION,
 } from "./JinTechniqueAnimations";
 
+// Backward-compat: legacy ID `gan_rock_defense_legacy` maps to the canonical
+// comprehensive Gan rock-defense animation in GanTechniqueAnimations.
+import { GAN_ROCK_DEFENSE_ANIMATION } from "./GanTechniqueAnimations";
+
 // ═══════════════════════════════════════════════════════════════════════════
 // DEFAULT SHOULDER WIDTH CONSTANT
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1919,6 +1923,9 @@ export const STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
     ["gam_wrist_twist_counter", GAM_WRIST_TWIST_COUNTER_ANIMATION],
 
     // Gan (간) - Mountain
+    // Backward compatibility for legacy external callers; canonical ID is
+    // `gan_rock_defense` (registered in AnimationRegistry).
+    ["gan_rock_defense_legacy", GAN_ROCK_DEFENSE_ANIMATION],
     ["gan_immovable_stance", GAN_IMMOVABLE_STANCE_ANIMATION],
     ["gan_iron_block", GAN_IRON_BLOCK_ANIMATION],
     ["gan_counter_strike", GAN_COUNTER_STRIKE_ANIMATION],

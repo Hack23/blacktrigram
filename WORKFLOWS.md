@@ -693,9 +693,9 @@ The project uses a comprehensive `knip.json` that covers:
 Developers can run knip locally before pushing:
 
 ```bash
-npm run knip            # full report
-npm run find:unused     # alias for npm run knip
-npx knip --reporter json > knip-report.json
+npm run knip                          # full report
+npm run find:unused                   # alias for npm run knip
+npm run knip -- --reporter json > knip-report.json
 ```
 
 ## Workflow Integration & Dependencies
