@@ -178,7 +178,8 @@ export function useResponsiveLayout(
     // Device type detection using robust device detection utility
     // Combines user-agent and screen size for reliable mobile detection
     const isMobile = shouldUseMobileControls();
-    const isSmallMobile = width <= BREAKPOINTS.MOBILE_SMALL;
+    // 375px = iPhone SE / extra-small mobile devices breakpoint
+    const isSmallMobile = width <= 375;
     const isTablet = screenSize === 'tablet';
     const isDesktop = screenSize === 'desktop' || screenSize === 'large' || screenSize === 'xlarge';
     const isLandscape = width > height;

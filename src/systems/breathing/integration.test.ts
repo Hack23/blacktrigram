@@ -17,7 +17,7 @@ import {
   BreathingDisruptionLevel,
 } from "./BreathingDisruptionSystem";
 import { createMockPlayerState } from "../../test/test-utils";
-import { VitalPointCategory, VitalPointEffectType, VitalPointSeverity, TrigramStance } from "../../types";
+import { VitalPointCategory, VitalPointSeverity, TrigramStance } from "../../types";
 import { VitalPoint } from "../vitalpoint/types";
 
 describe("Breathing Disruption Integration", () => {

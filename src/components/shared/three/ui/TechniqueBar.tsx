@@ -198,7 +198,6 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
           }}
         >
           {techniques.map((technique, index) => {
-            const cardX = index * (layout.cardWidth + layout.gap);
             const cooldownRemaining = cooldowns.get(technique.id) ?? 0;
             const available = isAvailable(technique);
 
