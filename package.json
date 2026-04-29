@@ -186,7 +186,7 @@
     "three": "0.184.0"
   },
   "devDependencies": {
-    "@aws-sdk/client-bedrock-runtime": "3.1038.0",
+    "@aws-sdk/client-bedrock-runtime": "3.1039.0",
     "@eslint/js": "10.0.1",
     "@react-three/drei": "10.7.7",
     "@react-three/fiber": "9.6.1",
@@ -202,7 +202,7 @@
     "@vitejs/plugin-react": "6.0.1",
     "@vitest/coverage-v8": "4.1.5",
     "@vitest/ui": "4.1.5",
-    "cypress": "15.14.1",
+    "cypress": "15.14.2",
     "cypress-junit-reporter": "1.3.1",
     "cypress-multi-reporters": "2.0.5",
     "cypress-wait-until": "3.0.2",
@@ -214,7 +214,7 @@
     "globals": "17.5.0",
     "jest-axe": "10.0.0",
     "jsdom": "29.1.0",
-    "knip": "6.8.0",
+    "knip": "6.9.0",
     "license-compliance": "3.0.1",
     "mocha-junit-reporter": "2.2.1",
     "mochawesome": "7.1.4",
