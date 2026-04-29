@@ -28,6 +28,7 @@
 import { useMemo } from 'react';
 import { shouldUseMobileControls, getSafeAreaInsets as getDeviceSafeAreaInsets } from '../utils/deviceDetection';
 import {
+  RESPONSIVE_BREAKPOINTS,
   getScreenSize,
   calculateResponsiveValues,
   createTransitionString,
@@ -43,6 +44,30 @@ import type { ScreenSize } from '../systems/ResponsiveScaling';
  * sub-mobile threshold.
  */
 const SMALL_MOBILE_MAX_WIDTH = 375;
+
+/**
+ * Breakpoints for responsive design exposed by this hook.
+ *
+ * @deprecated Prefer `RESPONSIVE_BREAKPOINTS` from `../systems/ResponsiveScaling`
+ * for the standard mobile / tablet / desktop tiers. This object is retained as
+ * a backward-compatible shim for existing tests and external consumers and
+ * additionally exposes the hook-local `MOBILE_SMALL` (iPhone SE) threshold.
+ */
+export const BREAKPOINTS = Object.freeze({
+  /** Extra small mobile devices (iPhone SE) */
+  MOBILE_SMALL: SMALL_MOBILE_MAX_WIDTH,
+  /** Standard mobile devices */
+  MOBILE: RESPONSIVE_BREAKPOINTS.MOBILE,
+  /** Tablet devices */
+  TABLET: RESPONSIVE_BREAKPOINTS.TABLET,
+  /** Desktop devices */
+  DESKTOP: RESPONSIVE_BREAKPOINTS.LARGE,
+}) as {
+  readonly MOBILE_SMALL: number;
+  readonly MOBILE: number;
+  readonly TABLET: number;
+  readonly DESKTOP: number;
+};
 
 /**
  * Touch target sizes following iOS Human Interface Guidelines

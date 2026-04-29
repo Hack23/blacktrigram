@@ -48,7 +48,7 @@ jobs:
         if: always()
         run: |
           set +e
-          npx knip --reporter json > knip-report.json 2>/dev/null || true
+          npm run --silent knip -- --reporter json > knip-report.json
           set -e
 
       - name: Build job summary
