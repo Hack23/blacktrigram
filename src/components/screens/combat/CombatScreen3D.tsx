@@ -2518,7 +2518,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         const stanceIndex = parseInt(key) - 1;
         const stances: TrigramStance[] = [
           TrigramStance.GEON,
-          TrigramStance.TAE,
+          // TrigramStance.TAE,
           TrigramStance.LI,
           TrigramStance.JIN,
           TrigramStance.SON,
