@@ -336,12 +336,18 @@ export function updateBreathingDisruption(
 
 /**
  * Replace legacy BREATHLESSNESS effects with new breathing disruption system.
- * 
+ *
  * **Korean**: 구형 호흡곤란 효과를 신규 시스템으로 전환
- * 
+ *
  * Upgrades old-style breathlessness status effects to use the new
  * breathing disruption system with proper stamina regen penalties.
- * 
+ *
+ * @deprecated Retained as a backward-compatibility migration helper for
+ * consumers still producing legacy `BREATHLESSNESS` status effects without a
+ * `level` field. New code should produce {@link BreathingDisruptionEffect}
+ * instances directly via {@link BreathingDisruptionSystem.createEffect}. This
+ * helper will be removed in a future major release.
+ *
  * @param player - Player state with legacy effects
  * @param timestamp - Current game time
  * @returns Player state with upgraded breathing disruption effects
@@ -356,7 +362,7 @@ export function upgradeLegacyBreathlessness(
       effect.type === VitalPointEffectType.BREATHLESSNESS &&
       !("level" in effect)
   );
-  
+
   if (legacyEffects.length === 0) {
     return player;
   }
@@ -367,32 +373,39 @@ export function upgradeLegacyBreathlessness(
       effect.type !== VitalPointEffectType.BREATHLESSNESS ||
       "level" in effect
   );
-  
+
   // Create new breathing disruption effect based on legacy effect intensity
   const legacyEffect = legacyEffects[0]; // Use first/strongest effect
   let level: BreathingDisruptionLevel;
-  
-  // Map legacy intensity to new disruption levels
+
+  // Map legacy intensity to new disruption levels.
+  // Legacy `BREATHLESSNESS` effects can carry any `EffectIntensity` value
+  // (see `EffectIntensity` enum in `systems/effects.ts` — `weak`, `minor`,
+  // `low`, `medium`, `moderate`, `high`, `severe`, `critical`, `extreme`).
+  // Highest-tier intensities (`extreme`, `critical`, `severe`, `high`) map
+  // to `SEVERELY_WINDED`; mid-tier (`moderate`, `medium`) map to `GASPING`;
+  // everything else (`low`, `minor`, `weak`, unknown) maps to `WINDED`.
   switch (legacyEffect.intensity) {
-    case "high":
-    case "severe":
+    case "extreme":
     case "critical":
+    case "severe":
+    case "high":
       level = BreathingDisruptionLevel.SEVERELY_WINDED;
       break;
-    case "medium":
     case "moderate":
+    case "medium":
       level = BreathingDisruptionLevel.GASPING;
       break;
     default:
       level = BreathingDisruptionLevel.WINDED;
   }
-  
+
   const newEffect = BreathingDisruptionSystem.createEffect(
     level,
     legacyEffect.source || "Legacy Effect",
     timestamp
   );
-  
+
   return {
     ...player,
     statusEffects: [...nonLegacyEffects, newEffect],

@@ -63,9 +63,6 @@ export interface TechniqueCardProps {
 
   /** Player stance for reach calculation (optional) */
   readonly playerStance?: TrigramStance;
-
-  /** @deprecated Card position no longer needed - parent handles layout */
-  readonly position?: { x: number; y: number };
 }
 
 /**
@@ -90,7 +87,6 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
   isMobile,
   playerArchetype,
   playerStance,
-  // position prop is deprecated but kept for backwards compatibility
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 

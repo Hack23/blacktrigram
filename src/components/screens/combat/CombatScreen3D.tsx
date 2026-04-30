@@ -2929,7 +2929,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
           {/* Performance Overlay (Development Only) - Toggle with P key */}
           {import.meta.env.DEV && showPerformanceMonitor && (
-            <PerformanceOverlay3D position={[-9, -2, 5]} visible={true} />
+            <PerformanceOverlay3D visible={true} />
           )}
 
           {/* Visual Feedback Components for Keyboard Controls */}

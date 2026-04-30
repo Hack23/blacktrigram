@@ -257,26 +257,3 @@ export class CombatInjuryIntegration {
     this.tracker.removeExpiredInjuries();
   }
 }
-
-/**
- * @deprecated Use {@link PlayerInjuryTrackingManager} instead to get per-player instances.
- * 
- * Creating a singleton is no longer supported because it mixes injuries between
- * multiple characters. Use `playerInjuryManager.getIntegrationForPlayer(playerId)`
- * to get a properly scoped integration instance.
- * 
- * **Korean**: PlayerInjuryTrackingManager를 사용하여 플레이어별 인스턴스를 가져오세요
- * 
- * @example
- * ```typescript
- * // OLD (deprecated):
- * // import { combatInjuryIntegration } from '@/systems/bodypart';
- * 
- * // NEW (correct):
- * import { playerInjuryManager } from '@/systems/bodypart';
- * const integration = playerInjuryManager.getIntegrationForPlayer(playerId);
- * ```
- * 
- * @public
- */
-// Singleton export removed - use PlayerInjuryTrackingManager instead

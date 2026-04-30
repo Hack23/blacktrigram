@@ -3,8 +3,8 @@
 This document details the continuous integration and deployment workflows used in the Black Trigram project. The workflows automate testing, security scanning, and release procedures to ensure code quality and security compliance aligned with Hack23 AB's [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) and [Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md) standards.
 
 **Current TypeScript version: 6.0.3**  
-**Current Product Version: 0.7.32**  
-**Last Updated: 2026-04-21**
+**Current Product Version: 0.7.33**  
+**Last Updated: 2026-04-28**
 
 ## 🔐 ISMS Policy Alignment
 
@@ -52,6 +52,7 @@ The Black Trigram project uses GitHub Actions for automation with the following 
 12. **♿ Accessibility Test** - WCAG 2.1 Level AA compliance validation
 13. **📦 Audit Assets** - Asset reference validation and integrity checking
 14. **📸 Screenshot Analysis** - Automated UI/UX screenshot capture and analysis
+15. **🧹 Knip - Unused Code Detection** - Static detection of unused files, exports, types, and dependencies on every PR
 
 ## 🔐 Security Hardening Practices
 
@@ -636,6 +637,67 @@ flowchart TD
 - **🇰🇷 Korean UI**: Captures bilingual Korean-English interface elements
 - **🔍 PR Integration**: Posts screenshots directly to pull request for review
 
+## 🧹 Knip - Unused Code Detection
+
+Automated detection of unused files, exports, types, and dependencies on every pull request:
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
+flowchart TD
+    Trigger[🔄 PR Trigger] --> Setup[🔧 Node.js Setup]
+    Setup --> Install[📦 npm ci]
+    Install --> KnipText[🧹 Run Knip - text report]
+    Install --> KnipJson[📊 Run Knip - JSON report]
+    KnipText --> Summary[📝 Job Summary Table]
+    KnipJson --> Summary
+    Summary --> Artifact[📦 Upload knip-report artifact]
+    Artifact --> Status[✅/⚠️ Notice or Warning]
+
+    classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
+    classDef step fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
+    classDef report fill:#27ae60,stroke:#1e8449,stroke-width:1.5px,color:white
+    classDef output fill:#f39c12,stroke:#e67e22,stroke-width:2px,color:black
+
+    class Trigger trigger
+    class Setup,Install step
+    class KnipText,KnipJson,Summary report
+    class Artifact,Status output
+```
+
+### Knip Capabilities
+
+- **🗄️ Unused Files**: Source files not reachable from any entry point
+- **📤 Unused Exports**: Exported symbols never imported elsewhere
+- **🔤 Unused Types & Enum Members**: Type aliases, interfaces, and enum members with no consumers
+- **♻️ Duplicate Exports**: Symbols exported multiple times (e.g. named + default)
+- **📦 Unused Dependencies**: `dependencies` / `devDependencies` declared in `package.json` but never imported
+- **🔍 Unlisted Dependencies**: Imports not declared in `package.json`
+- **📊 Job Summary**: Markdown table summarising counts per category, posted to the GitHub Actions run summary
+- **📁 Artifact Retention**: 14-day retention of `knip-report.txt` and `knip-report.json` for review
+- **⚠️ Advisory Mode**: Surfaces findings as warnings without blocking PRs while the codebase is being cleaned up; promote to a hard gate once findings are at zero
+
+### Knip Configuration (`knip.json`)
+
+The project uses a comprehensive `knip.json` that covers:
+
+- **Application entry points**: `src/main.tsx`, `src/index.ts`, all public library subpath entries (`src/audio/index.ts`, `src/systems/*/index.ts`, `src/components/**/index.ts`, etc.)
+- **Build & tool configs**: `vite.config.ts`, `vite.lib.config.ts`, `vitest.config.ts`, `cypress.config.ts`, `eslint.config.js`, `vite-plugins/**/*.ts`, `generate-sitemaps.js`
+- **Automation scripts**: `scripts/**/*.{ts,js,cjs,mjs}` (audits, asset generation, screenshot capture, validation — invoked from `package.json` scripts and CI workflows)
+- **Cypress entries**: `cypress.config.ts`, `cypress/e2e/**/*.{spec,cy}.{ts,tsx}`, `cypress/support/**/*.ts`, `cypress/plugins/**/*.{ts,js}`
+- **Test files**: `src/**/*.{test,spec}.{ts,tsx}`, `src/**/__tests__/**/*.{ts,tsx}`, `src/test/setup.ts`
+- **Plugin integration**: TypeScript (`tsconfig*.json`), Vite, Vitest, Cypress, ESLint plugin configs are wired up so knip understands their conventions
+- **Ignored dependencies**: Reporters and peer-dep adapters that aren't imported directly (`mochawesome*`, `cypress-junit-reporter`, `vite-bundle-analyzer`, `typedoc-plugin-*`, `postprocessing` peer)
+
+### Local Usage
+
+Developers can run knip locally before pushing:
+
+```bash
+npm run knip                          # full report
+npm run find:unused                   # alias for npm run knip
+npm run knip -- --reporter json > knip-report.json
+```
+
 ## Workflow Integration & Dependencies
 
 The complete CI/CD pipeline shows how all workflows interact:
@@ -650,6 +712,7 @@ flowchart TB
         PR --> A11yTest[♿ Accessibility Test]
         PR --> AssetAudit[📦 Asset Audit]
         PR --> Screenshots[📸 Screenshot Analysis]
+        PR --> Knip[🧹 Knip Unused Code]
         TestReport --> CodeQL[🔍 CodeQL Analysis]
     end
 
@@ -692,7 +755,7 @@ flowchart TB
     classDef devex fill:#ffccbc,stroke:#ff5722,stroke-width:1.5px,color:black
     classDef repo fill:#c5e1a5,stroke:#689f38,stroke-width:1.5px,color:black
 
-    class PR,TestReport,DepReview,Labeler,CodeQL,A11yTest,AssetAudit,Screenshots integration
+    class PR,TestReport,DepReview,Labeler,CodeQL,A11yTest,AssetAudit,Screenshots,Knip integration
     class Release,Build,ReleaseDeploy,Lighthouse,ZAPScan deployment
     class AWSDeployTrigger,AWSBuild,S3Deploy,GHPagesDeploy aws
     class Schedule,Scorecard,CodeQLScheduled monitoring
@@ -764,6 +827,6 @@ The CI/CD workflows ensure that every aspect of the application meets the highes
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: Standard](https://img.shields.io/badge/A-Standard-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
-**📅 Effective Date:** 2026-04-21  
-**⏰ Next Review:** 2026-10-21  
+**📅 Effective Date:** 2026-04-28  
+**⏰ Next Review:** 2026-10-28  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)

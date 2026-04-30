@@ -105,13 +105,21 @@ export const BASE_MOVEMENT_ACCELERATION = 30.0 as const;
 export const REFERENCE_PIXELS_PER_METER = 100 as const;
 
 /**
- * @deprecated Use `bounds.width / bounds.worldWidthMeters` for dynamic conversion.
- * This constant is kept for backward compatibility only.
+ * Legacy conversion factor from meters to pixels.
  *
- * Legacy conversion factor from meters to pixels. The actual ratio now varies
- * by screen resolution and arena size.
+ * **Korean**: 미터-픽셀 변환 인자 (구형)
+ *
+ * @deprecated Use `bounds.width / bounds.worldWidthMeters` for dynamic conversion.
+ * The actual ratio now varies by screen resolution and arena size; this constant
+ * is retained for backward compatibility with existing consumers importing
+ * `METERS_TO_PIXELS_SCALE` from `blacktrigram/types` and will be removed in a
+ * future major release.
+ *
+ * @public
+ * @category Coordinate Constants
+ * @korean 미터-픽셀변환 (구형)
  */
-export const METERS_TO_PIXELS_SCALE = 100 as const;
+export const METERS_TO_PIXELS_SCALE = REFERENCE_PIXELS_PER_METER;
 
 /**
  * Conversion factor from meters to training scene units.
@@ -173,8 +181,18 @@ export const METERS_TO_TRAINING_UNITS = 1.0 as const;
 export const DEFAULT_BODY_RADIUS_METERS = 0.23 as const;
 
 /**
- * @deprecated Use DEFAULT_BODY_RADIUS_METERS or calculateBodyRadius() instead.
- * Kept for backward compatibility.
+ * Backwards-compatible alias for the default body radius.
+ *
+ * **Korean**: 이전호환몸체반경별칭
+ *
+ * @deprecated Use `DEFAULT_BODY_RADIUS_METERS` or `calculateBodyRadius()` instead.
+ * This alias is retained for backward compatibility with existing consumers
+ * importing `BODY_RADIUS_METERS` from `blacktrigram/types` and will be removed
+ * in a future major release.
+ *
+ * @public
+ * @category Physics Constants
+ * @korean 몸체반경별칭
  */
 export const BODY_RADIUS_METERS = DEFAULT_BODY_RADIUS_METERS;
 

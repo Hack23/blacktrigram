@@ -57,6 +57,10 @@ import {
   JIN_THUNDER_FLASH_ANIMATION,
 } from "./JinTechniqueAnimations";
 
+// Backward-compat: legacy ID `gan_rock_defense_legacy` maps to the canonical
+// comprehensive Gan rock-defense animation in GanTechniqueAnimations.
+import { GAN_ROCK_DEFENSE_ANIMATION } from "./GanTechniqueAnimations";
+
 // ═══════════════════════════════════════════════════════════════════════════
 // DEFAULT SHOULDER WIDTH CONSTANT
 // ═══════════════════════════════════════════════════════════════════════════
@@ -810,27 +814,6 @@ export const GAM_WRIST_TWIST_COUNTER_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 // ☶ GAN (간) - MOUNTAIN: Defensive Mastery (방어 마스터리)
 // ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Gan Rock Defense (Legacy) - 간암방어
- *
- * Mountain's immovable rock defense.
- * Absorbing attacks like a mountain.
- *
- * @deprecated This is a legacy simplified animation. Use the comprehensive
- * `GAN_ROCK_DEFENSE_ANIMATION` from `GanTechniqueAnimations.ts` instead,
- * which provides detailed block-absorb-counter mechanics with authentic
- * Hapkido defensive techniques (반석방어).
- *
- * @korean 간암방어애니메이션
- */
-export const GAN_ROCK_DEFENSE_ANIMATION_LEGACY: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("gan_rock_defense_legacy", "간암방어")
-    .asDefense(0.4)
-    .withHighGuard()
-    .parry(0.18)
-    .recover(0.22)
-    .build();
 
 /**
  * Gan Immovable Stance - 간부동자세
@@ -1940,7 +1923,9 @@ export const STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
     ["gam_wrist_twist_counter", GAM_WRIST_TWIST_COUNTER_ANIMATION],
 
     // Gan (간) - Mountain
-    ["gan_rock_defense_legacy", GAN_ROCK_DEFENSE_ANIMATION_LEGACY],
+    // Backward compatibility for legacy external callers; canonical ID is
+    // `gan_rock_defense` (registered in AnimationRegistry).
+    ["gan_rock_defense_legacy", GAN_ROCK_DEFENSE_ANIMATION],
     ["gan_immovable_stance", GAN_IMMOVABLE_STANCE_ANIMATION],
     ["gan_iron_block", GAN_IRON_BLOCK_ANIMATION],
     ["gan_counter_strike", GAN_COUNTER_STRIKE_ANIMATION],

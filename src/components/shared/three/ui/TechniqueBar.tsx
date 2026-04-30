@@ -198,7 +198,6 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
           }}
         >
           {techniques.map((technique, index) => {
-            const cardX = index * (layout.cardWidth + layout.gap);
             const cooldownRemaining = cooldowns.get(technique.id) ?? 0;
             const available = isAvailable(technique);
 
@@ -221,7 +220,6 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
                   isMobile={isMobile}
                   playerArchetype={player.archetype}
                   playerStance={player.currentStance}
-                  position={{ x: cardX, y: 0 }}
                 />
               </div>
             );

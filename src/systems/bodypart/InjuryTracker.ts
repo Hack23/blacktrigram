@@ -382,28 +382,26 @@ export class InjuryTracker {
 }
 
 /**
- * Singleton instance of Injury Tracker.
- * 
- * **Korean**: 부상 추적 시스템 싱글톤
- * 
+ * Legacy module-level injury tracker singleton.
+ *
+ * **Korean**: 레거시 모듈 전역 부상 추적기
+ *
  * **Warning**: This singleton does **not** track any playerId/character identifier
  * on injuries. All recorded injuries are stored together in a single collection.
- * 
  * For any scenario with more than one character (including 1v1 combat), you
- * **must** create a separate {@link InjuryTracker} instance per character to avoid
- * mixing injuries between characters:
- * 
+ * **must** create a separate {@link InjuryTracker} instance per character to
+ * avoid mixing injuries between characters:
+ *
  * ```typescript
  * const player1Tracker = new InjuryTracker();
  * const player2Tracker = new InjuryTracker();
  * ```
- * 
- * This singleton is intended only for simple, single-character use cases
- * (e.g., local visualization tools, single dummy target, or non-combat demos)
- * where all injuries belong to one entity.
- * 
+ *
  * @public
- * @deprecated Use per-character {@link InjuryTracker} instances instead to avoid
- * mixing injuries from multiple characters.
+ * @deprecated Use an explicitly scoped {@link InjuryTracker} instance per
+ * player/character instead of relying on this shared module singleton. This
+ * export is retained temporarily for backward compatibility with existing
+ * consumers importing `injuryTracker` from `systems/bodypart` and will be
+ * removed in a future major release.
  */
 export const injuryTracker = new InjuryTracker();

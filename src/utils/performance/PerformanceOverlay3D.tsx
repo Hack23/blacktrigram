@@ -10,8 +10,6 @@ import React from "react";
 import { usePerformanceMonitor } from "./usePerformanceMonitor";
 
 export interface PerformanceOverlay3DProps {
-  /** @deprecated Position prop is no longer used - overlay now uses screen-space positioning */
-  readonly position?: [number, number, number];
   readonly visible?: boolean;
 }
 
@@ -21,7 +19,6 @@ export interface PerformanceOverlay3DProps {
  * Uses screen-space positioning (bottom-left corner)
  */
 export const PerformanceOverlay3D: React.FC<PerformanceOverlay3DProps> = ({
-  position: _position = [0, 0, 0],
   visible = import.meta.env.DEV,
 }) => {
   const { metrics, isGood, warnings } = usePerformanceMonitor({

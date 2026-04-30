@@ -37,19 +37,37 @@ import {
 import type { ScreenSize } from '../systems/ResponsiveScaling';
 
 /**
- * Breakpoints for responsive design
- * @deprecated Use RESPONSIVE_BREAKPOINTS from ResponsiveScaling instead
+ * Width breakpoint (in CSS pixels) below which devices are treated as
+ * extra-small mobile (e.g. iPhone SE). Kept local to this hook because the
+ * wider responsive scaling system uses a different bucketing scheme
+ * (mobile / tablet / desktop / large / xlarge) that does not expose this
+ * sub-mobile threshold.
  */
-export const BREAKPOINTS = {
+const SMALL_MOBILE_MAX_WIDTH = 375;
+
+/**
+ * Breakpoints for responsive design exposed by this hook.
+ *
+ * @deprecated Prefer `RESPONSIVE_BREAKPOINTS` from `../systems/ResponsiveScaling`
+ * for the standard mobile / tablet / desktop tiers. This object is retained as
+ * a backward-compatible shim for existing tests and external consumers and
+ * additionally exposes the hook-local `MOBILE_SMALL` (iPhone SE) threshold.
+ */
+export const BREAKPOINTS = Object.freeze({
   /** Extra small mobile devices (iPhone SE) */
-  MOBILE_SMALL: 375,
+  MOBILE_SMALL: SMALL_MOBILE_MAX_WIDTH,
   /** Standard mobile devices */
   MOBILE: RESPONSIVE_BREAKPOINTS.MOBILE,
   /** Tablet devices */
   TABLET: RESPONSIVE_BREAKPOINTS.TABLET,
   /** Desktop devices */
   DESKTOP: RESPONSIVE_BREAKPOINTS.LARGE,
-} as const;
+}) as {
+  readonly MOBILE_SMALL: number;
+  readonly MOBILE: number;
+  readonly TABLET: number;
+  readonly DESKTOP: number;
+};
 
 /**
  * Touch target sizes following iOS Human Interface Guidelines
@@ -194,7 +212,8 @@ export function useResponsiveLayout(
     // Device type detection using robust device detection utility
     // Combines user-agent and screen size for reliable mobile detection
     const isMobile = shouldUseMobileControls();
-    const isSmallMobile = width <= BREAKPOINTS.MOBILE_SMALL;
+    // Extra-small mobile (e.g. iPhone SE) detection
+    const isSmallMobile = width <= SMALL_MOBILE_MAX_WIDTH;
     const isTablet = screenSize === 'tablet';
     const isDesktop = screenSize === 'desktop' || screenSize === 'large' || screenSize === 'xlarge';
     const isLandscape = width > height;
