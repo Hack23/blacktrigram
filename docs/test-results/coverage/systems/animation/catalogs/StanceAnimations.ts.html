@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>117/117</span>
+                <span class='fraction'>116/116</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>117/117</span>
+                <span class='fraction'>116/116</span>
             </div>
         
             
@@ -2006,22 +2006,11 @@
 <a name='L1941'></a><a href='#L1941'>1941</a>
 <a name='L1942'></a><a href='#L1942'>1942</a>
 <a name='L1943'></a><a href='#L1943'>1943</a>
-<a name='L1944'></a><a href='#L1944'>1944</a>
-<a name='L1945'></a><a href='#L1945'>1945</a>
-<a name='L1946'></a><a href='#L1946'>1946</a>
-<a name='L1947'></a><a href='#L1947'>1947</a>
-<a name='L1948'></a><a href='#L1948'>1948</a>
-<a name='L1949'></a><a href='#L1949'>1949</a>
-<a name='L1950'></a><a href='#L1950'>1950</a>
-<a name='L1951'></a><a href='#L1951'>1951</a>
-<a name='L1952'></a><a href='#L1952'>1952</a>
-<a name='L1953'></a><a href='#L1953'>1953</a>
-<a name='L1954'></a><a href='#L1954'>1954</a>
-<a name='L1955'></a><a href='#L1955'>1955</a>
-<a name='L1956'></a><a href='#L1956'>1956</a>
-<a name='L1957'></a><a href='#L1957'>1957</a>
-<a name='L1958'></a><a href='#L1958'>1958</a>
-<a name='L1959'></a><a href='#L1959'>1959</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1944'></a><a href='#L1944'>1944</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2828,27 +2817,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">81x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3889,6 +3857,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">81x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -4037,6 +4007,10 @@ import {
   JIN_JUMPING_KNEE_STRIKE,
   JIN_THUNDER_FLASH_ANIMATION,
 } from "./JinTechniqueAnimations";
+&nbsp;
+// Backward-compat: legacy ID `gan_rock_defense_legacy` maps to the canonical
+// comprehensive Gan rock-defense animation in GanTechniqueAnimations.
+import { GAN_ROCK_DEFENSE_ANIMATION } from "./GanTechniqueAnimations";
 &nbsp;
 // ═══════════════════════════════════════════════════════════════════════════
 // DEFAULT SHOULDER WIDTH CONSTANT
@@ -4791,27 +4765,6 @@ export const GAM_WRIST_TWIST_COUNTER_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 // ☶ GAN (간) - MOUNTAIN: Defensive Mastery (방어 마스터리)
 // ═══════════════════════════════════════════════════════════════════════════
-&nbsp;
-/**
- * Gan Rock Defense (Legacy) - 간암방어
- *
- * Mountain's immovable rock defense.
- * Absorbing attacks like a mountain.
- *
- * @deprecated This is a legacy simplified animation. Use the comprehensive
- * `GAN_ROCK_DEFENSE_ANIMATION` from `GanTechniqueAnimations.ts` instead,
- * which provides detailed block-absorb-counter mechanics with authentic
- * Hapkido defensive techniques (반석방어).
- *
- * @korean 간암방어애니메이션
- */
-export const GAN_ROCK_DEFENSE_ANIMATION_LEGACY: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("gan_rock_defense_legacy", "간암방어")
-    .asDefense(0.4)
-    .withHighGuard()
-    .parry(0.18)
-    .recover(0.22)
-    .build();
 &nbsp;
 /**
  * Gan Immovable Stance - 간부동자세
@@ -5921,7 +5874,9 @@ export const STANCE_ANIMATIONS: ReadonlyMap&lt;string, SkeletalAnimation&gt; =
     ["gam_wrist_twist_counter", GAM_WRIST_TWIST_COUNTER_ANIMATION],
 &nbsp;
     // Gan (간) - Mountain
-    ["gan_rock_defense_legacy", GAN_ROCK_DEFENSE_ANIMATION_LEGACY],
+    // Backward compatibility for legacy external callers; canonical ID is
+    // `gan_rock_defense` (registered in AnimationRegistry).
+    ["gan_rock_defense_legacy", GAN_ROCK_DEFENSE_ANIMATION],
     ["gan_immovable_stance", GAN_IMMOVABLE_STANCE_ANIMATION],
     ["gan_iron_block", GAN_IRON_BLOCK_ANIMATION],
     ["gan_counter_strike", GAN_COUNTER_STRIKE_ANIMATION],
@@ -5944,7 +5899,7 @@ export const STANCE_ANIMATIONS: ReadonlyMap&lt;string, SkeletalAnimation&gt; =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-28T15:48:32.729Z
+                at 2026-04-30T00:21:11.946Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

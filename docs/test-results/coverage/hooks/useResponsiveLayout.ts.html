@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>21/21</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>21/21</span>
             </div>
         
             
@@ -353,7 +353,29 @@
 <a name='L288'></a><a href='#L288'>288</a>
 <a name='L289'></a><a href='#L289'>289</a>
 <a name='L290'></a><a href='#L290'>290</a>
-<a name='L291'></a><a href='#L291'>291</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a>
+<a name='L293'></a><a href='#L293'>293</a>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a>
+<a name='L296'></a><a href='#L296'>296</a>
+<a name='L297'></a><a href='#L297'>297</a>
+<a name='L298'></a><a href='#L298'>298</a>
+<a name='L299'></a><a href='#L299'>299</a>
+<a name='L300'></a><a href='#L300'>300</a>
+<a name='L301'></a><a href='#L301'>301</a>
+<a name='L302'></a><a href='#L302'>302</a>
+<a name='L303'></a><a href='#L303'>303</a>
+<a name='L304'></a><a href='#L304'>304</a>
+<a name='L305'></a><a href='#L305'>305</a>
+<a name='L306'></a><a href='#L306'>306</a>
+<a name='L307'></a><a href='#L307'>307</a>
+<a name='L308'></a><a href='#L308'>308</a>
+<a name='L309'></a><a href='#L309'>309</a>
+<a name='L310'></a><a href='#L310'>310</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -396,6 +418,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -549,6 +586,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-yes">31x</span>
@@ -682,19 +720,37 @@ import {
 import type { ScreenSize } from '../systems/ResponsiveScaling';
 &nbsp;
 /**
- * Breakpoints for responsive design
- * @deprecated Use RESPONSIVE_BREAKPOINTS from ResponsiveScaling instead
+ * Width breakpoint (in CSS pixels) below which devices are treated as
+ * extra-small mobile (e.g. iPhone SE). Kept local to this hook because the
+ * wider responsive scaling system uses a different bucketing scheme
+ * (mobile / tablet / desktop / large / xlarge) that does not expose this
+ * sub-mobile threshold.
  */
-export const BREAKPOINTS = {
+const SMALL_MOBILE_MAX_WIDTH = 375;
+&nbsp;
+/**
+ * Breakpoints for responsive design exposed by this hook.
+ *
+ * @deprecated Prefer `RESPONSIVE_BREAKPOINTS` from `../systems/ResponsiveScaling`
+ * for the standard mobile / tablet / desktop tiers. This object is retained as
+ * a backward-compatible shim for existing tests and external consumers and
+ * additionally exposes the hook-local `MOBILE_SMALL` (iPhone SE) threshold.
+ */
+export const BREAKPOINTS = Object.freeze({
   /** Extra small mobile devices (iPhone SE) */
-  MOBILE_SMALL: 375,
+  MOBILE_SMALL: SMALL_MOBILE_MAX_WIDTH,
   /** Standard mobile devices */
   MOBILE: RESPONSIVE_BREAKPOINTS.MOBILE,
   /** Tablet devices */
   TABLET: RESPONSIVE_BREAKPOINTS.TABLET,
   /** Desktop devices */
   DESKTOP: RESPONSIVE_BREAKPOINTS.LARGE,
-} as const;
+}) as {
+  readonly MOBILE_SMALL: number;
+  readonly MOBILE: number;
+  readonly TABLET: number;
+  readonly DESKTOP: number;
+};
 &nbsp;
 /**
  * Touch target sizes following iOS Human Interface Guidelines
@@ -839,7 +895,8 @@ export function useResponsiveLayout(
     // Device type detection using robust device detection utility
     // Combines user-agent and screen size for reliable mobile detection
     const isMobile = shouldUseMobileControls();
-    const isSmallMobile = width &lt;= BREAKPOINTS.MOBILE_SMALL;
+    // Extra-small mobile (e.g. iPhone SE) detection
+    const isSmallMobile = width &lt;= SMALL_MOBILE_MAX_WIDTH;
     const isTablet = screenSize === 'tablet';
     const isDesktop = screenSize === 'desktop' || screenSize === 'large' || screenSize === 'xlarge';
     const isLandscape = width &gt; height;
@@ -940,7 +997,7 @@ export function useContentArea(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-28T15:48:32.729Z
+                at 2026-04-30T00:21:11.946Z
             </div>
         <script src="../prettify.js"></script>
         <script>
