@@ -15,8 +15,7 @@ permissions:
   id-token: write
 
 env:
-  AWS_REGION : "us-east-1"
-  AWS_REGION_ZONE : "us-east-1"
+  AWS_REGION: "us-east-1"
   S3_BUCKET_NAME: "blacktrigram-frontend-us-east-1-172017021075"
   CLOUDFRONT_STACK_NAME: "blacktrigram-frontend"
 jobs:
@@ -28,72 +27,19 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
-            accounts.google.com:443
-            amazon-cloudfront-secure-static-site-s3bucketroot-14oliw5cmta06.s3.us-east-1.amazonaws.com:443
+            github.com:443
             api.github.com:443
-            api.securityscorecards.dev:443
-            app.fossa.io:443
-            auth.docker.io:443
-            bestpractices.coreinfrastructure.org:443
-            cfu.zaproxy.org:443
-            cla-assistant.io:443
-            cla-assistant.io:80
-            clients2.google.com:80
+            objects.githubusercontent.com:443
+            token.actions.githubusercontent.com:443
             cloudformation.us-east-1.amazonaws.com:443
             cloudfront.amazonaws.com:443
-            content-signature-2.cdn.mozilla.net:443
-            deb.debian.org:80
-            firefox-settings-attachments.cdn.mozilla.net:443
-            firefox.settings.services.mozilla.com:443
-            fonts.googleapis.com:443
-            fonts.gstatic.com:443
-            ghcr.io:443
-            github.com:443
-            hack23.com:443
-            hack23.com:80
-            hack23.comnull:443
-            img.shields.io:443
-            isitmaintained.com:443
-            isitmaintained.com:80
-            location.services.mozilla.com:443
-            news.zaproxy.org:443
-            objects.githubusercontent.com:443
-            pkg-containers.githubusercontent.com:443
-            production.cloudflare.docker.com:443
-            r10.o.lencr.org:443
-            r11.o.lencr.org:80
-            raw.githubusercontent.com:443
-            registry-1.docker.io:443
-            registry.npmjs.org:443
-            safebrowsingohttpgateway.googleapis.com:443
-            shavar.services.mozilla.com:443
-            slsa.dev:443
-            sonarcloud.io:443
-            storage.googleapis.com:443
+            s3.us-east-1.amazonaws.com:443
+            s3.amazonaws.com:443
+            blacktrigram-frontend-us-east-1-172017021075.s3.us-east-1.amazonaws.com:443
+            blacktrigram-frontend-us-east-1-172017021075.s3.amazonaws.com:443
             sts.us-east-1.amazonaws.com:443
-            tel.zaproxy.org:443
-            tracking-protection.cdn.mozilla.net:443
-            us-central1-lighthouse-infrastructure.cloudfunctions.net:443
-            www.google.com:443
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Cache apt packages
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('**/.github/workflows/main.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-apt-
-
-      - name: Cache npm dependencies
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-minify-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-minify-
-            ${{ runner.os }}-npm-
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
@@ -101,238 +47,90 @@ jobs:
           role-to-assume: arn:aws:iam::172017021075:role/GithubWorkFlowRole
           role-session-name: githubworkflowrolesessiont2
           aws-region: ${{ env.AWS_REGION }}
-      - name: Deploy to S3 with proper cache headers
+      - name: Deploy to S3 with minimal API calls
         run: |
-          # Determine sync mode for versioned/hashed assets (can use --size-only safely)
+          # Optimized deployment: 6 sync operations instead of 16
+          # - Hashed/static assets use --size-only (content-addressed, safe to skip by size)
+          # - HTML and metadata use default sync (size+mtime) to catch same-size content changes
+          # - Does NOT use --delete to preserve legacy URLs on S3
+          
           if [ "${{ github.event.inputs.force_metadata_update }}" = "true" ]; then
-            HASHED_SYNC_MODE="--metadata-directive REPLACE"
-            DOCUMENT_SYNC_MODE="--metadata-directive REPLACE"
-            echo "🚀 Starting deployment with forced metadata update mode"
+            # Force mode: use --exact-timestamps to force re-evaluation + metadata replace
+            HASHED_SYNC_FLAGS="--exact-timestamps --metadata-directive REPLACE"
+            DOCUMENT_SYNC_FLAGS="--exact-timestamps --metadata-directive REPLACE"
+            echo "🚀 Force metadata update mode: re-uploading all files with updated metadata"
           else
-            HASHED_SYNC_MODE="--size-only"
-            DOCUMENT_SYNC_MODE=""  # Use normal sync (size+mtime) for documents
-            echo "🚀 Starting deployment with efficient sync mode (size-only for hashed assets, size+mtime for documents)"
+            # Efficient mode: --size-only for hashed assets, default (size+mtime) for documents
+            HASHED_SYNC_FLAGS="--size-only"
+            DOCUMENT_SYNC_FLAGS=""
+            echo "🚀 Efficient sync mode: --size-only for hashed assets, size+mtime for documents"
           fi
-          
-          # Deploy JS and CSS files with 1-year cache (versioned, immutable assets)
-          echo "⚡ Deploying JS and CSS files with immutable cache headers..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
-            --exclude "*" \
-            --include "*.js" \
-            --include "*.css" \
-            --cache-control "public, max-age=31536000, immutable" \
-            $HASHED_SYNC_MODE \
-            --exclude ".git/*"
-          
-          # Deploy source map files with 1-year cache (versioned, immutable assets)
-          echo "🗺️  Deploying source map files with immutable cache headers..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
-            --exclude "*" \
-            --include "*.js.map" \
-            --include "*.css.map" \
-            --cache-control "public, max-age=31536000, immutable" \
-            --content-type "application/json" \
-            $HASHED_SYNC_MODE \
-            --exclude ".git/*"
-          
-          # Deploy font files with 1-year cache (static, immutable assets)
-          echo "🔤 Deploying font files with immutable cache headers..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
-            --exclude "*" \
-            --include "*.woff" \
-            --include "*.woff2" \
-            --include "*.ttf" \
-            --include "*.eot" \
-            --include "*.otf" \
-            --cache-control "public, max-age=31536000, immutable" \
-            $HASHED_SYNC_MODE \
-            --exclude ".git/*"
-          
-          # Deploy image files with 1-year cache (static, immutable assets, excluding screenshots)
-          echo "🖼️  Deploying image files with immutable cache headers..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
-            --exclude "*" \
-            --include "*.webp" \
-            --include "*.png" \
-            --include "*.jpg" \
-            --include "*.jpeg" \
-            --include "*.gif" \
-            --include "*.svg" \
-            --include "*.ico" \
-            --cache-control "public, max-age=31536000, immutable" \
-            $HASHED_SYNC_MODE \
-            --exclude ".git/*" \
-            --exclude "screenshots/*"
-          
-          # Deploy HTML files with short cache (1 hour, must revalidate)
-          # Use normal sync (size+mtime) for correctness - HTML is not content-hashed
-          echo "📄 Deploying HTML files with revalidation cache headers..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
-            --exclude "*" \
-            --include "*.html" \
-            --cache-control "public, max-age=3600, must-revalidate" \
-            --content-type "text/html; charset=utf-8" \
-            $DOCUMENT_SYNC_MODE \
-            --exclude ".git/*"
-          
-          # Deploy metadata files with medium cache (1 day)
-          # Use normal sync (size+mtime) for correctness - metadata files are not content-hashed
-          echo "📋 Deploying metadata files with 1-day cache headers..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
-            --exclude "*" \
-            --include "*.xml" \
-            --include "*.json" \
-            --include "*.txt" \
-            --cache-control "public, max-age=86400" \
-            $DOCUMENT_SYNC_MODE \
-            --exclude ".git/*"
-          
-          # Deploy screenshots with default cache (if directory exists)
-          if [ -d "docs/screenshots" ]; then
-            echo "📸 Deploying screenshots with default cache headers..."
-            aws s3 sync docs/screenshots/. s3://${{ env.S3_BUCKET_NAME }}/screenshots/ \
-              $HASHED_SYNC_MODE
-          else
-            echo "ℹ️  No screenshots directory found, skipping..."
-          fi
-          
-          # Deploy all remaining files not already handled (catch-all)
-          echo "📦 Deploying remaining files..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
-            --exclude ".git/*" \
-            --exclude "screenshots/*" \
-            --exclude "*.js" \
-            --exclude "*.css" \
-            --exclude "*.js.map" \
-            --exclude "*.css.map" \
-            --exclude "*.woff" \
-            --exclude "*.woff2" \
-            --exclude "*.ttf" \
-            --exclude "*.eot" \
-            --exclude "*.otf" \
-            --exclude "*.webp" \
-            --exclude "*.png" \
-            --exclude "*.jpg" \
-            --exclude "*.jpeg" \
-            --exclude "*.gif" \
-            --exclude "*.svg" \
-            --exclude "*.ico" \
-            --exclude "*.html" \
-            --exclude "*.xml" \
-            --exclude "*.json" \
-            --exclude "*.txt" \
-            $HASHED_SYNC_MODE
 
-          # Deploy JS and CSS files with 1-year cache (versioned, immutable assets)
-          echo "⚡ Deploying JS and CSS files with immutable cache headers..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
-            --exclude "*" \
-            --include "*.js" \
-            --include "*.css" \
-            --cache-control "public, max-age=31536000, immutable" \
-            $HASHED_SYNC_MODE \
-            --exclude ".git/*"
-          
-          # Deploy source map files with 1-year cache (versioned, immutable assets)
-          echo "🗺️  Deploying source map files with immutable cache headers..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
-            --exclude "*" \
-            --include "*.js.map" \
-            --include "*.css.map" \
-            --cache-control "public, max-age=31536000, immutable" \
-            --content-type "application/json" \
-            $HASHED_SYNC_MODE \
-            --exclude ".git/*"
-          
-          # Deploy font files with 1-year cache (static, immutable assets)
-          echo "🔤 Deploying font files with immutable cache headers..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
-            --exclude "*" \
-            --include "*.woff" \
-            --include "*.woff2" \
-            --include "*.ttf" \
-            --include "*.eot" \
-            --include "*.otf" \
-            --cache-control "public, max-age=31536000, immutable" \
-            $HASHED_SYNC_MODE \
-            --exclude ".git/*"
-          
-          # Deploy image files with 1-year cache (static, immutable assets, excluding screenshots)
-          echo "🖼️  Deploying image files with immutable cache headers..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
-            --exclude "*" \
-            --include "*.webp" \
-            --include "*.png" \
-            --include "*.jpg" \
-            --include "*.jpeg" \
-            --include "*.gif" \
-            --include "*.svg" \
-            --include "*.ico" \
-            --cache-control "public, max-age=31536000, immutable" \
-            $HASHED_SYNC_MODE \
+          # --- Deploy to root prefix (supports current URLs: blacktrigram.hack23.com/*)  ---
+
+          # 1. Sync all static/hashed assets (everything except HTML and metadata) with immutable cache
+          echo "⚡ [root] Syncing static assets with immutable cache..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
             --exclude ".git/*" \
-            --exclude "screenshots/*"
-          
-          # Deploy HTML files with short cache (1 hour, must revalidate)
-          # Use normal sync (size+mtime) for correctness - HTML is not content-hashed
-          echo "📄 Deploying HTML files with revalidation cache headers..."
+            --exclude "*.html" \
+            --exclude "*.xml" \
+            --exclude "*.json" \
+            --exclude "*.txt" \
+            --cache-control "public, max-age=31536000, immutable" \
+            $HASHED_SYNC_FLAGS
+
+          # 2. Sync HTML files with short cache (must-revalidate, 1 hour)
+          echo "📄 [root] Syncing HTML files with revalidation cache..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+            --exclude "*" \
+            --include "*.html" \
+            --cache-control "public, max-age=3600, must-revalidate" \
+            --content-type "text/html; charset=utf-8" \
+            $DOCUMENT_SYNC_FLAGS
+
+          # 3. Sync metadata files (xml, json, txt) with 1-day cache (not content-hashed)
+          echo "📋 [root] Syncing metadata files with 1-day cache..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+            --exclude "*" \
+            --include "*.xml" \
+            --include "*.json" \
+            --include "*.txt" \
+            --cache-control "public, max-age=86400" \
+            $DOCUMENT_SYNC_FLAGS
+
+          # --- Deploy to /docs/ prefix (supports legacy URLs: blacktrigram.hack23.com/docs/*) ---
+
+          # 4. Sync all static/hashed assets to /docs/ with immutable cache
+          echo "⚡ [/docs/] Syncing static assets with immutable cache..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
+            --exclude ".git/*" \
+            --exclude "*.html" \
+            --exclude "*.xml" \
+            --exclude "*.json" \
+            --exclude "*.txt" \
+            --cache-control "public, max-age=31536000, immutable" \
+            $HASHED_SYNC_FLAGS
+
+          # 5. Sync HTML files to /docs/ with short cache
+          echo "📄 [/docs/] Syncing HTML files with revalidation cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
             --exclude "*" \
             --include "*.html" \
             --cache-control "public, max-age=3600, must-revalidate" \
             --content-type "text/html; charset=utf-8" \
-            $DOCUMENT_SYNC_MODE \
-            --exclude ".git/*"
-          
-          # Deploy metadata files with medium cache (1 day)
-          # Use normal sync (size+mtime) for correctness - metadata files are not content-hashed
-          echo "📋 Deploying metadata files with 1-day cache headers..."
+            $DOCUMENT_SYNC_FLAGS
+
+          # 6. Sync metadata files to /docs/ with 1-day cache
+          echo "📋 [/docs/] Syncing metadata files with 1-day cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
             --exclude "*" \
             --include "*.xml" \
             --include "*.json" \
             --include "*.txt" \
             --cache-control "public, max-age=86400" \
-            $DOCUMENT_SYNC_MODE \
-            --exclude ".git/*"
-          
-          # Deploy screenshots with default cache (if directory exists)
-          if [ -d "docs/screenshots" ]; then
-            echo "📸 Deploying screenshots with default cache headers..."
-            aws s3 sync docs/screenshots/. s3://${{ env.S3_BUCKET_NAME }}/docs/screenshots/ \
-              $HASHED_SYNC_MODE
-          else
-            echo "ℹ️  No screenshots directory found, skipping..."
-          fi
-          
-          # Deploy all remaining files not already handled (catch-all)
-          echo "📦 Deploying remaining files..."
-          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
-            --exclude ".git/*" \
-            --exclude "screenshots/*" \
-            --exclude "*.js" \
-            --exclude "*.css" \
-            --exclude "*.js.map" \
-            --exclude "*.css.map" \
-            --exclude "*.woff" \
-            --exclude "*.woff2" \
-            --exclude "*.ttf" \
-            --exclude "*.eot" \
-            --exclude "*.otf" \
-            --exclude "*.webp" \
-            --exclude "*.png" \
-            --exclude "*.jpg" \
-            --exclude "*.jpeg" \
-            --exclude "*.gif" \
-            --exclude "*.svg" \
-            --exclude "*.ico" \
-            --exclude "*.html" \
-            --exclude "*.xml" \
-            --exclude "*.json" \
-            --exclude "*.txt" \
-            $HASHED_SYNC_MODE
-          
-          echo "✅ Deployment completed with optimized cache headers"
+            $DOCUMENT_SYNC_FLAGS
+
+          echo "✅ Deployment completed (6 sync ops instead of 16, ~63% fewer CloudTrail events)"
 
       # Invalidate CloudFront cache to ensure latest content is served
       - name: Invalidate CloudFront
