@@ -63,11 +63,14 @@ jobs:
 
           # --- Deploy to root prefix (supports current URLs: blacktrigram.hack23.com/*)  ---
 
-          # 1. Sync all static assets (everything except HTML) with immutable cache
+          # 1. Sync all static/hashed assets (everything except HTML and metadata) with immutable cache
           echo "⚡ [root] Syncing static assets with immutable cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
             --exclude ".git/*" \
             --exclude "*.html" \
+            --exclude "*.xml" \
+            --exclude "*.json" \
+            --exclude "*.txt" \
             --cache-control "public, max-age=31536000, immutable" \
             $SYNC_FLAGS
 
@@ -80,17 +83,30 @@ jobs:
             --content-type "text/html; charset=utf-8" \
             $SYNC_FLAGS
 
+          # 3. Sync metadata files (xml, json, txt) with 1-day cache (not content-hashed)
+          echo "📋 [root] Syncing metadata files with 1-day cache..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+            --exclude "*" \
+            --include "*.xml" \
+            --include "*.json" \
+            --include "*.txt" \
+            --cache-control "public, max-age=86400" \
+            $SYNC_FLAGS
+
           # --- Deploy to /docs/ prefix (supports legacy URLs: blacktrigram.hack23.com/docs/*) ---
 
-          # 3. Sync all static assets to /docs/ with immutable cache
+          # 4. Sync all static/hashed assets to /docs/ with immutable cache
           echo "⚡ [/docs/] Syncing static assets with immutable cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
             --exclude ".git/*" \
             --exclude "*.html" \
+            --exclude "*.xml" \
+            --exclude "*.json" \
+            --exclude "*.txt" \
             --cache-control "public, max-age=31536000, immutable" \
             $SYNC_FLAGS
 
-          # 4. Sync HTML files to /docs/ with short cache
+          # 5. Sync HTML files to /docs/ with short cache
           echo "📄 [/docs/] Syncing HTML files with revalidation cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
             --exclude "*" \
@@ -99,7 +115,17 @@ jobs:
             --content-type "text/html; charset=utf-8" \
             $SYNC_FLAGS
 
-          echo "✅ Deployment completed (4 sync ops instead of 16, ~75% fewer CloudTrail events)"
+          # 6. Sync metadata files to /docs/ with 1-day cache
+          echo "📋 [/docs/] Syncing metadata files with 1-day cache..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
+            --exclude "*" \
+            --include "*.xml" \
+            --include "*.json" \
+            --include "*.txt" \
+            --cache-control "public, max-age=86400" \
+            $SYNC_FLAGS
+
+          echo "✅ Deployment completed (6 sync ops instead of 16, ~63% fewer CloudTrail events)"
 
       # Invalidate CloudFront cache to ensure latest content is served
       - name: Invalidate CloudFront
