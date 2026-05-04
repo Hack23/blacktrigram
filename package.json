@@ -220,7 +220,7 @@
     "mochawesome": "7.1.4",
     "mochawesome-merge": "5.1.1",
     "mochawesome-report-generator": "6.3.2",
-    "openai": "6.35.0",
+    "openai": "6.36.0",
     "playwright": "1.59.1",
     "postprocessing": "6.39.1",
     "react": "19.2.5",
