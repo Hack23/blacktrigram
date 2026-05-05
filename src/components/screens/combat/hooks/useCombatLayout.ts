@@ -36,10 +36,9 @@ import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimen
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
 import {
-  landscapeMobileControlsBottomClearance,
+  mobileControlsBottomClearance,
   PORTRAIT_FORCE_MAX_WIDTH_PX,
   PORTRAIT_HYSTERESIS_FACTOR,
-  portraitMobileControlsBottomBand,
 } from "../../../../utils/responsiveOrientationConstants";
 import {
   getCombatLayoutConstants,
@@ -142,14 +141,13 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       // (technique bar + mobile controls + footer) or the arena ends up
       // behind the D-Pad. See responsiveOrientationConstants.ts for the
       // derivation of the mobile-controls reservation.
-      const minBottomClearance = isPortrait
-        ? portraitMobileControlsBottomBand(
-            layoutConstants.controlsHeight,
-            layoutConstants.footerHeight,
-            isExtraSmall,
-            "combat",
-          )
-        : landscapeMobileControlsBottomClearance(isExtraSmall, "combat");
+      const minBottomClearance = mobileControlsBottomClearance(
+        layoutConstants.controlsHeight,
+        layoutConstants.footerHeight,
+        isExtraSmall,
+        isPortrait,
+        "combat",
+      );
 
       const mobileBounds = calculateMobileAreaBounds(
         width,

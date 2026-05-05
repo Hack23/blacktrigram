@@ -2838,7 +2838,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           {/* Combat Particle Effects - Blood viscosity, organ damage, audio (전투 입자 효과) */}
           <CombatParticleEffects3D
             hitEffects={combatState.hitEffects}
-            enabled={!isMobile}
+            enabled={true}
             isMobile={isMobile}
           />
 

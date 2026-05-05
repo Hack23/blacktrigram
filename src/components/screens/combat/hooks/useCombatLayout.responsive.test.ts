@@ -18,10 +18,7 @@
 
 import { renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  landscapeMobileControlsBottomClearance,
-  portraitMobileControlsBottomBand,
-} from "../../../../utils/responsiveOrientationConstants";
+import { mobileControlsBottomClearance } from "../../../../utils/responsiveOrientationConstants";
 import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
 import * as deviceDetection from "../../../../utils/deviceDetection";
 import { useCombatLayout } from "./useCombatLayout";
@@ -138,14 +135,13 @@ describe("useCombatLayout responsive viewport matrix", () => {
       if (vp.width < 1024) {
         const layout = getCombatLayoutConstants(vp.width, true);
         const isExtraSmall = vp.width < 380;
-        const bottomClearance = vp.expectPortrait
-          ? portraitMobileControlsBottomBand(
-              layout.controlsHeight,
-              layout.footerHeight,
-              isExtraSmall,
-              "combat",
-            )
-          : landscapeMobileControlsBottomClearance(isExtraSmall, "combat");
+        const bottomClearance = mobileControlsBottomClearance(
+          layout.controlsHeight,
+          layout.footerHeight,
+          isExtraSmall,
+          vp.expectPortrait,
+          "combat",
+        );
         expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(
           vp.height - bottomClearance,
         );

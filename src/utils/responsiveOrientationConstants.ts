@@ -131,3 +131,35 @@ export function landscapeMobileControlsBottomClearance(
     ? LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX.trainingExtraSmall
     : LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX.trainingStandard;
 }
+
+/**
+ * Orientation-aware bottom clearance for mobile combat/training arenas.
+ *
+ * Keeps callers from duplicating portrait-vs-landscape clearance rules while
+ * preserving the compact landscape band and the full portrait touch-control
+ * reservation.
+ *
+ * @param controlsHeight - layout constant for technique/control bar
+ * @param footerHeight - layout constant for footer
+ * @param isExtraSmall - true when the viewport is < 380px wide
+ * @param isPortrait - true for portrait orientation
+ * @param variant - "combat" or "training"
+ *
+ * @public
+ */
+export function mobileControlsBottomClearance(
+  controlsHeight: number,
+  footerHeight: number,
+  isExtraSmall: boolean,
+  isPortrait: boolean,
+  variant: "combat" | "training",
+): number {
+  return isPortrait
+    ? portraitMobileControlsBottomBand(
+        controlsHeight,
+        footerHeight,
+        isExtraSmall,
+        variant,
+      )
+    : landscapeMobileControlsBottomClearance(isExtraSmall, variant);
+}
