@@ -30,6 +30,26 @@ interface Viewport {
   readonly expectPortrait: boolean;
 }
 
+function assertMobileClearance(
+  vp: Viewport,
+  arenaBounds: { readonly y: number; readonly height: number },
+): void {
+  if (vp.width >= 1024) return;
+
+  const layout = getCombatLayoutConstants(vp.width, true);
+  const isExtraSmall = vp.width < 380;
+  const bottomClearance = mobileControlsBottomClearance(
+    layout.controlsHeight,
+    layout.footerHeight,
+    isExtraSmall,
+    vp.expectPortrait,
+    "combat",
+  );
+  expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(
+    vp.height - bottomClearance,
+  );
+}
+
 const PHONE_VIEWPORTS: readonly Viewport[] = [
   // Portrait
   { name: "iPhone SE 320×568", width: 320, height: 568, expectPortrait: true },
@@ -132,20 +152,7 @@ describe("useCombatLayout responsive viewport matrix", () => {
       // not merely inside the viewport. This prevents the "white arena/icons
       // only" mobile failure mode where the playable floor is hidden behind
       // the technique bar and D-Pad.
-      if (vp.width < 1024) {
-        const layout = getCombatLayoutConstants(vp.width, true);
-        const isExtraSmall = vp.width < 380;
-        const bottomClearance = mobileControlsBottomClearance(
-          layout.controlsHeight,
-          layout.footerHeight,
-          isExtraSmall,
-          vp.expectPortrait,
-          "combat",
-        );
-        expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(
-          vp.height - bottomClearance,
-        );
-      }
+      assertMobileClearance(vp, arenaBounds);
 
       // Arena is actually visible (not a zero-area degenerate rectangle).
       // Minimum area scales with viewport: the iPhone SE 320×568 is

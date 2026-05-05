@@ -142,6 +142,8 @@ export function calculateMobileAreaBounds(
   //   - in portrait, `availableHeight × 3/4` caps arena width so the arena
   //     height never exceeds `availableHeight` (preventing the arena from
   //     being drawn behind the bottom HUD / D-Pad).
+  //   - in landscape, `availableHeight × 4/3` caps arena width so the 4:3
+  //     arena height never exceeds `availableHeight` on short mobile screens.
   const hardWidthCap = isPortrait
     ? Math.min(availableWidth, availableHeight * (3 / 4))
     : Math.min(availableWidth, availableHeight * (4 / 3));
