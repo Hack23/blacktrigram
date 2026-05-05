@@ -619,7 +619,7 @@ git clone https://github.com/Hack23/blacktrigram.git
 cd blacktrigram
 
 # Install (requires Node ≥ 26)
-npm install
+npm ci
 
 # Start the dojang
 npm run dev
