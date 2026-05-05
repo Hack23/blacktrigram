@@ -36,6 +36,7 @@ import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimen
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
 import {
+  landscapeMobileControlsBottomClearance,
   PORTRAIT_FORCE_MAX_WIDTH_PX,
   PORTRAIT_HYSTERESIS_FACTOR,
   portraitMobileControlsBottomBand,
@@ -140,7 +141,7 @@ export function useTrainingLayout(
             isExtraSmall,
             "training",
           )
-        : 120;
+        : landscapeMobileControlsBottomClearance(isExtraSmall, "training");
 
       return calculateMobileAreaBounds(
         width,

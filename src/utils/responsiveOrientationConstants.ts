@@ -61,6 +61,26 @@ export const MOBILE_CONTROLS_RESERVED_HEIGHT_PX = {
 } as const;
 
 /**
+ * Height reserved at the bottom of mobile landscape viewports.
+ *
+ * Landscape devices have less vertical room than portrait phones, so these
+ * compact values reserve only the visible bottom technique/control band while
+ * still keeping the 3D arena above touch controls.
+ *
+ * @public
+ */
+export const LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX = {
+  /** Combat bottom band on landscape phones */
+  combatStandard: 120,
+  /** Combat bottom band on extra-small landscape phones */
+  combatExtraSmall: 110,
+  /** Training bottom band on landscape phones */
+  trainingStandard: 120,
+  /** Training bottom band on extra-small landscape phones */
+  trainingExtraSmall: 110,
+} as const;
+
+/**
  * Total bottom clearance to reserve in portrait mode = control/technique
  * bar height + footer height + the on-screen virtual controls band.
  *
@@ -87,4 +107,27 @@ export function portraitMobileControlsBottomBand(
         : MOBILE_CONTROLS_RESERVED_HEIGHT_PX.trainingStandard;
 
   return controlsHeight + footerHeight + band;
+}
+
+/**
+ * Bottom clearance for mobile landscape viewports.
+ *
+ * @param isExtraSmall - true when the viewport is < 380px wide
+ * @param variant - "combat" or "training"
+ *
+ * @public
+ */
+export function landscapeMobileControlsBottomClearance(
+  isExtraSmall: boolean,
+  variant: "combat" | "training",
+): number {
+  if (variant === "combat") {
+    return isExtraSmall
+      ? LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX.combatExtraSmall
+      : LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX.combatStandard;
+  }
+
+  return isExtraSmall
+    ? LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX.trainingExtraSmall
+    : LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX.trainingStandard;
 }

@@ -36,6 +36,7 @@ import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimen
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
 import {
+  landscapeMobileControlsBottomClearance,
   PORTRAIT_FORCE_MAX_WIDTH_PX,
   PORTRAIT_HYSTERESIS_FACTOR,
   portraitMobileControlsBottomBand,
@@ -145,9 +146,7 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
             isExtraSmall,
             "combat",
           )
-        : isExtraSmall
-          ? 110
-          : 120;
+        : landscapeMobileControlsBottomClearance(isExtraSmall, "combat");
 
       const mobileBounds = calculateMobileAreaBounds(
         width,

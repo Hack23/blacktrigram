@@ -18,7 +18,10 @@
 
 import { renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { portraitMobileControlsBottomBand } from "../../../../utils/responsiveOrientationConstants";
+import {
+  landscapeMobileControlsBottomClearance,
+  portraitMobileControlsBottomBand,
+} from "../../../../utils/responsiveOrientationConstants";
 import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
 import * as deviceDetection from "../../../../utils/deviceDetection";
 import { useCombatLayout } from "./useCombatLayout";
@@ -107,7 +110,7 @@ describe("useCombatLayout responsive viewport matrix", () => {
       // Mobile arenas must also stay above the reserved touch-control band,
       // not merely inside the viewport. This prevents the "white arena/icons
       // only" mobile failure mode where the playable floor is hidden behind
-      // the technique bar and D-pad.
+      // the technique bar and D-Pad.
       if (vp.width < 1024) {
         const layout = getCombatLayoutConstants(vp.width, true);
         const isExtraSmall = vp.width < 380;
@@ -118,9 +121,7 @@ describe("useCombatLayout responsive viewport matrix", () => {
               isExtraSmall,
               "combat",
             )
-          : isExtraSmall
-            ? 110
-            : 120;
+          : landscapeMobileControlsBottomClearance(isExtraSmall, "combat");
         expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(
           vp.height - bottomClearance,
         );
