@@ -3040,9 +3040,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         />
 
         {/* Left HUD - Player 1 stats.
-            In portrait mobile the side HUDs occlude the 3D arena; collapse
-            them away so the arena stays fully visible. Player status is
-            shown instead via CombatPortraitStatusStrip below. */}
+            On mobile, side HUDs occlude the 3D arena in both portrait and
+            landscape; collapse them away so the arena stays fully visible.
+            Player status remains available via CombatPortraitStatusStrip and
+            bottom combat controls. */}
         {!isMobile && (
           <CombatLeftHUD
             width={width}
