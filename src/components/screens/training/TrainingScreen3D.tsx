@@ -1466,7 +1466,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           zIndex: Z_INDEX.HUD,
           // Use 'clip' for pure clipping without creating a scroll container
           // Note: Both 'clip' and 'hidden' will clip box/text shadows; ensure
-          // any required shadow space is handled via padding on parent containers
+          // any required shadow space is handled via padding on parent containers.
           overflow: "clip",
         }}
         data-testid="training-hud-overlay"
@@ -1488,7 +1488,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         )}
 
-        {/* Top HUD - Training Controls, Archetype Selector, Return Button */}
+        {/* Top HUD - Training Controls, Archetype Selector, Return Button. */}
         <TrainingTopHUD
           width={width}
           height={height}

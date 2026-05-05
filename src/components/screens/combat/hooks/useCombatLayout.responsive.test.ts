@@ -30,6 +30,12 @@ interface Viewport {
   readonly expectPortrait: boolean;
 }
 
+/**
+ * Verify mobile arenas stay above the reserved touch-control band.
+ *
+ * This prevents the "white arena/icons only" mobile failure mode where the
+ * playable 3D floor is hidden behind the technique bar and D-Pad.
+ */
 function assertMobileClearance(
   vp: Viewport,
   arenaBounds: { readonly y: number; readonly height: number },

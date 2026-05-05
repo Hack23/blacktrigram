@@ -13,14 +13,15 @@
 import { getScreenSize } from '../systems/ResponsiveScaling';
 import type { ScreenSize } from '../systems/ResponsiveScaling';
 
-/**
- * Desktop arena sizing guardrails.
- *
- * The 80% width ratio works well from desktop through 4K, while the hard cap
- * prevents ultra-wide/8K displays from creating an oversized WebGL scene that
- * increases fill-rate cost without improving gameplay readability.
- */
+/** Desktop arena width as a proportion of viewport width. */
 const DESKTOP_ARENA_WIDTH_RATIO = 0.8;
+
+/**
+ * Maximum desktop arena width in CSS pixels.
+ *
+ * Caps ultra-wide/8K displays to protect WebGL fill-rate while preserving a
+ * large, readable 4K desktop arena.
+ */
 const DESKTOP_ARENA_MAX_WIDTH_PX = 2560;
 
 /**
