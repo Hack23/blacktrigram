@@ -1,0 +1,130 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-05-05T08:23:52.128Z",
+    "end": "2026-05-05T08:24:21.756Z",
+    "duration": 29628,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "aa16697a-6923-4500-9648-9d32e6cf859d",
+      "title": "",
+      "fullFile": "cypress/e2e/performance/mobile-performance.cy.ts",
+      "file": "cypress/e2e/performance/mobile-performance.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "887fe25a-69db-4912-bc23-9762356fce42",
+          "title": "Mobile Performance Optimization (Target: 45s)",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should integrate adaptive quality system during 30-second mobile combat session",
+              "fullTitle": "Mobile Performance Optimization (Target: 45s) should integrate adaptive quality system during 30-second mobile combat session",
+              "timedOut": null,
+              "duration": 17572,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing Mobile Performance Integration\");\n// ============================================================\n// 1. Verify Combat on Mobile Viewport\n// ============================================================\ncy.log(\"1️⃣ Verifying combat on mobile viewport (375x667)\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.verifyCombatScreenReady)();\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.verifyCanvasExists)();\n// ============================================================\n// 2. 30-Second Combat Session with Actions\n// ============================================================\ncy.log(\"2️⃣ Starting 30-second combat session with active gameplay\");\n// Cycle through stances\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.waitForTransition)(500);\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.changeStance)(1, \"Geon\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.waitForTransition)(500);\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.changeStance)(3, \"Li\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.waitForTransition)(500);\n// Attack sequence\ncy.get(\"body\").type(\" \"); // Attack\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.waitForTransition)(1000);\ncy.get(\"body\").type(\" \"); // Attack\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.waitForTransition)(1000);\n// Movement and more stances\ncy.get(\"body\").type(\"w\"); // Move forward\ncy.wait(500);\ncy.get(\"body\").type(\"2\"); // Switch stance\ncy.wait(500);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(1000);\n// Final combat sequence\ncy.get(\"body\").type(\"6\"); // Switch stance\ncy.wait(500);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(1000);\ncy.log(\"✅ 30-second combat session complete\");\ncy.log(\"ℹ️ Adaptive quality system integrated and active\");",
+              "err": {},
+              "uuid": "a473787c-0bf6-49e4-88b7-ae17378728d4",
+              "parentUUID": "887fe25a-69db-4912-bc23-9762356fce42",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should verify adaptive quality system is integrated",
+              "fullTitle": "Mobile Performance Optimization (Target: 45s) should verify adaptive quality system is integrated",
+              "timedOut": null,
+              "duration": 10884,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing Adaptive Quality System Integration\");\n// Enter combat\ncy.log(\"1️⃣ Entering combat to verify adaptive quality\");\ncy.enterCombatMode();\n// Verify combat screen rendered\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n// Wait for system to be active\ncy.wait(2000);\n// Perform actions\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(1000);\ncy.get(\"body\").type(\" \");\ncy.wait(1000);\ncy.log(\"✅ Adaptive quality system integration verified\");\ncy.log(\"ℹ️ System monitors FPS and adjusts quality automatically\");",
+              "err": {},
+              "uuid": "3268785a-cb57-4798-b6b6-9781bd62afb0",
+              "parentUUID": "887fe25a-69db-4912-bc23-9762356fce42",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a473787c-0bf6-49e4-88b7-ae17378728d4",
+            "3268785a-cb57-4798-b6b6-9781bd62afb0"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 28456,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "build/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
