@@ -282,7 +282,7 @@ e2e-tests:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v6
       with:
-        node-version: "25"
+        node-version: "26"
     - name: Install dependencies
       run: npm install
     - name: Start app and run Cypress tests
@@ -306,7 +306,7 @@ e2e-tests:
 
 **Environment:**
 - OS: Ubuntu Latest (Linux)
-- Node: v24
+- Node: v26
 - Display: Xvfb (virtual framebuffer for headless)
 - Resolution: 1280x720x24 bit color depth
 - Browser: Chrome (headless)

@@ -153,7 +153,7 @@ template: |
   - [🚀 Future Architecture](https://github.com/Hack23/blacktrigram/blob/main/FUTURE_ARCHITECTURE.md) - Evolution roadmap
   - [🔮 Future Security](https://github.com/Hack23/blacktrigram/blob/main/FUTURE_SECURITY_ARCHITECTURE.md) - Security roadmap
 
-  ## 🎮 Technology Stack (Node.js 25)
+  ## 🎮 Technology Stack (Node.js 26)
   - ⚡ **Vite 8.x** - Lightning-fast build tool and dev server
   - ⚛️ **React 19** - Modern React with concurrent features and hooks  
   - 🔷 **TypeScript 6** - Strict typing with ES2024 target
@@ -163,7 +163,7 @@ template: |
   - 🎵 **Web Audio API** - Internal AudioManager for spatial 3D sound
   - 🧪 **Vitest 4.x** - Fast unit testing with coverage and benchmarking
   - 🌲 **Cypress 15.x** - Reliable E2E testing for 3D combat mechanics
-  - 📦 **Node.js 25** - Latest Node.js current release for development and CI/CD
+  - 📦 **Node.js 26** - Latest Node.js current release for development and CI/CD
 
   ## 🔍 Code Quality & Security Analysis
   [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hack23_blacktrigram&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hack23_blacktrigram)

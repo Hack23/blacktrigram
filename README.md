@@ -36,7 +36,7 @@
         <a href="https://github.com/Hack23/blacktrigram/releases"><img src="https://img.shields.io/github/v/release/Hack23/blacktrigram?style=flat-square&color=FFD700&logo=github&logoColor=white" alt="Latest GitHub release"/></a>
       </div>
       <div>
-        <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node-%E2%89%A525-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js 25 or later required"/></a>
+        <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node-%E2%89%A526-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js 26 or later required"/></a>
       </div>
     </td>
     <td>
@@ -379,7 +379,7 @@ Built for **combat realism**, **60fps performance**, and **production-grade engi
 ### ⚡ Build & Performance
 
 ![Vite 8](https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Node 25+](https://img.shields.io/badge/Node-%E2%89%A525-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Node 26+](https://img.shields.io/badge/Node-%E2%89%A526-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![WebGL 2](https://img.shields.io/badge/WebGL-2.0-990000?style=for-the-badge)
 ![Web Audio](https://img.shields.io/badge/Audio-Web_Audio_API-FF9500?style=for-the-badge)
 ![60fps Desktop](https://img.shields.io/badge/Desktop-60fps-4CAF50?style=for-the-badge)
@@ -603,8 +603,8 @@ _"Code is reality made computational. If it doesn't work, nothing else matters."
 
 ### 📋 Prerequisites
 
-- **Node.js 25+** — [download](https://nodejs.org/)
-- **npm 11+** (bundled with Node 25)
+- **Node.js 26+** — [download](https://nodejs.org/)
+- **npm 11+** (bundled with Node 26)
 - Modern browser with **WebGL 2.0** support
 
 ### 🌐 Play Now
@@ -618,7 +618,7 @@ _"Code is reality made computational. If it doesn't work, nothing else matters."
 git clone https://github.com/Hack23/blacktrigram.git
 cd blacktrigram
 
-# Install (requires Node ≥ 25)
+# Install (requires Node ≥ 26)
 npm install
 
 # Start the dojang

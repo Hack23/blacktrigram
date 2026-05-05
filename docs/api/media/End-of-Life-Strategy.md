@@ -64,12 +64,12 @@ Based on [Hack23 AB Classification Framework](https://github.com/Hack23/ISMS-PUB
 mindmap
   root)🥋 Black Trigram Stack(
     (🖥️ Runtime)
-      ☕ Node.js 25.x
-        📅 CI Runtime Baseline - transitioning to 26.x LTS
+      ☕ Node.js 26.x
+        📅 CI Runtime Baseline - 26.x Current active
         ⏰ Lifecycle source - Node.js release schedule
         🔄 LTS migration track - 24.x and 26.x
         📢 New schedule from 27.x
-        🚀 Prepared for Node 26 LTS upgrade
+        🚀 Tracking Node 27.x nightly for CI testing
       🌐 Browser Runtime
         📅 Evergreen Updates
         ⏰ EOL N/A - Auto-update
@@ -128,7 +128,7 @@ mindmap
 | **🎮 Three.js / R3F**   | 0.184.0 / 9.6.0 (Latest) | Major annually, Patch monthly   | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
 | **⚡ Vite Build Tool**  | 8.0.9 (Latest)            | Major annually                  | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
 | **📝 TypeScript**       | 6.0.3 (Latest)           | Major every ~12 months          | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
-| **☕ Node.js Runtime**  | 25.x (CI); 26.x LTS (target) | Major every 6 months; even-numbered majors LTS | LTS 24.x: **Apr 2027**; LTS 26.x: **Apr 2028** | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
+| **☕ Node.js Runtime**  | 26.x (CI); 27.x nightly (next testing) | Major every 6 months; even-numbered majors LTS | LTS 24.x: **Apr 2027**; LTS 26.x: **Apr 2028** | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
 | **🧪 Testing Stack**    | Vitest 4.1.4 + Cypress 15.14.0 | Major annually            | Active development | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
 
 ---
@@ -197,8 +197,8 @@ gantt
     Node.js 28.x LTS         :node28lts, 2028-10-01, 2031-04-30
 
     section Black Trigram Strategy
-    Node 25.x CI Runtime (active baseline) :active, bt25prod, 2025-04-22, 2026-03-18
-    25.x → 26.x LTS Migration      :active, bt25mig, 2026-03-01, 2026-06-30
+    Node 26.x CI Runtime (active baseline) :active, bt26prod_ci, 2026-05-05, 2028-04-30
+    25.x → 26.x LTS Migration      :done, bt25mig, 2026-03-01, 2026-05-05
     Node.js 26.x LTS Production     :bt26prod, 2026-06-30, 2028-04-30
     Node.js 27.x Alpha CI Testing   :bt27alpha, 2026-10-01, 2027-03-31
     Node.js 27.x Migration          :bt27mig, 2027-04-01, 2027-09-30
@@ -224,14 +224,14 @@ gantt
 
 #### **🟡 Risk-Based Migration Triggers (Monitored)**
 
-1. **⏰ Node.js 25.x upstream EOL:** October 2025 (passed) — Odd-numbered release, short upstream support window; migration to 26.x LTS is underway
+1. **⏰ Node.js 25.x upstream EOL:** October 2025 (passed) — Odd-numbered release, short upstream support window; migration to 26.x LTS is complete
 2. **🚨 Security Support Concerns:** Security patch availability degradation
 3. **🔧 Tooling Incompatibility:** Build/development tools requiring newer Node.js
 4. **☁️ Hosting Platform Changes:** Deployment platform Node.js requirements
 
 #### **🔴 Critical Migration Triggers (Mandatory)**
 
-1. **⛔ Node.js 25.x upstream EOL:** October 2025 (passed) — Upstream support ended; 25.x→26.x LTS migration actively in progress
+1. **⛔ Node.js 25.x upstream EOL:** October 2025 (passed) — Upstream support ended; 25.x→26.x LTS migration completed
 2. **⛔ Node.js 24.x EOL:** April 2027 - End of security support for previous LTS
 3. **🚨 Critical Vulnerability:** Unpatched security issues in current Node.js version
 4. **🔧 Build System Incompatibility:** Essential tools no longer supporting current Node.js

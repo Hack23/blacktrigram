@@ -7,7 +7,7 @@ This document provides a comprehensive overview of all custom agents available f
 All agents should reference these key files to understand the project environment:
 
 1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml`
-   - Available build tools and dependencies (Node.js 25, npm, TypeScript)
+   - Available build tools and dependencies (Node.js 26, npm, TypeScript)
    - Environment setup and cache configuration
    - Workflow permissions and capabilities
 

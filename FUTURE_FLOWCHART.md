@@ -66,7 +66,7 @@ flowchart TD
     
     R --> S[API Gateway Request<br/>/api/user/profile<br/>Cookie: session_token]
     
-    S --> Lambda1[Lambda Function<br/>getUserProfile<br/>Node.js 25]
+    S --> Lambda1[Lambda Function<br/>getUserProfile<br/>Node.js 26]
     
     Lambda1 --> T{User Exists?<br/>DynamoDB Query}
     
