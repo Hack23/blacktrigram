@@ -71,7 +71,7 @@ mindmap
           Connection Management
           Real-time Messaging
           Heartbeat Monitoring
-        Lambda Functions Node.js 25
+        Lambda Functions Node.js 26
           getUserProfile
           createUser
           saveMatchResults

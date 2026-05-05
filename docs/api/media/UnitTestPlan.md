@@ -417,10 +417,10 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
         with:
-          node-version: "25"
+          node-version-file: '.nvmrc'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run unit tests with coverage
         run: npm run coverage

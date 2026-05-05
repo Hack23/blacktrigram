@@ -282,9 +282,9 @@ e2e-tests:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v6
       with:
-        node-version: "25"
+        node-version-file: '.nvmrc'
     - name: Install dependencies
-      run: npm install
+      run: npm ci
     - name: Start app and run Cypress tests
       run: |
         xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
@@ -306,7 +306,7 @@ e2e-tests:
 
 **Environment:**
 - OS: Ubuntu Latest (Linux)
-- Node: v24
+- Node: from .nvmrc
 - Display: Xvfb (virtual framebuffer for headless)
 - Resolution: 1280x720x24 bit color depth
 - Browser: Chrome (headless)

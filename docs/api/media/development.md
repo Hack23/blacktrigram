@@ -206,8 +206,8 @@ graph TD
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js**: v25.x or later (see `.nvmrc`)
-- **npm**: v11.x or later (included with Node.js 25+)
+- **Node.js**: v26.x or later (see `.nvmrc`)
+- **npm**: v11.x or later (included with Node.js 26+)
 - **Git**: Latest version
 - **Google Chrome**: For E2E testing (installed automatically in CI)
 
@@ -244,7 +244,7 @@ Black Trigram is fully configured for zero-setup cloud development:
 4. Start coding immediately with pre-configured environment
 
 **Codespaces includes:**
-- ✅ Node.js 25 pre-installed
+- ✅ Node.js 26 pre-installed
 - ✅ All dependencies pre-cached
 - ✅ VS Code extensions configured
 - ✅ GitHub Copilot integration with MCP servers
