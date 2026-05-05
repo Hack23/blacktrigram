@@ -340,7 +340,7 @@ describe("useCombatLayout", () => {
       expect(aspectRatio).toBeCloseTo(3 / 4, 2);
 
       expect(arenaBounds.scale).toBeGreaterThan(0.4);
-      expect(arenaBounds.scale).toBeLessThan(1.2);
+      expect(arenaBounds.scale).toBeLessThan(1.3);
     });
 
     it("should handle 4K Android devices (1440x3168) in portrait", () => {

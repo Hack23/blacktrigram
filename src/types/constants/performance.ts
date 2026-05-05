@@ -72,7 +72,7 @@ export const PERFORMANCE_SETTINGS_BY_TIER: Record<PerformanceTier, PerformanceSe
     maxParticles: 50, // Between medium and high
     shadowMapSize: 1536, // Between 1024 and 2048
     antialias: true,
-    dpr: [1, 3.5], // Support up to 3.5x for Super HD displays (2712x1220)
+    dpr: [1, 2], // Cap at 2x to keep 2K-4K mobile WebGL buffers sustainable
     postProcessing: false, // Keep disabled for mobile battery life
     targetFPS: 55, // Realistic for high-end mobile
   },

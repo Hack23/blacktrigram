@@ -14,6 +14,28 @@ import { getScreenSize } from '../systems/ResponsiveScaling';
 import type { ScreenSize } from '../systems/ResponsiveScaling';
 
 /**
+ * Desktop arena sizing guardrails.
+ *
+ * The 80% width ratio works well from desktop through 4K, while the hard cap
+ * prevents ultra-wide/8K displays from creating an oversized WebGL scene that
+ * increases fill-rate cost without improving gameplay readability.
+ */
+const DESKTOP_ARENA_WIDTH_RATIO = 0.8;
+const DESKTOP_ARENA_MAX_WIDTH_PX = 2560;
+
+/**
+ * Calculate maximum desktop arena width for combat/training screens.
+ *
+ * @param width - Viewport width in CSS pixels
+ * @returns Width budget for the 4:3 desktop arena
+ *
+ * @public
+ */
+export function getDesktopArenaWidthBudget(width: number): number {
+  return Math.min(width * DESKTOP_ARENA_WIDTH_RATIO, DESKTOP_ARENA_MAX_WIDTH_PX);
+}
+
+/**
  * Base layout values for different screen sizes
  * These serve as reference values that scale proportionally
  */

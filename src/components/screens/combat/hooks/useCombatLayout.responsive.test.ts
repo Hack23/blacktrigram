@@ -56,6 +56,18 @@ const PHONE_VIEWPORTS: readonly Viewport[] = [
     height: 1024,
     expectPortrait: true,
   },
+  {
+    name: "2K mobile portrait 1220×2712",
+    width: 1220,
+    height: 2712,
+    expectPortrait: true,
+  },
+  {
+    name: "4K mobile portrait 1440×3088",
+    width: 1440,
+    height: 3088,
+    expectPortrait: true,
+  },
   // Landscape
   {
     name: "iPhone 8 landscape 667×375",
@@ -73,6 +85,18 @@ const PHONE_VIEWPORTS: readonly Viewport[] = [
     name: "iPad landscape 1024×768",
     width: 1024,
     height: 768,
+    expectPortrait: false,
+  },
+  {
+    name: "2K mobile landscape 2712×1220",
+    width: 2712,
+    height: 1220,
+    expectPortrait: false,
+  },
+  {
+    name: "4K mobile landscape 3088×1440",
+    width: 3088,
+    height: 1440,
     expectPortrait: false,
   },
   {
@@ -157,5 +181,26 @@ describe("useCombatLayout responsive viewport matrix", () => {
     const { result } = renderHook(() => useCombatLayout(1920, 1080));
     expect(result.current.isMobile).toBe(false);
     expect(result.current.isPortrait).toBe(false);
+  });
+
+  it("4K desktop keeps a large 4:3 arena without becoming mobile", () => {
+    vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(false);
+    const { result } = renderHook(() => useCombatLayout(3840, 2160));
+    const { arenaBounds } = result.current;
+
+    expect(result.current.isMobile).toBe(false);
+    expect(result.current.screenSize).toBe("xlarge");
+    expect(arenaBounds.width / arenaBounds.height).toBeCloseTo(4 / 3, 2);
+    expect(arenaBounds.width).toBeGreaterThan(1920);
+    expect(arenaBounds.x + arenaBounds.width).toBeLessThanOrEqual(3840);
+    expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(2160);
+  });
+
+  it("ultra-wide desktop caps arena width to protect fill-rate", () => {
+    vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(false);
+    const { result } = renderHook(() => useCombatLayout(7680, 4320));
+
+    expect(result.current.isMobile).toBe(false);
+    expect(result.current.arenaBounds.width).toBeLessThanOrEqual(2560);
   });
 });

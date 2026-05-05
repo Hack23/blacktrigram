@@ -171,6 +171,25 @@ describe("useTrainingLayout", () => {
         result1.current.trainingAreaBounds.width,
       );
     });
+
+    it("should scale cleanly on 4K desktop without overflowing the viewport", () => {
+      const { result } = renderHook(() => useTrainingLayout(3840, 2160));
+      const bounds = result.current.trainingAreaBounds;
+
+      expect(result.current.isMobile).toBe(false);
+      expect(result.current.screenSize).toBe("xlarge");
+      expect(bounds.width / bounds.height).toBeCloseTo(4 / 3, 2);
+      expect(bounds.width).toBeGreaterThan(1920);
+      expect(bounds.x + bounds.width).toBeLessThanOrEqual(3840);
+      expect(bounds.y + bounds.height).toBeLessThanOrEqual(2160);
+    });
+
+    it("should cap ultra-wide desktop arena width to protect fill-rate", () => {
+      const { result } = renderHook(() => useTrainingLayout(7680, 4320));
+
+      expect(result.current.isMobile).toBe(false);
+      expect(result.current.trainingAreaBounds.width).toBeLessThanOrEqual(2560);
+    });
   });
 
   describe("Responsive behavior", () => {
@@ -288,6 +307,36 @@ describe("useTrainingLayout", () => {
       expect(mobile2k.current.trainingAreaBounds.width).toBeLessThan(
         mobile4k.current.trainingAreaBounds.width,
       );
+      expect(mobile2k.current.trainingAreaBounds.width).toBeGreaterThanOrEqual(
+        700,
+      );
+      expect(mobile4k.current.trainingAreaBounds.width).toBeGreaterThanOrEqual(
+        900,
+      );
+    });
+
+    it("should fit 2K-4K mobile portrait arenas inside safe viewport bounds", () => {
+      const { result: mobile2k } = renderHook(() =>
+        useTrainingLayout(1220, 2712),
+      );
+      const { result: mobile4k } = renderHook(() =>
+        useTrainingLayout(1440, 3088),
+      );
+
+      for (const result of [mobile2k.current, mobile4k.current]) {
+        const bounds = result.trainingAreaBounds;
+        expect(result.isMobile).toBe(true);
+        expect(result.isPortrait).toBe(true);
+        expect(bounds.width / bounds.height).toBeCloseTo(3 / 4, 2);
+        expect(bounds.x).toBeGreaterThanOrEqual(0);
+        expect(bounds.y).toBeGreaterThanOrEqual(0);
+        expect(bounds.x + bounds.width).toBeLessThanOrEqual(
+          result === mobile2k.current ? 1220 : 1440,
+        );
+        expect(bounds.y + bounds.height).toBeLessThanOrEqual(
+          result === mobile2k.current ? 2712 : 3088,
+        );
+      }
     });
 
     it("should ensure minimum mobile area size for usability", () => {

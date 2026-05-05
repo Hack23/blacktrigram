@@ -41,7 +41,10 @@ import {
   PORTRAIT_HYSTERESIS_FACTOR,
   portraitMobileControlsBottomBand,
 } from "../../../../utils/responsiveOrientationConstants";
-import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
+import {
+  getCombatLayoutConstants,
+  getDesktopArenaWidthBudget,
+} from "../../../../utils/responsiveLayoutHelpers";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -168,7 +171,7 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       layoutConstants.footerHeight;
     const totalPadding = layoutConstants.padding * 3;
     const availableHeight = height - totalReservedHeight - totalPadding;
-    const availableWidth = width * 0.8;
+    const availableWidth = getDesktopArenaWidthBudget(width);
 
     // Calculate arena dimensions with 4:3 aspect ratio (width > height)
     // Start with available width, constrain by height if needed

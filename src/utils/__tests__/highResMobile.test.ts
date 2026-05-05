@@ -8,7 +8,7 @@
  * - OnePlus 12 (3168x1440)
  * 
  * These devices have desktop-class resolutions but are mobile devices
- * that require mobile-optimized settings with higher dpr support.
+ * that require mobile-optimized settings with sustainable DPR caps.
  * 
  * @category Testing
  * @korean 고해상도모바일최적화테스트
@@ -66,8 +66,8 @@ describe('High-Resolution Mobile Optimization', () => {
   describe('Performance Settings for Mobile-High Tier', () => {
     const mobileHighSettings = PERFORMANCE_SETTINGS_BY_TIER['mobile-high'];
 
-    it('should support up to 3.5x device pixel ratio for Super HD displays', () => {
-      expect(mobileHighSettings.dpr).toEqual([1, 3.5]);
+    it('should cap device pixel ratio at 2x for Super HD mobile displays', () => {
+      expect(mobileHighSettings.dpr).toEqual([1, 2]);
     });
 
     it('should use moderate particle count (50) for mobile battery life', () => {
@@ -106,7 +106,7 @@ describe('High-Resolution Mobile Optimization', () => {
   describe('getPerformanceSettings Integration', () => {
     it('should return mobile-high settings for Motorola Edge 60 Pro', () => {
       const settings = getPerformanceSettings(2712, true);
-      expect(settings.dpr).toEqual([1, 3.5]);
+      expect(settings.dpr).toEqual([1, 2]);
       expect(settings.maxParticles).toBe(50);
       expect(settings.shadowMapSize).toBe(1536);
       expect(settings.antialias).toBe(true);
@@ -139,13 +139,13 @@ describe('High-Resolution Mobile Optimization', () => {
   });
 
   describe('DPR Configuration Comparison', () => {
-    it('should provide higher max dpr for mobile-high than desktop', () => {
+    it('should keep mobile-high max dpr no higher than desktop', () => {
       const mobileHighDpr = PERFORMANCE_SETTINGS_BY_TIER['mobile-high'].dpr as [number, number];
       const desktopDpr = PERFORMANCE_SETTINGS_BY_TIER.high.dpr as [number, number];
       
-      expect(mobileHighDpr[1]).toBe(3.5);
+      expect(mobileHighDpr[1]).toBe(2);
       expect(desktopDpr[1]).toBe(2);
-      expect(mobileHighDpr[1]).toBeGreaterThan(desktopDpr[1]);
+      expect(mobileHighDpr[1]).toBeLessThanOrEqual(desktopDpr[1]);
     });
 
     it('should use same minimum dpr (1x) across all tiers except low', () => {
@@ -213,7 +213,7 @@ describe('High-Resolution Mobile Optimization', () => {
       expect(tier).toBe('mobile-high');
       
       const settings = getPerformanceSettings(3840, true);
-      expect(settings.dpr).toEqual([1, 3.5]);
+      expect(settings.dpr).toEqual([1, 2]);
     });
 
     it('should handle 767px mobile as medium tier (just below threshold)', () => {

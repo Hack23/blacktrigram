@@ -100,18 +100,21 @@ export function calculateMobileAreaBounds(
 
   // Determine max width based on device resolution
   // Device-specific sizing with extra-small support:
-  // - 4K/QHD+ (≥1440px): up to 800px
-  // - 2K (1200-1439px): up to 600px
-  // - Large phones (768-1199px): up to 500px
+  // - 4K mobile landscape (≥2160px): up to 1100px
+  // - QHD+/4K portrait (≥1440px): up to 960px
+  // - 2K (1200-1439px): up to 760px
+  // - Large phones/tablets (768-1199px): up to 560px
   // - Standard phones (380-767px): up to 400px
   // - Extra-small phones (<380px): up to 320px
   let maxMobileWidth: number;
-  if (width >= 1440) {
-    maxMobileWidth = Math.min(availableWidth, 800);
+  if (width >= 2160) {
+    maxMobileWidth = Math.min(availableWidth, 1100);
+  } else if (width >= 1440) {
+    maxMobileWidth = Math.min(availableWidth, 960);
   } else if (width >= 1200) {
-    maxMobileWidth = Math.min(availableWidth, 600);
+    maxMobileWidth = Math.min(availableWidth, 760);
   } else if (width >= 768) {
-    maxMobileWidth = Math.min(availableWidth, 500);
+    maxMobileWidth = Math.min(availableWidth, 560);
   } else if (width >= 380) {
     maxMobileWidth = Math.min(availableWidth, 400);
   } else {
