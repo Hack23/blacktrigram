@@ -141,7 +141,7 @@ export function calculateMobileAreaBounds(
   //     being drawn behind the bottom HUD / D-Pad).
   const hardWidthCap = isPortrait
     ? Math.min(availableWidth, availableHeight * (3 / 4))
-    : availableWidth;
+    : Math.min(availableWidth, availableHeight * (4 / 3));
   const minArenaWidth = Math.min(280, hardWidthCap);
 
   const areaWidth = Math.max(

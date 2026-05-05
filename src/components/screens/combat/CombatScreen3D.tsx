@@ -2663,7 +2663,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isMobile={isMobile}
         >
           {/* Performance overlay (dev mode) - controlled by showPerformanceOverlay prop */}
-          {showPerformanceOverlay && !showPerformanceMonitor && (
+          {showPerformanceOverlay && !isMobile && !showPerformanceMonitor && (
             <PerformanceOverlay3D />
           )}
 
@@ -2838,7 +2838,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           {/* Combat Particle Effects - Blood viscosity, organ damage, audio (전투 입자 효과) */}
           <CombatParticleEffects3D
             hitEffects={combatState.hitEffects}
-            enabled={true}
+            enabled={!isMobile}
             isMobile={isMobile}
           />
 
@@ -3043,7 +3043,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             In portrait mobile the side HUDs occlude the 3D arena; collapse
             them away so the arena stays fully visible. Player status is
             shown instead via CombatPortraitStatusStrip below. */}
-        {!(isMobile && isPortrait) && (
+        {!isMobile && (
           <CombatLeftHUD
             width={width}
             height={height}
@@ -3057,7 +3057,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         )}
 
         {/* Right HUD - Player 2/AI stats with difficulty indicator */}
-        {!(isMobile && isPortrait) && (
+        {!isMobile && (
           <CombatRightHUD
             width={width}
             height={height}
