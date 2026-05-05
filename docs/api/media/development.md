@@ -942,7 +942,7 @@ npm run build:analyze
 
 **Issue**: Different behavior in CI vs local
 ```bash
-# Solution 1: Check Node.js version matches (v24)
+# Solution 1: Check Node.js version matches (v26)
 node --version
 
 # Solution 2: Use npm ci instead of npm install
