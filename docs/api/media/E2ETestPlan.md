@@ -306,7 +306,7 @@ e2e-tests:
 
 **Environment:**
 - OS: Ubuntu Latest (Linux)
-- Node: v26
+- Node: from .nvmrc
 - Display: Xvfb (virtual framebuffer for headless)
 - Resolution: 1280x720x24 bit color depth
 - Browser: Chrome (headless)
