@@ -282,9 +282,9 @@ e2e-tests:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v6
       with:
-        node-version: "26"
+        node-version-file: '.nvmrc'
     - name: Install dependencies
-      run: npm install
+      run: npm ci
     - name: Start app and run Cypress tests
       run: |
         xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
