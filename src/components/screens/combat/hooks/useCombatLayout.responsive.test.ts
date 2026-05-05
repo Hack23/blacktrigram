@@ -18,6 +18,8 @@
 
 import { renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { mobileControlsBottomClearance } from "../../../../utils/responsiveOrientationConstants";
+import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
 import * as deviceDetection from "../../../../utils/deviceDetection";
 import { useCombatLayout } from "./useCombatLayout";
 
@@ -26,6 +28,33 @@ interface Viewport {
   readonly width: number;
   readonly height: number;
   readonly expectPortrait: boolean;
+}
+
+/**
+ * Verify mobile arenas stay above the reserved touch-control band.
+ *
+ * This prevents the "white arena/icons only" mobile failure mode where the
+ * playable 3D floor is hidden behind the technique bar and D-Pad.
+ */
+function assertMobileClearance(
+  vp: Viewport,
+  arenaBounds: { readonly y: number; readonly height: number },
+  isMobile: boolean,
+): void {
+  if (!isMobile) return;
+
+  const layout = getCombatLayoutConstants(vp.width, true);
+  const isExtraSmall = vp.width < 380;
+  const bottomClearance = mobileControlsBottomClearance(
+    layout.controlsHeight,
+    layout.footerHeight,
+    isExtraSmall,
+    vp.expectPortrait,
+    "combat",
+  );
+  expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(
+    vp.height - bottomClearance,
+  );
 }
 
 const PHONE_VIEWPORTS: readonly Viewport[] = [
@@ -51,6 +80,18 @@ const PHONE_VIEWPORTS: readonly Viewport[] = [
     height: 1024,
     expectPortrait: true,
   },
+  {
+    name: "2K mobile portrait 1220×2712",
+    width: 1220,
+    height: 2712,
+    expectPortrait: true,
+  },
+  {
+    name: "4K mobile portrait 1440×3088",
+    width: 1440,
+    height: 3088,
+    expectPortrait: true,
+  },
   // Landscape
   {
     name: "iPhone 8 landscape 667×375",
@@ -68,6 +109,18 @@ const PHONE_VIEWPORTS: readonly Viewport[] = [
     name: "iPad landscape 1024×768",
     width: 1024,
     height: 768,
+    expectPortrait: false,
+  },
+  {
+    name: "2K mobile landscape 2712×1220",
+    width: 2712,
+    height: 1220,
+    expectPortrait: false,
+  },
+  {
+    name: "4K mobile landscape 3088×1440",
+    width: 3088,
+    height: 1440,
     expectPortrait: false,
   },
   {
@@ -92,7 +145,7 @@ describe("useCombatLayout responsive viewport matrix", () => {
   for (const vp of PHONE_VIEWPORTS) {
     it(`${vp.name} keeps the arena inside the viewport`, () => {
       const { result } = renderHook(() => useCombatLayout(vp.width, vp.height));
-      const { arenaBounds, isPortrait } = result.current;
+      const { arenaBounds, isMobile, isPortrait } = result.current;
 
       expect(isPortrait).toBe(vp.expectPortrait);
 
@@ -101,6 +154,12 @@ describe("useCombatLayout responsive viewport matrix", () => {
       expect(arenaBounds.y).toBeGreaterThanOrEqual(0);
       expect(arenaBounds.x + arenaBounds.width).toBeLessThanOrEqual(vp.width);
       expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(vp.height);
+
+      // Mobile arenas must also stay above the reserved touch-control band,
+      // not merely inside the viewport. This prevents the "white arena/icons
+      // only" mobile failure mode where the playable floor is hidden behind
+      // the technique bar and D-Pad.
+      assertMobileClearance(vp, arenaBounds, isMobile);
 
       // Arena is actually visible (not a zero-area degenerate rectangle).
       // Minimum area scales with viewport: the iPhone SE 320×568 is
@@ -132,5 +191,26 @@ describe("useCombatLayout responsive viewport matrix", () => {
     const { result } = renderHook(() => useCombatLayout(1920, 1080));
     expect(result.current.isMobile).toBe(false);
     expect(result.current.isPortrait).toBe(false);
+  });
+
+  it("4K desktop keeps a large 4:3 arena without becoming mobile", () => {
+    vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(false);
+    const { result } = renderHook(() => useCombatLayout(3840, 2160));
+    const { arenaBounds } = result.current;
+
+    expect(result.current.isMobile).toBe(false);
+    expect(result.current.screenSize).toBe("xlarge");
+    expect(arenaBounds.width / arenaBounds.height).toBeCloseTo(4 / 3, 2);
+    expect(arenaBounds.width).toBeGreaterThan(1920);
+    expect(arenaBounds.x + arenaBounds.width).toBeLessThanOrEqual(3840);
+    expect(arenaBounds.y + arenaBounds.height).toBeLessThanOrEqual(2160);
+  });
+
+  it("ultra-wide desktop caps arena width to protect fill-rate", () => {
+    vi.spyOn(deviceDetection, "shouldUseMobileControls").mockReturnValue(false);
+    const { result } = renderHook(() => useCombatLayout(7680, 4320));
+
+    expect(result.current.isMobile).toBe(false);
+    expect(result.current.arenaBounds.width).toBeLessThanOrEqual(2560);
   });
 });

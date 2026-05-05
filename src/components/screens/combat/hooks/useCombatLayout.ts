@@ -36,11 +36,14 @@ import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimen
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
 import {
+  mobileControlsBottomClearance,
   PORTRAIT_FORCE_MAX_WIDTH_PX,
   PORTRAIT_HYSTERESIS_FACTOR,
-  portraitMobileControlsBottomBand,
 } from "../../../../utils/responsiveOrientationConstants";
-import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
+import {
+  getCombatLayoutConstants,
+  getDesktopArenaWidthBudget,
+} from "../../../../utils/responsiveLayoutHelpers";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -138,16 +141,13 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       // (technique bar + mobile controls + footer) or the arena ends up
       // behind the D-Pad. See responsiveOrientationConstants.ts for the
       // derivation of the mobile-controls reservation.
-      const minBottomClearance = isPortrait
-        ? portraitMobileControlsBottomBand(
-            layoutConstants.controlsHeight,
-            layoutConstants.footerHeight,
-            isExtraSmall,
-            "combat",
-          )
-        : isExtraSmall
-          ? 110
-          : 120;
+      const minBottomClearance = mobileControlsBottomClearance(
+        layoutConstants.controlsHeight,
+        layoutConstants.footerHeight,
+        isExtraSmall,
+        isPortrait,
+        "combat",
+      );
 
       const mobileBounds = calculateMobileAreaBounds(
         width,
@@ -169,7 +169,7 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       layoutConstants.footerHeight;
     const totalPadding = layoutConstants.padding * 3;
     const availableHeight = height - totalReservedHeight - totalPadding;
-    const availableWidth = width * 0.8;
+    const availableWidth = getDesktopArenaWidthBudget(width);
 
     // Calculate arena dimensions with 4:3 aspect ratio (width > height)
     // Start with available width, constrain by height if needed

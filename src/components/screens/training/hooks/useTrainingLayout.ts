@@ -36,10 +36,11 @@ import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimen
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
 import {
+  mobileControlsBottomClearance,
   PORTRAIT_FORCE_MAX_WIDTH_PX,
   PORTRAIT_HYSTERESIS_FACTOR,
-  portraitMobileControlsBottomBand,
 } from "../../../../utils/responsiveOrientationConstants";
+import { getDesktopArenaWidthBudget } from "../../../../utils/responsiveLayoutHelpers";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -133,14 +134,13 @@ export function useTrainingLayout(
       // footer + virtual controls) so the arena doesn't end up behind them.
       // Training's virtual-controls band is lighter than Combat's, so the
       // shared helper picks the "training" variant.
-      const bottomClearance = isPortrait
-        ? portraitMobileControlsBottomBand(
-            layoutConstants.controlsHeight,
-            layoutConstants.footerHeight,
-            isExtraSmall,
-            "training",
-          )
-        : 120;
+      const bottomClearance = mobileControlsBottomClearance(
+        layoutConstants.controlsHeight,
+        layoutConstants.footerHeight,
+        isExtraSmall,
+        isPortrait,
+        "training",
+      );
 
       return calculateMobileAreaBounds(
         width,
@@ -159,7 +159,7 @@ export function useTrainingLayout(
       layoutConstants.footerHeight;
     const totalPadding = layoutConstants.padding * 3;
     const availableHeight = height - totalReservedHeight - totalPadding;
-    const availableWidth = width * 0.8;
+    const availableWidth = getDesktopArenaWidthBudget(width);
 
     // Calculate arena dimensions with 4:3 aspect ratio (width > height)
     // Start with available width, constrain by height if needed

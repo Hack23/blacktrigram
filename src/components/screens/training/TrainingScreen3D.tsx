@@ -1466,17 +1466,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           zIndex: Z_INDEX.HUD,
           // Use 'clip' for pure clipping without creating a scroll container
           // Note: Both 'clip' and 'hidden' will clip box/text shadows; ensure
-          // any required shadow space is handled via padding on parent containers
+          // any required shadow space is handled via padding on parent containers.
           overflow: "clip",
         }}
         data-testid="training-hud-overlay"
       >
         {/* Left HUD - Anatomy Controls, Guard Indicator.
-            Hidden in portrait mobile because the 18 %-wide side HUD
-            occludes the already-compressed 3:4 arena; anatomy layer
-            toggles remain reachable from the Top HUD's Vital-Point
-            overlay controls. */}
-        {!(isMobile && isPortrait) && (
+            Hidden on mobile because the side HUD occludes the compressed
+            arena in both portrait and landscape. Anatomy layer toggles remain
+            available on larger viewports where there is room for side panels. */}
+        {!isMobile && (
           <TrainingLeftHUD
             width={width}
             height={height}
@@ -1489,7 +1488,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         )}
 
-        {/* Top HUD - Training Controls, Archetype Selector, Return Button */}
+        {/* Top HUD - Training Controls, Archetype Selector, Return Button. */}
         <TrainingTopHUD
           width={width}
           height={height}
@@ -1506,10 +1505,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         />
 
         {/* Right HUD - Mode Selector, Stats, Vital Point Selection.
-            Hidden in portrait mobile for the same occlusion reason as
-            the Left HUD. Users can rotate to landscape to access the
-            full stats + vital-point / footwork controls. */}
-        {!(isMobile && isPortrait) && (
+            Hidden on mobile to keep the training dojang visible and usable.
+            The core start/stop, archetype, vital-point toggle, technique bar,
+            stance wheel, gestures, and touch controls remain available. */}
+        {!isMobile && (
           <TrainingRightHUD
             width={width}
             height={height}
