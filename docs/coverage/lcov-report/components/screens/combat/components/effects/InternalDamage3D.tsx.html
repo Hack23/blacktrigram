@@ -1143,12 +1143,12 @@ export const InternalDamage3D: React.FC&lt;InternalDamage3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >      points.position.set(...effect.position);</span>
 &nbsp;
       // Store phi/theta for sphere expansion
-      (<span class="cstat-no" title="statement not covered" >geometry as THREE.BufferGeometry &amp; { sphereData: Record&lt;string, number | Float32Array&gt; }).sphereData = { positions: positions.slice() };</span>
+<span class="cstat-no" title="statement not covered" >      (geometry as THREE.BufferGeometry &amp; { sphereData: Record&lt;string, number | Float32Array&gt; }).sphereData = { positions: positions.slice() };</span>
 <span class="cstat-no" title="statement not covered" >      for (let i = <span class="cstat-no" title="statement not covered" >0; i</span> &lt; pulseCount; i++) {</span>
         const phi = <span class="cstat-no" title="statement not covered" >Math.acos(1 - 2 * (i + 0.5) / pulseCount);</span>
         const theta = <span class="cstat-no" title="statement not covered" >Math.PI * (1 + Math.sqrt(5)) * i;</span>
-        (<span class="cstat-no" title="statement not covered" >geometry as THREE.BufferGeometry &amp; { sphereData: Record&lt;string, number | Float32Array&gt; }).sphereData[`phi_${i}`] = phi;</span>
-        (<span class="cstat-no" title="statement not covered" >geometry as THREE.BufferGeometry &amp; { sphereData: Record&lt;string, number | Float32Array&gt; }).sphereData[`theta_${i}`] = theta;</span>
+<span class="cstat-no" title="statement not covered" >        (geometry as THREE.BufferGeometry &amp; { sphereData: Record&lt;string, number | Float32Array&gt; }).sphereData[`phi_${i}`] = phi;</span>
+<span class="cstat-no" title="statement not covered" >        (geometry as THREE.BufferGeometry &amp; { sphereData: Record&lt;string, number | Float32Array&gt; }).sphereData[`theta_${i}`] = theta;</span>
       }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      return points;</span>
@@ -1187,7 +1187,7 @@ export const InternalDamage3D: React.FC&lt;InternalDamage3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >          sizes[i] = 0.02;</span>
 &nbsp;
           // Store angle for ring expansion
-          (<span class="cstat-no" title="statement not covered" >geometry as THREE.BufferGeometry &amp; { [key: string]: number })[`angle_${i}`] = angle;</span>
+<span class="cstat-no" title="statement not covered" >          (geometry as THREE.BufferGeometry &amp; { [key: string]: number })[`angle_${i}`] = angle;</span>
         }
       } finally {
         // Release pooled color back to pool
@@ -1244,9 +1244,9 @@ export const InternalDamage3D: React.FC&lt;InternalDamage3DProps&gt; = ({
           const instance = <span class="cstat-no" title="statement not covered" >updated.get(id);</span>
 <span class="cstat-no" title="statement not covered" >          if (instance) {</span>
 <span class="cstat-no" title="statement not covered" >            instance.pulseParticles.geometry.dispose();</span>
-            (<span class="cstat-no" title="statement not covered" >instance.pulseParticles.material as THREE.Material).dispose();</span>
+<span class="cstat-no" title="statement not covered" >            (instance.pulseParticles.material as THREE.Material).dispose();</span>
 <span class="cstat-no" title="statement not covered" >            instance.rippleParticles.geometry.dispose();</span>
-            (<span class="cstat-no" title="statement not covered" >instance.rippleParticles.material as THREE.Material).dispose();</span>
+<span class="cstat-no" title="statement not covered" >            (instance.rippleParticles.material as THREE.Material).dispose();</span>
           }
 <span class="cstat-no" title="statement not covered" >          updated.delete(id);</span>
         }
@@ -1280,9 +1280,9 @@ export const InternalDamage3D: React.FC&lt;InternalDamage3DProps&gt; = ({
         effect: InternalDamageEffect;
       }) =&gt; {
 <span class="cstat-no" title="statement not covered" >        instance.pulseParticles.geometry.dispose();</span>
-        (<span class="cstat-no" title="statement not covered" >instance.pulseParticles.material as THREE.Material).dispose();</span>
+<span class="cstat-no" title="statement not covered" >        (instance.pulseParticles.material as THREE.Material).dispose();</span>
 <span class="cstat-no" title="statement not covered" >        instance.rippleParticles.geometry.dispose();</span>
-        (<span class="cstat-no" title="statement not covered" >instance.rippleParticles.material as THREE.Material).dispose();</span>
+<span class="cstat-no" title="statement not covered" >        (instance.rippleParticles.material as THREE.Material).dispose();</span>
       });
     };
   }, []); // Empty deps - cleanup on unmount only
@@ -1390,7 +1390,7 @@ export const InternalDamage3D: React.FC&lt;InternalDamage3DProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-06T19:07:13.925Z
+                at 2026-05-07T10:30:17.202Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

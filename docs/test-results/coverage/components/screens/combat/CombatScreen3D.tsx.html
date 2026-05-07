@@ -4424,8 +4424,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -7646,7 +7646,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >          if (state === AnimationState.ATTACK) {</span>
 <span class="cstat-no" title="statement not covered" >            clearPlayer1AttackAnimation.current();</span>
           }
-        } else if (<span class="cstat-no" title="statement not covered" >state === AnimationState.STANCE_CHANGE) {</span>
+        } else <span class="cstat-no" title="statement not covered" >if (state === AnimationState.STANCE_CHANGE) {</span>
           // Stance change animation completed - transition to stance guard
           // 자세 변경 완료 - 자세 가드로 전환
 <span class="cstat-no" title="statement not covered" >          audio.playSFX("menu_select");</span>
@@ -7705,8 +7705,8 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >        if (player1Animation.currentState !== targetState) {</span>
 <span class="cstat-no" title="statement not covered" >          player1Animation.transitionTo(targetState);</span>
         }
-      } else if (
-<span class="cstat-no" title="statement not covered" >        player1Animation.currentState === AnimationState.WALK ||</span>
+      } else <span class="cstat-no" title="statement not covered" >if (</span>
+        player1Animation.currentState === AnimationState.WALK ||
         player1Animation.currentState === AnimationState.RUN
       ) {
         // When stopping movement, transition to stance-specific guard animation
@@ -7887,7 +7887,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
         // Player 1 wins - update match score
 <span class="cstat-no" title="statement not covered" >        updateMatchScore(0);</span>
 <span class="cstat-no" title="statement not covered" >        startTransitionRef.current(currentPlayers[0], internalRoundRef.current); // Player 1 wins round</span>
-      } else if (<span class="cstat-no" title="statement not covered" >player2Health &gt; player1Health) {</span>
+      } else <span class="cstat-no" title="statement not covered" >if (player2Health &gt; player1Health) {</span>
         // Player 2 wins - update match score
 <span class="cstat-no" title="statement not covered" >        updateMatchScore(1);</span>
 <span class="cstat-no" title="statement not covered" >        startTransitionRef.current(currentPlayers[1], internalRoundRef.current); // Player 2 wins round</span>
@@ -8072,7 +8072,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >      if (playerIndex === 0) {</span>
 <span class="cstat-no" title="statement not covered" >        setPlayer1Position(position);</span>
 <span class="cstat-no" title="statement not covered" >        onPlayerUpdate(0, { position });</span>
-      } else if (<span class="cstat-no" title="statement not covered" >playerIndex === 1) {</span>
+      } else <span class="cstat-no" title="statement not covered" >if (playerIndex === 1) {</span>
         // For AI, update position through onPlayerUpdate
         // This will be reflected in player2Position which is derived from players prop
 <span class="cstat-no" title="statement not covered" >        onPlayerUpdate(1, { position });</span>
@@ -8123,7 +8123,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      if (targetPlayerIndex === 0) {</span>
 <span class="cstat-no" title="statement not covered" >        setPlayer1Injuries(updateInjuries);</span>
-      } else if (<span class="cstat-no" title="statement not covered" >targetPlayerIndex === 1) {</span>
+      } else <span class="cstat-no" title="statement not covered" >if (targetPlayerIndex === 1) {</span>
 <span class="cstat-no" title="statement not covered" >        setPlayer2Injuries(updateInjuries);</span>
       }
     },
@@ -8622,7 +8622,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
             cancelable: true,
           }),
         );
-      } else if (<span class="cstat-no" title="statement not covered" >eventType === "end") {</span>
+      } else <span class="cstat-no" title="statement not covered" >if (eventType === "end") {</span>
         // Release active key when D-pad released
 <span class="cstat-no" title="statement not covered" >        if (activeMobileKeyRef.current) {</span>
           const key = <span class="cstat-no" title="statement not covered" >activeMobileKeyRef.current;</span>
@@ -9913,7 +9913,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-06T19:07:13.470Z
+                at 2026-05-07T10:30:16.733Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
