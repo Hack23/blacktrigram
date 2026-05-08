@@ -129,6 +129,8 @@ Explicit `actions/cache` steps are used **only** for build artifacts that `setup
 | APT packages (Playwright) | `/var/cache/apt/archives` | `v2-{OS}-apt-playwright-{workflow-hash}` | screenshot-analysis |
 | APT packages (graphviz) | `/var/cache/apt/archives` | `v2-{OS}-apt-graphviz-{workflow-hash}` | report |
 
+> **Important — Vite cache ordering**: The Vite build cache step is placed **after** `npm ci`. `npm ci` deletes and recreates `node_modules`, so any cache restored before it would be immediately discarded. By restoring after `npm ci`, the cached `.vite` directory is placed into the freshly-created `node_modules/` and is available for the subsequent build step.
+
 ### Cache Key Versioning
 
 All cache keys are prefixed with `v2-`. Incrementing this prefix (e.g. to `v3-`) immediately expires every existing cache entry on the next run, without needing to manually delete caches via the GitHub UI. The old `v1`/unversioned entries expire naturally after 7 days of no access.
