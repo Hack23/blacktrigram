@@ -79,7 +79,7 @@ jobs:
             v2-playwright-${{ runner.os }}-
 
       - name: Install Playwright
-        timeout-minutes: 10
+        timeout-minutes: 20
         run: npx playwright install chromium --with-deps
 
       - name: Build application

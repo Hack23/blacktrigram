@@ -164,7 +164,7 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] \
 
 ### Playwright Installation Resilience
 
-`npx playwright install chromium --with-deps` is given a `timeout-minutes: 10` step-level timeout so a slow CDN or broken download does not cause the entire job to hang indefinitely. The Playwright browser cache (`~/.cache/ms-playwright`) is restored before this step so a successful cache hit skips the download entirely.
+`npx playwright install chromium --with-deps` is given a `timeout-minutes: 20` step-level timeout so a slow CDN or broken download does not cause the entire job to hang indefinitely. The timeout is set to 20 minutes (not 10) because on a cache miss, Playwright must download Chromium (~200 MB) plus install OS-level dependencies via apt, which can exceed 10 minutes on slow CDN or congested GitHub Actions runners. The Playwright browser cache (`~/.cache/ms-playwright`) is restored before this step so a successful cache hit skips the download entirely.
 
 ## 🧪 Test and Report Workflow
 
