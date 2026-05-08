@@ -32,17 +32,18 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/screenshot-analysis.yml') }}
+          key: v2-${{ runner.os }}-apt-playwright-${{ hashFiles('.github/workflows/screenshot-analysis.yml') }}
           restore-keys: |
-            ${{ runner.os }}-apt-
+            v2-${{ runner.os }}-apt-playwright-
 
       - name: Setup Screenshot Environment
+        timeout-minutes: 10
         run: |
           echo "🔧 Setting up screenshot capture environment..."
 
           # Install dependencies for Playwright screenshot capture
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
+          sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             xvfb dbus-x11 \
             libgtk2.0-0 libgtk-3-0 libgbm-dev libgbm1 \
             libnotify-dev libnss3 libxss1 \
@@ -68,11 +69,12 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          key: v2-playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            playwright-${{ runner.os }}-
+            v2-playwright-${{ runner.os }}-
 
       - name: Install Playwright
+        timeout-minutes: 20
         run: npx playwright install chromium --with-deps
 
       - name: Build application
