@@ -102,7 +102,7 @@ Every workflow in the Black Trigram project implements:
 
 ## 🗃️ Cache Strategy
 
-All workflows use a consistent, non-redundant caching strategy to maximize build speed while minimising cache storage consumption.
+All workflows use a consistent, non-redundant caching strategy to maximize build speed while minimizing cache storage consumption.
 
 ### Cache Action Version
 
