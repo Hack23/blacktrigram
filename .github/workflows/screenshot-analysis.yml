@@ -14,7 +14,7 @@ jobs:
   capture-screenshots:
     name: Capture UI/UX Screenshots
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       # Suppress X11 keyboard configuration warnings
       XKB_DEFAULT_RULES: evdev
@@ -32,14 +32,6 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: "npm"
-
-      - name: Cache dependencies
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Cache APT packages
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -77,9 +69,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright
-        run: npx playwright install chromium --with-deps
-
       - name: Cache Playwright browsers
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
@@ -87,6 +76,9 @@ jobs:
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             playwright-${{ runner.os }}-
+
+      - name: Install Playwright
+        run: npx playwright install chromium --with-deps
 
       - name: Build application
         run: npm run build
@@ -98,7 +90,7 @@ jobs:
           sleep 2  # Give Xvfb time to start
 
       - name: Capture screenshots
-        run: npm run screenshots:capture
+        run: npm run screenshots:capture:ci
         env:
           DISPLAY: :99
           CI: true
