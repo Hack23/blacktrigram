@@ -173,6 +173,7 @@
     "audit:threejs:v2:verbose": "npx tsx scripts/audit-threejs-disposal-v2.ts --verbose",
     "audit:threejs:v2:json": "npx tsx scripts/audit-threejs-disposal-v2.ts --json",
     "screenshots:capture": "start-server-and-test dev http://localhost:5173 'npx tsx scripts/capture-screenshots.ts'",
+    "screenshots:capture:ci": "start-server-and-test preview http://localhost:4173 'BASE_URL=http://localhost:4173 npx tsx scripts/capture-screenshots.ts'",
     "screenshots:post": "npx tsx scripts/post-screenshots-to-pr.ts",
     "screenshots:all": "npm run screenshots:capture && npm run screenshots:post"
   },
