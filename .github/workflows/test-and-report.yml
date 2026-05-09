@@ -115,15 +115,17 @@ jobs:
     runs-on: ubuntu-latest
     # Use Cypress's official browsers image: ships Node + Chrome + Firefox + Edge + Xvfb
     # + all GTK/NSS/font system libs preinstalled, removing the need for a custom
-    # apt-get + Google Chrome bootstrap step. Node is then upgraded to the version
-    # in .nvmrc (Node 26) via actions/setup-node below.
+    # apt-get + Google Chrome bootstrap step. Node is then normalised to the version
+    # in .nvmrc via actions/setup-node below.
     container:
-      # Pinned to cypress/browsers:26.0.0 (Node 26.0.0 + Chrome 148 + FF 150 +
-      # Edge 147 + Xvfb) and to its multi-arch manifest digest so CI is
-      # reproducible and not affected by silent base-image updates. The Node
-      # version aligns with .nvmrc, so the actions/setup-node step below is a
-      # no-op refresh of npm cache wiring rather than an actual upgrade.
-      image: cypress/browsers:26.0.0@sha256:87a2e90f7d8c6531e6d834ad6354b9d59cf6eabe72022bd68a53c52ed5a247e0
+      # Use cypress/browsers:latest — this keeps Chrome/Firefox/Edge/Xvfb on a
+      # rolling release, and `actions/setup-node` below normalises Node to the
+      # major pinned in .nvmrc (currently 26). We deliberately accept the
+      # rolling browser version over digest-pinning because .nvmrc is a Node
+      # major (26), not a patch, so attempting to also pin the container's Node
+      # patch would just be silently overridden by setup-node and create a
+      # misleading impression of full reproducibility.
+      image: cypress/browsers:latest
       # Run as root so actions/setup-node cache writes and Cypress binary cache
       # writes work without permission issues. The cypress/browsers image's
       # default USER is non-root.

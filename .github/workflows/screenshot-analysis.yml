@@ -18,8 +18,9 @@ jobs:
     # Run inside Microsoft's official Playwright image. Includes all browsers
     # (Chromium/Firefox/WebKit) plus every system dependency Playwright needs,
     # so we no longer need a custom apt-get block or `playwright install --with-deps`.
-    # Pinned to v1.59.1 to match the `playwright` version in package.json.
-    # Node will be upgraded to the version pinned in .nvmrc (Node 26) by setup-node below.
+    # Tag pinned to v1.59.1-noble to match the `playwright` version in package.json
+    # so the bundled browser binaries always match the npm client. Node is then
+    # normalised to the version in .nvmrc by actions/setup-node below.
     container:
       image: mcr.microsoft.com/playwright:v1.59.1-noble
       # Run as root so actions/setup-node cache writes and the Playwright

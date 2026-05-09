@@ -23,13 +23,15 @@ jobs:
     name: Prepare Release
     runs-on: ubuntu-latest
     # Run inside Cypress's official browsers image so Chrome/Firefox/Edge/Xvfb and all
-    # GTK/NSS/font system libs are preinstalled. Node is upgraded to the version pinned
-    # in .nvmrc (Node 26) by actions/setup-node below.
+    # GTK/NSS/font system libs are preinstalled. Node is normalised to the version pinned
+    # in .nvmrc by actions/setup-node below.
     container:
-      # Pinned to cypress/browsers:26.0.0 (Node 26.0.0 aligns with .nvmrc) and
-      # to its multi-arch manifest digest so release prep is reproducible and
-      # not affected by silent base-image updates.
-      image: cypress/browsers:26.0.0@sha256:87a2e90f7d8c6531e6d834ad6354b9d59cf6eabe72022bd68a53c52ed5a247e0
+      # Use cypress/browsers:latest — keeps Chrome/Firefox/Edge/Xvfb on a
+      # rolling release. We don't pin to a specific patch tag because .nvmrc is
+      # a Node major (26) and `actions/setup-node` would override the
+      # container's Node anyway, which would defeat the purpose of digest
+      # pinning the container's Node.
+      image: cypress/browsers:latest
       # Run as root so the in-job apt-get (graphviz/ffmpeg/zip/git) and
       # actions/setup-node cache writes don't hit permission errors. The
       # cypress/browsers image's default USER is non-root.
