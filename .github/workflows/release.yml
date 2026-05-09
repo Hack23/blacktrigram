@@ -109,11 +109,44 @@ jobs:
           PLAIN_VERSION="${PLAIN_VERSION#v}"
           npm version $PLAIN_VERSION --no-git-tag-version
 
-      - uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
+      # NOTE: We intentionally do not use stefanzweifel/git-auto-commit-action
+      # here. Because this job runs inside the cypress/browsers container,
+      # that Docker action runs in its own container and cannot read the
+      # host's git safe.directory configuration. It hits
+      # "fatal: detected dubious ownership in repository" and then silently
+      # reports "Working tree clean. Nothing to commit.", skipping the commit,
+      # tag, and push — which causes the downstream build job to fail with
+      # "A branch or tag with the name 'vX.Y.Z' could not be found".
+      # Running git directly in the job's shell lets us set safe.directory
+      # for the actual UID running git and reliably commit + tag + push.
+      - name: Commit version bump and create tag
         if: github.event_name == 'workflow_dispatch'
-        with:
-          commit_message: "chore(release): bump version to ${{ github.event.inputs.version }}"
-          tagging_message: "${{ github.event.inputs.version }}"
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit for version bump."
+          else
+            git commit -m "chore(release): bump version to ${VERSION}"
+          fi
+
+          # Create tag if it doesn't already exist
+          if git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null; then
+            echo "Tag ${VERSION} already exists locally."
+          else
+            git tag -a "${VERSION}" -m "${VERSION}"
+          fi
+
+          # actions/checkout leaves the repo in a detached HEAD state for
+          # workflow_dispatch on a branch, so push HEAD explicitly to main.
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git push origin "refs/tags/${VERSION}"
 
       - name: Verify Cypress
         run: npx cypress verify
