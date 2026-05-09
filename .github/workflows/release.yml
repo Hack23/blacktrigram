@@ -73,10 +73,11 @@ jobs:
         run: |
           echo "🔧 Verifying Three.js test environment for release validation..."
           # Chrome / Xvfb / GTK libs are baked into cypress/browsers image.
-          # Only graphviz (for diagrams documentation), ffmpeg, and zip (for
-          # release artifact packaging) are still required on top.
+          # Only graphviz (for diagrams documentation), ffmpeg, zip (for
+          # release artifact packaging), and rsync (required by
+          # JamesIves/github-pages-deploy-action) are still required on top.
           apt-get update -qq
-          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends graphviz ffmpeg zip git
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends graphviz ffmpeg zip git rsync
           echo "✅ Three.js environment ready"
           google-chrome --version
 
