@@ -118,7 +118,12 @@ jobs:
     # apt-get + Google Chrome bootstrap step. Node is then upgraded to the version
     # in .nvmrc (Node 26) via actions/setup-node below.
     container:
-      image: cypress/browsers:latest
+      # Pinned to cypress/browsers:26.0.0 (Node 26.0.0 + Chrome 148 + FF 150 +
+      # Edge 147 + Xvfb) and to its multi-arch manifest digest so CI is
+      # reproducible and not affected by silent base-image updates. The Node
+      # version aligns with .nvmrc, so the actions/setup-node step below is a
+      # no-op refresh of npm cache wiring rather than an actual upgrade.
+      image: cypress/browsers:26.0.0@sha256:87a2e90f7d8c6531e6d834ad6354b9d59cf6eabe72022bd68a53c52ed5a247e0
       # Run as root so actions/setup-node cache writes and Cypress binary cache
       # writes work without permission issues. The cypress/browsers image's
       # default USER is non-root.

@@ -42,20 +42,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Cache Playwright browsers
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.cache/ms-playwright
-          key: v2-playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            v2-playwright-${{ runner.os }}-
-
-      - name: Install Playwright browser binaries
-        timeout-minutes: 10
-        # System dependencies are already in the container image, so we omit
-        # `--with-deps` to avoid a redundant apt round-trip.
-        run: npx playwright install chromium
-
+      # The mcr.microsoft.com/playwright:v1.59.1-noble image already ships the
+      # browser binaries for Playwright 1.59.1 under /ms-playwright. Because the
+      # image is pinned to the same Playwright version as the `playwright` npm
+      # dep in package.json, we deliberately skip both `playwright install` and
+      # the Playwright browser cache here — they would just re-download what
+      # the image already provides and add network flake.
       - name: Build application
         run: npm run build
 

@@ -26,7 +26,10 @@ jobs:
     # GTK/NSS/font system libs are preinstalled. Node is upgraded to the version pinned
     # in .nvmrc (Node 26) by actions/setup-node below.
     container:
-      image: cypress/browsers:latest
+      # Pinned to cypress/browsers:26.0.0 (Node 26.0.0 aligns with .nvmrc) and
+      # to its multi-arch manifest digest so release prep is reproducible and
+      # not affected by silent base-image updates.
+      image: cypress/browsers:26.0.0@sha256:87a2e90f7d8c6531e6d834ad6354b9d59cf6eabe72022bd68a53c52ed5a247e0
       # Run as root so the in-job apt-get (graphviz/ffmpeg/zip/git) and
       # actions/setup-node cache writes don't hit permission errors. The
       # cypress/browsers image's default USER is non-root.
