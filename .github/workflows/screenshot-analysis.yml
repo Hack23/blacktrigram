@@ -22,6 +22,10 @@ jobs:
     # Node will be upgraded to the version pinned in .nvmrc (Node 26) by setup-node below.
     container:
       image: mcr.microsoft.com/playwright:v1.59.1-noble
+      # Run as root so actions/setup-node cache writes and the Playwright
+      # browser cache write work without permission issues. The Playwright
+      # noble image runs as the `pwuser` non-root user by default.
+      options: --user root
     env:
       # Suppress X11 keyboard configuration warnings
       XKB_DEFAULT_RULES: evdev

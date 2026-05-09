@@ -119,6 +119,10 @@ jobs:
     # in .nvmrc (Node 26) via actions/setup-node below.
     container:
       image: cypress/browsers:latest
+      # Run as root so actions/setup-node cache writes and Cypress binary cache
+      # writes work without permission issues. The cypress/browsers image's
+      # default USER is non-root.
+      options: --user root
     # Needs write permissions to upload artifacts
     permissions:
       contents: write # Required to check out code

@@ -15,8 +15,10 @@ on:
         options:
           - baseline
           - full
-  # Run a baseline scan against the public site every Monday at 06:00 UTC so
-  # we get continuous DAST coverage without manual dispatch.
+  # Run a baseline scan against the public site every Monday at 06:00 UTC.
+  # This is a low-traffic window that gives us continuous DAST coverage at the
+  # start of each working week without manual dispatch and without competing
+  # with weekday CI load.
   schedule:
     - cron: "0 6 * * 1"
 

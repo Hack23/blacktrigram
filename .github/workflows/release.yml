@@ -27,6 +27,10 @@ jobs:
     # in .nvmrc (Node 26) by actions/setup-node below.
     container:
       image: cypress/browsers:latest
+      # Run as root so the in-job apt-get (graphviz/ffmpeg/zip/git) and
+      # actions/setup-node cache writes don't hit permission errors. The
+      # cypress/browsers image's default USER is non-root.
+      options: --user root
     # Only prepare job needs write permissions for commit and tagging
     permissions:
       contents: write # Required for git auto-commit
