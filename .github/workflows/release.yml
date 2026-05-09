@@ -22,6 +22,11 @@ jobs:
   prepare:
     name: Prepare Release
     runs-on: ubuntu-latest
+    # Run inside Cypress's official browsers image so Chrome/Firefox/Edge/Xvfb and all
+    # GTK/NSS/font system libs are preinstalled. Node is upgraded to the version pinned
+    # in .nvmrc (Node 26) by actions/setup-node below.
+    container:
+      image: cypress/browsers:latest
     # Only prepare job needs write permissions for commit and tagging
     permissions:
       contents: write # Required for git auto-commit
@@ -29,10 +34,8 @@ jobs:
       version: ${{ steps.get-version.outputs.version }}
       is_prerelease: ${{ github.event.inputs.prerelease || 'false' }}
     steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@a5ad31d6a139d249332a2605b85202e8c0b78450 # v2.19.1
-        with:
-          egress-policy: audit
+      # NOTE: step-security/harden-runner does not support container jobs and is
+      # intentionally omitted from this job.
 
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -50,14 +53,6 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Version: ${VERSION}"
 
-      - name: Cache APT packages
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: /var/cache/apt/archives
-          key: v2-${{ runner.os }}-apt-chrome-${{ hashFiles('.github/workflows/release.yml') }}
-          restore-keys: |
-            v2-${{ runner.os }}-apt-chrome-
-
       - name: Setup Three.js Test Environment
         env:
           CYPRESS_VIDEO: true
@@ -65,39 +60,14 @@ jobs:
           XKB_DEFAULT_RULES: evdev
           XKB_DEFAULT_MODEL: pc105
           XKB_DEFAULT_LAYOUT: us
-        timeout-minutes: 10
+        timeout-minutes: 5
         run: |
-          echo "🔧 Setting up Three.js test environment for release validation..."
-
-          # Install all dependencies
-          sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            xvfb dbus-x11 graphviz \
-            libgtk2.0-0 libgtk-3-0 libgbm-dev libgbm1 \
-            ffmpeg libnotify-dev libnss3 libxss1 \
-            libxtst6 xauth \
-            fonts-noto fonts-noto-cjk fonts-noto-cjk-extra \
-            ca-certificates fonts-liberation curl gnupg \
-            libatk-bridge2.0-0 libatk1.0-0 \
-            libcups2 libdbus-1-3 libdrm2 \
-            libnspr4 libx11-xcb1 libxcomposite1 \
-            libxdamage1 libxfixes3 libxrandr2 \
-            libxrender1 libxshmfence1 xdg-utils libxkbcommon0 xkb-data
-
-          # Install Chrome using signed keyring (modern method, resilient)
-          curl -fsSL --retry 3 --retry-delay 5 --connect-timeout 30 \
-            https://dl.google.com/linux/linux_signing_key.pub \
-            | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] https://dl.google.com/linux/chrome/deb/ stable main" \
-            | sudo tee /etc/apt/sources.list.d/google-chrome.list > /dev/null
-          sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends google-chrome-stable
-
-          # Setup D-Bus and Xvfb
-          sudo mkdir -p /var/run/dbus
-          sudo dbus-daemon --system --fork
-          export DISPLAY=:99
-
+          echo "🔧 Verifying Three.js test environment for release validation..."
+          # Chrome / Xvfb / GTK libs are baked into cypress/browsers image.
+          # Only graphviz (for diagrams documentation), ffmpeg, and zip (for
+          # release artifact packaging) are still required on top.
+          apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends graphviz ffmpeg zip git
           echo "✅ Three.js environment ready"
           google-chrome --version
 
