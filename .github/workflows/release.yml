@@ -122,7 +122,7 @@ jobs:
           TERM: dumb
         run: |
           echo "🚀 Running Three.js E2E tests for release validation..."
-          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -nolisten tcp" npm run test:e2e || TEST_EXIT_CODE=$?
+          NODE_OPTIONS="--max-old-space-size=4096" npm run test:e2e || TEST_EXIT_CODE=$?
           exit ${TEST_EXIT_CODE:-0}
 
 

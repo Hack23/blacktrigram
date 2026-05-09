@@ -150,7 +150,8 @@ jobs:
         run: |
           echo "Node: $(node --version)"
           google-chrome --version || true
-          xvfb-run --help >/dev/null 2>&1 && echo "xvfb-run available" || echo "xvfb-run missing"
+          # cypress/browsers ships Xvfb (used by Cypress's bundled @cypress/xvfb).
+          command -v Xvfb >/dev/null 2>&1 && echo "Xvfb available" || echo "Xvfb missing"
 
       - name: Cache Cypress binary
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -176,8 +177,11 @@ jobs:
           echo "  - Target: 10-12 minute execution"
           echo ""
           START_TIME=$(date +%s) || START_TIME=0
-          # Run tests - xvfb-run handles display setup (provided by cypress/browsers image)
-          NODE_OPTIONS="--max-old-space-size=4096" xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 -ac +extension GLX +extension RANDR +render -nolisten tcp" npm run test:e2e || TEST_EXIT_CODE=$?
+          # cypress/browsers image ships Xvfb but NOT xauth, so the xvfb-run
+          # wrapper fails with "xauth command not found". Cypress's bundled
+          # @cypress/xvfb spawns Xvfb directly (no xauth needed) when DISPLAY
+          # is unset, so we just call npm run test:e2e and let Cypress manage it.
+          NODE_OPTIONS="--max-old-space-size=4096" npm run test:e2e || TEST_EXIT_CODE=$?
           END_TIME=$(date +%s) || END_TIME=$START_TIME
           if [ "$START_TIME" -ne 0 ]; then
             DURATION=$((END_TIME - START_TIME))
