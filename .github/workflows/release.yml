@@ -91,7 +91,7 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.cache/Cypress
-          key: v2-cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          key: v2-cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             v2-cypress-${{ runner.os }}-
 
@@ -203,7 +203,7 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: node_modules/.vite
-          key: v2-${{ runner.os }}-vite-${{ hashFiles('**/package-lock.json') }}
+          key: v2-${{ runner.os }}-vite-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             v2-${{ runner.os }}-vite-
 
