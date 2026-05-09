@@ -100,6 +100,72 @@ Every workflow in the Black Trigram project implements:
 6. **⏱️ Timeout Limits**: Resource exhaustion prevention
 7. **🔑 OIDC Tokens**: Secure authentication without long-lived secrets
 
+## 🗃️ Cache Strategy
+
+All workflows use a consistent, non-redundant caching strategy to maximize build speed while minimizing cache storage consumption.
+
+### Cache Action Version
+
+All explicit caches use a single pinned version:
+
+```yaml
+uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+```
+
+### npm / Node Modules
+
+`actions/setup-node` is configured with `cache: "npm"` in every job that installs Node dependencies. This uses GitHub's built-in npm cache keyed on `package-lock.json` and is the **only** npm cache mechanism used — no additional `actions/cache` step for `~/.npm` is added, which would create a redundant second cache entry for the same data.
+
+### Special Tool Caches
+
+Explicit `actions/cache` steps are used **only** for build artifacts that `setup-node` does not cover:
+
+| Cache | Path | Key pattern | Used in |
+|---|---|---|---|
+| Vite build cache | `node_modules/.vite` | `v2-{OS}-vite-{lockfile-hash}` | build-validation, release build |
+| Cypress binary | `~/.cache/Cypress` | `v2-cypress-{OS}-{lockfile-hash}` | e2e-tests, release prepare |
+| Playwright browsers | `~/.cache/ms-playwright` | `v2-playwright-{OS}-{lockfile-hash}` | screenshot-analysis |
+| APT packages (Chrome) | `/var/cache/apt/archives` | `v2-{OS}-apt-chrome-{workflow-hash}` | e2e-tests, release prepare |
+| APT packages (Playwright) | `/var/cache/apt/archives` | `v2-{OS}-apt-playwright-{workflow-hash}` | screenshot-analysis |
+| APT packages (graphviz) | `/var/cache/apt/archives` | `v2-{OS}-apt-graphviz-{workflow-hash}` | report |
+
+> **Important — Vite cache ordering**: The Vite build cache step is placed **after** `npm ci`. `npm ci` deletes and recreates `node_modules`, so any cache restored before it would be immediately discarded. By restoring after `npm ci`, the cached `.vite` directory is placed into the freshly-created `node_modules/` and is available for the subsequent build step.
+
+### Cache Key Versioning
+
+All cache keys are prefixed with `v2-`. Incrementing this prefix (e.g. to `v3-`) immediately expires every existing cache entry on the next run, without needing to manually delete caches via the GitHub UI. The old `v1`/unversioned entries expire naturally after 7 days of no access.
+
+## 🛡️ Resilience Against External Registry Failures
+
+Browser and system-package installations can hang or fail when third-party registries are slow or unavailable. The following measures are applied across all affected workflows:
+
+### apt-get Resilience
+
+- `DEBIAN_FRONTEND=noninteractive` is set to prevent interactive prompts that cause indefinite hangs.
+- `-qq` flag is used with `apt-get update` to suppress unnecessary output.
+- `--no-install-recommends` limits the install surface and reduces download size.
+- All `apt-get` install steps are wrapped in a `timeout-minutes:` step-level limit.
+
+### Chrome Installation Resilience
+
+The deprecated `apt-key add` method (which reads from stdin and can block) is replaced with the modern signed-keyring approach:
+
+```bash
+# Modern method — non-blocking, uses gpg directly
+curl -fsSL --retry 3 --retry-delay 5 --connect-timeout 30 \
+  https://dl.google.com/linux/linux_signing_key.pub \
+  | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] \
+  https://dl.google.com/linux/chrome/deb/ stable main" \
+  | sudo tee /etc/apt/sources.list.d/google-chrome.list > /dev/null
+```
+
+`curl` is invoked with `--retry 3 --retry-delay 5 --connect-timeout 30` so transient network failures are retried automatically.
+
+### Playwright Installation Resilience
+
+`npx playwright install chromium --with-deps` is given a `timeout-minutes: 20` step-level timeout so a slow CDN or broken download does not cause the entire job to hang indefinitely. The timeout is set to 20 minutes (not 10) because on a cache miss, Playwright must download Chromium (~200 MB) plus install OS-level dependencies via apt, which can exceed 10 minutes on slow CDN or congested GitHub Actions runners. The Playwright browser cache (`~/.cache/ms-playwright`) is restored before this step so a successful cache hit skips the download entirely.
+
 ## 🧪 Test and Report Workflow
 
 The Test and Report workflow ensures comprehensive quality validation:
