@@ -1,0 +1,9 @@
+# ZAP scanning rules tuning for Black Trigram (흑괘)
+# Format: <ALERT_ID>\t<ACTION>\t<COMMENT>
+# ACTION may be one of: IGNORE, WARN, FAIL
+# Reference: https://www.zaproxy.org/docs/docker/full-scan/#configuration-file
+
+# Static, public, GitHub-Pages-hosted SPA -> the following rules are not actionable:
+10027	IGNORE	Information Disclosure - Suspicious Comments (false positives in vendor JS)
+10096	IGNORE	Timestamp Disclosure (Three.js / build hashes)
+10109	IGNORE	Modern Web Application (we are an SPA, expected)

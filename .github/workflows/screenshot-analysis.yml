@@ -15,6 +15,18 @@ jobs:
     name: Capture UI/UX Screenshots
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Run inside Microsoft's official Playwright image. Includes all browsers
+    # (Chromium/Firefox/WebKit) plus every system dependency Playwright needs,
+    # so we no longer need a custom apt-get block or `playwright install --with-deps`.
+    # Tag pinned to v1.59.1-noble to match the `playwright` version in package.json
+    # so the bundled browser binaries always match the npm client. Node is then
+    # normalised to the version in .nvmrc by actions/setup-node below.
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      # Run as root so actions/setup-node cache writes and the Playwright
+      # browser cache write work without permission issues. The Playwright
+      # noble image runs as the `pwuser` non-root user by default.
+      options: --user root
     env:
       # Suppress X11 keyboard configuration warnings
       XKB_DEFAULT_RULES: evdev
@@ -28,60 +40,22 @@ jobs:
           node-version-file: '.nvmrc'
           cache: "npm"
 
-      - name: Cache APT packages
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: /var/cache/apt/archives
-          key: v2-${{ runner.os }}-apt-playwright-${{ hashFiles('.github/workflows/screenshot-analysis.yml') }}
-          restore-keys: |
-            v2-${{ runner.os }}-apt-playwright-
-
-      - name: Setup Screenshot Environment
-        timeout-minutes: 10
-        run: |
-          echo "🔧 Setting up screenshot capture environment..."
-
-          # Install dependencies for Playwright screenshot capture
-          sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            xvfb dbus-x11 \
-            libgtk2.0-0 libgtk-3-0 libgbm-dev libgbm1 \
-            libnotify-dev libnss3 libxss1 \
-            libxtst6 xauth \
-            fonts-noto fonts-noto-cjk fonts-noto-cjk-extra \
-            ca-certificates fonts-liberation \
-            libatk-bridge2.0-0 libatk1.0-0 \
-            libcups2 libdbus-1-3 libdrm2 \
-            libnspr4 libx11-xcb1 libxcomposite1 \
-            libxdamage1 libxfixes3 libxrandr2 \
-            libxrender1 libxshmfence1 xdg-utils libxkbcommon0 xkb-data
-
-          # Setup D-Bus
-          sudo mkdir -p /var/run/dbus
-          sudo dbus-daemon --system --fork
-
-          echo "✅ Screenshot environment ready"
-
       - name: Install dependencies
         run: npm ci
 
-      - name: Cache Playwright browsers
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.cache/ms-playwright
-          key: v2-playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            v2-playwright-${{ runner.os }}-
-
-      - name: Install Playwright
-        timeout-minutes: 20
-        run: npx playwright install chromium --with-deps
-
+      # The mcr.microsoft.com/playwright:v1.59.1-noble image already ships the
+      # browser binaries for Playwright 1.59.1 under /ms-playwright. Because the
+      # image is pinned to the same Playwright version as the `playwright` npm
+      # dep in package.json, we deliberately skip both `playwright install` and
+      # the Playwright browser cache here — they would just re-download what
+      # the image already provides and add network flake.
       - name: Build application
         run: npm run build
 
       - name: Start Xvfb
         run: |
+          # The playwright:noble image ships xvfb. Start it so any screenshot
+          # script that relies on $DISPLAY (e.g. headed Chromium) has a server.
           Xvfb :99 -ac -screen 0 1280x1024x24 +extension GLX +extension RANDR +render -nolisten tcp > /dev/null 2>&1 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
           sleep 2  # Give Xvfb time to start
