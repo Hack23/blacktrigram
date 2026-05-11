@@ -17,7 +17,6 @@ import * as THREE from "three";
  * Represents emotional and physical states visible on fighter's face.
  * Each expression corresponds to specific combat situations.
  * 
- * @public
  * @category Facial Animation
  * @korean 얼굴표정
  */
@@ -39,7 +38,6 @@ export enum FacialExpression {
 /**
  * Bilingual names for facial expressions
  * 
- * @public
  * @category Facial Animation
  * @korean 표정이름
  */
@@ -85,35 +83,26 @@ export const FACIAL_EXPRESSION_NAMES: Record<
  * Tracks accumulated damage to face for visual feedback.
  * Includes bruising, swelling, and bleeding effects.
  * 
- * @public
  * @category Facial Animation
  * @korean 얼굴손상상태
  */
 export interface FacialDamageState {
   /** Left eye swelling (0-1, 0=none, 1=fully swollen) */
   readonly leftEyeSwelling: number;
-  
   /** Right eye swelling (0-1, 0=none, 1=fully swollen) */
   readonly rightEyeSwelling: number;
-  
   /** Mouth/lip bleeding intensity (0-1) */
   readonly mouthBleeding: number;
-  
   /** Nose bleeding intensity (0-1) */
   readonly noseBleeding: number;
-  
   /** Bruise intensity on left cheek (0-1) */
   readonly leftCheekBruise: number;
-  
   /** Bruise intensity on right cheek (0-1) */
   readonly rightCheekBruise: number;
-  
   /** Forehead bruise/cut intensity (0-1) */
   readonly foreheadBruise: number;
-  
   /** Jaw bruise intensity (0-1) */
   readonly jawBruise: number;
-  
   /** Total facial damage accumulation (0-100) */
   readonly totalFacialDamage: number;
 }
@@ -123,23 +112,18 @@ export interface FacialDamageState {
  * 
  * Manages current expression and smooth transition to next expression.
  * 
- * @public
  * @category Facial Animation
  * @korean 표정상태
  */
 export interface ExpressionState {
   /** Current facial expression */
   readonly expression: FacialExpression;
-  
   /** Expression intensity (0-1, affects degree of expression) */
   readonly intensity: number;
-  
   /** Time to transition to new expression (seconds) */
   readonly transitionTime: number;
-  
   /** Previous expression (for blending) */
   readonly previousExpression?: FacialExpression;
-  
   /** Transition progress (0-1, 0=start, 1=complete) */
   readonly transitionProgress?: number;
 }
@@ -147,7 +131,6 @@ export interface ExpressionState {
 /**
  * Eye openness values for expressions
  * 
- * @public
  * @category Facial Animation
  * @korean 눈개방도
  */
@@ -163,7 +146,6 @@ export const EYE_OPENNESS: Record<FacialExpression, number> = {
 /**
  * Mouth openness values for expressions
  * 
- * @public
  * @category Facial Animation
  * @korean 입개방도
  */
@@ -181,7 +163,6 @@ export const MOUTH_OPENNESS: Record<FacialExpression, number> = {
  * 
  * Defines types of head movements for combat reactions.
  * 
- * @public
  * @category Facial Animation
  * @korean 머리움직임타입
  */
@@ -205,23 +186,18 @@ export enum HeadMovementType {
  * 
  * Sequence of Euler rotations for head movement animations.
  * 
- * @public
  * @category Facial Animation
  * @korean 머리움직임키프레임
  */
 export interface HeadMovementKeyframes {
   /** Movement type identifier */
   readonly type: HeadMovementType;
-  
   /** Sequence of rotation keyframes */
   readonly rotations: readonly THREE.Euler[];
-  
   /** Duration of each keyframe in seconds */
   readonly frameDuration: number;
-  
   /** Total animation duration in seconds */
   readonly totalDuration: number;
-  
   /** Whether animation loops */
   readonly loop: boolean;
 }
@@ -231,23 +207,18 @@ export interface HeadMovementKeyframes {
  * 
  * Manages eye direction and pupil position for opponent tracking.
  * 
- * @public
  * @category Facial Animation
  * @korean 눈추적상태
  */
 export interface EyeTrackingState {
   /** Target position to look at (opponent position) */
   readonly targetPosition: THREE.Vector3;
-  
   /** Current look direction (normalized) */
   readonly lookDirection: THREE.Vector3;
-  
   /** Pupil offset from center (-1 to 1 for each axis) */
   readonly pupilOffset: { x: number; y: number };
-  
   /** Tracking speed (smoothing factor) */
   readonly trackingSpeed: number;
-  
   /** Whether tracking is enabled */
   readonly enabled: boolean;
 }
@@ -255,7 +226,6 @@ export interface EyeTrackingState {
 /**
  * Default facial damage state (no damage)
  * 
- * @public
  * @category Facial Animation
  * @korean 기본얼굴손상상태
  */
@@ -274,7 +244,6 @@ export const DEFAULT_FACIAL_DAMAGE: FacialDamageState = {
 /**
  * Default expression state (neutral)
  * 
- * @public
  * @category Facial Animation
  * @korean 기본표정상태
  */
@@ -287,7 +256,6 @@ export const DEFAULT_EXPRESSION_STATE: ExpressionState = {
 /**
  * Default eye tracking state
  * 
- * @public
  * @category Facial Animation
  * @korean 기본눈추적상태
  */
@@ -302,32 +270,24 @@ export const DEFAULT_EYE_TRACKING: EyeTrackingState = {
 /**
  * Face3D component props
  * 
- * @public
  * @category Facial Animation
  * @korean 얼굴3D속성
  */
 export interface Face3DProps {
   /** Current facial expression */
   readonly expression: FacialExpression;
-  
   /** Facial damage state */
   readonly damage: FacialDamageState;
-  
   /** Opponent position for eye tracking */
   readonly opponentPosition: THREE.Vector3;
-  
   /** Current head rotation (Euler angles) */
   readonly headRotation: THREE.Euler;
-  
   /** Enable eye tracking (default: true) */
   readonly enableEyeTracking?: boolean;
-  
   /** Enable damage visualization (default: true) */
   readonly enableDamageVisuals?: boolean;
-  
   /** Mobile mode (simplified rendering) */
   readonly isMobile?: boolean;
-  
   /** Skin tone color (default: 0xffdbac) */
   readonly skinColor?: number;
 }
@@ -335,23 +295,18 @@ export interface Face3DProps {
 /**
  * Eye component props
  * 
- * @public
  * @category Facial Animation
- * @korean 눈3D속성
+ * @korean 뉕3D속성
  */
 export interface EyeProps {
   /** Eye position relative to head */
   readonly position: [number, number, number];
-  
   /** Current facial expression */
   readonly expression: FacialExpression;
-  
   /** Look direction for pupil tracking */
   readonly lookDirection: THREE.Vector3;
-  
   /** Eye swelling amount (0-1) */
   readonly swelling: number;
-  
   /** Whether this is the left or right eye */
   readonly side: "left" | "right";
 }
@@ -359,17 +314,14 @@ export interface EyeProps {
 /**
  * Mouth component props
  * 
- * @public
  * @category Facial Animation
- * @korean 입3D속성
+ * @korean 섈3D속성
  */
 export interface MouthProps {
   /** Mouth position relative to head */
   readonly position: [number, number, number];
-  
   /** Current facial expression */
   readonly expression: FacialExpression;
-  
   /** Bleeding intensity (0-1) */
   readonly bleeding: number;
 }

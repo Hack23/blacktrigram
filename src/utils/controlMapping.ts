@@ -91,7 +91,6 @@ const DEFAULT_BINDINGS: ControlBinding = {
  * });
  * ```
  * 
- * @public
  * @korean 컨트롤매퍼
  */
 export class ControlMapper {
@@ -212,7 +211,7 @@ export class ControlMapper {
    * 
    * @param key - Keyboard key to check
    * @returns TrigramStance or null
-   * @korean 키에 대한 팔괘 자세
+   * @korean 키에 대한 팔괴 자세
    */
   getTrigramStanceForKey(key: string): TrigramStance | null {
     const index = this.getStanceForKey(key);

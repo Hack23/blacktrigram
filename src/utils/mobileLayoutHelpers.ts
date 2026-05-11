@@ -14,7 +14,6 @@ import { calculateArenaWorldDimensions } from "./arenaWorldDimensions";
 /**
  * Mobile area bounds with world dimensions.
  *
- * @public
  */
 export interface MobileAreaBounds {
   readonly x: number;
@@ -35,7 +34,6 @@ export interface MobileAreaBounds {
  *   so both fighters plus the horizontal breathing-room between them fit
  *   inside a narrow viewport without being occluded by the bottom HUD.
  *
- * @public
  */
 export type MobileOrientation = "portrait" | "landscape";
 
@@ -68,7 +66,6 @@ export type MobileOrientation = "portrait" | "landscape";
  * const portrait  = calculateMobileAreaBounds(375, 667, 80, 220, 90, "portrait");
  * ```
  *
- * @public
  * @korean 모바일영역경계계산
  */
 export function calculateMobileAreaBounds(

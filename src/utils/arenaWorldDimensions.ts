@@ -29,7 +29,6 @@
  *
  * **Korean**: 화면크기범주 (Screen Size Category)
  *
- * @public
  */
 export type ScreenSizeCategory =
   | "small"
@@ -42,7 +41,6 @@ export type ScreenSizeCategory =
  * Standard arena widths in meters.
  * Arenas use 4:3 aspect ratio (height = width × 0.75).
  *
- * @public
  */
 export const ARENA_SIZES = {
   /** Small arena for compact screens (6m × 4.5m) */
@@ -61,7 +59,6 @@ export const ARENA_SIZES = {
  * Resolution breakpoints for arena size determination.
  * Based on common display widths.
  *
- * @public
  */
 export const RESOLUTION_BREAKPOINTS = {
   /** Small screens: < 768px (phones, small tablets) */
@@ -80,7 +77,6 @@ export const RESOLUTION_BREAKPOINTS = {
  *
  * **Korean**: 세계크기 (World Dimensions)
  *
- * @public
  */
 export interface WorldDimensions {
   /** Arena width in meters */
@@ -96,7 +92,6 @@ export interface WorldDimensions {
 /**
  * Complete arena configuration including pixel and meter dimensions.
  *
- * @public
  */
 export interface ArenaConfiguration {
   /** Arena position X in pixels */
@@ -135,7 +130,6 @@ export interface ArenaConfiguration {
  * getScreenSizeCategory(3840);  // "ultra" - 4K display
  * ```
  *
- * @public
  */
 export function getScreenSizeCategory(screenWidth: number): ScreenSizeCategory {
   if (screenWidth < RESOLUTION_BREAKPOINTS.SMALL_MAX) return "small";
@@ -151,7 +145,6 @@ export function getScreenSizeCategory(screenWidth: number): ScreenSizeCategory {
  * @param category - Screen size category
  * @returns Arena size in meters (square dimension)
  *
- * @public
  */
 export function getArenaSizeForCategory(category: ScreenSizeCategory): number {
   switch (category) {
@@ -200,7 +193,6 @@ export function getArenaSizeForCategory(category: ScreenSizeCategory): number {
  * // Result: { widthMeters: 12, depthMeters: 9, sizeMeters: 12, screenCategory: "xlarge" }
  * ```
  *
- * @public
  */
 export function calculateArenaWorldDimensions(
   screenWidth: number,
@@ -233,7 +225,6 @@ export function calculateArenaWorldDimensions(
  * @param horizontalMargin - Pixels to leave on sides (as ratio 0-1)
  * @returns Complete arena configuration
  *
- * @public
  */
 export function calculateArenaConfiguration(
   screenWidth: number,
@@ -282,7 +273,6 @@ export function calculateArenaConfiguration(
  * @param arenaWidthMeters - Arena width in meters
  * @returns Pixels per meter ratio
  *
- * @public
  */
 export function calculatePixelsPerMeter(
   arenaWidthPixels: number,
@@ -311,7 +301,6 @@ export function calculatePixelsPerMeter(
  * // Result: 1.8 meters
  * ```
  *
- * @public
  */
 export function getPlayerHeightMeters(archetypeHeightCm: number): number {
   return archetypeHeightCm / 100;
