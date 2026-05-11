@@ -4,7 +4,7 @@
  * 
  * @module utils/controlMapping
  * @category Input System
- * @korean 컨트롤 매핑 시스템
+ * @korean 콘트롤 매핑 시스템
  */
 
 import { TrigramStance } from "../types/common";
@@ -15,7 +15,7 @@ import { TRIGRAM_STANCES_ORDER } from "../systems/trigram/types";
  * Maps game actions to keyboard keys
  * 
  * @category Input System
- * @korean 컨트롤 바인딩
+ * @korean 콘트롤 바인딩
  */
 export interface ControlBinding {
   /** Stance selection keys (1-8 by default) */
@@ -91,7 +91,7 @@ const DEFAULT_BINDINGS: ControlBinding = {
  * });
  * ```
  * 
- * @korean 컨트롤매퍼
+ * @korean 콘트롤매퍼
  */
 export class ControlMapper {
   private bindings: ControlBinding;
@@ -211,7 +211,7 @@ export class ControlMapper {
    * 
    * @param key - Keyboard key to check
    * @returns TrigramStance or null
-   * @korean 키에 대한 팔괴 자세
+   * @korean 키에 대한 팔괘 자세
    */
   getTrigramStanceForKey(key: string): TrigramStance | null {
     const index = this.getStanceForKey(key);
