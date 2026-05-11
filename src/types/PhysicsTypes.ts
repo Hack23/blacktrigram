@@ -1,5 +1,5 @@
 /**
- * Physics-based type definitions for Black Trigram (흥괴)
+ * Physics-based type definitions for Black Trigram (흑괘)
  * 
  * This module defines physics-first types where all positions, distances,
  * and measurements are in **meters** or **centimeters**, never pixels.

@@ -1,4 +1,3 @@
-// filepath: /workspaces/blacktrigram/src/audio/index.ts
 /**
  * @module audio
  * @category Audio System
@@ -12,7 +11,6 @@ export * from "./types";
 export * from "./VariantSelector";
 export * from "./AudioCache";
 
-// Re-export types that were missing
 export type {
   AudioAsset,
   AudioCategory,
