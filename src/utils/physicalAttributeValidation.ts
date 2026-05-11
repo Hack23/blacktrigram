@@ -110,7 +110,7 @@ export function calculateExpectedLegLength(height: number): number {
  *
  * @param height - Total height in cm
  * @returns Expected torso length in cm
- * @korean 예상맸통길이계산
+ * @korean 예상몸통길이계산
  */
 export function calculateExpectedTorsoLength(height: number): number {
   return height * ANATOMICAL_RANGES.TORSO_LENGTH_RATIO.typical;

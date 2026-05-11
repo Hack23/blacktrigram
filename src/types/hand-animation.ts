@@ -129,7 +129,7 @@ export interface HandPose {
     readonly korean: string;
     readonly english: string;
   };
-  /** Which martial art this pose comes from @korean 무술출캘 */
+  /** Which martial art this pose comes from @korean 무술출처 */
   readonly martialArtOrigin:
     | "taekwondo"
     | "hapkido"
