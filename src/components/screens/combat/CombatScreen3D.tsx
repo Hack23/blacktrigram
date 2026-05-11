@@ -872,8 +872,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const player2Animation = usePlayerAnimation({
     events: {
       onFrame: (frame, state) => {
-        if (state === AnimationState.ATTACK && frame === 6) {
-        }
+        if (state === AnimationState.ATTACK && frame === 6) { /* attack frame hook */ }
       },
       onAnimationComplete: (state) => {
         if (state === AnimationState.ATTACK) {

@@ -236,8 +236,7 @@ export function useTouchOptimizer(
               const recentEvents = coalesced.slice(-coalescingSampleRate);
               events = recentEvents.map((evt: TouchEvent) => evt.touches[0]).filter((touch): touch is Touch => touch !== undefined);
             }
-          } catch {
-          }
+          } catch { /* ignore coalescing errors */ }
         }
       }
 
