@@ -27,7 +27,6 @@
  * const distance = calculateDistance3D([0, 0, 0], [3, 4, 0]);
  * // Returns: 5.0 (3-4-5 triangle)
  * 
- * @public
  * @category Math Utilities
  * @korean 3D거리계산
  */
@@ -57,7 +56,6 @@ export function calculateDistance3D(
  * const distSq = calculateDistance3DSquared([0, 0, 0], [3, 4, 0]);
  * // Returns: 25.0
  * 
- * @public
  * @category Math Utilities
  * @korean 3D거리제곱계산
  */
@@ -91,7 +89,6 @@ export function calculateDistance3DSquared(
  * const straightAngle = toRadians(180);
  * // Returns: approximately 3.1416 (π)
  * 
- * @public
  * @category Math Utilities
  * @korean 각도변환
  */
