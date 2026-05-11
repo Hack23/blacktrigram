@@ -94,25 +94,20 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const hasCompletedRef = useRef(false);
 
-  // Use ref to stabilize callback - prevents timer reset on re-renders
   const onCountdownCompleteRef = useRef(onCountdownComplete);
   useEffect(() => {
     onCountdownCompleteRef.current = onCountdownComplete;
   }, [onCountdownComplete]);
 
-  // Stable callback that reads from ref
   const handleCountdownComplete = useCallback(() => {
     onCountdownCompleteRef.current();
   }, []);
 
-  // Fade in animation on mount
   useEffect(() => {
-    // Trigger fade in after a small delay
     const timer = setTimeout(() => setIsVisible(true), 50);
     return () => clearTimeout(timer);
   }, []);
 
-  // Countdown logic with proper cleanup - uses stable callback
   useEffect(() => {
     if (countdown <= 0) {
       if (!hasCompletedRef.current) {
@@ -125,7 +120,6 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          // Countdown complete, callback will be handled by effect
           return 0;
         }
         return prev - 1;
@@ -135,14 +129,12 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
     return () => clearInterval(timer);
   }, [countdown, handleCountdownComplete]);
 
-  // Determine if this is match point
   const isMatchPoint = useMemo(() => {
     const maxScore = Math.max(currentScore.player1, currentScore.player2);
     const roundsToWin = Math.ceil(totalRounds / 2);
     return maxScore === roundsToWin - 1;
   }, [currentScore, totalRounds]);
 
-  // Convert hex colors to CSS - memoized for performance using theme
   const goldColor = useMemo(
     () => hexColorToCSS(theme.colors.ACCENT_GOLD),
     [theme.colors.ACCENT_GOLD]
@@ -160,7 +152,6 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
     [theme.colors.TEXT_SECONDARY]
   );
 
-  // Memoize container style for performance
   const containerStyle = useMemo(
     () => ({
       position: "fixed" as const,

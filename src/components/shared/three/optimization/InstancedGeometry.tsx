@@ -217,7 +217,6 @@ export const InstancableParticles: React.FC<InstancableParticlesProps> = ({
   quality = "medium",
   baseColor = 0x00ffff,
 }) => {
-  // Adjust geometry complexity based on quality
   const segments = useMemo(() => {
     switch (quality) {
       case "high":
@@ -269,7 +268,6 @@ export function getOptimalInstanceLimit(
   isMobile: boolean,
 ): number {
   if (isMobile) {
-    // 50% reduction on mobile
     return Math.floor(baseLimit * 0.5);
   }
   return baseLimit;

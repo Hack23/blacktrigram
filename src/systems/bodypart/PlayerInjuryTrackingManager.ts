@@ -42,7 +42,6 @@ import { CombatInjuryIntegration } from "./CombatInjuryIntegration";
  * manager.clearPlayerInjuries('player-1');
  * ```
  * 
- * @public
  */
 export class PlayerInjuryTrackingManager {
   private trackers = new Map<string, InjuryTracker>();
@@ -56,7 +55,6 @@ export class PlayerInjuryTrackingManager {
    * @param playerId - Unique player identifier (string or number)
    * @returns InjuryTracker instance for the player
    * 
-   * @public
    */
   getTrackerForPlayer(playerId: string | number): InjuryTracker {
     const key = String(playerId);
@@ -76,7 +74,6 @@ export class PlayerInjuryTrackingManager {
    * @param playerId - Unique player identifier (string or number)
    * @returns CombatInjuryIntegration instance for the player
    * 
-   * @public
    */
   getIntegrationForPlayer(playerId: string | number): CombatInjuryIntegration {
     const key = String(playerId);
@@ -104,7 +101,6 @@ export class PlayerInjuryTrackingManager {
    * 
    * @param playerId - Unique player identifier (string or number)
    * 
-   * @public
    */
   clearPlayerInjuries(playerId: string | number): void {
     const key = String(playerId);
@@ -121,7 +117,6 @@ export class PlayerInjuryTrackingManager {
    * 
    * @param playerId - Unique player identifier (string or number)
    * 
-   * @public
    */
   removePlayer(playerId: string | number): void {
     const key = String(playerId);
@@ -136,7 +131,6 @@ export class PlayerInjuryTrackingManager {
    * 
    * Useful for resetting the entire game state.
    * 
-   * @public
    */
   clearAll(): void {
     this.trackers.clear();
@@ -150,7 +144,6 @@ export class PlayerInjuryTrackingManager {
    * 
    * @returns Array of player IDs
    * 
-   * @public
    */
   getActivePlayerIds(): string[] {
     return Array.from(this.trackers.keys());
@@ -178,6 +171,5 @@ export class PlayerInjuryTrackingManager {
  * });
  * ```
  * 
- * @public
  */
 export const playerInjuryManager = new PlayerInjuryTrackingManager();

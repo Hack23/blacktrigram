@@ -34,9 +34,7 @@ export const useCombatAudio = () => {
   const activeSounds = useRef(new Set<string>());
   const timeoutIds = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
-  // Cleanup all timeouts on unmount
   useEffect(() => {
-    // Copy ref value to local variable for cleanup
     const timeoutIdsSet = timeoutIds.current;
     return () => {
       timeoutIdsSet.forEach(clearTimeout);
@@ -55,12 +53,10 @@ export const useCombatAudio = () => {
       const now = Date.now();
       const lastTime = lastPlayTime.current[soundType] ?? 0;
 
-      // Rate limiting check
       if (now - lastTime < minInterval) {
         return false;
       }
 
-      // Check simultaneous sounds limit
       if (activeSounds.current.size >= MAX_SIMULTANEOUS_SOUNDS) {
         return false;
       }
@@ -114,18 +110,15 @@ export const useCombatAudio = () => {
 
       switch (intensity) {
         case "light":
-          // 8 variations of light punch sounds
           soundId = getRandomVariant("attack_punch_light", 8);
           break;
         case "medium":
-          // 4 variations of medium punch sounds
           soundId = getRandomVariant("attack_punch_medium", 4);
           break;
         case "heavy":
           soundId = "attack_heavy";
           break;
         case "critical":
-          // 4 variations of critical attack sounds
           soundId = getRandomVariant("attack_critical", 4);
           break;
         default:
@@ -160,18 +153,13 @@ export const useCombatAudio = () => {
 
       let soundId: string;
 
-      // Determine hit intensity based on damage
       if (damage >= 40) {
-        // Critical hit (4 variations)
         soundId = getRandomVariant("hit_critical", 4);
       } else if (damage >= 25) {
-        // Heavy hit (4 variations)
         soundId = getRandomVariant("hit_heavy", 4);
       } else if (damage >= 10) {
-        // Medium hit (4 variations)
         soundId = getRandomVariant("hit_medium", 4);
       } else {
-        // Light hit (4 variations)
         soundId = getRandomVariant("hit_light", 4);
       }
 
@@ -201,10 +189,8 @@ export const useCombatAudio = () => {
       let soundId: string;
 
       if (guardBroken) {
-        // 4 variations of guard break sounds
         soundId = getRandomVariant("block_break", 4);
       } else {
-        // 4 variations of successful block sounds
         soundId = getRandomVariant("block_success", 4);
       }
 
@@ -229,7 +215,6 @@ export const useCombatAudio = () => {
       return;
     }
 
-    // 8 variations of dodge sounds
     const soundId = getRandomVariant("dodge", 8);
 
     try {
@@ -251,7 +236,6 @@ export const useCombatAudio = () => {
       return;
     }
 
-    // 4 variations of stance change sounds
     const soundId = getRandomVariant("stance_change", 4);
 
     try {
@@ -273,7 +257,6 @@ export const useCombatAudio = () => {
       return;
     }
 
-    // 4 variations of special Geon technique sounds
     const soundId = getRandomVariant("attack_special_geon", 4);
 
     try {
@@ -327,7 +310,6 @@ export const useCombatAudio = () => {
         await audio.fadeIn(musicId, fadeInDuration);
       } catch (error) {
         console.warn(`Failed to play archetype music: ${musicId}`, error);
-        // Fallback to combat theme
         await playCombatMusic(fadeInDuration);
       }
     },
@@ -405,16 +387,13 @@ export const useCombatAudio = () => {
         return;
       }
 
-      // Auto-detect region from hit position if not provided
       let region = options.region;
       if (!region && options.hitPosition) {
         region = detectAudioBodyRegion(options.hitPosition);
       }
 
-      // Default to torso if region still undefined
       region ??= "torso";
 
-      // Auto-calculate intensity if not provided
       let intensity = options.intensity;
       if (!intensity && options.damage !== undefined) {
         intensity = calculateImpactIntensity(
@@ -424,13 +403,10 @@ export const useCombatAudio = () => {
         );
       }
 
-      // Default to medium intensity if still undefined
       intensity ??= "medium";
 
-      // Get appropriate sound ID with random variant
       const soundId = getBoneImpactSoundId(region, intensity, true);
 
-      // Get volume multiplier based on intensity
       const volumeMultiplier = getImpactVolumeMultiplier(intensity);
       const finalVolume = Math.min(1.0, 0.8 * volumeMultiplier);
 
@@ -438,7 +414,6 @@ export const useCombatAudio = () => {
         await audio.playSFX(soundId, finalVolume);
         lastPlayTime.current[soundType] = Date.now();
 
-        // Longer active duration for fracture sounds (more impactful)
         const duration = intensity === "fracture" ? 800 : 500;
         registerActiveSound(soundId, duration);
       } catch (error) {

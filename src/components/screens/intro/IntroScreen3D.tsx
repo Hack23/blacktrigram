@@ -1,4 +1,3 @@
-// UI renders outside Canvas in absolute-positioned div - no Html needed
 import { Canvas } from "@react-three/fiber";
 import React, {
   useCallback,
@@ -47,7 +46,6 @@ const MENU_ITEMS: { mode: GameMode; korean: string; english: string }[] = [
   { mode: GameMode.PHILOSOPHY, korean: "철학", english: "Philosophy" },
 ];
 
-// Texture key mapping for archetypes
 const ARCHETYPE_TEXTURE_MAPPING: Record<PlayerArchetype, string> = {
   [PlayerArchetype.MUSA]: "musa",
   [PlayerArchetype.AMSALJA]: "amsalja",
@@ -56,7 +54,6 @@ const ARCHETYPE_TEXTURE_MAPPING: Record<PlayerArchetype, string> = {
   [PlayerArchetype.JOJIK_POKRYEOKBAE]: "jojik_pokryeokbae",
 };
 
-// Helper function to convert PlayerArchetype enum to array index
 const getArchetypeIndex = (archetype: PlayerArchetype): number => {
   const archetypeKeys = Object.keys(
     PLAYER_ARCHETYPES_DATA,
@@ -64,7 +61,6 @@ const getArchetypeIndex = (archetype: PlayerArchetype): number => {
   return archetypeKeys.indexOf(archetype);
 };
 
-// Helper function to convert array index to PlayerArchetype enum
 const getArchetypeFromIndex = (index: number): PlayerArchetype => {
   const archetypeKeys = Object.keys(
     PLAYER_ARCHETYPES_DATA,
@@ -86,9 +82,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
   const audio = useAudio();
   const introMusicStarted = useRef(false);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
-  // UI now renders outside Canvas - no canvas ready state needed
 
-  // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in IntroScreen");
@@ -99,7 +93,6 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     autoRestore: true,
   });
 
-  // Add local state for archetype management
   const [currentArchetype, setCurrentArchetype] =
     useState<PlayerArchetype>(selectedArchetype);
   const [selectedArchetypeIndex, setSelectedArchetypeIndex] = useState<number>(
@@ -108,12 +101,9 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
 
   const { width, height } = useWindowSize();
 
-  // Use prop dimensions if provided, otherwise use window size with defensive fallbacks
-  // Ensure minimum valid dimensions to prevent rendering issues
   const screenWidth = propWidth ?? (width || 1200);
   const screenHeight = propHeight ?? (height || 800);
 
-  // Create archetype data with texture keys from PLAYER_ARCHETYPES_DATA
   const archetypeData = useMemo(() => {
     return Object.entries(PLAYER_ARCHETYPES_DATA).map(([key, data]) => {
       const archetypeEnum = key as PlayerArchetype;
@@ -131,13 +121,11 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     });
   }, []);
 
-  // Sync with prop changes
   useEffect(() => {
     setCurrentArchetype(selectedArchetype);
     setSelectedArchetypeIndex(getArchetypeIndex(selectedArchetype));
   }, [selectedArchetype]);
 
-  // Direct menu selection - MOVED BEFORE useEffect that uses it
   const handleMenuItemSelect = useCallback(
     (mode: GameMode) => {
       onMenuSelect(mode, currentArchetype);
@@ -145,7 +133,6 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     [onMenuSelect, currentArchetype],
   );
 
-  // Handle archetype change by index - MOVED BEFORE useEffect that uses it
   const handleArchetypeIndexChange = useCallback(
     (index: number) => {
       const newArchetype = getArchetypeFromIndex(index);
@@ -153,14 +140,10 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
       setCurrentArchetype(newArchetype);
       onArchetypeSelect?.(newArchetype);
 
-      // Check if audio system is ready, not individual methods
       if (audio.isAudioReady) {
         audio.playSFX("menu_hover");
 
-        // Play archetype theme music preview when archetype changes
-        // Use getArchetypeAssets utility for proper error handling and fallback
         const archetypeAssets = getArchetypeAssets(newArchetype);
-        // Stop intro music and play archetype theme
         audio.stopMusic();
         audio.playMusic(archetypeAssets.themeId);
       }
@@ -168,7 +151,6 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     [onArchetypeSelect, audio],
   );
 
-  // Play intro music after first user interaction
   useEffect(() => {
     const startMusic = () => {
       if (audio.isAudioReady && !introMusicStarted.current) {
@@ -176,23 +158,19 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
         audio.playMusic("intro_theme");
       }
     };
-    // Event listeners with { once: true } are automatically removed after triggering
     window.addEventListener("keydown", startMusic, { once: true });
     window.addEventListener("mousedown", startMusic, { once: true });
     window.addEventListener("touchstart", startMusic, { once: true, passive: true });
 
     return () => {
-      // Safe cleanup - check if audio is initialized before stopping music
       if (audio.isInitialized) {
         audio.stopMusic();
       }
     };
   }, [audio]);
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Archetype navigation (handleArchetypeIndexChange already plays menu_hover SFX)
       if (event.key === "ArrowLeft") {
         const newIndex =
           selectedArchetypeIndex === 0
@@ -203,7 +181,6 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
         const newIndex = (selectedArchetypeIndex + 1) % archetypeData.length;
         handleArchetypeIndexChange(newIndex);
       } else {
-        // Direct game mode shortcuts
         switch (event.key.toLowerCase()) {
           case "c":
             handleMenuItemSelect(GameMode.CONTROLS);
@@ -231,21 +208,14 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     handleMenuItemSelect,
   ]);
 
-  // Responsive layout calculations with large desktop support
-  // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
-  // shouldUseMobileControls() uses user-agent detection which doesn't change during session
-  // Use isMobile only for mobile CONTROLS (touch controls, etc.)
-  // Layout sizing should use screenWidth-based calculations
   const isMobile = useMemo(() => shouldUseMobileControls(), []);
 
-  // Use Korean theme hook for consistent theming
   const theme = useKoreanTheme({
     variant: "primary",
     size: "md",
     isMobile,
   });
 
-  // Memoize colors from theme for performance
   const colors = useMemo(
     () => ({
       trigramTextShadow: `0 0 10px ${hexToRgbaString(
@@ -258,20 +228,14 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     [theme],
   );
 
-  // Performance settings based on device tier
   const performanceSettings = useMemo(() => {
     return getPerformanceSettings(screenWidth, isMobile);
   }, [screenWidth, isMobile]);
 
-  // Get screen size category for layout calculations (mobile, tablet, desktop, large, xlarge)
   const screenSize = useMemo(() => getScreenSize(screenWidth), [screenWidth]);
 
-  // Use percentage-based layout based on screen dimensions
-  // Logo takes priority - larger and more prominent
   const logoSize = useMemo(() => {
-    // Logo should be prominent - use percentage of smaller dimension
     const minDim = Math.min(screenWidth, screenHeight);
-    // Scale based on screen size category
     const logoScale = {
       mobile: 0.28,
       tablet: 0.22,
@@ -279,37 +243,27 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
       large: 0.15,
       xlarge: 0.12,
     }[screenSize];
-    // Cap at reasonable max size for very large screens
     return Math.min(minDim * logoScale, screenSize === "xlarge" ? 250 : 300);
   }, [screenWidth, screenHeight, screenSize]);
 
-  // Dynamic heights based on available screen space (percentage-based)
-  // All calculations use screen dimensions, not device type
   const layoutHeights = useMemo(() => {
     const availableHeight = screenHeight;
 
-    // Title area - small header with title and description
     const titleHeight = screenWidth < 768 ? 32 : 38;
 
-    // Logo area - based on logo size plus trigram symbols (compact)
     const trigramHeight = screenWidth < 768 ? 16 : 22;
     const logoAreaHeight = logoSize + trigramHeight;
 
-    // Footer - compact with all info
     const footerHeight = Math.max(availableHeight * 0.05, 48);
 
-    // Remaining space for menu + archetype
     const contentHeight =
       availableHeight - titleHeight - logoAreaHeight - footerHeight;
 
-    // Menu needs enough height for 2x2 grid (2 rows of ~40px buttons + title + padding)
-    // Mobile needs column layout (4 buttons stacked)
     const menuMinHeight = screenWidth < 768 ? 180 : 120;
     const menuPercent = screenWidth < 768 ? 0.38 : 0.25;
     const menuHeight = Math.max(contentHeight * menuPercent, menuMinHeight);
     const archetypeHeight = contentHeight - menuHeight - 8; // 8px gap
 
-    // Gap scales with screen (minimal)
     const gap = Math.max(screenHeight * 0.002, 2);
 
     return {
@@ -524,7 +478,6 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 onSelectedIndexChange={setSelectedMenuIndex}
                 onPlaySFX={audio.playSFX}
                 width={
-                  // Compact menu width - narrower for better proportions
                   screenWidth < 768
                     ? screenWidth * 0.9
                     : screenWidth < 1024

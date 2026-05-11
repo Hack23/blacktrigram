@@ -75,7 +75,6 @@ export const BaseButtonOverlayHtml = React.memo<BaseButtonOverlayHtmlProps>(
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 
-  // Use Korean theme hook for size and font info only
   const { buttonSize } = useKoreanTheme({
     variant,
     size,
@@ -113,9 +112,7 @@ export const BaseButtonOverlayHtml = React.memo<BaseButtonOverlayHtmlProps>(
     setIsPressed(false);
   }, []);
 
-  // Memoize button styles for performance - now using enhanced visual effects
   const buttonStyle = useMemo<React.CSSProperties>(() => {
-    // Get enhanced button styles with neon glow
     const enhancedStyles = getKoreanButtonWithGlow({
       variant,
       isHovered: isHovered && !disabled,
@@ -125,10 +122,6 @@ export const BaseButtonOverlayHtml = React.memo<BaseButtonOverlayHtmlProps>(
       hoverAnimation: "combined",
     });
 
-    // Merge with size-specific styles
-    // Note: fontSize from enhancedStyles is intentionally overridden by buttonSize.fontSize
-    // to ensure consistent sizing across button size variants (small/medium/large).
-    // The Korean font optimization (anti-aliasing, letter-spacing) is preserved.
     return {
       ...enhancedStyles,
       padding: buttonSize.padding,

@@ -58,7 +58,6 @@ import {
  * Defines how physical attributes map to skeleton bone scaling.
  * Each factor is a multiplier applied to the base bone length.
  *
- * @public
  * @korean 뼈크기비율
  */
 export interface BoneScalingFactors {
@@ -169,7 +168,6 @@ const REFERENCE_ATTRIBUTES: PhysicalAttributes = {
  * // Amsalja has smaller head: factors.head ~= 0.90 (amplified from ~0.95)
  * ```
  *
- * @public
  * @korean 뼈크기비율계산
  */
 export function calculateBoneScalingFactors(
@@ -234,7 +232,6 @@ export function calculateBoneScalingFactors(
  * // Jojik has larger head: returns ~23cm (base 20cm * 1.15)
  * ```
  *
- * @public
  * @korean 크기조정된뼈길이
  */
 export function getScaledBoneLength(
@@ -316,7 +313,6 @@ export function getScaledBoneLength(
  * // Left shoulder at -31cm, right shoulder at +31cm
  * ```
  *
- * @public
  * @korean 어깨오프셋계산
  */
 export function calculateShoulderOffset(
@@ -345,7 +341,6 @@ export function calculateShoulderOffset(
  * // Amsalja is tall and lean: {width: 40, height: 182, depth: 25}
  * ```
  *
- * @public
  * @korean 히트박스크기계산
  */
 export function calculateHitboxDimensions(attributes: PhysicalAttributes): {
@@ -379,7 +374,6 @@ export function calculateHitboxDimensions(attributes: PhysicalAttributes): {
  * // Returns offset based on head size and torso height
  * ```
  *
- * @public
  * @korean 급소위치조정
  */
 export function calculateVitalPointAdjustment(
@@ -452,7 +446,6 @@ export function calculateVitalPointAdjustment(
  * // Jojik has shorter, thicker neck: returns ~0.9 (10% more resistant)
  * ```
  *
- * @public
  * @korean 목조르기효과계산
  */
 export function calculateChokeEffectiveness(
@@ -486,7 +479,6 @@ export function calculateChokeEffectiveness(
  * // Jojik has larger head: returns ~0.95 (5% more resistant)
  * ```
  *
- * @public
  * @korean 머리타격취약성계산
  */
 export function calculateHeadStrikeVulnerability(
@@ -533,7 +525,6 @@ export function calculateHeadStrikeVulnerability(
  * // Hacker is lean (43cm shoulders): returns 0.215m
  * ```
  *
- * @public
  * @korean 몸체반경계산
  */
 export function calculateBodyRadius(attributes: PhysicalAttributes): number {

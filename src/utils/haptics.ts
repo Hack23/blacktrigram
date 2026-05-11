@@ -70,7 +70,6 @@ export function isHapticSupported(): boolean {
  * triggerHaptic('heavy');
  * ```
  * 
- * @public
  */
 export function triggerHaptic(intensity: HapticIntensity): void {
   if (!isHapticSupported()) {
@@ -97,7 +96,6 @@ export function triggerHaptic(intensity: HapticIntensity): void {
  * triggerCustomHaptic([200]);
  * ```
  * 
- * @public
  */
 export function triggerCustomHaptic(pattern: number[]): void {
   if (!isHapticSupported()) {
@@ -119,7 +117,6 @@ export function triggerCustomHaptic(pattern: number[]): void {
  * stopHaptic();
  * ```
  * 
- * @public
  */
 export function stopHaptic(): void {
   if (!isHapticSupported()) {

@@ -47,7 +47,6 @@ const MOBILE_ARENA_BASE_WIDTH = 960;
  * Used when row index is specified in grid configuration
  * Can be overridden by providing explicit y position
  * 
- * @public
  */
 export const DEFAULT_ROW_HEIGHT = 100;
 
@@ -132,7 +131,6 @@ export class LayoutSystem {
     containerWidth: number,
     customGutter?: number
   ): { x: number; width: number } {
-    // Validate inputs
     if (column < 0 || column >= this.gridColumns) {
       throw new Error(
         `Invalid column: ${column}. Column must be between 0 and ${this.gridColumns - 1}`
@@ -152,7 +150,6 @@ export class LayoutSystem {
     const gutter = customGutter ?? this.gutterSize;
     const columnWidth = containerWidth / this.gridColumns;
 
-    // Calculate x position
     const x = column * columnWidth;
 
     // Calculate width accounting for gutters
@@ -188,7 +185,6 @@ export class LayoutSystem {
     config: ResponsivePosition,
     screenSize: ScreenSize
   ): Position {
-    // Use specific override if available
     if (screenSize.isMobile && config.mobile) {
       return config.mobile;
     }
@@ -196,7 +192,6 @@ export class LayoutSystem {
       return config.tablet;
     }
 
-    // Use base position for desktop
     if (screenSize.isDesktop || !config.scaleProportionally) {
       return config.base;
     }

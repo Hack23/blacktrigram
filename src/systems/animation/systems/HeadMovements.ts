@@ -35,7 +35,6 @@ import {
  * // Creates strong recoil animation to the right
  * ```
  * 
- * @public
  * @korean 머리반동애니메이션생성
  */
 export const createHeadRecoilAnimation = (
@@ -79,7 +78,6 @@ export const createHeadRecoilAnimation = (
  * @param intensity - Nod intensity (0-1)
  * @returns Head movement keyframes for nod animation
  * 
- * @public
  * @korean 머리끄덕임애니메이션생성
  */
 export const createHeadNodAnimation = (
@@ -111,7 +109,6 @@ export const createHeadNodAnimation = (
  * @param intensity - Shake intensity (0-1)
  * @returns Head movement keyframes for shake animation
  * 
- * @public
  * @korean 머리흔들기애니메이션생성
  */
 export const createHeadShakeAnimation = (
@@ -148,7 +145,6 @@ export const createHeadShakeAnimation = (
  * @param intensity - Tilt intensity (0-1)
  * @returns Head movement keyframes for tilt animation
  * 
- * @public
  * @korean 머리기울임애니메이션생성
  */
 export const createHeadTiltAnimation = (
@@ -182,7 +178,6 @@ export const createHeadTiltAnimation = (
  * @param currentAngle - Current yaw angle in radians
  * @returns Head movement keyframes for turn animation
  * 
- * @public
  * @korean 머리돌리기애니메이션생성
  */
 export const createHeadTurnAnimation = (
@@ -222,7 +217,6 @@ export const createHeadTurnAnimation = (
  * 
  * @returns Head movement keyframes for drop animation
  * 
- * @public
  * @korean 머리떨어짐애니메이션생성
  */
 export const createHeadDropAnimation = (): HeadMovementKeyframes => {
@@ -256,7 +250,6 @@ export const createHeadDropAnimation = (): HeadMovementKeyframes => {
  * @param smoothing - Smoothing factor (0-1, lower = smoother)
  * @returns New head rotation
  * 
- * @public
  * @korean 부드러운머리회전계산
  */
 export const calculateSmoothHeadRotation = (
@@ -300,7 +293,6 @@ export const calculateSmoothHeadRotation = (
  * @param currentTime - Current animation time (seconds)
  * @returns Interpolated head rotation
  * 
- * @public
  * @korean 머리움직임키프레임적용
  */
 export const applyHeadMovementKeyframe = (
@@ -353,7 +345,6 @@ export const applyHeadMovementKeyframe = (
  * @param currentTime - Current animation time (seconds)
  * @returns True if animation is complete
  * 
- * @public
  * @korean 머리움직임완료확인
  */
 export const isHeadMovementComplete = (
@@ -372,7 +363,6 @@ export const isHeadMovementComplete = (
  * @param intensity - Animation intensity (0-1)
  * @returns Head movement keyframes
  * 
- * @public
  * @korean 타입별머리움직임가져오기
  */
 export const getHeadMovementByType = (

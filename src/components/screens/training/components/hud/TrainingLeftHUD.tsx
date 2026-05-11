@@ -61,7 +61,6 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   currentStanceIndex,
   isInGuard,
 }) => {
-  // Use shared HUD layout hook
   const layout = useHUDLayout(
     width,
     height,

@@ -22,7 +22,6 @@ import type { Position3D } from "./physics";
  * 
  * **Korean**: 경기장 경계 (Arena Bounds)
  * 
- * @public
  * @category Physics Types
  */
 export interface PhysicsArenaBounds {
@@ -36,25 +35,14 @@ export interface PhysicsArenaBounds {
   readonly height: number;
   /** Arena scale factor (1.0 = desktop, <1.0 = mobile, for 3D scene scaling) */
   readonly scale: number;
-  
   /**
    * Physical arena width in meters.
-   * 
-   * This is the actual size of the combat arena in the game world.
-   * Combined with width (pixels), this gives pixels-per-meter ratio:
-   * `pixelsPerMeter = width / worldWidthMeters`
-   * 
-   * Example: Desktop 960px / 10m = 96 px/m, Mobile 300px / 6m = 50 px/m
+   * Combined with width (pixels), gives pixels-per-meter: `width / worldWidthMeters`
    */
   readonly worldWidthMeters: number;
-  
   /**
    * Physical arena depth in meters.
-   * 
    * Typically same as worldWidthMeters for square arenas.
-   * For rectangular arenas, may differ.
-   * 
-   * Example: 10m × 10m square arena
    */
   readonly worldDepthMeters: number;
 }
@@ -67,7 +55,6 @@ export interface PhysicsArenaBounds {
  * 
  * **Korean**: 기본경기장경계 (Default Arena Bounds)
  * 
- * @public
  * @category Physics Types
  */
 export const DEFAULT_PHYSICS_ARENA_BOUNDS: PhysicsArenaBounds = {
@@ -107,9 +94,6 @@ function isValidPosition(pos: unknown): pos is Position3D | THREE.Vector3 {
 /**
  * Calculate pixels-per-meter ratio from arena bounds.
  * 
- * This is the fundamental conversion factor between screen space (pixels)
- * and physics space (meters). It varies by device resolution and arena size.
- * 
  * **Korean**: 픽셀당미터비율 (Pixels Per Meter Ratio)
  * 
  * @param bounds - Arena bounds with pixel and meter dimensions
@@ -127,7 +111,6 @@ function isValidPosition(pos: unknown): pos is Position3D | THREE.Vector3 {
  * // Result: 50 px/m
  * ```
  * 
- * @public
  * @category Physics Types
  */
 export function getPixelsPerMeter(bounds: PhysicsArenaBounds): number {
@@ -142,10 +125,9 @@ export function getPixelsPerMeter(bounds: PhysicsArenaBounds): number {
 /**
  * Convert physics position (meters) to screen position (pixels).
  * 
- * **IMPORTANT**: This function only handles scaling conversion between
- * meters and pixels. It does NOT account for arena position offsets
- * (bounds.x and bounds.y). Callers must add these offsets separately
- * when rendering to screen.
+ * **IMPORTANT**: Only handles scaling conversion between meters and pixels.
+ * Does NOT account for arena position offsets (bounds.x and bounds.y).
+ * Callers must add these offsets separately when rendering to screen.
  * 
  * Example:
  * ```typescript
@@ -154,9 +136,6 @@ export function getPixelsPerMeter(bounds: PhysicsArenaBounds): number {
  * const screenY = bounds.y + pixelPos.y;  // Add arena offset
  * ```
  * 
- * This conversion should ONLY be used at render time.
- * Internal game logic should always work in meters.
- * 
  * **Korean**: 미터를픽셀로 (Meters To Pixels)
  * 
  * @param positionMeters - Position in meters
@@ -164,7 +143,6 @@ export function getPixelsPerMeter(bounds: PhysicsArenaBounds): number {
  * @returns Position in pixels RELATIVE to arena origin (add bounds.x/y for screen position)
  * @throws Error if position is invalid
  * 
- * @public
  * @category Physics Types
  */
 export function metersToPixels(
@@ -188,9 +166,8 @@ export function metersToPixels(
 /**
  * Convert screen position (pixels) to physics position (meters).
  * 
- * **IMPORTANT**: This function only handles scaling conversion between
- * pixels and meters. If you're converting from screen coordinates, you
- * must first subtract arena position offsets (bounds.x and bounds.y).
+ * **IMPORTANT**: Only handles scaling conversion between pixels and meters.
+ * If converting from screen coordinates, subtract arena position offsets first.
  * 
  * Example:
  * ```typescript
@@ -199,9 +176,6 @@ export function metersToPixels(
  * const physicsPos = pixelsToMeters({ x: arenaRelativeX, y: arenaRelativeY }, bounds);
  * ```
  * 
- * Use this when converting user input or initial positions.
- * After conversion, work entirely in meters.
- * 
  * **Korean**: 픽셀을미터로 (Pixels To Meters)
  * 
  * @param pixelPosition - Position in pixels RELATIVE to arena origin (subtract bounds.x/y first)
@@ -209,7 +183,6 @@ export function metersToPixels(
  * @returns Position in meters
  * @throws Error if pixel coordinates are not finite numbers
  * 
- * @public
  * @category Physics Types
  */
 export function pixelsToMeters(
@@ -234,9 +207,6 @@ export function pixelsToMeters(
 /**
  * Calculate distance between two positions in meters.
  * 
- * This is the correct way to calculate distance - always in meters,
- * never in pixels.
- * 
  * **Korean**: 거리계산 (Distance Calculation)
  * 
  * @param pos1 - First position in meters
@@ -244,7 +214,6 @@ export function pixelsToMeters(
  * @returns Distance in meters
  * @throws Error if either position is invalid
  * 
- * @public
  * @category Physics Types
  */
 export function calculateDistanceMeters(
@@ -273,11 +242,10 @@ export function calculateDistanceMeters(
  * **Korean**: 이동 경기장 경계 (Movement Arena Bounds)
  * 
  * @remarks
- * This is distinct from `ArenaBounds` interfaces in layout/test code
- * which include pixel-based screen coordinates. MovementArenaBounds
- * only contains world-space meter coordinates for physics calculations.
+ * Distinct from `ArenaBounds` interfaces in layout/test code which include
+ * pixel-based screen coordinates. MovementArenaBounds only contains
+ * world-space meter coordinates for physics calculations.
  * 
- * @public
  * @category Physics Types
  */
 export interface MovementArenaBounds {
@@ -307,10 +275,10 @@ export interface MovementArenaBounds {
  * 
  * **Korean**: 경기장 경계 계산 (Calculate Arena Bounds)
  * 
- * @param bounds - Arena configuration with meter dimensions (can be partial with just worldWidthMeters/worldDepthMeters)
- * @param margin - Character radius/margin in meters (default: 0.3m - half character width)
+ * @param bounds - Arena configuration with meter dimensions
+ * @param margin - Character radius/margin in meters (default: 0.3m)
  * @returns Arena bounds for physics calculations
- * @throws Error if dimensions are invalid (non-positive or non-finite) or margin is invalid
+ * @throws Error if dimensions are invalid or margin is invalid
  * 
  * @example
  * ```typescript
@@ -319,14 +287,12 @@ export interface MovementArenaBounds {
  * // Result: { minX: -4.7, maxX: 4.7, minZ: -3.45, maxZ: 3.45, ... }
  * ```
  * 
- * @public
  * @category Physics Types
  */
 export function calculateArenaBounds(
   bounds: Pick<PhysicsArenaBounds, 'worldWidthMeters' | 'worldDepthMeters'>,
   margin: number = 0.3
 ): MovementArenaBounds {
-  // Validate arena dimensions
   if (!Number.isFinite(bounds.worldWidthMeters) || bounds.worldWidthMeters <= 0) {
     throw new Error(
       `worldWidthMeters must be a positive finite number, got: ${bounds.worldWidthMeters}`
@@ -338,7 +304,6 @@ export function calculateArenaBounds(
     );
   }
   
-  // Validate margin
   if (!Number.isFinite(margin) || margin < 0) {
     throw new Error(
       `margin must be a non-negative finite number, got: ${margin}`
@@ -348,7 +313,6 @@ export function calculateArenaBounds(
   const halfWidth = bounds.worldWidthMeters / 2;
   const halfDepth = bounds.worldDepthMeters / 2;
   
-  // Validate margin is not larger than arena dimensions
   if (margin >= halfWidth) {
     throw new Error(
       `margin (${margin}m) must be less than half the arena width (${halfWidth}m)`
@@ -376,11 +340,10 @@ export function calculateArenaBounds(
  * Clamp a 3D position to stay within arena boundaries.
  * 
  * Only clamps X and Z axes (horizontal plane). Y axis (height) is unchanged.
- * Arena is centered at origin with bounds extending ±width/2 and ±depth/2.
  * 
  * **Korean**: 위치를 경기장 경계로 제한 (Clamp Position To Bounds)
  * 
- * @param position - 3D position in meters (THREE.Vector3 or Position3D)
+ * @param position - 3D position in meters
  * @param bounds - Arena bounds with min/max values
  * @returns Clamped position as new THREE.Vector3
  * 
@@ -392,7 +355,6 @@ export function calculateArenaBounds(
  * // Result: Vector3(4.7, 0, 3.45) - clamped to edges
  * ```
  * 
- * @public
  * @category Physics Types
  */
 export function clampPositionToBounds(
@@ -409,10 +371,7 @@ export function clampPositionToBounds(
 /**
  * Check if a position is within arena boundaries.
  * 
- * Only checks X and Z axes (horizontal plane). Y axis (height) is ignored.
- * 
- * For 2D positions, accepts `{ x, y }` where `y` maps to world Z (depth),
- * consistent with `clampToArenaBounds` and other 2D arena position APIs.
+ * Only checks X and Z axes. For 2D positions `{x, y}`, `y` maps to world Z.
  * 
  * **Korean**: 경기장 경계 내 위치 확인 (Check Position In Bounds)
  * 
@@ -420,19 +379,6 @@ export function clampPositionToBounds(
  * @param bounds - Arena bounds
  * @returns True if position is within bounds
  * 
- * @example
- * ```typescript
- * // 2D position (y maps to Z/depth)
- * const position = { x: 5, y: 2 };
- * const bounds = calculateArenaBounds(config);
- * const inBounds = isPositionInBounds(position, bounds);
- * 
- * // 3D position (uses z directly)
- * const position3D = new THREE.Vector3(5, 1.8, 2);
- * const inBounds3D = isPositionInBounds(position3D, bounds);
- * ```
- * 
- * @public
  * @category Physics Types
  */
 export function isPositionInBounds(
@@ -455,30 +401,22 @@ export function isPositionInBounds(
 /**
  * Clamp a 2D position to stay within arena boundaries in meters.
  * 
- * This function works in a projected 2D arena space where:
- * - `position.x` corresponds to world **X** (horizontal)
- * - `position.y` corresponds to world **Z** (depth)
+ * Works in projected 2D arena space where:
+ * - `position.x` → world **X** (horizontal)
+ * - `position.y` → world **Z** (depth)
  * 
- * Arena coordinates are centered at origin (0, 0) and extend from
- * -worldWidthMeters/2 to +worldWidthMeters/2 in X (position.x),
- * -worldDepthMeters/2 to +worldDepthMeters/2 in Z/depth (position.y).
- * 
- * This is used for physics calculations like knockback to ensure
- * players stay within the playable area.
- * 
- * @param position - 2D projected position in meters (X, depth-as-Y), which may exceed arena bounds
+ * @param position - 2D projected position in meters (may exceed arena bounds)
  * @param bounds - Arena bounds with meter dimensions
- * @returns Position clamped to arena boundaries in the same 2D projection
+ * @returns Position clamped to arena boundaries
  * 
  * @example
  * ```typescript
  * const bounds = { worldWidthMeters: 10, worldDepthMeters: 7.5, ... };
- * const position = { x: 6, y: 4 }; // Outside arena in X/Z-projected space
+ * const position = { x: 6, y: 4 }; // Outside arena
  * const clamped = clampToArenaBounds(position, bounds);
- * // Result: { x: 5, y: 3.75 } - clamped to boundaries
+ * // Result: { x: 5, y: 3.75 }
  * ```
  * 
- * @public
  * @category Physics Types
  */
 export function clampToArenaBounds(

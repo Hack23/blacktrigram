@@ -8,12 +8,10 @@
  */
 
 import { useCallback, useMemo, useReducer } from "react";
-// Re-export types from components for consistency
 import type { AnatomyLayer } from "../components/AnatomyOverlay3D";
 import type { FootworkDrill } from "../components/FootworkDrillsOverlayHtml";
 import type { TrainingMode } from "../components/TrainingModeSelectorOverlayHtml";
 
-// Re-export for convenience
 export type { AnatomyLayer, FootworkDrill, TrainingMode };
 
 /**
@@ -61,7 +59,6 @@ export interface TrainingScreenState {
   readonly currentStanceIndex: number;
   readonly stanceWheelExpanded: boolean;
   readonly visibleAnatomyLayers: AnatomyLayer[];
-  // Footwork drill state
   readonly footworkDrillActive: boolean;
   readonly footworkDrillType: FootworkDrill;
   readonly footworkDrillStep: number;
@@ -365,7 +362,6 @@ export interface UseTrainingStateReturn {
 export function useTrainingState(): UseTrainingStateReturn {
   const [state, dispatch] = useReducer(trainingReducer, initialState);
 
-  // Memoize individual callbacks to prevent recreating on every render
   const setTrainingMode = useCallback(
     (mode: TrainingMode) =>
       dispatch({ type: "SET_TRAINING_MODE", payload: mode }),
@@ -459,8 +455,6 @@ export function useTrainingState(): UseTrainingStateReturn {
     dispatch({ type: "RESET_FOOTWORK_DRILL" });
   }, []);
 
-  // Memoize the actions object to prevent unnecessary re-renders
-  // All callbacks are stable since they have empty dependency arrays
   const actions: TrainingActions = useMemo(
     () => ({
       setTrainingMode,

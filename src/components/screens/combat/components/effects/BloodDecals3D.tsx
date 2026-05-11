@@ -97,7 +97,6 @@ const createBloodTexture = (): THREE.Texture => {
   const ctx = canvas.getContext("2d");
   
   if (!ctx) {
-    // Fallback: Return a basic transparent texture with matching dimensions
     console.warn("Blood decal texture generation failed: Could not get 2D context");
     const fallbackCanvas = document.createElement("canvas");
     fallbackCanvas.width = 256;
@@ -105,14 +104,11 @@ const createBloodTexture = (): THREE.Texture => {
     return new THREE.CanvasTexture(fallbackCanvas);
   }
 
-  // Background (transparent)
   ctx.clearRect(0, 0, 256, 256);
 
-  // Blood splatter pattern
   const centerX = 128;
   const centerY = 128;
 
-  // Create gradient from center
   const gradient = ctx.createRadialGradient(
     centerX,
     centerY,
@@ -122,7 +118,6 @@ const createBloodTexture = (): THREE.Texture => {
     100
   );
 
-  // Blood color (dark red)
   const bloodColor = new THREE.Color(KOREAN_COLORS.BLOODLOSS_INDICATOR);
   const r = Math.floor(bloodColor.r * 255);
   const g = Math.floor(bloodColor.g * 255);
@@ -135,7 +130,6 @@ const createBloodTexture = (): THREE.Texture => {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, 256, 256);
 
-  // Add irregular edges for realistic look
   for (let i = 0; i < 30; i++) {
     const angle = (i / 30) * Math.PI * 2;
     const radius = 80 + Math.random() * 20;
@@ -167,7 +161,6 @@ const DecalMesh: React.FC<{
   const materialRef = useRef<THREE.MeshBasicMaterial | null>(null);
   const ageRef = useRef(0);
 
-  // Create decal geometry
   useEffect(() => {
     if (!meshRef.current || !targetMesh) return;
 
@@ -175,8 +168,6 @@ const DecalMesh: React.FC<{
       const position = new THREE.Vector3(...decal.position);
       const size = new THREE.Vector3(...decal.size);
 
-      // Create decal geometry projected onto target mesh
-      // DecalGeometry requires Euler angles for orientation
       const orientation = new THREE.Euler();
       orientation.copy(targetMesh.rotation);
       
@@ -189,14 +180,9 @@ const DecalMesh: React.FC<{
 
       meshRef.current.geometry = decalGeometry;
       
-      // Apply rotation to the mesh itself
       meshRef.current.rotation.set(0, 0, decal.rotation);
     } catch (error) {
-      // Handle decal projection failures
-      // This can occur when target mesh geometry is complex or decal position is invalid
-      // Decal will simply not render in this case
       if (process.env.NODE_ENV === "development") {
-        // In development, log a diagnostic warning to help debug decal issues
         console.warn("BloodDecals3D: Failed to project blood decal onto target mesh.", {
           decalId: decal.id,
           position: decal.position,
@@ -207,11 +193,9 @@ const DecalMesh: React.FC<{
     }
   }, [decal, targetMesh]);
 
-  // Fade animation - update material opacity in animation loop
   useFrame((_, delta) => {
     if (!materialRef.current) return;
 
-    // Accumulate age using delta time instead of Date.now() for better performance
     ageRef.current += delta;
     const fadeProgress = Math.min(ageRef.current / fadeDuration, 1);
     materialRef.current.opacity = decal.opacity * (1 - fadeProgress);
@@ -288,28 +272,21 @@ export const BloodDecals3D: React.FC<BloodDecals3DProps> = ({
   fadeDuration = DECAL_CONSTANTS.FADE_DURATION,
   onDecalComplete,
 }) => {
-  // Track completed decals
   const completedDecalsRef = useRef<Set<string>>(new Set());
 
-  // Performance limits
   const maxDecals = isMobile
     ? DECAL_CONSTANTS.MAX_DECALS_MOBILE
     : DECAL_CONSTANTS.MAX_DECALS;
 
-  // Create shared blood texture
   const bloodTexture = useMemo(() => createBloodTexture(), []);
 
-  // Limit decals for performance
   const activeDecals = useMemo(() => {
-    // Sort by timestamp (newest first) and take max count
     const sorted = [...decals].sort((a, b) => b.timestamp - a.timestamp);
     return sorted.slice(0, maxDecals);
   }, [decals, maxDecals]);
 
-  // Track decal ages using delta accumulation for better performance
   const decalAgesRef = useRef<Map<string, number>>(new Map());
 
-  // Initialize ages for new decals
   useEffect(() => {
     activeDecals.forEach((decal) => {
       if (!decalAgesRef.current.has(decal.id)) {
@@ -318,7 +295,6 @@ export const BloodDecals3D: React.FC<BloodDecals3DProps> = ({
     });
   }, [activeDecals]);
 
-  // Check for completed decals using accumulated delta time
   useFrame((_, delta) => {
     activeDecals.forEach((decal) => {
       const currentAge = (decalAgesRef.current.get(decal.id) ?? 0) + delta;
@@ -337,23 +313,18 @@ export const BloodDecals3D: React.FC<BloodDecals3DProps> = ({
     });
   });
 
-  // Clean up texture on unmount
-  // Note: This texture is shared across all decals for the lifetime of the component
-  // to optimize memory usage and performance
   useEffect(() => {
     return () => {
       bloodTexture.dispose();
     };
   }, [bloodTexture]);
 
-  // Use state to track target mesh, updated via layout effect to avoid ref access during render
   const [targetMesh, setTargetMesh] = React.useState<THREE.Mesh | undefined>();
 
   React.useLayoutEffect(() => {
     setTargetMesh(targetMeshRef?.current ?? undefined);
   }, [targetMeshRef]);
 
-  // Don't render if disabled or no decals
   if (!enabled || activeDecals.length === 0) {
     return null;
   }

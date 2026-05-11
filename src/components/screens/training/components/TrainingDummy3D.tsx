@@ -77,8 +77,6 @@ const getVitalPointPosition = (
   pointId: string,
   category: string,
 ): [number, number, number] => {
-  // Base positions calibrated for SkeletalPlayer3D skeletal rig
-  // These align with the 28-bone humanoid rig structure
   const positions: Record<string, [number, number, number]> = {
     head: [0, 1.75, 0.12], // Head bone + offset
     neck: [0, 1.5, 0.1], // Neck bone
@@ -94,11 +92,8 @@ const getVitalPointPosition = (
     skeletal: [0, 0.9, 0.15], // Joints/bones
   };
 
-  // Get base position or default to center torso
   const basePos = positions[category.toLowerCase()] ?? [0, 1.1, 0.15];
 
-  // Add deterministic offset for multiple points in same region
-  // Uses character code of pointId for consistent positioning
   const hash =
     pointId.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) *
     0.001;
@@ -116,7 +111,6 @@ const getVitalPointPosition = (
  * @korean 훈련인형체력바
  */
 
-// Constants defined outside component to avoid recreation
 const HEALTH_BAR_WIDTH = 1.2;
 const HEALTH_BAR_HEIGHT = 0.1;
 
@@ -125,10 +119,8 @@ const DummyHealthBar: React.FC<{
   readonly maxHealth: number;
   readonly position: [number, number, number];
 }> = ({ health, maxHealth, position }) => {
-  // Health percentage
   const healthPercent = Math.max(0, Math.min(100, (health / maxHealth) * 100));
 
-  // Memoize geometries to avoid recreating on every render
   const bgGeometry = useMemo(
     () => new THREE.BoxGeometry(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, 0.02),
     [],
@@ -147,7 +139,6 @@ const DummyHealthBar: React.FC<{
     [],
   );
 
-  // Determine health bar color based on health percentage
   const healthColor = useMemo(() => {
     if (healthPercent > 70) return KOREAN_COLORS.HEALTH_FULL;
     if (healthPercent > 40) return KOREAN_COLORS.HEALTH_MEDIUM;
@@ -155,13 +146,11 @@ const DummyHealthBar: React.FC<{
     return KOREAN_COLORS.HEALTH_CRITICAL;
   }, [healthPercent]);
 
-  // Use scale instead of recreating geometry
   const healthScale: [number, number, number] = useMemo(
     () => [healthPercent / 100, 1, 1],
     [healthPercent],
   );
 
-  // Cleanup geometries on unmount
   useEffect(() => {
     return () => {
       bgGeometry.dispose();
@@ -245,7 +234,6 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   const groupRef = useRef<THREE.Group>(null);
   const [isStunned, setIsStunned] = useState(false);
 
-  // Select vital points to display based on count (expandable to 70)
   const vitalPoints = useMemo(
     () =>
       KOREAN_VITAL_POINTS.slice(
@@ -255,7 +243,6 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
     [vitalPointCount],
   );
 
-  // Calculate size multiplier based on difficulty
   const sizeMultiplier = useMemo(() => {
     switch (difficulty) {
       case "easy":
@@ -269,23 +256,18 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
     }
   }, [difficulty]);
 
-  // Track previous health to detect defeat
   const prevHealthRef = useRef(health);
 
-  // Store latest onDefeated callback in a ref to avoid stale closure
   const onDefeatedRef = useRef(onDefeated);
   useEffect(() => {
     onDefeatedRef.current = onDefeated;
   }, [onDefeated]);
 
-  // Check for defeat and trigger stun effect on significant damage
   useEffect(() => {
-    // Defeated check
     if (prevHealthRef.current > 0 && health <= 0) {
       onDefeatedRef.current?.();
     }
 
-    // Stun on significant damage (more than 20 points)
     if (prevHealthRef.current - health > 20) {
       setIsStunned(true);
       const timer = setTimeout(() => setIsStunned(false), 500);
@@ -296,20 +278,16 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
     return undefined;
   }, [health]);
 
-  // Subtle idle animation for training dummy
   useFrame((state) => {
     if (!groupRef.current) return;
 
-    // Gentle breathing/swaying motion
     const time = state.clock.elapsedTime;
     const breathScale = Math.sin(time * 1.5) * 0.01 + 1;
     groupRef.current.scale.y = breathScale;
 
-    // Subtle rotation as if waiting for attack
     groupRef.current.rotation.y = Math.sin(time * 0.5) * 0.02;
   });
 
-  // Handle vital point hit
   const handlePointHit = useCallback(
     (pointId: string) => {
       onVitalPointHit?.(pointId);

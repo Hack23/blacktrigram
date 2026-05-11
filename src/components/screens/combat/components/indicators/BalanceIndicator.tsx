@@ -100,10 +100,8 @@ export const BalanceIndicator: React.FC<BalanceIndicatorProps> = ({
     const color = getBalanceColor(theme, balanceState);
     const colorHex = `#${color.toString(16).padStart(6, "0")}`;
 
-    // Mobile uses thinner border
     const borderWidth = isMobile ? "3px" : "4px";
 
-    // Position based on player side
     const isLeft = position === "left";
 
     return {

@@ -58,7 +58,6 @@ export interface FallCheckResult {
  * }
  * ```
  *
- * @public
  * @korean 낙법확인
  */
 export function checkForFall(
@@ -114,7 +113,6 @@ export function checkForFall(
  * @param animationState - Current animation state
  * @returns True if player is falling or on ground
  *
- * @public
  * @korean 낙법중확인
  */
 export function isInFallOrGroundState(animationState: AnimationState): boolean {
@@ -127,7 +125,6 @@ export function isInFallOrGroundState(animationState: AnimationState): boolean {
  * @param fallType - Type of fall
  * @returns Korean and English names
  *
- * @public
  * @korean 낙법이름
  */
 export function getFallTypeName(fallType: FallType): {

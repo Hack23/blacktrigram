@@ -24,7 +24,6 @@ import type {
 /**
  * Props for DebugCollision component.
  *
- * @public
  * @korean 디버그충돌속성
  */
 export interface DebugCollisionProps {
@@ -83,7 +82,6 @@ const REGION_COLORS: Record<AnatomicalRegionPhysics, number> = {
  * </Canvas>
  * ```
  *
- * @public
  * @korean 디버그충돌컴포넌트
  */
 export const DebugCollision: React.FC<DebugCollisionProps> = ({
@@ -94,17 +92,14 @@ export const DebugCollision: React.FC<DebugCollisionProps> = ({
   defenderPosition = { x: 0, y: 0, z: 6 },
   opacity = 0.3,
 }) => {
-  // Create collision detection instance
   const collision = useMemo(() => new CollisionDetection(), []);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       collision.dispose();
     };
   }, [collision]);
 
-  // Get all bounding boxes
   const boundingBoxes = useMemo(() => {
     const boxes = collision.getAllBoundingBoxes();
     return Array.from(boxes.entries());
@@ -122,7 +117,6 @@ export const DebugCollision: React.FC<DebugCollisionProps> = ({
             defenderPosition.z + box.center.z,
           ];
 
-          // Render different geometry based on bounding box type
           switch (box.type) {
             case "sphere":
               return (

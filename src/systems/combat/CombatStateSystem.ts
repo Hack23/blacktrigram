@@ -86,7 +86,6 @@ interface StateCapability {
  * const modifiedDamage = baseDamage * capability.accuracyModifier;
  * ```
  * 
- * @public
  * @korean 전투상태시스템
  */
 export class CombatStateSystem {
@@ -164,7 +163,6 @@ export class CombatStateSystem {
    * }
    * ```
    * 
-   * @public
    * @korean 상태결정
    */
   determineState(player: PlayerState, currentTime?: number): CombatReadinessState {
@@ -275,7 +273,6 @@ export class CombatStateSystem {
    * }
    * ```
    * 
-   * @public
    * @korean 능력조회
    */
   getCapability(state: CombatReadinessState): StateCapability {
@@ -301,7 +298,6 @@ export class CombatStateSystem {
    * );
    * ```
    * 
-   * @public
    * @korean 상태적용
    */
   applyStateModifiers(
@@ -326,7 +322,6 @@ export class CombatStateSystem {
    * @param state - Combat readiness state
    * @returns Korean and English state names
    * 
-   * @public
    * @korean 상태이름
    */
   getStateName(state: CombatReadinessState): { korean: string; english: string } {
@@ -358,7 +353,6 @@ export class CombatStateSystem {
    * @param state - Combat readiness state
    * @returns Emoji representing the state
    * 
-   * @public
    * @korean 상태아이콘
    */
   getStateEmoji(state: CombatReadinessState): string {
@@ -451,7 +445,6 @@ export class CombatStateSystem {
    * @param currentTime - Timestamp of the hit
    * @returns Updated player state with recorded hit
    * 
-   * @public
    * @korean 타격기록
    */
   recordHit(player: PlayerState, currentTime: number): PlayerState {
@@ -476,7 +469,6 @@ export class CombatStateSystem {
    * @param currentTime - Timestamp when entering helpless state
    * @returns Updated player state
    * 
-   * @public
    * @korean 무력상태기록
    */
   enterHelplessState(player: PlayerState, currentTime: number): PlayerState {
@@ -495,7 +487,6 @@ export class CombatStateSystem {
    * @param currentTime - Current timestamp
    * @returns True if recovery is possible
    * 
-   * @public
    * @korean 회복가능확인
    */
   canRecoverFromHelpless(player: PlayerState, currentTime: number): boolean {

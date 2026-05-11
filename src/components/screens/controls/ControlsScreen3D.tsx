@@ -1,4 +1,3 @@
-// UI renders outside Canvas in absolute-positioned div - no Html needed
 import { Canvas } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
@@ -35,13 +34,10 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
   width: propWidth,
   height: propHeight,
 }) => {
-  // UI now renders outside Canvas - no mount state needed
 
-  // Use controls state hook for keyboard/gamepad tracking
   const { pressedKeys, category, selectedTab, setCategory, setSelectedTab } =
     useControlsState();
 
-  // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in ControlsScreen");
@@ -55,14 +51,10 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
   const audio = useAudio();
   const { width, height } = useWindowSize();
 
-  // Use prop dimensions if provided, otherwise use window size
   const screenWidth = propWidth ?? width;
   const screenHeight = propHeight ?? height;
 
-  // Responsive layout calculations with large desktop support
-  // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
   const isMobile = shouldUseMobileControls();
-  // Only use width for tablet/desktop distinction when NOT mobile
   const isTablet = useMemo(
     () => !isMobile && screenWidth >= 768 && screenWidth < 1024,
     [isMobile, screenWidth],
@@ -72,20 +64,17 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
     [isMobile, screenWidth],
   ); // 4K/2K displays
 
-  // Use centralized responsive layout helper for consistent scaling
   const layoutConstants = useMemo(
     () => getLayoutConstants(screenWidth),
     [screenWidth],
   );
 
-  // Use Korean theme hook for consistent theming
   const theme = useKoreanTheme({
     variant: "primary",
     size: "md",
     isMobile,
   });
 
-  // Memoize scrollbar style to prevent re-creating style tag on every render
   const scrollbarStyle = useMemo(
     () => ({
       __html: `
@@ -110,7 +99,6 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
     [theme],
   );
 
-  // Memoize colors from theme for performance
   const colors = useMemo(
     () => ({
       background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.95),
@@ -128,7 +116,6 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
     [theme],
   );
 
-  // Enhanced keyboard handling for screen-level navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" || event.key.toLowerCase() === "m") {
@@ -142,13 +129,11 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onReturnToMenu, audio]);
 
-  // Handle back button click
   const handleBackClick = useCallback(() => {
     audio.playSFX("menu_back");
     onReturnToMenu();
   }, [audio, onReturnToMenu]);
 
-  // Mode toggle button hover handlers (extracted for DRY)
   const handleModeButtonEnter = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>, isActive: boolean) => {
       if (!isActive) {
@@ -181,19 +166,16 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
     [theme],
   );
 
-  // Stance controls data
   const stanceControls = useMemo(
     () => Object.entries(COMBAT_CONTROLS.stanceControls),
     [],
   );
 
-  // Combat controls data
   const combatControls = useMemo(
     () => Object.entries(COMBAT_CONTROLS.combat),
     [],
   );
 
-  // Grid layout calculations
   const buttonsPerRow = isMobile ? 2 : isTablet ? 3 : isLargeDesktop ? 5 : 4;
   const buttonHeight = isMobile
     ? 120
@@ -424,7 +406,6 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
               overflowY: "auto",
               overflowX: "hidden",
               padding: `${layoutConstants.padding}px`,
-              // Custom scrollbar styling for Korean aesthetic (Firefox)
               scrollbarWidth: "thin",
               scrollbarColor: `${colors.accentGold} ${colors.sectionBg}`,
             }}

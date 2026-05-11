@@ -23,7 +23,6 @@ import { EffectType } from "../effects";
  * - **왼발서기 (Oenbal Seogi)**: Left foot forward, left guard high
  * - **오른발서기 (Oreun Bal Seogi)**: Right foot forward, right guard high
  *
- * @public
  * @category Trigram System
  * @korean 측면성
  */
@@ -41,7 +40,6 @@ export type StanceLaterality = "left" | "right";
  * - "geon_left" - Heaven stance, left foot forward
  * - "tae_right" - Lake stance, right foot forward
  *
- * @public
  * @category Trigram System
  * @korean 측면포함자세
  */
@@ -67,7 +65,6 @@ export type StanceWithSide = `${TrigramStance}_${StanceLaterality}`;
  * // null
  * ```
  *
- * @public
  * @category Trigram System
  * @korean 자세측면분리
  */
@@ -114,7 +111,6 @@ export function parseStanceWithSide(
  * // "geon_left"
  * ```
  *
- * @public
  * @category Trigram System
  * @korean 자세측면결합
  */

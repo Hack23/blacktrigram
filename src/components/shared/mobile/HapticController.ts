@@ -92,7 +92,6 @@ const ADAPTIVE_HAPTIC_PATTERNS: Record<HapticIntensity, HapticPattern> = {
  * HapticController class
  * Manages haptic feedback with device-aware optimization
  * 
- * @public
  * @korean 햅틱컨트롤러
  */
 export class HapticController {
@@ -116,7 +115,6 @@ export class HapticController {
     this.isSupported = this.detectHapticSupport();
     this.performanceTier = this.detectPerformanceTier();
     
-    // Disable haptics on low-end devices by default
     if (this.performanceTier === 'low') {
       this.isEnabled = false;
     }
@@ -144,7 +142,6 @@ export class HapticController {
       return false;
     }
 
-    // Check for Vibration API
     return 'vibrate' in navigator;
   }
 
@@ -160,30 +157,22 @@ export class HapticController {
       return 'medium';
     }
 
-    // Check navigator.hardwareConcurrency (CPU cores)
     const cores = navigator.hardwareConcurrency ?? 4;
     
-    // Check device memory (if available)
     const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 4;
     
-    // Check if running on mobile
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    // Heuristic scoring
     let score = 0;
     
-    // More cores = better performance
     if (cores >= 8) score += 2;
     else if (cores >= 4) score += 1;
     
-    // More memory = better performance
     if (memory >= 8) score += 2;
     else if (memory >= 4) score += 1;
     
-    // Desktop generally performs better
     if (!isMobile) score += 1;
     
-    // Determine tier
     if (score >= 4) return 'high';
     if (score >= 2) return 'medium';
     return 'low';
@@ -207,22 +196,18 @@ export class HapticController {
    * haptic.trigger('strong');
    * ```
    * 
-   * @public
    */
   public trigger(intensity: HapticIntensity): boolean {
-    // Check if haptics are supported and enabled
     if (!this.isSupported || !this.isEnabled || intensity === 'disabled') {
       return false;
     }
 
-    // Throttle haptic triggers to prevent excessive vibration
     const now = performance.now();
     if (now - this.lastTriggerTime < this.minTriggerInterval) {
       return false;
     }
     this.lastTriggerTime = now;
 
-    // Select pattern based on device performance
     const patterns = this.performanceTier === 'low' 
       ? ADAPTIVE_HAPTIC_PATTERNS 
       : HAPTIC_PATTERNS;
@@ -230,7 +215,6 @@ export class HapticController {
     const pattern = patterns[intensity];
 
     try {
-      // Trigger vibration (see class-level comment for browser compatibility notes)
       const result = navigator.vibrate(pattern.vibration);
       return result !== false; // Return true if not explicitly false
     } catch (error) {
@@ -254,14 +238,12 @@ export class HapticController {
    * haptic.triggerCustom([30, 20, 30, 20, 50]);
    * ```
    * 
-   * @public
    */
   public triggerCustom(pattern: number | number[]): boolean {
     if (!this.isSupported || !this.isEnabled) {
       return false;
     }
 
-    // Throttle haptic triggers
     const now = performance.now();
     if (now - this.lastTriggerTime < this.minTriggerInterval) {
       return false;
@@ -269,7 +251,6 @@ export class HapticController {
     this.lastTriggerTime = now;
 
     try {
-      // Adapt pattern for low-end devices (reduce durations by 50%)
       let adaptedPattern = pattern;
       if (this.performanceTier === 'low') {
         if (Array.isArray(pattern)) {
@@ -279,7 +260,6 @@ export class HapticController {
         }
       }
 
-      // Trigger vibration (see class-level comment for browser compatibility notes)
       const result = navigator.vibrate(adaptedPattern);
       return result !== false; // Return true if not explicitly false
     } catch (error) {
@@ -294,7 +274,6 @@ export class HapticController {
    * @returns True if haptic was stopped
    * @korean 햅틱중지
    * 
-   * @public
    */
   public stop(): boolean {
     if (!this.isSupported) {
@@ -302,7 +281,6 @@ export class HapticController {
     }
 
     try {
-      // Stop vibration (see class-level comment for browser compatibility notes)
       const result = navigator.vibrate(0);
       return result !== false; // Return true if not explicitly false
     } catch (error) {
@@ -315,7 +293,6 @@ export class HapticController {
    * Enable haptic feedback
    * 
    * @korean 햅틱활성화
-   * @public
    */
   public enable(): void {
     this.isEnabled = true;
@@ -325,7 +302,6 @@ export class HapticController {
    * Disable haptic feedback
    * 
    * @korean 햅틱비활성화
-   * @public
    */
   public disable(): void {
     this.isEnabled = false;
@@ -337,7 +313,6 @@ export class HapticController {
    * 
    * @returns True if haptic is enabled
    * @korean 햅틱활성화상태
-   * @public
    */
   public isHapticEnabled(): boolean {
     return this.isSupported && this.isEnabled;
@@ -348,7 +323,6 @@ export class HapticController {
    * 
    * @returns Performance tier
    * @korean 성능등급가져오기
-   * @public
    */
   public getPerformanceTier(): DevicePerformanceTier {
     return this.performanceTier;
@@ -359,7 +333,6 @@ export class HapticController {
    * 
    * @param intervalMs - Minimum interval in milliseconds
    * @korean 최소간격설정
-   * @public
    */
   public setMinTriggerInterval(intervalMs: number): void {
     this.minTriggerInterval = Math.max(0, intervalMs);
@@ -386,7 +359,6 @@ export class HapticController {
  * triggerOptimizedHaptic('strong');
  * ```
  * 
- * @public
  */
 export function triggerOptimizedHaptic(intensity: HapticIntensity): boolean {
   return HapticController.getInstance().trigger(intensity);
@@ -399,7 +371,6 @@ export function triggerOptimizedHaptic(intensity: HapticIntensity): boolean {
  * @returns True if haptic was triggered
  * @korean 커스텀햅틱실행
  * 
- * @public
  */
 export function triggerCustomOptimizedHaptic(pattern: number | number[]): boolean {
   return HapticController.getInstance().triggerCustom(pattern);
@@ -410,7 +381,6 @@ export function triggerCustomOptimizedHaptic(pattern: number | number[]): boolea
  * 
  * @returns True if haptic was stopped
  * @korean 햅틱중지
- * @public
  */
 export function stopOptimizedHaptic(): boolean {
   return HapticController.getInstance().stop();
@@ -421,7 +391,6 @@ export function stopOptimizedHaptic(): boolean {
  * Pre-configured for common combat scenarios
  * 
  * @korean 전투 햅틱 패턴
- * @public
  */
 export const OptimizedCombatHaptics = {
   /**

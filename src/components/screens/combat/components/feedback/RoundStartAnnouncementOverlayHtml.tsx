@@ -60,32 +60,26 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
   const theme = useKoreanTheme({ variant: "primary", size: "xlarge", isMobile });
   const [isVisible, setIsVisible] = useState(false);
 
-  // Use ref to stabilize onComplete callback - prevents timer reset on re-renders
-  // This is critical because parent component may recreate onComplete due to state changes
   const onCompleteRef = useRef(onComplete);
   useEffect(() => {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
-  // Stable callback that reads from ref
   const handleComplete = useCallback(() => {
     onCompleteRef.current();
   }, []);
 
-  // Fade in animation on mount
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50);
     return () => clearTimeout(timer);
   }, []);
 
-  // Play audio cue on mount
   useEffect(() => {
     if (audio.isAudioReady) {
       audio.playSFX("attack_medium"); // Using placeholder - will be round_start
     }
   }, [audio]);
 
-  // Auto-dismiss after duration - uses stable handleComplete to prevent timer resets
   useEffect(() => {
     let isMounted = true;
     let innerTimer: ReturnType<typeof setTimeout> | null = null;
@@ -108,7 +102,6 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
     };
   }, [duration, handleComplete]);
 
-  // Convert hex colors to CSS - memoized for performance using theme
   const goldColor = useMemo(() => hexColorToCSS(theme.colors.ACCENT_GOLD), [theme.colors.ACCENT_GOLD]);
   const darkBg = useMemo(
     () => hexColorToCSS(theme.colors.UI_BACKGROUND_DARK),

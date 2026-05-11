@@ -75,21 +75,15 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
   onReturnToMenu,
   isPaused: _isPaused, // Reserved for future pause indicator
 }) => {
-  // isMobile only used for mobile controls visibility
   const showMobileControls = shouldShowMobileControls(width, isMobile);
 
-  // Layout calculations for slim top bar with resolution-based sizing
   const layout = React.useMemo(() => {
-    // Resolution-based HUD height (6% of screen height, 40-80px range)
     const hudHeight = getHUDHeight(height, 0.06) * positionScale;
 
-    // Resolution-based padding (using design system spacing)
     const padding = getResponsivePadding(width) * positionScale;
     
-    // Resolution-based gap (slightly larger than padding)
     const gap = padding * LAYOUT_MULTIPLIERS.gapToPadding;
     
-    // Resolution-based font sizes (using design system as baseline)
     const baseFontSize = getResponsiveFontSize(width) * positionScale;
     const fontSize = Math.max(TYPOGRAPHY_NUMERIC.bodySmall, baseFontSize * FONT_SIZE_MULTIPLIERS.bodySmall);
     const titleSize = Math.max(TYPOGRAPHY_NUMERIC.body, baseFontSize * FONT_SIZE_MULTIPLIERS.titleLarge);

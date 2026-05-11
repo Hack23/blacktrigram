@@ -29,7 +29,6 @@ export type HapticPattern = number | number[];
  * }
  * ```
  * 
- * @public
  * @korean 햅틱지원여부
  */
 export function isHapticSupported(): boolean {
@@ -61,7 +60,6 @@ export function isHapticSupported(): boolean {
  * triggerGuardHaptic('break');
  * ```
  * 
- * @public
  * @korean 방어햅틱트리거
  */
 export function triggerGuardHaptic(type: "activate" | "break"): void {
@@ -71,15 +69,11 @@ export function triggerGuardHaptic(type: "activate" | "break"): void {
 
   try {
     if (type === "activate") {
-      // Light haptic - single short vibration
       navigator.vibrate(50);
     } else if (type === "break") {
-      // Strong haptic - triple pulse pattern for impact
-      // Pattern: vibrate 100ms, pause 50ms, vibrate 100ms
       navigator.vibrate([100, 50, 100]);
     }
   } catch (error) {
-    // Silently fail if vibration fails
     console.warn("Haptic feedback failed:", error);
   }
 }
@@ -96,7 +90,6 @@ export function triggerGuardHaptic(type: "activate" | "break"): void {
  * triggerStanceChangeHaptic();
  * ```
  * 
- * @public
  * @korean 자세변경햅틱트리거
  */
 export function triggerStanceChangeHaptic(): void {
@@ -105,10 +98,8 @@ export function triggerStanceChangeHaptic(): void {
   }
 
   try {
-    // Medium haptic - single medium vibration
     navigator.vibrate(75);
   } catch (error) {
-    // Silently fail if vibration fails
     console.warn("Haptic feedback failed:", error);
   }
 }
@@ -133,7 +124,6 @@ export function triggerStanceChangeHaptic(): void {
  * triggerCustomHaptic([100, 50, 100, 50, 100]);
  * ```
  * 
- * @public
  * @korean 사용자정의햅틱트리거
  */
 export function triggerCustomHaptic(pattern: HapticPattern): void {
@@ -144,7 +134,6 @@ export function triggerCustomHaptic(pattern: HapticPattern): void {
   try {
     navigator.vibrate(pattern);
   } catch (error) {
-    // Silently fail if vibration fails
     console.warn("Haptic feedback failed:", error);
   }
 }
@@ -161,7 +150,6 @@ export function triggerCustomHaptic(pattern: HapticPattern): void {
  * stopHaptic();
  * ```
  * 
- * @public
  * @korean 햅틱중지
  */
 export function stopHaptic(): void {
@@ -170,10 +158,8 @@ export function stopHaptic(): void {
   }
 
   try {
-    // Passing 0 or empty array stops vibration
     navigator.vibrate(0);
   } catch (error) {
-    // Silently fail if vibration stop fails
     console.warn("Haptic stop failed:", error);
   }
 }
@@ -193,7 +179,6 @@ export function stopHaptic(): void {
  * }
  * ```
  * 
- * @public
  * @korean 모바일기기여부
  */
 export function isMobileDevice(): boolean {
@@ -201,19 +186,15 @@ export function isMobileDevice(): boolean {
     return false;
   }
 
-  // Check screen size (mobile typically < 768px)
   const isMobileSize = window.innerWidth < 768;
 
-  // Check user agent for mobile indicators
   const mobileKeywords = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
   const isMobileUA = mobileKeywords.test(navigator.userAgent);
 
-  // Check for touch support (modern browsers)
   const hasTouch =
     "ontouchstart" in window ||
     navigator.maxTouchPoints > 0;
 
-  // Device is mobile if it meets size OR user agent criteria AND has touch
   return (isMobileSize || isMobileUA) && hasTouch;
 }
 
@@ -280,7 +261,6 @@ export function applyIntensity(
  * triggerWithSettings(100, settings); // Triggers 70ms vibration
  * ```
  * 
- * @public
  * @korean 설정포함햅틱트리거
  */
 export function triggerWithSettings(

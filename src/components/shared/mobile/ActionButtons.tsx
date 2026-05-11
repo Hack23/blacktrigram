@@ -93,7 +93,6 @@ export interface ActionButtonsProps {
  * />
  * ```
  *
- * @public
  * @korean 액션버튼
  */
 const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
@@ -109,11 +108,9 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
   const [attackFocused, setAttackFocused] = useState(false);
   const [blockFocused, setBlockFocused] = useState(false);
 
-  // Button refs for direct DOM manipulation (immediate visual feedback)
   const attackButtonRef = useRef<HTMLButtonElement>(null);
   const blockButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Throttle callbacks to ~60fps for performance
   const throttledOnAttack = useThrottle(onAttack, 16);
   const throttledOnBlock = useThrottle(onBlock, 16);
 
@@ -127,16 +124,13 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      // Immediate visual update using optimized approach (<16ms)
       applyOptimizedUpdate(
         attackButtonRef.current,
         (element) => {
-          // GPU-accelerated transform
           element.style.transform = createTransformStyle(true, 0.95);
           element.style.filter = createFilterStyle(true, 1.2);
         },
         () => {
-          // Deferred state update
           setAttackPressed(true);
           throttledOnAttack();
           triggerOptimizedHaptic("medium");
@@ -155,7 +149,6 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      // Immediate visual reset
       applyOptimizedUpdate(
         attackButtonRef.current,
         (element) => {
@@ -179,7 +172,6 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      // Immediate visual update
       applyOptimizedUpdate(
         blockButtonRef.current,
         (element) => {
@@ -205,7 +197,6 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      // Immediate visual reset
       applyOptimizedUpdate(
         blockButtonRef.current,
         (element) => {
@@ -230,7 +221,6 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
    * refs that were never set in the first place.
    */
   useEffect(() => {
-    // Store refs in variables at effect creation time
     const attackButton = attackButtonRef.current;
     const blockButton = blockButtonRef.current;
 
@@ -257,7 +247,6 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
           setAttackPressed(true);
           onAttack();
           triggerOptimizedHaptic("medium");
-          // Release after brief delay
           setTimeout(() => setAttackPressed(false), 150);
         },
       });
@@ -276,7 +265,6 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
           setBlockPressed(true);
           onBlock("start");
           triggerOptimizedHaptic("light");
-          // Release after brief delay
           setTimeout(() => {
             setBlockPressed(false);
             onBlock("end");
@@ -287,7 +275,6 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
     [disabled, onBlock],
   );
 
-  // Extract RGB colors using shared utility
   const colors = useMemo(
     () => ({
       gold: getColorRGB(KOREAN_COLORS.ACCENT_GOLD),
@@ -341,9 +328,6 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
             userSelect: "none",
             touchAction: "none",
             transition: "transform 0.1s ease-out, filter 0.1s ease-out",
-            // Note: transform and filter are managed via TouchOptimizer/applyOptimizedUpdate
-            // for immediate visual feedback. React state-driven inline styles serve as baseline
-            // values that are overridden during active touch interactions via direct DOM manipulation.
             transform: createTransformStyle(attackPressed, 0.95),
             filter: createFilterStyle(attackPressed, 1.2),
             willChange: "transform, filter", // GPU hint

@@ -77,7 +77,6 @@ interface GestureFeedback {
  * />
  * ```
  *
- * @public
  * @korean 제스처인식기순수
  */
 export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
@@ -94,10 +93,8 @@ export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
    */
   const handleGesture = useCallback(
     (gesture: GestureEvent) => {
-      // Pass gesture to parent
       onGesture(gesture);
 
-      // Add visual feedback
       if (
         showFeedback &&
         gesture.endX !== undefined &&
@@ -149,7 +146,6 @@ export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
     return null;
   }
 
-  // Get RGB colors using shared utility
   const primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
   const goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
 

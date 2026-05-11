@@ -77,7 +77,6 @@ export const MenuList: React.FC<MenuListProps> = ({
     setHoveredId(null);
   }, []);
 
-  // Memoize container styles for performance
   const containerStyle = useMemo<React.CSSProperties>(
     () => ({
       width: `${width}px`,
@@ -93,7 +92,6 @@ export const MenuList: React.FC<MenuListProps> = ({
     [width]
   );
 
-  // Function to get item styles based on state
   const getItemStyle = useCallback(
     (id: string, disabled?: boolean): React.CSSProperties => {
       const isSelected = selectedId === id;
@@ -126,7 +124,6 @@ export const MenuList: React.FC<MenuListProps> = ({
     [selectedId, hoveredId]
   );
 
-  // Memoize text styles for performance
   const getTextStyle = useCallback(
     (isKorean: boolean, isSelected: boolean): React.CSSProperties => ({
       display: "block",

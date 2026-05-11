@@ -42,7 +42,6 @@ import {
  *
  * **Korean**: 물리적 도달 계산 결과
  *
- * @public
  * @korean 물리적도달결과
  */
 export interface PhysicalReachResult {
@@ -122,7 +121,6 @@ export interface PhysicalReachResult {
  * Calculates reality-based reach using archetype physical attributes
  * and animation timing.
  *
- * @public
  * @korean 물리적도달계산기
  */
 export class PhysicalReachCalculator {
@@ -186,7 +184,6 @@ export class PhysicalReachCalculator {
    * // Uses animation multiplier (1.0) only
    * ```
    *
-   * @public
    * @korean 도달계산
    */
   calculateReach(
@@ -344,7 +341,6 @@ export class PhysicalReachCalculator {
    * // Uses animation multiplier only (1.0)
    * ```
    *
-   * @public
    * @korean 최대도달계산
    */
   calculateMaxReach(
@@ -431,7 +427,6 @@ export class PhysicalReachCalculator {
    * @param animationType - Animation type
    * @returns Technique type
    *
-   * @public
    * @korean 기술유형결정
    */
   public getTechniqueTypeFromAnimation(
@@ -536,7 +531,6 @@ export class PhysicalReachCalculator {
  * );
  * ```
  *
- * @public
  * @korean 싱글톤인스턴스
  */
 export const physicalReachCalculator = new PhysicalReachCalculator();

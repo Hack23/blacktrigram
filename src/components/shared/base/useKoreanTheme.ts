@@ -183,7 +183,6 @@ export function useKoreanTheme(config: UseKoreanThemeConfig = {}) {
    * Mobile: 48px+ minimum touch targets with 16px+ Korean font
    */
   const buttonSize = useMemo<SizeDimensions>(() => {
-    // Touch-optimized sizing for mobile (no scale down)
     const scale = isMobile ? 1.0 : 1.0; // Keep full size on mobile for 48px+ targets
     
     switch (size) {

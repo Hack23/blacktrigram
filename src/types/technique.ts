@@ -23,7 +23,6 @@ import { TechniqueAnimationConfig } from "./skeletal";
  * No overlap with movement keys (W, A, S, D) or browser shortcuts.
  * Supports up to 10 techniques with keyboard shortcuts.
  *
- * @public
  * @category Combat System
  */
 export type TechniqueKey =
@@ -52,6 +51,7 @@ export type TechniqueKey =
  * const thunderStrike: Technique = {
  *   id: "musa_thunder_strike",
  *   name: {
+
  *     korean: "천둥벽력",
  *     english: "Thunder Strike"
  *   },
@@ -69,7 +69,6 @@ export type TechniqueKey =
  * };
  * ```
  *
- * @public
  * @category Combat System
  * @korean 기술
  */
@@ -148,7 +147,6 @@ export interface Technique {
 /**
  * Technique cooldown state tracking.
  *
- * @public
  * @category Combat System
  */
 export interface TechniqueCooldown {
@@ -170,7 +168,6 @@ export interface TechniqueCooldown {
  *
  * Tracks available techniques, cooldowns, and current selection.
  *
- * @public
  * @category Combat System
  */
 export interface TechniqueSelection {
@@ -190,7 +187,6 @@ export interface TechniqueSelection {
 /**
  * Result of technique execution validation.
  *
- * @public
  * @category Combat System
  */
 export interface TechniqueValidation {

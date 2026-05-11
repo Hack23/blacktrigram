@@ -57,7 +57,6 @@ export interface PerformanceMonitorOptions {
  * PerformanceMonitor class
  * Monitors device performance and provides adaptive recommendations
  * 
- * @public
  * @korean 성능모니터
  */
 export class PerformanceMonitor {
@@ -137,53 +136,37 @@ export class PerformanceMonitor {
       return 'medium';
     }
 
-    // Check navigator.hardwareConcurrency (CPU cores)
     const cores = navigator.hardwareConcurrency ?? 4;
     
-    // Check device memory (if available)
     const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 4;
     
-    // Check if running on mobile
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    // Check if on iOS (typically good performance)
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    // Check connection type (if available).
-    // If the Network Information API is unavailable, we treat connection quality as unknown
-    // and do not add any connection-based bonus to avoid overestimating capabilities.
     const connection = (navigator as Navigator & { connection?: { effectiveType?: string } }).connection;
     const connectionType = connection?.effectiveType;
     
-    // Very low-spec devices are always treated as low tier regardless of platform
-    // This prevents old desktops from being rated above high-end mobile devices
     if (cores <= 2 && memory <= 2) {
       return 'low';
     }
     
-    // Heuristic scoring
     let score = 0;
     
-    // More cores = better performance
     if (cores >= 8) score += 3;
     else if (cores >= 6) score += 2;
     else if (cores >= 4) score += 1;
     
-    // More memory = better performance
     if (memory >= 8) score += 3;
     else if (memory >= 6) score += 2;
     else if (memory >= 4) score += 1;
     
-    // Desktop generally performs better (limited bonus to avoid over-rating old desktops)
     if (!isMobile) score += 1;
     
-    // iOS devices typically have good performance
     if (isIOS) score += 1;
     
-    // Better connection = better overall experience (only if API is available)
     if (connectionType === '4g' || connectionType === '5g') score += 1;
     
-    // Determine tier
     if (score >= 6) return 'high';
     if (score >= 3) return 'medium';
     return 'low';
@@ -194,7 +177,6 @@ export class PerformanceMonitor {
    * Begins tracking FPS and frame times
    * 
    * @korean 모니터링시작
-   * @public
    */
   public startMonitoring(): void {
     if (this.isMonitoring) return;
@@ -211,7 +193,6 @@ export class PerformanceMonitor {
    * Stop monitoring performance
    * 
    * @korean 모니터링중지
-   * @public
    */
   public stopMonitoring(): void {
     this.isMonitoring = false;
@@ -235,31 +216,25 @@ export class PerformanceMonitor {
     const frameTime = now - this.lastFrameTime;
     this.lastFrameTime = now;
 
-    // Add frame time to sample window
     this.frameTimes.push(frameTime);
     if (this.frameTimes.length > this.sampleWindow) {
       this.frameTimes.shift();
     }
 
-    // Detect frame drops (frame time exceeds threshold)
     if (frameTime > this.frameDropThreshold) {
       this.frameDrops++;
     }
 
-    // Calculate metrics every sample window
     if (this.frameTimes.length === this.sampleWindow) {
       this.calculateMetrics();
       
-      // Reset frame drops counter
       this.frameDrops = 0;
     }
 
-    // Update memory usage
     if (this.enableMemoryMonitoring) {
       this.updateMemoryUsage();
     }
 
-    // Schedule next frame
     this.rafId = requestAnimationFrame(this.monitorFrame);
   };
 
@@ -271,11 +246,9 @@ export class PerformanceMonitor {
   private calculateMetrics(): void {
     if (this.frameTimes.length === 0) return;
 
-    // Calculate average frame time
     const sum = this.frameTimes.reduce((acc, time) => acc + time, 0);
     this.avgFrameTime = sum / this.frameTimes.length;
 
-    // Calculate FPS
     this.fps = 1000 / this.avgFrameTime;
   }
 
@@ -297,7 +270,6 @@ export class PerformanceMonitor {
     }).memory;
 
     if (memory?.usedJSHeapSize) {
-      // Convert bytes to MB
       this.memoryUsage = Math.round(memory.usedJSHeapSize / (1024 * 1024));
     }
   }
@@ -307,7 +279,6 @@ export class PerformanceMonitor {
    * 
    * @returns Current performance metrics
    * @korean 메트릭가져오기
-   * @public
    */
   public getMetrics(): PerformanceMetrics {
     return {
@@ -325,7 +296,6 @@ export class PerformanceMonitor {
    * 
    * @returns Performance tier
    * @korean 성능등급가져오기
-   * @public
    */
   public getPerformanceTier(): PerformanceTier {
     return this.tier;
@@ -336,7 +306,6 @@ export class PerformanceMonitor {
    * 
    * @returns True if 60fps is achievable
    * @korean 60fps가능여부
-   * @public
    */
   public canHandle60Fps(): boolean {
     return this.tier !== 'low' && this.fps >= 58;
@@ -347,7 +316,6 @@ export class PerformanceMonitor {
    * 
    * @returns Quality recommendations
    * @korean 품질권장사항가져오기
-   * @public
    */
   public getQualityRecommendations(): {
     enableHaptics: boolean;
@@ -391,7 +359,6 @@ export class PerformanceMonitor {
    * 
    * @returns True if frame drops detected
    * @korean 프레임드롭감지
-   * @public
    */
   public hasFrameDrops(): boolean {
     return this.frameDrops > 3; // More than 3 drops per sample window
@@ -402,7 +369,6 @@ export class PerformanceMonitor {
    * 
    * @returns Current FPS
    * @korean FPS가져오기
-   * @public
    */
   public getCurrentFps(): number {
     return Math.round(this.fps);
@@ -413,7 +379,6 @@ export class PerformanceMonitor {
    * 
    * @returns Average frame time in milliseconds
    * @korean 평균프레임타임가져오기
-   * @public
    */
   public getAvgFrameTime(): number {
     return Math.round(this.avgFrameTime * 100) / 100;
@@ -423,7 +388,6 @@ export class PerformanceMonitor {
    * Reset performance metrics
    * 
    * @korean 메트릭리셋
-   * @public
    */
   public reset(): void {
     this.frameTimes = [];
@@ -438,7 +402,6 @@ export class PerformanceMonitor {
  * 
  * @returns PerformanceMonitor instance
  * @korean 성능모니터가져오기
- * @public
  */
 export function getPerformanceMonitor(): PerformanceMonitor {
   return PerformanceMonitor.getInstance();
@@ -449,7 +412,6 @@ export function getPerformanceMonitor(): PerformanceMonitor {
  * 
  * @returns Performance tier
  * @korean 성능등급가져오기
- * @public
  */
 export function getPerformanceTier(): PerformanceTier {
   return PerformanceMonitor.getInstance().getPerformanceTier();
@@ -460,7 +422,6 @@ export function getPerformanceTier(): PerformanceTier {
  * 
  * @returns True if 60fps is achievable
  * @korean 60fps가능여부
- * @public
  */
 export function canHandle60Fps(): boolean {
   return PerformanceMonitor.getInstance().canHandle60Fps();
@@ -471,7 +432,6 @@ export function canHandle60Fps(): boolean {
  * 
  * @returns Quality recommendations
  * @korean 품질권장사항가져오기
- * @public
  */
 export function getQualityRecommendations() {
   return PerformanceMonitor.getInstance().getQualityRecommendations();

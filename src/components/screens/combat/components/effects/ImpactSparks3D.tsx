@@ -119,7 +119,6 @@ const generateSparkParticles = (
   const particles: SparkParticle[] = [];
   const intensity = effect.intensity ?? 1.0;
 
-  // Pooled objects for calculations - PERFORMANCE: Eliminates temp allocations
   const tempOrigin = ThreeObjectPools.vector3.acquire();
   const tempDirection = ThreeObjectPools.vector3.acquire();
 
@@ -127,11 +126,9 @@ const generateSparkParticles = (
     tempOrigin.set(...effect.position);
 
     for (let i = 0; i < particleCount; i++) {
-      // Radial explosion pattern
       const angle = (Math.PI * 2 * i) / particleCount;
       const elevation = (Math.random() - 0.3) * Math.PI * 0.4; // Slightly upward bias
 
-      // Calculate direction
       const horizontalSpeed = Math.cos(elevation);
       tempDirection.set(
         Math.cos(angle) * horizontalSpeed,
@@ -139,14 +136,12 @@ const generateSparkParticles = (
         Math.sin(angle) * horizontalSpeed
       );
 
-      // Random speed with intensity scaling
       const speed =
         (SPARK_CONSTANTS.VELOCITY_MIN +
           Math.random() *
             (SPARK_CONSTANTS.VELOCITY_MAX - SPARK_CONSTANTS.VELOCITY_MIN)) *
         intensity;
 
-      // CRITICAL: Acquire pooled vectors for particle ownership
       const particlePosition = ThreeObjectPools.vector3.acquire();
       const particleVelocity = ThreeObjectPools.vector3.acquire();
       
@@ -164,7 +159,6 @@ const generateSparkParticles = (
 
     return particles;
   } finally {
-    // Release all pooled temp objects back to pool
     ThreeObjectPools.vector3.release(tempOrigin);
     ThreeObjectPools.vector3.release(tempDirection);
   }
@@ -207,19 +201,16 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
   isMobile = false,
   onEffectComplete,
 }) => {
-  // Particle system state
   const particlesRef = useRef<Map<string, SparkParticle[]>>(new Map());
   const pointsRef = useRef<THREE.Points>(null);
   const completedEffectsRef = useRef<Set<string>>(new Set());
 
-  // Calculate max particles needed
   const maxParticles = useMemo(() => {
     return isMobile
       ? SPARK_CONSTANTS.PARTICLES_CRITICAL_MOBILE
       : SPARK_CONSTANTS.PARTICLES_CRITICAL_DESKTOP;
   }, [isMobile]);
 
-  // Spark color - gold for critical, cyan for normal
   const sparkColor = useMemo(
     () => ({
       critical: KOREAN_COLORS.ACCENT_GOLD,
@@ -228,11 +219,9 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
     []
   );
 
-  // Initialize particles for new effects
   useEffect(() => {
     if (!enabled) return;
 
-    // Performance configuration - moved inside useEffect to avoid dependency issues
     const getParticleCount = (effect: ImpactSparkEffect): number => {
       if (effect.isCritical) {
         return isMobile
@@ -252,11 +241,9 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
       }
     });
 
-    // Clean up removed effects - Release pooled vectors!
     const effectIds = new Set(effects.map((e) => e.id));
     particlesRef.current.forEach((particles, id) => {
       if (!effectIds.has(id)) {
-        // Release all pooled vectors for this effect
         particles.forEach((p) => {
           if (p.isPooled) {
             ThreeObjectPools.vector3.release(p.position);
@@ -270,14 +257,11 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
     });
   }, [effects, enabled, isMobile]);
 
-  // Cleanup on unmount - Release ALL pooled vectors
   useEffect(() => {
-    // Capture refs at the start of effect to avoid stale closures
     const currentParticles = particlesRef.current;
     const currentCompletedEffects = completedEffectsRef.current;
     
     return () => {
-      // Release all particle vectors
       currentParticles.forEach((particles) => {
         particles.forEach((p) => {
           if (p.isPooled) {
@@ -288,20 +272,16 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
         });
       });
       
-      // Clear refs
       currentParticles.clear();
       currentCompletedEffects.clear();
     };
   }, []);
 
-  // Initial positions for buffer (updated in useFrame)
   const initialPositions = useMemo(() => {
     const positions = new Float32Array(maxParticles * 3);
-    // Start with zeros - actual positions set in useFrame
     return positions;
   }, [maxParticles]);
 
-  // Physics update loop
   useFrame((_, delta) => {
     if (!enabled || !pointsRef.current) return;
 
@@ -311,11 +291,9 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
     const attr = pointsRef.current.geometry.attributes.position;
     const posArray = attr.array as Float32Array;
 
-    // Update all active spark particles
     particlesRef.current.forEach((particles, effectId) => {
       let hasActiveParticles = false;
 
-      // Filter expired particles and release their pooled vectors
       const aliveParticles: SparkParticle[] = [];
       
       for (let i = 0; i < particles.length; i++) {
@@ -326,16 +304,12 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
           hasActiveParticles = true;
           aliveParticles.push(p);
 
-          // Apply gravity
           p.velocity.y += SPARK_CONSTANTS.GRAVITY * safeDelta;
 
-          // Update position
           p.position.addScaledVector(p.velocity, safeDelta);
 
-          // Air resistance
           p.velocity.multiplyScalar(0.98);
 
-          // Update render position
           if (totalParticleIndex < posArray.length / 3) {
             posArray[totalParticleIndex * 3] = p.position.x;
             posArray[totalParticleIndex * 3 + 1] = p.position.y;
@@ -343,7 +317,6 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
             totalParticleIndex++;
           }
         } else {
-          // Release pooled vectors when particle expires
           if (p.isPooled) {
             ThreeObjectPools.vector3.release(p.position);
             ThreeObjectPools.vector3.release(p.velocity);
@@ -352,10 +325,8 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
         }
       }
       
-      // Update the particles array with only alive particles
       particlesRef.current.set(effectId, aliveParticles);
 
-      // Check if effect is complete
       if (!hasActiveParticles && !completedEffectsRef.current.has(effectId)) {
         completedEffectsRef.current.add(effectId);
         onEffectComplete?.(effectId);
@@ -365,12 +336,10 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
     attr.needsUpdate = true;
   });
 
-  // Don't render if disabled or no effects
   if (!enabled || effects.length === 0) {
     return null;
   }
 
-  // Determine color based on most recent effect
   const latestEffect = effects[effects.length - 1];
   const currentColor = latestEffect?.isCritical
     ? sparkColor.critical

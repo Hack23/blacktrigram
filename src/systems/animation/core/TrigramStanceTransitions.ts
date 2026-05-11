@@ -68,7 +68,6 @@ export const TRIGRAM_STANCES_ORDER: readonly TrigramStance[] = [
  * calculateTransitionDuration(TrigramStance.GEON, TrigramStance.GEON); // 0.3 (laterality change)
  * ```
  *
- * @public
  * @category Trigram System
  * @korean 전환시간계산
  */
@@ -181,7 +180,6 @@ function blendRotation(
  * );
  * ```
  *
- * @public
  * @category Trigram System
  * @korean 팔괘자세전환
  */

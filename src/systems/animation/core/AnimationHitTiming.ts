@@ -46,7 +46,6 @@ import { AnimationType } from "../builders/MartialArtsAnimationBuilder";
  * };
  * ```
  *
- * @public
  * @korean 타격창타이밍
  */
 export interface AnimationHitWindow {
@@ -93,7 +92,6 @@ export interface AnimationHitWindow {
  *
  * **Korean**: 기술 타격 타이밍 설정
  *
- * @public
  * @korean 기술타격타이밍
  */
 export interface TechniqueHitTiming {
@@ -126,7 +124,6 @@ export interface TechniqueHitTiming {
  * Only includes timing for techniques with actual hit windows.
  * Movement and non-combat animations can query this and will get undefined.
  *
- * @public
  * @korean 애니메이션타격타이밍데이터베이스
  */
 export const ANIMATION_HIT_TIMING: Partial<
@@ -875,7 +872,6 @@ export const ANIMATION_HIT_TIMING: Partial<
  * }
  * ```
  *
- * @public
  * @korean 애니메이션타격타이밍가져오기
  */
 export function getAnimationHitTiming(
@@ -899,7 +895,6 @@ export function getAnimationHitTiming(
  * // Returns true (0.15s is within jab's 0.10-0.25s window)
  * ```
  *
- * @public
  * @korean 타격가능시간확인
  */
 export function isWithinHitWindow(
@@ -933,7 +928,6 @@ export function isWithinHitWindow(
  * // Returns 0 (before hit window starts)
  * ```
  *
- * @public
  * @korean 현재도달배수계산
  */
 export function getCurrentReachMultiplier(

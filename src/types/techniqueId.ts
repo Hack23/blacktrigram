@@ -21,7 +21,6 @@
  * - 정보요원 (Jeongbo) - 5 techniques: jeongbo_tactical_strike, jeongbo_counter_intelligence, jeongbo_psychological_warfare, jeongbo_precision_takedown, jeongbo_intelligence_strike
  * - 조직폭력배 (Jojik) - 4 techniques: jojik_street_brawl, jojik_improvised_weapon, jojik_ruthless_assault, jojik_brutal_takedown
  *
- * @public
  * @category Combat System
  * @korean 기술ID열거형
  */

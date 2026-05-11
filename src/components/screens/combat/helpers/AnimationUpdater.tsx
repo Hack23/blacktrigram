@@ -42,7 +42,6 @@ export const AnimationUpdater: React.FC<AnimationUpdaterProps> = ({
   player2Animation,
 }) => {
   useFrame((_state, delta) => {
-    // Update both player animations at 60fps
     player1Animation.update(delta);
     player2Animation.update(delta);
   });

@@ -41,7 +41,6 @@ import { KoreanText } from "@/types";
  * const health = player.bodyPartHealth[bodyPart]; // 0-100
  * ```
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위
  */
@@ -95,7 +94,6 @@ export enum BodyPart {
  * };
  * ```
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위체력
  */
@@ -126,7 +124,6 @@ export interface BodyPartHealth {
  * Defines the maximum HP capacity for each body part. Can be modified by
  * archetype, equipment, or training bonuses.
  * 
- * @public
  * @category Body Part System
  * @korean 최대신체부위체력
  */
@@ -175,7 +172,6 @@ export interface BodyPartMaxHealth {
  * };
  * ```
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위효과
  */
@@ -214,7 +210,6 @@ export interface BodyPartEffects {
  * };
  * ```
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위피해분배
  */
@@ -239,7 +234,6 @@ export interface BodyPartDamageDistribution {
  * Provides UI-friendly data about body part health status including
  * color coding, status text, and icon information.
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위상태
  */
@@ -270,7 +264,6 @@ export interface BodyPartStatus {
  * Defines thresholds, multipliers, and constants used by the body part
  * health system for damage calculation and effect application.
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위설정
  */
@@ -297,7 +290,6 @@ export interface BodyPartHealthConfig {
 /**
  * Default configuration values for body part health system.
  * 
- * @public
  * @category Body Part System
  */
 export const DEFAULT_BODY_PART_CONFIG: BodyPartHealthConfig = {
@@ -325,7 +317,6 @@ export const DEFAULT_BODY_PART_CONFIG: BodyPartHealthConfig = {
  * - Arms <50%: Attack damage -30%
  * - Legs <50%: Movement speed -40%
  * 
- * @public
  * @category Body Part System
  */
 export const BODY_PART_EFFECT_CONSTANTS = {
@@ -358,7 +349,6 @@ export const BODY_PART_EFFECT_CONSTANTS = {
  * 
  * Defines movement impairment states based on leg health percentage.
  * 
- * @public
  * @category Body Part System
  * @korean 다리부상정도
  */
@@ -381,7 +371,6 @@ export enum LegInjuryState {
  * Describes the current movement impairment including speed reduction,
  * stance change penalties, and balance effects.
  * 
- * @public
  * @category Body Part System
  * @korean 이동패널티
  */
@@ -412,7 +401,6 @@ export interface MovementPenalty {
  * Applied immediately upon striking knee or ankle vital points,
  * causing temporary severe movement impairment.
  * 
- * @public
  * @category Body Part System
  * @korean 순간이동패널티
  */
@@ -438,7 +426,6 @@ export interface InstantMovementPenalty {
  * - 49-30%: Severe limp (-40% speed)
  * - <30%: Hobbled (-60% speed, cannot run)
  * 
- * @public
  * @category Body Part System
  */
 export const MOVEMENT_PENALTY_CONSTANTS = {

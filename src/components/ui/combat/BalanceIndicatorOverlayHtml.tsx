@@ -96,7 +96,6 @@ function getBalanceLabel(balance: number): {
 export const BalanceIndicatorOverlayHtml: React.FC<
   BalanceIndicatorOverlayHtmlProps
 > = ({ player, currentTime, position = [0, 2, 0], isMobile = false }) => {
-  // Calculate vulnerability state
   const isVulnerable = useMemo(() => {
     const isTransitioning = player.transitionState?.isTransitioning ?? false;
     const isLowBalance = player.balance < 50; // Off-balance or worse
@@ -118,7 +117,6 @@ export const BalanceIndicatorOverlayHtml: React.FC<
 
   const vulnerableColorHex = `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`;
 
-  // Container style with vulnerability effects
   const containerStyle = useMemo(() => {
     const baseStyle: React.CSSProperties = {
       border: isVulnerable
@@ -139,7 +137,6 @@ export const BalanceIndicatorOverlayHtml: React.FC<
       pointerEvents: "none" as const,
     };
 
-    // Add shake animation when vulnerable
     if (isVulnerable) {
       baseStyle.animation = "shake 0.3s infinite";
     }

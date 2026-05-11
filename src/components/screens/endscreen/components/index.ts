@@ -4,11 +4,9 @@
  * Exported for testing, extensibility, and consistency with other screen packages
  */
 
-// 3D Animation Components
 export { VictoryAnimation3D } from "./VictoryAnimation3D";
 export { DefeatAnimation3D } from "./DefeatAnimation3D";
 
-// UI Display Components
 export { WinnerDisplay } from "./WinnerDisplayOverlayHtml";
 export type { WinnerDisplayProps } from "./WinnerDisplayOverlayHtml";
 
@@ -24,5 +22,4 @@ export type { PerformanceBreakdownProps } from "./PerformanceBreakdownOverlayHtm
 export { NavigationButtons } from "./NavigationButtonsOverlayHtml";
 export type { NavigationButtonsProps } from "./NavigationButtonsOverlayHtml";
 
-// Animation utilities
 export * from "./animations";

@@ -52,7 +52,6 @@ export const HealthBar: React.FC<HealthBarProps> = React.memo(({
   playerId,
   isMobile,
 }) => {
-  // Calculate health percentage and determine styling
   const healthPercent = useMemo(
     () => Math.max(0, Math.min(100, (current / max) * 100)),
     [current, max]
@@ -63,7 +62,6 @@ export const HealthBar: React.FC<HealthBarProps> = React.memo(({
   const healthColor = getHealthColor(healthPercent);
   const shouldPulse = healthPercent < 20;
 
-  // Responsive sizing with memoization
   const layout = useMemo(() => ({
     barWidth: isMobile ? 180 : 250,
     barHeight: isMobile ? 16 : 20,

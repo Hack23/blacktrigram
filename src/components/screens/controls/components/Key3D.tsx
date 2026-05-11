@@ -43,12 +43,10 @@ export const Key3D: React.FC<Key3DProps> = ({ keyData, isPressed }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const targetScale = useRef(new THREE.Vector3(1, 1, 1));
 
-  // Key dimensions
   const keyWidth = (keyData.width ?? 1) * 0.6; // 0.6 units per key width
   const keyHeight = 0.6;
   const keyDepth = 0.2;
 
-  // Calculate position based on row and column
   const position = useMemo<[number, number, number]>(() => {
     const x = keyData.col * 0.6 + (keyWidth / 2) - 3.0; // Center around origin
     const y = -keyData.row * 0.6;
@@ -56,22 +54,17 @@ export const Key3D: React.FC<Key3DProps> = ({ keyData, isPressed }) => {
     return [x, y, z];
   }, [keyData.col, keyData.row, keyWidth, isPressed]);
 
-  // Get category color
   const categoryColor = useMemo(() => getKeyCategoryColor(keyData.category), [keyData.category]);
 
-  // Animate scale when pressed
   useFrame(() => {
     if (!meshRef.current) return;
 
-    // Target scale: smaller when pressed
     const targetScaleValue = isPressed ? 0.9 : 1.0;
     targetScale.current.set(targetScaleValue, targetScaleValue, 1.0);
 
-    // Smooth interpolation
     meshRef.current.scale.lerp(targetScale.current, 0.2);
   });
 
-  // Create materials once (unpressed and pressed states)
   const materials = useMemo(
     () => ({
       unpressed: new THREE.MeshStandardMaterial({
@@ -96,10 +89,8 @@ export const Key3D: React.FC<Key3DProps> = ({ keyData, isPressed }) => {
     [categoryColor]
   );
 
-  // Select material based on pressed state
   const keyMaterial = isPressed ? materials.pressed : materials.unpressed;
 
-  // Dispose materials on unmount
   useEffect(() => {
     return () => {
       materials.unpressed.dispose();
@@ -107,7 +98,6 @@ export const Key3D: React.FC<Key3DProps> = ({ keyData, isPressed }) => {
     };
   }, [materials]);
 
-  // Label style for Html overlay
   const labelStyle = useMemo(() => ({
     fontFamily: FONT_FAMILY.KOREAN,
     fontSize: keyData.width && keyData.width > 2 ? '11px' : '13px',

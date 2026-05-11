@@ -106,34 +106,28 @@ export class AdaptiveQualitySystem {
   update(currentFps: number): QualityLevel | null {
     const now = performance.now();
 
-    // Add to history
     this.fpsHistory.push(currentFps);
     if (this.fpsHistory.length > this.thresholds.sampleSize) {
       this.fpsHistory.shift();
     }
 
-    // Need enough samples before adjusting
     if (this.fpsHistory.length < this.thresholds.sampleSize) {
       return null;
     }
 
-    // Check debounce time
     if (now - this.lastQualityChange < this.thresholds.debounceTime) {
       return null;
     }
 
-    // Calculate average FPS
     const avgFps =
       this.fpsHistory.reduce((a, b) => a + b, 0) / this.fpsHistory.length;
 
-    // Determine if quality should change
     let newQuality: QualityLevel | null = null;
 
     if (
       avgFps < this.thresholds.downgradeThreshold &&
       this.currentQuality !== "low"
     ) {
-      // Downgrade quality
       if (this.currentQuality === "high") {
         newQuality = "medium";
       } else if (this.currentQuality === "medium") {
@@ -143,7 +137,6 @@ export class AdaptiveQualitySystem {
       avgFps > this.thresholds.upgradeThreshold &&
       this.currentQuality !== "high"
     ) {
-      // Upgrade quality
       if (this.currentQuality === "low") {
         newQuality = "medium";
       } else if (this.currentQuality === "medium") {
@@ -231,17 +224,14 @@ export function useAdaptiveQuality(
   isMobile: boolean = false,
   onQualityChange?: (quality: QualityLevel) => void,
 ): QualitySettings {
-  // Initialize with appropriate starting quality
   const initialQuality: QualityLevel = isMobile ? "medium" : "high";
 
   const [currentQuality, setCurrentQuality] =
     useState<QualityLevel>(initialQuality);
 
-  // Create system instance
   const systemRef = useRef<AdaptiveQualitySystem | null>(null);
 
   useEffect(() => {
-    // Create system with mobile-optimized thresholds
     const thresholds = isMobile
       ? {
           downgradeThreshold: 45, // More aggressive on mobile
@@ -260,7 +250,6 @@ export function useAdaptiveQuality(
     systemRef.current.setQuality(initialQuality);
   }, [isMobile, initialQuality]);
 
-  // FPS tracking - Initialize with 0, will be set on first frame
   const lastTimeRef = useRef(0);
   const frameCountRef = useRef(0);
   const initializedRef = useRef(false);
@@ -268,10 +257,8 @@ export function useAdaptiveQuality(
   useFrame(() => {
     if (!enabled || !systemRef.current) return;
 
-    // Calculate FPS
     const now = performance.now();
 
-    // Initialize on first frame
     if (!initializedRef.current) {
       lastTimeRef.current = now;
       initializedRef.current = true;
@@ -284,7 +271,6 @@ export function useAdaptiveQuality(
       const fps = 1000 / delta;
       frameCountRef.current++;
 
-      // Update every frame for smooth monitoring
       const newQuality = systemRef.current.update(fps);
 
       if (newQuality !== null) {

@@ -59,7 +59,6 @@ function getPatternPositions(
 
   switch (pattern) {
     case "circular_left":
-      // 4 positions in a circle (left rotation)
       return [
         { position: [cx + radius, cy, cz], label: "1" },
         { position: [cx, cy, cz - radius], label: "2" },
@@ -68,7 +67,6 @@ function getPatternPositions(
       ];
 
     case "circular_right":
-      // 4 positions in a circle (right rotation)
       return [
         { position: [cx + radius, cy, cz], label: "1" },
         { position: [cx, cy, cz + radius], label: "2" },
@@ -77,7 +75,6 @@ function getPatternPositions(
       ];
 
     case "pivot_combo":
-      // Pivot left and right positions
       return [
         { position: [cx, cy, cz], label: "Start" },
         { position: [cx - 0.5, cy, cz + 0.5], label: "Pivot L" },
@@ -86,7 +83,6 @@ function getPatternPositions(
       ];
 
     case "triangle_step":
-      // Triangle stepping pattern
       return [
         { position: [cx, cy, cz], label: "Start" },
         { position: [cx, cy, cz - stepDist * 2], label: "Forward" },
@@ -95,7 +91,6 @@ function getPatternPositions(
       ];
 
     case "slide_drill":
-      // Four-direction slide pattern (cross shape)
       return [
         { position: [cx, cy, cz], label: "Center" },
         { position: [cx, cy, cz - stepDist], label: "Forward" },
@@ -105,7 +100,6 @@ function getPatternPositions(
       ];
 
     case "shuffle_practice":
-      // Quick forward shuffles
       return [
         { position: [cx, cy, cz], label: "Start" },
         { position: [cx, cy, cz - 0.15], label: "Shuffle 1" },
@@ -132,7 +126,6 @@ const FootMarker: React.FC<{
   const meshRef = useRef<THREE.Mesh>(null);
   const ringRef = useRef<THREE.Mesh>(null);
 
-  // Pulsing animation for active marker
   useFrame((state) => {
     if (!animated) return;
     

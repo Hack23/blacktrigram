@@ -41,6 +41,24 @@ const CRITICAL_AUDIO_ASSETS = [
   "stance_change",
 ] as const;
 
+/**
+ * Manages audio playback for the Black Trigram combat game.
+ *
+ * Handles music tracks, sound effects, and Korean martial arts audio
+ * including technique sounds, trigram stance audio, and vital point hit
+ * feedback. Uses an LRU asset cache, pooled `HTMLAudioElement` instances,
+ * and an `AudioMonitor` for performance tracking.
+ *
+ * @example
+ * ```ts
+ * const audio = new AudioManager({ masterVolume: 0.8 });
+ * await audio.initialize();
+ * await audio.playMusic("dojang_theme");
+ * await audio.playSFX("hit_medium");
+ * ```
+ *
+ * @korean 오디오관리자
+ */
 export class AudioManager implements IAudioManager {
   private _masterVolume: number = 1.0;
   private _musicVolume: number = 0.7;
@@ -52,11 +70,9 @@ export class AudioManager implements IAudioManager {
   private soundCache: Map<string, HTMLAudioElement> = new Map();
   private _isInitialized: boolean = false;
 
-  // Track music assets currently being loaded to prevent race conditions
-  // 레이스 컨디션 방지를 위해 현재 로드 중인 음악 자산 추적
+  /** Music assets currently being loaded — prevents race conditions on concurrent playMusic calls */
   private loadingMusic: Set<string> = new Set();
 
-  // New optimized components
   private assetLoader: AudioAssetLoader;
   private audioPool: AudioElementPool;
   private monitor: AudioMonitor;
@@ -74,7 +90,6 @@ export class AudioManager implements IAudioManager {
       this._sfxVolume = config.sfxVolume ?? 0.8;
     }
 
-    // Initialize new components
     this.assetLoader = new AudioAssetLoader();
     this.audioPool = new AudioElementPool();
     this.monitor = new AudioMonitor();
@@ -108,7 +123,7 @@ export class AudioManager implements IAudioManager {
     }
   }
 
-  // Interface getters
+  /** @returns Whether the audio system has been initialized */
   get isInitialized(): boolean {
     return this._isInitialized;
   }
@@ -297,7 +312,11 @@ export class AudioManager implements IAudioManager {
     }
   }
 
-  // Alias for playSoundEffect to match interface
+  /**
+   * Alias for {@link playSoundEffect} — preferred for explicit volume control.
+   * @param id - Sound effect identifier
+   * @param volume - Override volume (defaults to sfxVolume × masterVolume)
+   */
   async playSFX(id: SoundEffectId, volume?: number): Promise<void> {
     if (this._muted) return;
 
@@ -475,7 +494,6 @@ export class AudioManager implements IAudioManager {
         }
         break;
       case "voice":
-        // Handle voice volume if needed
         break;
     }
   }
@@ -545,18 +563,17 @@ export class AudioManager implements IAudioManager {
     toTrackId: MusicTrackId,
     duration: number = 1000
   ): Promise<void> {
-    // Fix: Remove unused fromTrackId parameter or use it properly
     const fadeOutPromise = this.fadeOut(duration);
     await fadeOutPromise;
     await this.fadeIn(toTrackId, duration);
     console.log(`Crossfaded from ${fromTrackId} to ${toTrackId}`);
   }
 
+  /** @returns A snapshot of all currently loaded sound elements */
   getLoadedAssets(): ReadonlyMap<string, HTMLAudioElement> {
     return new Map(this.soundCache);
   }
 
-  // Additional methods to match interface
   async playVoice(id: string): Promise<void> {
     return this.playSoundEffect(id);
   }
@@ -600,8 +617,6 @@ export class AudioManager implements IAudioManager {
     return this._isInitialized;
   }
 
-  // New optimized methods
-
   /**
    * Batch load multiple assets with progress tracking
    * @param assets - Array of audio assets to load
@@ -622,7 +637,6 @@ export class AudioManager implements IAudioManager {
       }
     );
 
-    // Process results
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
       const asset = assets[i];
@@ -649,7 +663,6 @@ export class AudioManager implements IAudioManager {
    * @returns true if asset was unloaded, false if asset was not found
    */
   unloadAsset(assetId: string): boolean {
-    // Remove from cache
     const audio = this.soundCache.get(assetId);
     if (audio) {
       audio.pause();
@@ -657,19 +670,15 @@ export class AudioManager implements IAudioManager {
       this.soundCache.delete(assetId);
     }
 
-    // Remove from AudioCache (LRU cache)
     // LRU 캐시에서 제거
     const removedFromCache = this.audioCache.remove(assetId);
 
-    // Remove from loader cache
     const unloaded = this.assetLoader.unloadAsset(assetId);
 
-    // Remove pool if exists
     if (this.audioPool.hasPool(assetId)) {
       this.audioPool.removePool(assetId);
     }
 
-    // Unregister from monitor
     this.monitor.unregisterAsset(assetId);
 
     return unloaded || audio !== undefined || removedFromCache;

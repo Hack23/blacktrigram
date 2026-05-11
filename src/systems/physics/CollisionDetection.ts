@@ -75,7 +75,6 @@ import { ThreeObjectPools } from "../../utils/threeObjectPool";
  * Provides efficient collision detection for combat using bounding boxes and raycasting.
  * Optimized for 60fps performance with multiple simultaneous collision checks.
  *
- * @public
  * @category Combat Systems
  * @korean 충돌감지엔진
  */
@@ -113,7 +112,6 @@ export class CollisionDetection {
    * Disposes of cached geometries and releases memory to prevent leaks.
    * Should be called when the CollisionDetection instance is no longer needed.
    *
-   * @public
    * @korean 자원정리
    */
   public dispose(): void {
@@ -153,7 +151,6 @@ export class CollisionDetection {
    * );
    * ```
    *
-   * @public
    * @korean 공격타격확인
    */
   checkAttackHit(
@@ -727,7 +724,6 @@ export class CollisionDetection {
    * @param region - Anatomical region
    * @returns Bounding box or undefined if not found
    *
-   * @public
    * @korean 경계상자조회
    */
   getBoundingBox(region: AnatomicalRegionPhysics): BoundingBox | undefined {
@@ -739,7 +735,6 @@ export class CollisionDetection {
    *
    * @returns Map of all bounding boxes by region
    *
-   * @public
    * @korean 모든경계상자조회
    */
   getAllBoundingBoxes(): ReadonlyMap<AnatomicalRegionPhysics, BoundingBox> {
@@ -752,7 +747,6 @@ export class CollisionDetection {
    * @param region - Anatomical region
    * @returns Array of vital points in that region
    *
-   * @public
    * @korean 영역별급소조회
    */
   getVitalPointsInRegion(

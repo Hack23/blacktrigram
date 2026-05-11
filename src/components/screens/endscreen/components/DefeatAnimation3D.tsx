@@ -14,12 +14,9 @@ export const DefeatAnimation3D: React.FC = () => {
   const particlesRef = useRef<THREE.Points>(null);
   const spiralRef = useRef<THREE.Group>(null);
 
-  // Reusable objects for animation calculations to avoid per-frame allocations
-  // These are reused across all animation frames for scale and position updates
   const [reusableScale] = useState(() => new THREE.Vector3());
   const [reusablePosition] = useState(() => new THREE.Vector3());
 
-  // Create defeat particles - use useState with lazy initializer
   const [particlePositions] = useState(() => {
     const count = 100; // Fewer particles than victory for subdued effect
     const positions = new Float32Array(count * 3);
@@ -38,43 +35,35 @@ export const DefeatAnimation3D: React.FC = () => {
     return positions;
   });
 
-  // Animate defeat effects with slower, descending motion - optimized for 60fps
   useFrame((state) => {
     const time = state.clock.elapsedTime;
 
-    // Slow rotation
     if (groupRef.current) {
       groupRef.current.rotation.y = time * 0.15; // Slower than victory
     }
 
-    // Fade particles downward - use reusable objects
     if (particlesRef.current) {
       const scale = 1 + Math.sin(time * 1.5) * 0.1; // Subtle pulsing
       reusableScale.setScalar(scale);
       particlesRef.current.scale.copy(reusableScale);
       
-      // Slowly descend
       const yPos = Math.sin(time * 0.5) * 0.3 - 0.2;
       reusablePosition.set(0, yPos, 0);
       particlesRef.current.position.copy(reusablePosition);
     }
 
-    // Spiral effect - slower, descending
     if (spiralRef.current) {
       spiralRef.current.rotation.y = -time * 0.2; // Counter-rotation
       spiralRef.current.rotation.z = Math.sin(time * 0.3) * 0.2;
     }
   });
 
-  // Cleanup Three.js resources on unmount
   useEffect(() => {
-    // Capture ref values at effect setup time to avoid stale references in cleanup
     const group = groupRef.current;
     const particles = particlesRef.current;
     const spiral = spiralRef.current;
 
     return () => {
-      // Dispose geometries and materials to prevent memory leaks
       if (particles) {
         particles.geometry?.dispose();
         if (particles.material) {
@@ -91,10 +80,8 @@ export const DefeatAnimation3D: React.FC = () => {
           }
         });
       }
-      // Additionally iterate over all group children to catch meshes/points without explicit refs
       if (group?.children && Array.isArray(group.children)) {
         group.children.forEach((child) => {
-          // Skip already-handled refs
           if (child === particles || child === spiral) {
             return;
           }

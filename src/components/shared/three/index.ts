@@ -9,7 +9,6 @@
  * @korean 공유3D컴포넌트
  */
 
-// UI components consumed through barrel by components/index.ts and screens
 export { KoreanButton } from "./ui/KoreanButton";
 export type { KoreanButtonProps } from "./ui/KoreanButton";
 
@@ -28,17 +27,13 @@ export type { ArchetypeCardProps } from "./ui/ArchetypeCard";
 export { ProgressBar } from "./ui/ProgressBar";
 export type { ProgressBarProps, ProgressBarType } from "./ui/ProgressBar";
 
-// VitalPoint types consumed by TrainingScreen3D
 export type { BodyRegionFilter } from "./ui/VitalPointOverlayControlsHtml";
 
-// Effects consumed through barrel by TrainingScreen3D
 export { default as VitalPointMarkers3D } from "./effects/VitalPointMarkers3D";
 export type { VitalPointMarkers3DProps } from "./effects/VitalPointMarkers3D";
 
-// Models consumed through barrel by TrainingScreen3D
 export { Player3DWithTransitions } from "./models/Player3DWithTransitions";
 export type { Player3DWithTransitionsProps } from "./models/Player3DWithTransitions";
 
-// Scene consumed through barrel by ControlsScreen3D, IntroScreen3D, PhilosophyScreen3D
 export { BackgroundScene3D } from "./scene/BackgroundScene3D";
 export type { BackgroundScene3DProps } from "./scene/BackgroundScene3D";

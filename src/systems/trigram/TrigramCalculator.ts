@@ -188,7 +188,6 @@ export class TrigramCalculator {
    * // Returns 0.90 (-10% effectiveness)
    * ```
    * 
-   * @public
    * @korean 측면성수정자계산
    */
   static calculateLateralityModifier(

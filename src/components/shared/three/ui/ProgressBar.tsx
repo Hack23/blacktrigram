@@ -60,13 +60,11 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   animated = true,
   testId,
 }) => {
-  // Calculate percentage safely
   const percentage = useMemo(
     () => Math.max(0, Math.min(1, max > 0 ? current / max : 0)),
     [current, max]
   );
 
-  // Get colors based on type and percentage
   const colors = useMemo(() => {
     switch (type) {
       case "health":
@@ -110,7 +108,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     }
   }, [type, percentage]);
 
-  // Memoize container styles for performance
   const containerStyle = useMemo<React.CSSProperties>(
     () => ({
       width: `${width}px`,
@@ -121,7 +118,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     [width]
   );
 
-  // Memoize label styles for performance
   const labelStyle = useMemo<React.CSSProperties>(
     () => ({
       fontFamily: FONT_FAMILY.KOREAN,
@@ -136,7 +132,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     []
   );
 
-  // Memoize bar container styles for performance
   const barContainerStyle = useMemo<React.CSSProperties>(
     () => ({
       width: "100%",
@@ -150,7 +145,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     [height]
   );
 
-  // Memoize fill styles for performance
   const fillStyle = useMemo<React.CSSProperties>(() => {
     return {
       width: `${percentage * 100}%`,
@@ -164,7 +158,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     };
   }, [percentage, colors, animated]);
 
-  // Memoize shine effect styles for performance
   const shineStyle = useMemo<React.CSSProperties>(
     () => ({
       position: "absolute",
@@ -179,7 +172,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     []
   );
 
-  // Memoize text styles for performance
   const textStyle = useMemo<React.CSSProperties>(
     () => ({
       position: "absolute",

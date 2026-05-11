@@ -91,7 +91,6 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
   embedded = false,
   containerWidth,
 }) => {
-  // Calculate card sizing and spacing
   const layout = useMemo(() => {
     const cardWidth = isMobile ? 70 : 90;
     const cardHeight = isMobile ? 80 : 100;
@@ -101,10 +100,6 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
       techniques.length * cardWidth + (techniques.length - 1) * gap,
     );
 
-    // When embedded and the parent supplies its actual pixel width, use that
-    // directly so rawScale / shouldScroll reflects the real available space.
-    // Falls back to screenWidth − 2× side-reserve when containerWidth is not
-    // provided (non-embedded or legacy callers).
     let availableWidth: number;
     if (embedded && containerWidth !== undefined) {
       availableWidth = Math.max(cardWidth, containerWidth);
@@ -134,22 +129,17 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
     };
   }, [techniques.length, isMobile, screenWidth, screenHeight, embedded, containerWidth]);
 
-  // Check if player has sufficient resources for a technique
   const hasResources = (tech: Technique): boolean => {
     return player.stamina >= tech.staminaCost && player.ki >= tech.kiCost;
   };
 
-  // Check if technique is available (has resources and not on cooldown)
   const isAvailable = (tech: Technique): boolean => {
     const onCooldown = (cooldowns.get(tech.id) ?? 0) > 0;
     return hasResources(tech) && !onCooldown;
   };
 
-  // Calculate bottom position for proper placement (only used in non-embedded mode)
   const bottomOffset = isMobile ? 100 : 120;
 
-  // Embedded mode: relative positioning inside parent container
-  // Non-embedded: absolute positioning for standalone use
   const containerStyle: React.CSSProperties = embedded
     ? {
         position: "relative",
@@ -161,7 +151,6 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
         pointerEvents: "auto",
         overflowX: layout.shouldScroll ? "auto" : "visible",
         overflowY: "visible",
-        // iOS momentum + scroll-snap for tactile feel
         scrollSnapType: layout.shouldScroll ? "x proximity" : undefined,
         WebkitOverflowScrolling: layout.shouldScroll ? "touch" : undefined,
       }

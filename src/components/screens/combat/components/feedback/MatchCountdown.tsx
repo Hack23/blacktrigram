@@ -73,7 +73,6 @@ function getDisplayText(
  *
  * Korean: 매치 시작 카운트다운 컴포넌트
  */
-// Static config outside component to prevent re-creation on each render
 const COUNTDOWN_CONFIG = {
   readyDuration: 1,
   countdownInterval: 1,
@@ -90,14 +89,11 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
   const audio = useAudio();
   const theme = useKoreanTheme({ variant: "primary", size: "xlarge", isMobile });
 
-  // Use match countdown hook with stable config reference
   const { state, currentNumber, startCountdown, skipCountdown, isActive } =
     useMatchCountdown(COUNTDOWN_CONFIG, onComplete);
 
-  // Track if we've started to avoid double-start in Strict Mode
   const hasStartedRef = useRef(false);
 
-  // Auto-start countdown on mount (only once)
   useEffect(() => {
     if (!hasStartedRef.current) {
       hasStartedRef.current = true;
@@ -105,29 +101,23 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
     }
   }, [startCountdown]);
 
-  // Play audio cues based on state transitions
   useEffect(() => {
     if (!audio.isAudioReady) return;
 
     if (state === "counting" && currentNumber > 0) {
-      // Play beep for each countdown number
       audio.playSFX("attack_light"); // Using placeholder - will be countdown_beep
     } else if (state === "fight") {
-      // Play fight announcement
       audio.playSFX("attack_heavy"); // Using placeholder - will be fight_start
     }
   }, [state, currentNumber, audio]);
 
-  // Handle skip
   const handleSkip = () => {
     skipCountdown();
     onSkip?.();
   };
 
-  // Get display text
   const displayText = getDisplayText(state, currentNumber);
 
-  // Calculate responsive font sizes - extracted to avoid nested ternaries
   const getMainFontSize = (): string => {
     if (isMobile) {
       return state === "fight" ? "72px" : "64px";
@@ -145,7 +135,6 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
   const mainFontSize = getMainFontSize();
   const subFontSize = getSubFontSize();
 
-  // Memoize colors for performance using theme
   const goldColor = useMemo(() => hexColorToCSS(theme.colors.ACCENT_GOLD), [theme.colors.ACCENT_GOLD]);
   const cyanColor = useMemo(
     () => hexColorToCSS(theme.colors.PRIMARY_CYAN),
@@ -156,7 +145,6 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
     [theme.colors.UI_BACKGROUND_DARK]
   );
 
-  // Don't render if countdown not active or complete
   if (!isActive || !displayText) {
     return null;
   }

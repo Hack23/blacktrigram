@@ -65,23 +65,17 @@ export const PainVignette: React.FC<PainVignetteProps> = ({
   intensityScale = 1,
 }) => {
   const vignetteStyle = useMemo(() => {
-    // Clamp pain to 0-100 range
     const clampedPain = Math.max(0, Math.min(100, pain));
 
-    // Calculate intensity (0-1) with cubic easing for dramatic effect
     const normalizedPain = clampedPain / 100;
     const intensity = Math.pow(normalizedPain, 1.5);
 
-    // Mobile uses smaller vignette size for subtlety
     const vignetteSize = isMobile ? "80px" : "150px";
 
-    // Maximum opacity is lower on mobile, and can be further attenuated
-    // by the caller via `intensityScale` (e.g. portrait mobile).
     const safeScale = Math.max(0, Math.min(1, intensityScale));
     const maxOpacity = (isMobile ? 0.5 : 0.7) * safeScale;
     const opacity = intensity * maxOpacity;
 
-    // Use KOREAN_COLORS.PAIN_INDICATOR constant
     const rgb = KOREAN_COLORS.PAIN_INDICATOR;
     const painColor = `rgba(${(rgb >> 16) & 255}, ${(rgb >> 8) & 255}, ${
       rgb & 255
@@ -97,12 +91,10 @@ export const PainVignette: React.FC<PainVignetteProps> = ({
     };
   }, [pain, isMobile, intensityScale]);
 
-  // Don't render if pain is very low (< 5%)
   if (pain < 5) {
     return null;
   }
 
-  // Purely visual overlay - no ARIA roles or live regions; marked aria-hidden to stay decorative
   return (
     <div 
       data-testid="pain-vignette" 

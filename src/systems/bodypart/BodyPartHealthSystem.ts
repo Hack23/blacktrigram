@@ -59,7 +59,6 @@ import {
  * const effects = system.calculateBodyPartEffects(damaged);
  * ```
  * 
- * @public
  * @category Body Part System
  */
 export class BodyPartHealthSystem {
@@ -77,7 +76,6 @@ export class BodyPartHealthSystem {
    * @param maxHealth - Optional custom max health per part (default: 100)
    * @returns Body part health structure with all parts at max HP
    * 
-   * @public
    */
   createDefaultBodyPartHealth(maxHealth: number = 100): BodyPartHealth {
     return {
@@ -100,7 +98,6 @@ export class BodyPartHealthSystem {
    * @param baseMaxHealth - Base maximum health per part
    * @returns Maximum health structure
    * 
-   * @public
    */
   createDefaultMaxHealth(baseMaxHealth: number = 100): BodyPartMaxHealth {
     return {
@@ -129,7 +126,6 @@ export class BodyPartHealthSystem {
    * @param maxHealth - Optional maximum health limits
    * @returns Updated body part health
    * 
-   * @public
    */
   applyDamageToBodyPart(
     current: BodyPartHealth,
@@ -159,7 +155,6 @@ export class BodyPartHealthSystem {
    * @param bodyRegion - Hit location
    * @returns Damage distribution configuration
    * 
-   * @public
    */
   getDamageDistribution(bodyRegion: BodyRegion): BodyPartDamageDistribution {
     switch (bodyRegion) {
@@ -237,7 +232,6 @@ export class BodyPartHealthSystem {
    * @param maxHealth - Optional maximum health limits
    * @returns Updated body part health
    * 
-   * @public
    */
   applyDistributedDamage(
     current: BodyPartHealth,
@@ -285,7 +279,6 @@ export class BodyPartHealthSystem {
    * @param maxHealth - Maximum health values
    * @returns Combat capability effect multipliers
    * 
-   * @public
    */
   calculateBodyPartEffects(
     health: BodyPartHealth,
@@ -360,7 +353,6 @@ export class BodyPartHealthSystem {
    * @param health - Body part health
    * @returns Aggregate health value (0-100)
    * 
-   * @public
    */
   calculateAggregateHealth(health: BodyPartHealth): number {
     const sum =
@@ -389,7 +381,6 @@ export class BodyPartHealthSystem {
    * @param part - Body part to query
    * @returns Status information for display
    * 
-   * @public
    */
   getBodyPartStatus(
     health: BodyPartHealth,
@@ -461,7 +452,6 @@ export class BodyPartHealthSystem {
    * @param maxHealth - Maximum health values
    * @returns Array of status information for all parts
    * 
-   * @public
    */
   getAllBodyPartStatuses(
     health: BodyPartHealth,
@@ -486,7 +476,6 @@ export class BodyPartHealthSystem {
    * @param maxHealth - Optional maximum health limits
    * @returns Updated body part health
    * 
-   * @public
    */
   healBodyPart(
     current: BodyPartHealth,
@@ -516,7 +505,6 @@ export class BodyPartHealthSystem {
    * @param health - Current body part health
    * @returns Whether player is incapacitated
    * 
-   * @public
    */
   isIncapacitated(health: BodyPartHealth): boolean {
     // Unconscious from head damage
@@ -540,6 +528,5 @@ export class BodyPartHealthSystem {
  * 
  * Provides global access to the body part health system throughout the game.
  * 
- * @public
  */
 export const bodyPartHealthSystem = new BodyPartHealthSystem();

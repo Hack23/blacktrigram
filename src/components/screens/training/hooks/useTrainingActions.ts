@@ -120,7 +120,6 @@ function getDefaultTechniqueForArchetype(
   const techniques = getTechniquesByStance(stance);
   if (techniques.length === 0) return undefined;
 
-  // Score each technique based on archetype preference
   const scoredTechniques = techniques.map((tech) => {
     let score = 0;
     const damageType = tech.damageType;
@@ -130,7 +129,6 @@ function getDefaultTechniqueForArchetype(
 
     switch (archetype) {
       case PlayerArchetype.MUSA:
-        // Musa prefers: strikes, blocks, counter-attacks (BLUNT/JOINT/CRUSHING)
         if (damageType === DamageType.JOINT) score += 30;
         if (damageType === DamageType.CRUSHING) score += 25;
         if (damageType === DamageType.BLUNT) score += 20;
@@ -140,7 +138,6 @@ function getDefaultTechniqueForArchetype(
         break;
 
       case PlayerArchetype.AMSALJA:
-        // Amsalja prefers: nerve strikes, pressure points, thrusts
         if (damageType === DamageType.NERVE) score += 35;
         if (damageType === DamageType.PRESSURE) score += 30;
         if (attackType === CombatAttackType.NERVE_STRIKE) score += 25;
@@ -150,7 +147,6 @@ function getDefaultTechniqueForArchetype(
         break;
 
       case PlayerArchetype.HACKER:
-        // Hacker prefers: high accuracy, calculated strikes
         if ((tech.accuracy || 0) >= 0.9) score += 30;
         if ((tech.accuracy || 0) >= 0.8) score += 15;
         if (damageType === DamageType.NERVE) score += 20;
@@ -159,7 +155,6 @@ function getDefaultTechniqueForArchetype(
         break;
 
       case PlayerArchetype.JEONGBO_YOWON:
-        // Jeongbo prefers: psychological pressure, submissions
         if (damageType === DamageType.PRESSURE) score += 30;
         if (damageType === DamageType.JOINT) score += 25;
         if (attackType === CombatAttackType.GRAPPLE) score += 20;
@@ -167,7 +162,6 @@ function getDefaultTechniqueForArchetype(
         break;
 
       case PlayerArchetype.JOJIK_POKRYEOKBAE:
-        // Jojik prefers: high damage, brutal techniques
         if ((tech.damage || 0) >= 35) score += 35;
         if ((tech.damage || 0) >= 30) score += 20;
         if (damageType === DamageType.SLASHING) score += 20;
@@ -180,7 +174,6 @@ function getDefaultTechniqueForArchetype(
     return { technique: tech, score };
   });
 
-  // Sort by score descending, return highest scoring technique
   scoredTechniques.sort((a, b) => b.score - a.score);
   return scoredTechniques[0]?.technique;
 }
@@ -211,33 +204,17 @@ function calculateHitAccuracy(
   animationType?: AnimationType,
   reachConfig?: import("../../../../types/physics").PhysicalReachConfig,
 ): number {
-  // Calculate 3D distance between player and dummy centers (in meters)
   const centerToCenterDistance = calculateDistance3D(playerPos, dummyPos);
 
-  // Get player's physical attributes for reach calculation
   const playerPhysicalAttributes = getArchetypePhysicalAttributes(archetype);
 
-  // Training dummy uses default body radius since it has no archetype
-  // For combat between players, we would use calculateBodyRadius(targetPhysicalAttributes)
-  // 훈련 더미는 원형이 없으므로 기본 몸체 반경 사용
   const targetBodyRadius = DEFAULT_BODY_RADIUS_METERS;
 
-  // Effective distance = center-to-center minus target body radius only
-  // Note: PhysicalReachCalculator already includes player body pivot/offset in reach calculation,
-  // so we only subtract the target radius to avoid double-counting.
-  // 유효 거리 = 중심간 거리 - 더미 몸체 반경 (플레이어 몸체 오프셋은 도달 거리에 포함됨)
   const effectiveDistance = Math.max(
     0,
     centerToCenterDistance - targetBodyRadius,
   );
 
-  // If animation type is available, use physics-based reach calculation
-  // We use calculateMaxReach (peak time reach) because:
-  // 1. Training hit detection happens at animation frame 6 (~100ms)
-  // 2. But technique hit timings expect longer animations (e.g., roundhouse 200-480ms)
-  // 3. Using max reach ensures the technique can hit if within peak reach range
-  // 4. This matches intuitive behavior - if you're close enough to be hit by the kick, it hits
-  // 훈련 타격 감지는 최대 도달 거리 사용 (애니메이션 타이밍과 기술 타이밍 불일치 보정)
   if (animationType !== undefined) {
     const maxReachMeters = physicalReachCalculator.calculateMaxReach(
       playerPhysicalAttributes,
@@ -246,29 +223,19 @@ function calculateHitAccuracy(
       reachConfig, // Use technique's designed reach if provided
     );
 
-    // Convert reach from meters to training scene units.
-    // Training scenes are authored in real-world meters, so we intentionally
-    // use a 1:1 conversion here (METERS_TO_TRAINING_UNITS = 1.0).
-    // Combat AI works in pixel coordinates with a dynamic px/m ratio.
     const reachInUnits = maxReachMeters * METERS_TO_TRAINING_UNITS;
 
-    // STRICT DISTANCE CHECK (matches CombatSystem behavior):
-    // Out of reach = guaranteed miss with accuracy 0
     if (effectiveDistance > reachInUnits) {
       return 0;
     }
 
-    // Within reach: accuracy based on how centered the hit is
-    // Closer = higher accuracy (0.7 to 1.0 range)
     return Math.max(0.7, 1.0 - (effectiveDistance / reachInUnits) * 0.3);
   }
 
-  // Fallback: use default punch reach (0.7 meters) when no reach config is supplied.
   const defaultReach = 0.7 * METERS_TO_TRAINING_UNITS;
   if (effectiveDistance > defaultReach) {
     return 0; // Out of reach = miss
   }
-  // Within default reach: linear accuracy based on distance
   return Math.max(0.5, 1.0 - (effectiveDistance / defaultReach) * 0.5);
 }
 
@@ -297,7 +264,6 @@ export function useTrainingActions(
     setAttackAnimation,
   } = config;
 
-  // Ref to store timeout for dummy reset
   const dummyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleStartTraining = useCallback(() => {
@@ -306,7 +272,6 @@ export function useTrainingActions(
   }, [actions, audio]);
 
   const handleStopTraining = useCallback(() => {
-    // Clear any pending dummy reset timeout
     if (dummyResetTimeoutRef.current) {
       clearTimeout(dummyResetTimeoutRef.current);
       dummyResetTimeoutRef.current = null;
@@ -319,12 +284,10 @@ export function useTrainingActions(
     actions.setFeedback("훈련 더미 무력화! | Dummy Defeated!");
     audio.playSFX("ki_release");
 
-    // Clear any existing timeout
     if (dummyResetTimeoutRef.current) {
       clearTimeout(dummyResetTimeoutRef.current);
     }
 
-    // Reset dummy health after delay
     dummyResetTimeoutRef.current = setTimeout(() => {
       actions.resetDummy();
     }, 2000);
@@ -338,13 +301,8 @@ export function useTrainingActions(
         techniqueId?: string;
       },
     ): boolean => {
-      // Get animation context from the passed attackContext parameter
-      // (TrainingScreen3D.tsx should pass the attackData before clearing the ref)
       const animationType = attackContext?.animationType;
 
-      // Get technique's reachConfig for accurate reach calculation
-      // Priority: attackContext.techniqueId (resolved in handleAttack) > selectedTechniqueId
-      // This ensures default techniques (chosen when no explicit selection) also get their reachConfig
       let reachConfig: import("../../../../types/physics").PhysicalReachConfig | undefined;
       const resolvedTechniqueId =
         attackContext?.techniqueId ?? selectedTechniqueId;
@@ -362,7 +320,6 @@ export function useTrainingActions(
         reachConfig,
       );
 
-      // Determine hit position (dummy center)
       const hitPosition: [number, number, number] = [
         dummyPosition[0],
         1.5,
@@ -374,12 +331,10 @@ export function useTrainingActions(
         const damage = Math.round(accuracy * 15); // 0-15 damage based on accuracy
         const isPerfect = accuracy > 0.9;
 
-        // Register hit with state (only counts if training)
         if (state.isTraining) {
           actions.registerHit(points, damage, isPerfect);
         }
 
-        // Play bone impact audio with anatomical feedback using proper audio system
         if (playBoneImpactSound) {
           void playBoneImpactSound({
             damage,
@@ -389,7 +344,6 @@ export function useTrainingActions(
           });
         }
 
-        // Determine feedback and sound
         let effectType: "success" | "perfect";
         if (isPerfect) {
           actions.setFeedback("완벽한 타격! | Perfect Strike!");
@@ -405,7 +359,6 @@ export function useTrainingActions(
           effectType = "success";
         }
 
-        // Add hit effect
         actions.addHitEffect({
           position: hitPosition,
           type: effectType,
@@ -415,14 +368,12 @@ export function useTrainingActions(
 
         return true;
       } else {
-        // Register miss (only counts if training)
         if (state.isTraining) {
           actions.registerMiss();
         }
         actions.setFeedback("빗나감 | Miss - Out of reach!");
         audio.playSFX("menu_navigate");
 
-        // Add miss effect
         actions.addHitEffect({
           position: hitPosition,
           type: "miss",
@@ -450,8 +401,6 @@ export function useTrainingActions(
       actions.setStanceIndex(stanceIndex);
       const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
       if (stance) {
-        // Directly transition to stance guard animation (skips transitional animation)
-        // 자세 가드 애니메이션으로 직접 전환 (전환 애니메이션 생략)
         playerAnimation.transitionToStanceGuard(stance);
         onPlayerUpdate({ currentStance: stance });
         audio.playSFX("stance_change");
@@ -461,16 +410,10 @@ export function useTrainingActions(
   );
 
   const handleAttack = useCallback(() => {
-    // Determine which technique to use:
-    // 1. If a technique is explicitly selected from the TechniqueBar, use that
-    // 2. Otherwise, use the best default technique for the archetype + stance
-    // 사용할 기술 결정: 명시적 선택 또는 원형+자세 기반 기본 기술
     let techniqueToUse: KoreanTechnique | undefined;
     let techniqueId = selectedTechniqueId;
 
     if (!techniqueId) {
-      // No technique explicitly selected - get default for archetype + stance
-      // 명시적 선택 없음 - 원형과 자세에 맞는 기본 기술 사용
       const defaultTechnique = getDefaultTechniqueForArchetype(
         playerArchetype,
         playerStance,
@@ -481,8 +424,6 @@ export function useTrainingActions(
       }
     }
 
-    // Get the animation type from the technique
-    // 기술에서 애니메이션 타입 가져오기
     let animationType = currentTechniqueAnimationTypeRef.current;
     if (techniqueToUse?.animationType) {
       animationType = techniqueToUse.animationType;
@@ -508,26 +449,18 @@ export function useTrainingActions(
       techniqueId, // Store resolved technique ID for handleDummyHit
     };
 
-    // Set visual attack animation based on technique (AnimationRegistry lookup)
-    // This ensures the 3D model plays the correct technique animation (kick vs punch vs elbow)
-    // 기술에 따른 시각적 공격 애니메이션 설정 (발차기 vs 주먹 vs 팔꿈치)
     if (setAttackAnimation && techniqueId) {
       const animationName = getAnimationForTechnique(techniqueId);
       setAttackAnimation(animationName);
     }
 
-    // Trigger attack animation - this will fire onFrame event at frame 6
     playerAnimation.transitionTo(AnimationState.ATTACK);
 
-    // Play attack sound based on technique damage/intensity
-    // Resolve technique data if we only have an ID (from TechniqueBar selection)
     if (!techniqueToUse && selectedTechniqueId) {
-      // Technique selected from TechniqueBar but not yet resolved
       techniqueToUse = KoreanTechniquesSystem.getTechniqueById(selectedTechniqueId);
     }
 
     if (playAttackSound) {
-      // Prefer explicit technique damage when available
       const damage = techniqueToUse?.damage ?? 10;
       const intensity: AttackIntensity =
         damage >= 40
@@ -539,7 +472,6 @@ export function useTrainingActions(
               : "light";
       void playAttackSound(intensity);
     } else {
-      // Fallback to generic whoosh if playAttackSound not available
       audio.playSFX("whoosh");
     }
   }, [

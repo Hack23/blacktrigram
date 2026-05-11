@@ -80,22 +80,17 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
   onTechniqueSelect,
   combatMessages = [],
 }) => {
-  // isMobile only used for mobile controls visibility
   const showMobileControls = shouldShowMobileControls(width, isMobile);
 
   const layout = React.useMemo(() => {
-    // Resolution-based HUD height (10% of screen height, 40-120px range)
     const hudHeight = getHUDHeight(height, 0.1) * positionScale;
     
-    // Resolution-based padding
     const padding = getResponsivePadding(width) * positionScale;
     
-    // Resolution-based font sizes (using design system as minimum)
     const baseFontSize = getResponsiveFontSize(width);
     const titleFontSize = Math.max(TYPOGRAPHY_NUMERIC.nano, baseFontSize * FONT_SIZE_MULTIPLIERS.titleSmall);
     const messageFontSize = Math.max(TYPOGRAPHY_NUMERIC.caption, baseFontSize * FONT_SIZE_MULTIPLIERS.messageSmall);
     
-    // Resolution-based widths (using design system constants as reference)
     const minMessageWidth = width < BREAKPOINTS.mobile 
       ? COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinMobile
       : COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinDesktop;
@@ -106,15 +101,10 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
       ? COMBAT_UI_DIMENSIONS.techniqueBarWidthMobile 
       : COMBAT_UI_DIMENSIONS.techniqueBarWidthDesktop;
     
-    // Resolution-based message padding (using design system spacing)
     const messagePadding = width < BREAKPOINTS.mobile 
       ? `${SPACING_ADJUSTMENTS.compact} ${SPACING.sm}` 
       : `${SPACING.xs} ${SPACING.md}`;
 
-    // Actual pixel width available to TechniqueBar.
-    // The wrapper applies maxWidth ("100%" mobile / "70%" desktop) and
-    // marginRight (volume control reserve). Pre-computing a numeric value here
-    // ensures TechniqueBar's scale/scroll decision matches the real layout.
     const usableWidth = width - padding * 2;
     const maxBarWidthPx = usableWidth * parsePercentageToRatio(maxTechniqueBarWidth);
     const volumeReserve = showMobileControls
@@ -143,7 +133,6 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
     };
   }, [width, height, positionScale, showMobileControls]);
 
-  // Only show last 3 combat messages
   const recentMessages = combatMessages.slice(-3);
 
   return (

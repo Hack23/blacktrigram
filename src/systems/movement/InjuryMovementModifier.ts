@@ -39,7 +39,6 @@ import { STANCE_SPEED_MODIFIERS } from "../physics/MovementPhysics";
  * 
  * **Korean**: 손상 이동 설정
  * 
- * @public
  * @category Movement System
  */
 export interface InjuryMovementConfig {
@@ -65,7 +64,6 @@ export interface InjuryMovementConfig {
  * Deep partial type for InjuryMovementConfig to support partial overrides.
  * Allows callers to override individual threshold values without providing all.
  * 
- * @public
  * @category Movement System
  */
 export type PartialInjuryMovementConfig = {
@@ -98,7 +96,6 @@ export const DEFAULT_INJURY_MOVEMENT_CONFIG: InjuryMovementConfig = {
  * 
  * **Korean**: 손상 이동 결과
  * 
- * @public
  * @category Movement System
  */
 export interface InjuryMovementResult {
@@ -149,7 +146,6 @@ export interface InjuryMovementResult {
  * console.log(`Status: ${result.statusText.korean} | ${result.statusText.english}`);
  * ```
  * 
- * @public
  * @category Movement System
  * @korean 손상기반이동수정자
  */
@@ -242,7 +238,6 @@ export class InjuryMovementModifier {
    * @param painLevel - Current pain level (0-100)
    * @returns Complete movement calculation result
    * 
-   * @public
    * @korean 이동속도계산
    */
   public calculateMovementSpeed(
@@ -397,7 +392,6 @@ export class InjuryMovementModifier {
    * @param stance - Current trigram stance
    * @returns Speed multiplier (0.8-1.25), defaults to 1.0 for unknown stances
    * 
-   * @public
    */
   public getStanceSpeedModifier(stance: TrigramStance): number {
     const modifier = STANCE_SPEED_MODIFIERS[stance];
@@ -499,7 +493,6 @@ export class InjuryMovementModifier {
    * @param bodyPartHealth - Current body part health
    * @returns True if limping animation should play
    * 
-   * @public
    */
   public shouldLimp(bodyPartHealth: BodyPartHealth): boolean {
     const worstLegHealth = Math.min(bodyPartHealth.legLeft, bodyPartHealth.legRight);
@@ -516,7 +509,6 @@ export class InjuryMovementModifier {
    * @param bodyPartHealth - Current body part health
    * @returns True if severe limp (leg health < 30%)
    * 
-   * @public
    */
   public hasSevereLimp(bodyPartHealth: BodyPartHealth): boolean {
     const worstLegHealth = Math.min(bodyPartHealth.legLeft, bodyPartHealth.legRight);
@@ -533,7 +525,6 @@ export class InjuryMovementModifier {
    * @param bodyPartHealth - Current body part health
    * @returns Bilingual injury description
    * 
-   * @public
    */
   public getInjuryDescription(bodyPartHealth: BodyPartHealth): {
     korean: string;
@@ -551,6 +542,5 @@ export class InjuryMovementModifier {
 /**
  * Singleton instance for global access.
  * 
- * @public
  */
 export const injuryMovementModifier = new InjuryMovementModifier();

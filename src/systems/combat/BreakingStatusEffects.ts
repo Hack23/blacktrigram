@@ -19,7 +19,6 @@
  *
  * **Korean**: 파쇄 상태효과 ID
  *
- * @public
  * @korean 파쇄상태효과ID
  */
 export const BREAKING_STATUS_EFFECT_IDS = {
@@ -77,7 +76,6 @@ export const BREAKING_STATUS_EFFECT_IDS = {
  * Type representing valid breaking status effect IDs.
  * Use this type when referencing breaking effect IDs to ensure type safety.
  *
- * @public
  * @korean 파쇄상태효과ID타입
  */
 export type BreakingStatusEffectId =
@@ -89,7 +87,6 @@ export type BreakingStatusEffectId =
  * @param id - The ID to validate
  * @returns true if the ID is a valid breaking status effect
  *
- * @public
  * @korean 파쇄상태효과ID검증
  */
 export function isBreakingStatusEffectId(
@@ -105,7 +102,6 @@ export function isBreakingStatusEffectId(
  *
  * @returns Array of all breaking status effect ID strings
  *
- * @public
  * @korean 모든파쇄상태효과ID
  */
 export function getAllBreakingStatusEffectIds(): readonly string[] {

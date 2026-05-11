@@ -111,22 +111,18 @@ function determineInjuryType(
   result: CombatResult,
   technique: KoreanTechnique,
 ): InjuryType {
-  // Slashing damage creates cuts (damageType is a string, not enum)
   if (technique.damageType === "slashing") {
     return result.damage > 20 ? InjuryType.LACERATION : InjuryType.CUT;
   }
 
-  // Heavy damage creates severe bruising
   if (result.damage > 25) {
     return InjuryType.BRUISE;
   }
 
-  // Medium damage creates moderate bruising
   if (result.damage > 15) {
     return InjuryType.BRUISE;
   }
 
-  // Light damage creates light bruising
   return InjuryType.BRUISE;
 }
 
@@ -138,8 +134,6 @@ function determineInjuryType(
  * @returns Position offset [x, y, z] relative to character center
  */
 function getBodyRegionPosition(region: BodyRegion): [number, number, number] {
-  // Map body regions to approximate positions on character model
-  // Character is ~2 units tall, centered at [0, 0, 0]
   switch (region) {
     case BodyRegion.HEAD:
       return [0, 1.6, 0];
@@ -177,28 +171,20 @@ function createInjuryFromDamage(
   defenderHealth: number,
   targetPlayerIndex: number,
 ): Injury {
-  // Determine body region - use torso as default if not specified
   const bodyRegion = BodyRegion.TORSO; // TODO: Extract from result when available
 
-  // Determine injury type based on damage and technique
   let injuryType = determineInjuryType(result, technique);
 
-  // Promote to fracture when health is critically low and damage is severe
-  // to align with TraumaOverlay3D fracture behavior
   const isLowHealth = defenderHealth <= 30; // 30% health threshold
   const isSevereDamage = result.damage >= 25; // Severe damage threshold
   if (isLowHealth && isSevereDamage && injuryType !== InjuryType.FRACTURE) {
     injuryType = InjuryType.FRACTURE;
   }
 
-  // Calculate severity (0.0 to 1.0) based on damage
-  // Normalized so that a ~30-damage hit is treated as near-max severity
   const severity = Math.min(1.0, result.damage / 30);
 
-  // Get position on character model for this body region
   const basePosition = getBodyRegionPosition(bodyRegion);
 
-  // Add small random offset for variety
   const randomOffset: [number, number, number] = [
     (Math.random() - 0.5) * 0.1,
     (Math.random() - 0.5) * 0.1,
@@ -269,14 +255,11 @@ function applyKnockbackDisplacement(
     return defenderPos;
   }
 
-  // Apply knockback displacement (both in meters)
-  // Note: knockback.displacement.z maps to position.y in 2D arena
   const newPos = {
     x: defenderPos.x + result.knockback.displacement.x,
     y: defenderPos.y + result.knockback.displacement.z,
   };
 
-  // Clamp to arena boundaries using shared physics helper
   return clampToArenaBounds(newPos, arenaBounds);
 }
 
@@ -418,14 +401,12 @@ export function useCombatActions(
     combatAudio,
   } = config;
 
-  // Refs to track knockback recovery timeouts for cleanup
   const player1KnockbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const player2KnockbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const screenShakeTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(
     new Set(),
   );
 
-  // Cleanup timeouts on unmount
   useEffect(() => {
     const screenShakeTimeouts = screenShakeTimeoutsRef.current;
     return () => {
@@ -439,7 +420,6 @@ export function useCombatActions(
     };
   }, []);
 
-  // Player attack handler
   const handleAttack = useCallback(
     (technique?: Technique) => {
       if (
@@ -453,14 +433,11 @@ export function useCombatActions(
       const currentStance = player.currentStance;
       const archetype = player.archetype;
 
-      // Use provided technique or select from stance techniques
       let attackTechnique: KoreanTechnique;
 
       if (technique) {
-        // Convert selected technique to KoreanTechnique format
         attackTechnique = convertTechniqueToKorean(technique, currentStance);
       } else {
-        // Get techniques for current stance and archetype
         const availableTechniques =
           KoreanTechniquesSystem.getAllAvailableTechniques(
             currentStance,
@@ -475,10 +452,8 @@ export function useCombatActions(
           return;
         }
 
-        // Select primary technique (first in list)
         const selectedTechnique = availableTechniques[0];
 
-        // Check if player has sufficient resources
         if (
           !KoreanTechniquesSystem.canExecuteTechnique(player, selectedTechnique)
         ) {
@@ -491,7 +466,6 @@ export function useCombatActions(
 
       combatActions.setExecutingTechnique(true);
 
-      // Play attack sound based on technique damage/intensity
       const damage = attackTechnique.damage ?? 10;
       const intensity: AttackIntensity =
         damage >= 40
@@ -503,11 +477,6 @@ export function useCombatActions(
               : "light";
       combatAudio?.playAttackSound(intensity);
 
-      // Calculate animation timing context for hit detection.
-      // For synchronous hit detection, we use the animation's peak time (when limb
-      // is fully extended) rather than t=0 (attack start). This ensures the hit
-      // window check passes when the attack would visually connect.
-      // 동기식 타격 판정: 애니메이션 피크 타임 사용 (팔/다리 완전 신전 시점)
       const animationType = attackTechnique.animationType ?? AnimationType.JAB;
       const hitTiming = getAnimationHitTiming(animationType);
       const peakTime = hitTiming?.hitWindow.peakTime ?? 0.15; // Default to typical punch peak
@@ -516,7 +485,6 @@ export function useCombatActions(
         currentTime: peakTime, // Use peak time for synchronous hit detection
       };
 
-      // Use combat system for proper calculation with animation context
       const result = combatSystem.resolveAttack(
         validPlayers[0],
         validPlayers[1],
@@ -534,10 +502,8 @@ export function useCombatActions(
       addHitEffect(effectType, playerPositions[0], result.hit ? 1 : 0.5);
 
       if (result.hit) {
-        // Play bone impact sound with body region and damage context
         const hitPosition = calculateHitPosition(playerPositions[1]);
 
-        // Use bone impact audio instead of generic hit sound
         combatAudio?.playBoneImpactSound({
           damage: result.damage,
           remainingHealth: validPlayers[1].health - result.damage,
@@ -545,7 +511,6 @@ export function useCombatActions(
           hitPosition,
         });
 
-        // Combo tracking: reset combo if too much time passed
         const now = Date.now();
         const timeSinceLastHit = now - combatState.lastHitTime;
         const newCombo =
@@ -553,7 +518,6 @@ export function useCombatActions(
         combatActions.setComboCount(newCombo);
         combatActions.setLastHitTime(now);
 
-        // Apply damage through combat system
         const { updatedAttacker, updatedDefender } =
           combatSystem.applyCombatResult(
             result,
@@ -564,7 +528,6 @@ export function useCombatActions(
         onPlayerUpdate(0, updatedAttacker);
         onPlayerUpdate(1, updatedDefender);
 
-        // Create injury for trauma visualization
         if (onInjuryCreated) {
           const injury = createInjuryFromDamage(
             result,
@@ -575,7 +538,6 @@ export function useCombatActions(
           onInjuryCreated(injury, 1);
         }
 
-        // Apply knockback displacement (밀침 적용)
         if (result.knockback && config.onPlayerPositionUpdate) {
           const newDefenderPosition = applyKnockbackDisplacement(
             result,
@@ -584,7 +546,6 @@ export function useCombatActions(
           );
           config.onPlayerPositionUpdate(1, newDefenderPosition);
 
-          // Add combat message for significant knockback
           const knockbackDistance = Math.sqrt(
             result.knockback.displacement.x ** 2 +
               result.knockback.displacement.z ** 2,
@@ -596,16 +557,13 @@ export function useCombatActions(
             addCombatMessage(knockbackName.korean, knockbackName.english);
           }
 
-          // Set stunned state for knockback duration (non-interruptible)
           if (result.knockback.duration > 0) {
-            // Clear any existing timeout for player 2
             if (player2KnockbackTimeoutRef.current) {
               clearTimeout(player2KnockbackTimeoutRef.current);
             }
 
             onPlayerUpdate(1, { isStunned: true });
 
-            // Schedule recovery after knockback duration + recovery window
             player2KnockbackTimeoutRef.current = setTimeout(
               () => {
                 onPlayerUpdate(1, { isStunned: false });
@@ -617,7 +575,6 @@ export function useCombatActions(
           }
         }
 
-        // Check if defender should fall after taking damage
         if (config.playerAnimations?.player2) {
           const fallCheck = checkForFall(
             updatedDefender,
@@ -639,7 +596,6 @@ export function useCombatActions(
           }
         }
 
-        // Display technique name in combat log
         const techniqueNameKorean =
           attackTechnique.koreanName ?? attackTechnique.name.korean;
         const techniqueNameEnglish =
@@ -694,11 +650,9 @@ export function useCombatActions(
     ],
   );
 
-  // Player defend handler
   const handleDefend = useCallback(() => {
     if (!combatState.roundStarted || combatState.roundEnded) return;
 
-    // Play block sound
     combatAudio?.playBlockSound(false);
 
     onPlayerUpdate(0, { isBlocking: true });
@@ -718,7 +672,6 @@ export function useCombatActions(
     combatAudio,
   ]);
 
-  // Player technique handler
   const handleTechniqueExecute = useCallback(() => {
     if (
       combatState.isExecutingTechnique ||
@@ -733,12 +686,10 @@ export function useCombatActions(
 
     combatActions.setExecutingTechnique(true);
 
-    // Play special technique sound
     combatAudio?.playSpecialTechniqueSound();
 
     addHitEffect(HitEffectType.CRITICAL_HIT, playerPositions[0], 1.5);
 
-    // Screen shake effect for impact
     clearTimeoutSet(screenShakeTimeoutsRef.current);
     const shakeIntensity = 8;
     const shakeFrames = [
@@ -752,7 +703,6 @@ export function useCombatActions(
     shakeFrames.forEach((shake, index) => {
       const timeoutId = setTimeout(
         () => {
-          // Completed timers are removed so cleanup only tracks pending callbacks.
           screenShakeTimeoutsRef.current.delete(timeoutId);
           combatActions.setScreenShake(shake);
         },
@@ -767,7 +717,6 @@ export function useCombatActions(
     );
 
     if (distance < 150) {
-      // Play bone impact sound for special technique hit
       const hitPosition = calculateHitPosition(playerPositions[1]);
 
       combatAudio?.playBoneImpactSound({
@@ -786,7 +735,6 @@ export function useCombatActions(
       addCombatMessage("기술 실패", "Technique Failed");
     }
 
-    // Consume resources
     onPlayerUpdate(0, {
       ki: Math.max(0, validPlayers[0].ki - 10),
       stamina: Math.max(0, validPlayers[0].stamina - 15),
@@ -806,12 +754,10 @@ export function useCombatActions(
     combatAudio,
   ]);
 
-  // Player stance switch handler
   const handleStanceSwitch = useCallback(
     (stance: TrigramStance) => {
       if (!combatState.roundStarted || combatState.roundEnded) return;
 
-      // Play stance change sound
       combatAudio?.playStanceChangeSound();
 
       onPlayerUpdate(0, { currentStance: stance });
@@ -833,7 +779,6 @@ export function useCombatActions(
    * Handle stance side switch (left/right)
    * @korean 자세측면전환처리
    */
-  // Reuse StanceManager instance for stance side switches
   const stanceManagerRef = useRef<StanceManager>(new StanceManager());
 
   const handleStanceSideSwitch = useCallback(
@@ -841,7 +786,6 @@ export function useCombatActions(
       if (!combatState.roundStarted || combatState.roundEnded) return;
 
       const player = validPlayers[playerIndex];
-      // Get current laterality from combat state
       const currentLaterality = combatState.playerLaterality[playerIndex];
 
       const result = stanceManagerRef.current.switchStanceSide(
@@ -850,30 +794,24 @@ export function useCombatActions(
       );
 
       if (result.success && result.laterality) {
-        // Update player state with new stamina
         onPlayerUpdate(playerIndex, result.updatedPlayer);
 
-        // Update laterality in combat state via callback
         onLateralityUpdate?.(playerIndex, result.laterality);
 
-        // Audio feedback
         combatAudio?.playStanceChangeSound?.();
 
-        // Visual feedback
         const koreanText =
           result.laterality === "left" ? "왼발서기" : "오른발서기";
         const englishText =
           result.laterality === "left" ? "Left Stance" : "Right Stance";
         addCombatMessage(koreanText, englishText);
 
-        // Visual effect
         addHitEffect(
           HitEffectType.STATUS_EFFECT,
           playerPositions[playerIndex],
           0.5,
         );
       } else {
-        // Feedback for failed switch
         if (result.message?.includes("stamina")) {
           addCombatMessage("체력 부족", "Insufficient Stamina");
         } else if (result.message?.includes("cooldown")) {
@@ -994,10 +932,8 @@ export function useCombatActions(
       const aiPlayer = validPlayers[1];
       const targetPlayer = validPlayers[0];
 
-      // Use provided technique or create basic attack technique
       const attackTechnique = technique ?? createAITechnique("basic", aiPlayer);
 
-      // Play attack sound based on technique damage/intensity (consistent with player)
       const damage = attackTechnique.damage ?? 10;
       const intensity: AttackIntensity =
         damage >= 40
@@ -1009,8 +945,6 @@ export function useCombatActions(
               : "light";
       combatAudio?.playAttackSound(intensity);
 
-      // Calculate animation timing context for AI hit detection (same as player)
-      // 동기식 타격 판정: AI도 피크 타임 사용
       const animationType = attackTechnique.animationType ?? AnimationType.JAB;
       const hitTiming = getAnimationHitTiming(animationType);
       const peakTime = hitTiming?.hitWindow.peakTime ?? 0.15;
@@ -1019,7 +953,6 @@ export function useCombatActions(
         currentTime: peakTime,
       };
 
-      // Use combat system for proper calculation with vital point targeting and animation context
       const result = combatSystem.resolveAttack(
         aiPlayer,
         targetPlayer,
@@ -1032,7 +965,6 @@ export function useCombatActions(
       addHitEffect(effectType, playerPositions[1], result.hit ? 1 : 0.5);
 
       if (result.hit) {
-        // Play bone impact sound for AI hits on player
         const hitPosition = calculateHitPosition(playerPositions[0]);
 
         combatAudio?.playBoneImpactSound({
@@ -1042,14 +974,12 @@ export function useCombatActions(
           hitPosition,
         });
 
-        // Apply damage through combat system (deducts resources)
         const { updatedAttacker, updatedDefender } =
           combatSystem.applyCombatResult(result, aiPlayer, targetPlayer);
 
         onPlayerUpdate(1, updatedAttacker);
         onPlayerUpdate(0, updatedDefender);
 
-        // Create injury for trauma visualization (AI hit player)
         if (onInjuryCreated) {
           const injury = createInjuryFromDamage(
             result,
@@ -1060,7 +990,6 @@ export function useCombatActions(
           onInjuryCreated(injury, 0);
         }
 
-        // Apply knockback displacement for AI attacks (밀침 적용)
         if (result.knockback && config.onPlayerPositionUpdate) {
           const newDefenderPosition = applyKnockbackDisplacement(
             result,
@@ -1069,7 +998,6 @@ export function useCombatActions(
           );
           config.onPlayerPositionUpdate(0, newDefenderPosition);
 
-          // Add combat message for significant knockback
           const knockbackDistance = Math.sqrt(
             result.knockback.displacement.x ** 2 +
               result.knockback.displacement.z ** 2,
@@ -1084,16 +1012,13 @@ export function useCombatActions(
             );
           }
 
-          // Set stunned state for knockback duration (non-interruptible)
           if (result.knockback.duration > 0) {
-            // Clear any existing timeout for player 1
             if (player1KnockbackTimeoutRef.current) {
               clearTimeout(player1KnockbackTimeoutRef.current);
             }
 
             onPlayerUpdate(0, { isStunned: true });
 
-            // Schedule recovery after knockback duration + recovery window
             player1KnockbackTimeoutRef.current = setTimeout(
               () => {
                 onPlayerUpdate(0, { isStunned: false });
@@ -1105,7 +1030,6 @@ export function useCombatActions(
           }
         }
 
-        // Check if player should fall after taking damage from AI
         if (config.playerAnimations?.player1) {
           const fallCheck = checkForFall(
             updatedDefender,
@@ -1127,7 +1051,6 @@ export function useCombatActions(
           }
         }
 
-        // Enhanced combat message with vital point info
         if (result.vitalPointHit && targetVitalPoint) {
           const vitalPoint = getVitalPointById(targetVitalPoint);
           const vpName = vitalPoint
@@ -1145,7 +1068,6 @@ export function useCombatActions(
           addCombatMessage("AI 공격 성공!", "AI Attack Hit!");
         }
       } else {
-        // Consume resources on miss for consistency with technique behavior
         onPlayerUpdate(1, {
           ki: Math.max(0, aiPlayer.ki - attackTechnique.kiCost),
           stamina: Math.max(0, aiPlayer.stamina - attackTechnique.staminaCost),
@@ -1168,9 +1090,7 @@ export function useCombatActions(
     ],
   );
 
-  // AI defend handler
   const handleAIDefend = useCallback(() => {
-    // Play block sound
     combatAudio?.playBlockSound(false);
 
     onPlayerUpdate(1, { isBlocking: true });
@@ -1199,11 +1119,9 @@ export function useCombatActions(
       const aiPlayer = validPlayers[1];
       const targetPlayer = validPlayers[0];
 
-      // Use provided technique or create special technique
       const specialTechnique =
         technique ?? createAITechnique("special", aiPlayer);
 
-      // Check if AI has sufficient resources for the technique
       if (
         aiPlayer.ki < specialTechnique.kiCost ||
         aiPlayer.stamina < specialTechnique.staminaCost
@@ -1212,11 +1130,8 @@ export function useCombatActions(
         return;
       }
 
-      // Play special technique sound
       combatAudio?.playSpecialTechniqueSound();
 
-      // Calculate animation timing context for AI technique hit detection
-      // 동기식 타격 판정: AI 특수 기술도 피크 타임 사용
       const animationType =
         specialTechnique.animationType ?? AnimationType.SPINNING_HOOK;
       const hitTiming = getAnimationHitTiming(animationType);
@@ -1226,7 +1141,6 @@ export function useCombatActions(
         currentTime: peakTime,
       };
 
-      // Use combat system for proper calculation with vital point targeting and animation context
       const result = combatSystem.resolveAttack(
         aiPlayer,
         targetPlayer,
@@ -1242,7 +1156,6 @@ export function useCombatActions(
       addHitEffect(effectType, playerPositions[1], result.hit ? 1.5 : 0.5);
 
       if (result.hit) {
-        // Play bone impact sound for AI technique hits
         const hitPosition = calculateHitPosition(playerPositions[0]);
 
         combatAudio?.playBoneImpactSound({
@@ -1252,14 +1165,12 @@ export function useCombatActions(
           hitPosition,
         });
 
-        // Apply damage through combat system (deducts resources)
         const { updatedAttacker, updatedDefender } =
           combatSystem.applyCombatResult(result, aiPlayer, targetPlayer);
 
         onPlayerUpdate(1, updatedAttacker);
         onPlayerUpdate(0, updatedDefender);
 
-        // Create injury for trauma visualization (AI technique hit player)
         if (onInjuryCreated) {
           const injury = createInjuryFromDamage(
             result,
@@ -1270,7 +1181,6 @@ export function useCombatActions(
           onInjuryCreated(injury, 0);
         }
 
-        // Apply knockback displacement for AI special techniques (밀침 적용)
         if (result.knockback && config.onPlayerPositionUpdate) {
           const newDefenderPosition = applyKnockbackDisplacement(
             result,
@@ -1279,7 +1189,6 @@ export function useCombatActions(
           );
           config.onPlayerPositionUpdate(0, newDefenderPosition);
 
-          // Add combat message for significant knockback
           const knockbackDistance = Math.sqrt(
             result.knockback.displacement.x ** 2 +
               result.knockback.displacement.z ** 2,
@@ -1294,16 +1203,13 @@ export function useCombatActions(
             );
           }
 
-          // Set stunned state for knockback duration (non-interruptible)
           if (result.knockback.duration > 0) {
-            // Clear any existing timeout for player 1
             if (player1KnockbackTimeoutRef.current) {
               clearTimeout(player1KnockbackTimeoutRef.current);
             }
 
             onPlayerUpdate(0, { isStunned: true });
 
-            // Schedule recovery after knockback duration + recovery window
             player1KnockbackTimeoutRef.current = setTimeout(
               () => {
                 onPlayerUpdate(0, { isStunned: false });
@@ -1315,7 +1221,6 @@ export function useCombatActions(
           }
         }
 
-        // Check if player should fall after taking damage from AI technique
         if (config.playerAnimations?.player1) {
           const fallCheck = checkForFall(
             updatedDefender,
@@ -1337,7 +1242,6 @@ export function useCombatActions(
           }
         }
 
-        // Enhanced combat message with vital point info
         if (result.vitalPointHit && targetVitalPoint) {
           const vitalPoint = getVitalPointById(targetVitalPoint);
           const vpName = vitalPoint
@@ -1353,7 +1257,6 @@ export function useCombatActions(
           addCombatMessage("AI 특수 기술!", "AI Special Technique!");
         }
       } else {
-        // Consume resources on miss (technique was attempted)
         onPlayerUpdate(1, {
           ki: Math.max(0, aiPlayer.ki - specialTechnique.kiCost),
           stamina: Math.max(0, aiPlayer.stamina - specialTechnique.staminaCost),
@@ -1376,37 +1279,25 @@ export function useCombatActions(
     ],
   );
 
-  // AI movement handler with injury-based movement penalties
-  // **UPDATED**: Now scale-aware for consistent movement and distance calculations
-  // **FIX**: Positions are in METERS, not pixels - use meters-based speed
   const moveAIPlayer = useCallback(
     (targetPos: Position) => {
       const currentPos = playerPositions[1];
       const aiPlayer = validPlayers[1];
 
-      // Movement speed calibrated for physics-first system (all in METERS)
-      // Combat closing speed: ~2.5 m/s (fast tactical approach, not slow walking)
-      // Real fights are over in 4-5 seconds - AI must close distance quickly
-      // AI decision loop frequency (defined in useAICombat.ts)
       const AI_DECISION_FREQUENCY_HZ = 20; // 20 calls/second (50ms interval)
-      // Calculation: 2.5 m/s / 20 calls/s = 0.125 meters per call
       const baseSpeed = 2.5 / AI_DECISION_FREQUENCY_HZ; // meters per call (0.125m per call)
 
-      // Calculate movement direction vector (in meters)
       const dx = targetPos.x - currentPos.x;
       const dy = targetPos.y - currentPos.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      // Apply movement penalties from leg injuries if body part health exists
       let finalSpeed = baseSpeed;
       if (aiPlayer.bodyPartHealth && aiPlayer.bodyPartMaxHealth) {
-        // Normalize movement direction
         const movementDirection = {
           x: distance > 0 ? dx / distance : 0,
           y: distance > 0 ? dy / distance : 0,
         };
 
-        // Calculate modified speed with all penalties applied
         finalSpeed = movementPenaltySystem.calculateModifiedSpeed(
           baseSpeed,
           aiPlayer.bodyPartHealth,
@@ -1415,8 +1306,6 @@ export function useCombatActions(
         );
       }
 
-      // Physics-first: positions are in METERS, so distance is in meters
-      // Stop moving when within 0.05 meters (5cm) of target - close enough for melee range
       const MIN_MOVEMENT_THRESHOLD_METERS = 0.05;
 
       if (distance > MIN_MOVEMENT_THRESHOLD_METERS) {
@@ -1425,13 +1314,11 @@ export function useCombatActions(
           y: currentPos.y + (dy / distance) * finalSpeed,
         };
 
-        // Keep AI within arena bounds (positions in meters, centered at origin)
         const halfWidth = arenaBounds.worldWidthMeters / 2;
         const halfDepth = arenaBounds.worldDepthMeters / 2;
         newPos.x = Math.max(-halfWidth, Math.min(halfWidth, newPos.x));
         newPos.y = Math.max(-halfDepth, Math.min(halfDepth, newPos.y));
 
-        // Update position through parent - this should trigger playerPositions state update in parent
         onPlayerUpdate(1, { position: newPos });
       }
     },

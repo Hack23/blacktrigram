@@ -47,10 +47,8 @@ export interface ParticleAudio3DProps {
   readonly onTriggerProcessed?: (timestamp: number) => void;
 }
 
-// Debounce timing (ms) - prevents audio spam
 const DEBOUNCE_TIME = 100;
 
-// Sound IDs for each effect type (using existing assets)
 const SOUND_MAPPINGS: Record<ParticleEffectType, string[]> = {
   arterial: [
     "ki_release",
@@ -94,7 +92,6 @@ export const ParticleAudio3D: React.FC<ParticleAudio3DProps> = ({
 }) => {
   const audio = useAudio();
 
-  // Track last trigger time per effect type for debouncing
   const lastTriggerTime = useRef<Record<ParticleEffectType, number>>({
     arterial: 0,
     bone: 0,
@@ -103,47 +100,38 @@ export const ParticleAudio3D: React.FC<ParticleAudio3DProps> = ({
     viscosity: 0,
   });
 
-  // Track processed trigger timestamps
   const processedTimestamps = useRef<Set<number>>(new Set());
 
-  // Process audio triggers
   useEffect(() => {
     if (!enabled || !audio.isInitialized) return;
 
     const now = Date.now();
 
     triggers.forEach((trigger) => {
-      // Skip if already processed
       if (processedTimestamps.current.has(trigger.timestamp)) {
         return;
       }
 
-      // Check debounce
       const lastTime = lastTriggerTime.current[trigger.effectType];
       if (now - lastTime < DEBOUNCE_TIME) {
         return;
       }
 
-      // Get random sound variant for this effect type
       const soundIds = SOUND_MAPPINGS[trigger.effectType];
       const soundId = soundIds[Math.floor(Math.random() * soundIds.length)];
 
-      // Play sound (volume based on intensity: 0.3 to 0.9 range)
       try {
         audio.playSFX(soundId);
       } catch (error) {
         console.warn(`Failed to play particle audio: ${soundId}`, error);
       }
 
-      // Update tracking
       lastTriggerTime.current[trigger.effectType] = now;
       processedTimestamps.current.add(trigger.timestamp);
 
-      // Notify processed
       onTriggerProcessed?.(trigger.timestamp);
     });
 
-    // Clean up old processed timestamps (keep last 1000)
     if (processedTimestamps.current.size > 1000) {
       const timestamps = Array.from(processedTimestamps.current).sort(
         (a, b) => b - a,
@@ -152,7 +140,6 @@ export const ParticleAudio3D: React.FC<ParticleAudio3DProps> = ({
     }
   }, [triggers, enabled, audio, onTriggerProcessed]);
 
-  // No visual rendering - pure audio coordination
   return null;
 };
 

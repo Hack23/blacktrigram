@@ -42,44 +42,31 @@ const ImpactParticles: React.FC<{
 }> = ({ position, color, count }) => {
   const pointsRef = useRef<THREE.Points>(null);
 
-  // Store velocities in a ref that persists across renders
   const velocitiesRef = useRef<Float32Array | null>(null);
 
-  // Store initial position for seeded random - use useState to capture at mount
-  // Note: This intentionally ignores position prop changes to maintain consistent
-  // particle behavior throughout the effect's lifetime. To update particles when
-  // position changes, add a key prop to the parent component to force remount.
   const [initialPosition] = useState(position);
 
-  // Initialize particle positions and velocities - use seed based on initial position
   const { positions, velocities } = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const vel = new Float32Array(count * 3);
 
-    // Use initial position as seed for deterministic but varying particles
     const seed =
       initialPosition[0] + initialPosition[1] * 10 + initialPosition[2] * 100;
 
-    // Simple seeded random using position
-    // Large multiplier (10000) ensures sufficient entropy for randomness while keeping values deterministic
     function seededRandom(index: number): number {
       const x = Math.sin(seed + index) * 10000;
       return x - Math.floor(x);
     }
 
-    // Use pooled vector for velocity calculations to reduce allocations
-    // Pool strategy: Acquire once, reuse for all particles, release
     const tempVel = ThreeObjectPools.vector3.acquire();
     
     try {
       for (let i = 0; i < count; i++) {
         const i3 = i * 3;
-        // Start at center
         pos[i3] = 0;
         pos[i3 + 1] = 0;
         pos[i3 + 2] = 0;
 
-        // Random outward velocities using seeded random
         const theta = seededRandom(i * 3) * Math.PI * 2;
         const phi = seededRandom(i * 3 + 1) * Math.PI;
         const speed = 0.5 + seededRandom(i * 3 + 2) * 1.5;
@@ -91,25 +78,21 @@ const ImpactParticles: React.FC<{
         );
         tempVel.normalize().multiplyScalar(speed);
         
-        // Add upward bias
         vel[i3] = tempVel.x;
         vel[i3 + 1] = tempVel.y + 1;
         vel[i3 + 2] = tempVel.z;
       }
     } finally {
-      // Always release pooled vector
       ThreeObjectPools.vector3.release(tempVel);
     }
 
     return { positions: pos, velocities: vel };
   }, [count, initialPosition]); // initialPosition is captured at mount and won't change
 
-  // Update velocities ref in useEffect to avoid ref access during render
   useEffect(() => {
     velocitiesRef.current = velocities;
   }, [velocities]);
 
-  // Animate particles
   useFrame((_, delta) => {
     if (!pointsRef.current || !velocitiesRef.current) return;
 
@@ -120,17 +103,12 @@ const ImpactParticles: React.FC<{
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
 
-      // Update positions
       array[i3] += vel[i3] * delta * 10;
       array[i3 + 1] += vel[i3 + 1] * delta * 10;
       array[i3 + 2] += vel[i3 + 2] * delta * 10;
 
-      // Apply gravity
-      // Note: Intentionally mutating velocitiesRef.current (Float32Array) for performance.
-      // This is safe and won't trigger React re-renders since it's a ref.
       vel[i3 + 1] -= 9.8 * delta;
 
-      // Fade out particles that go too far
       if (array[i3 + 1] < -2) {
         array[i3 + 1] = -2;
       }
@@ -168,7 +146,6 @@ const RingEffect: React.FC<{
   const meshRef = useRef<THREE.Mesh>(null);
   const startTime = useRef<number>(0);
 
-  // Initialize start time on mount using useEffect
   useEffect(() => {
     if (startTime.current === 0) {
       startTime.current = Date.now();
@@ -181,7 +158,6 @@ const RingEffect: React.FC<{
     const elapsed = (Date.now() - startTime.current) / 1000;
     const progress = Math.min(elapsed / 0.5, 1); // 0.5 second duration
 
-    // Expand ring - use pooled vector for scale to avoid allocation
     const radius = progress * maxRadius;
     const tempScale = ThreeObjectPools.vector3.acquire();
     try {
@@ -191,7 +167,6 @@ const RingEffect: React.FC<{
       ThreeObjectPools.vector3.release(tempScale);
     }
 
-    // Fade out
     const material = meshRef.current.material as THREE.MeshBasicMaterial;
     material.opacity = 1 - progress;
   });
@@ -224,7 +199,6 @@ const DamageNumber: React.FC<{
   const startTime = useRef<number>(0);
   const completedRef = useRef(false);
 
-  // Initialize start time on mount using useEffect
   useEffect(() => {
     if (startTime.current === 0) {
       startTime.current = Date.now();
@@ -235,13 +209,10 @@ const DamageNumber: React.FC<{
     const elapsed = (Date.now() - startTime.current) / 1000;
     const progress = Math.min(elapsed / 1.5, 1); // 1.5 second duration
 
-    // Float upward
     setOffset(progress * 1);
 
-    // Fade out
     setOpacity(1 - progress);
 
-    // Complete when done (only once)
     if (progress >= 1 && !completedRef.current && onComplete) {
       completedRef.current = true;
       onComplete();
@@ -292,7 +263,6 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
   const [showEffect, setShowEffect] = useState(visible);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Get colors based on hit type
   const effectColor = useMemo(() => {
     switch (type) {
       case "perfect":
@@ -306,7 +276,6 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
     }
   }, [type]);
 
-  // Reduce particle counts on mobile to avoid frame drops
   const particleCount = useMemo(() => {
     const isPerfect = type === "perfect";
     const isSuccess = type === "success";
@@ -315,15 +284,12 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
       return isPerfect ? 30 : isSuccess ? 20 : 10;
     }
 
-    // Higher fidelity on non-mobile devices
     return isPerfect ? 80 : isSuccess ? 50 : 25;
   }, [type, isMobile]);
   const ringRadius = type === "perfect" ? 1.5 : 1.0;
 
-  // Track completion to prevent multiple calls
   const completedRef = useRef(false);
 
-  // Handle effect completion (only once)
   const handleComplete = useCallback(() => {
     if (completedRef.current) return;
     completedRef.current = true;
@@ -331,7 +297,6 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
     onComplete?.();
   }, [onComplete]);
 
-  // Auto-complete after duration
   useEffect(() => {
     if (visible && showEffect) {
       timeoutRef.current = setTimeout(handleComplete, duration);

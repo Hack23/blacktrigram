@@ -54,7 +54,6 @@ export const CombatReadinessBar: React.FC<CombatReadinessBarProps> = ({
   playerId,
   isMobile,
 }) => {
-  // Calculate combat readiness percentage
   const readiness = useMemo(
     () => calculateCombatReadiness(player),
     [player]
@@ -66,13 +65,11 @@ export const CombatReadinessBar: React.FC<CombatReadinessBarProps> = ({
   const readinessLabel = getCombatReadinessLabel(readiness);
   const shouldPulse = readiness < 20;
 
-  // Responsive sizing
   const barWidth = isMobile ? 180 : 250;
   const barHeight = isMobile ? 16 : 20;
   const fontSize = isMobile ? 11 : 13;
   const padding = isMobile ? "8px 12px" : "12px 16px";
 
-  // Status text based on readiness level
   const statusText = `${readiness}% ${readinessLabel.korean}`;
 
   return (

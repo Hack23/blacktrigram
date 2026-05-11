@@ -33,7 +33,6 @@ import { VitalPoint } from "./types";
  * - Arms: 17 points (각 8-9 per arm)
  * - Legs: 17 points (각 8-9 per leg)
  *
- * @public
  * @korean 급소데이터베이스
  */
 export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
@@ -1742,7 +1741,6 @@ export const VITAL_POINTS_DATA: readonly VitalPoint[] = [
  * @param region - Body region to filter by
  * @returns Array of vital points in that region
  *
- * @public
  * @korean 부위별급소
  */
 export function getVitalPointsByRegion(
@@ -1775,7 +1773,6 @@ export function getVitalPointsByRegion(
  *
  * @returns Total number of vital points
  *
- * @public
  * @korean 급소총개수
  */
 export function getTotalVitalPointsCount(): number {

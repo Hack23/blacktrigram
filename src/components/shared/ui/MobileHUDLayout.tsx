@@ -68,7 +68,6 @@ const MobileHealthBar: React.FC<MobileHealthBarProps> = ({
   const healthPercent = (player.health / player.maxHealth) * 100;
   const isLowHealth = healthPercent < 30;
 
-  // Validate touch target
   const isValidTouch = isValidTouchTarget(barSize.width, barSize.height);
   const actualHeight = Math.max(barSize.height, 44); // Ensure minimum
 
@@ -280,7 +279,6 @@ const MobileTimer: React.FC<MobileTimerProps> = ({
  * />
  * ```
  *
- * @public
  * @korean 모바일HUD레이아웃
  */
 export const MobileHUDLayout: React.FC<MobileHUDLayoutProps> = ({
@@ -289,23 +287,18 @@ export const MobileHUDLayout: React.FC<MobileHUDLayoutProps> = ({
   timeRemaining,
   currentRound,
   maxRounds,
-  // roundsWon - reserved for future round indicator dots
   isPaused = false,
   testId = "mobile-hud-layout",
 }) => {
   const { width, height } = useWindowSize();
   const layout = useResponsiveLayout(width, height);
 
-  // Note: roundsWon parameter is available for future round indicator dots UI
-  // Currently, round info is shown in timer component
 
-  // Calculate optimal HUD dimensions
   const hudHeight = useMemo(
     () => calculateHUDHeight(width, layout.isLandscape),
     [width, layout.isLandscape],
   );
 
-  // Calculate progress bar sizes
   const healthBarSize = useMemo(
     () => calculateProgressBarSize(layout.isMobile, "health"),
     [layout.isMobile],

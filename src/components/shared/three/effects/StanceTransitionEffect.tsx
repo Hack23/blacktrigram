@@ -76,7 +76,6 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [showName, setShowName] = useState(showNameOverlay);
 
-  // Get colors and names
   const fromColor = useMemo(
     () => (fromStance ? getStanceColor(fromStance) : getStanceColor(toStance)),
     [fromStance, toStance]
@@ -84,17 +83,13 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   const toColor = useMemo(() => getStanceColor(toStance), [toStance]);
   const stanceNames = useMemo(() => getStanceNames(toStance), [toStance]);
 
-  // Handle transitions - external timer effect justifies useEffect
 
   useEffect(() => {
-    // Reset for new transition
     isInitializedRef.current = false;
     startTimeRef.current = 0;
-    // These setState calls are intentional - triggered by prop change, not creating infinite loops
     setIsTransitioning(true);
     setShowName(showNameOverlay);
 
-    // External system: timer for name overlay
     if (showNameOverlay) {
       const nameTimer = setTimeout(() => {
         setShowName(false);
@@ -104,11 +99,9 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
     }
   }, [toStance, showNameOverlay]);
 
-  // Animation loop
   useFrame((state) => {
     if (!isTransitioning || !ringRef.current) return;
 
-    // Initialize start time on first frame for consistency with clock
     if (!isInitializedRef.current) {
       startTimeRef.current = state.clock.elapsedTime;
       isInitializedRef.current = true;
@@ -117,28 +110,23 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
     const elapsed = state.clock.elapsedTime - startTimeRef.current;
     const progress = Math.min(elapsed / duration, 1.0);
 
-    // Interpolate color
     const currentColor = colorUtils.blend(fromColor, toColor, progress);
     (ringRef.current.material as THREE.MeshBasicMaterial).color.setHex(
       currentColor
     );
 
-    // Expand ring outward
     const scale = 0.5 + progress * 2.5; // From 0.5 to 3.0
     ringRef.current.scale.setScalar(scale);
 
-    // Fade out as it expands
     const opacity = 1.0 - progress * 0.7; // From 1.0 to 0.3
     (ringRef.current.material as THREE.MeshBasicMaterial).opacity = opacity;
 
-    // Complete transition
     if (progress >= 1.0) {
       setIsTransitioning(false);
       onTransitionComplete?.();
     }
   });
 
-  // Convert color to hex string for CSS
   const toColorHex = `#${toColor.toString(16).padStart(6, "0")}`;
 
   return (

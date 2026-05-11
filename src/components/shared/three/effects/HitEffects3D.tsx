@@ -39,27 +39,19 @@ const HitEffectVisual: React.FC<{
   arenaBounds?: PhysicsArenaBounds;
 }> = ({ effect, effectRef, arenaBounds }) => {
   const groupRef = useRef<THREE.Group>(null);
-  // Use ref for alpha to avoid setState in useFrame (eliminates 60 rerenders/sec)
   const alphaRef = useRef(1);
 
-  // Position in 3D space - use meter coordinates directly
   const position3D: [number, number, number] = useMemo(() => {
     if (!effect.position) return [0, 1, 0];
 
-    // Use arena bounds if available, otherwise use default values for 10m arena
     const bounds = arenaBounds ?? DEFAULT_PHYSICS_ARENA_BOUNDS;
     
-    // Position is in meters relative to arena center (0, 0)
-    // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
-    // So we use meter coordinates directly too for alignment
     const halfWidth = bounds.worldWidthMeters / 2;
     const halfDepth = bounds.worldDepthMeters / 2;
     
-    // Clamp position to arena boundaries in meters
     const clampedX = Math.min(halfWidth, Math.max(-halfWidth, effect.position.x));
     const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, effect.position.y));
     
-    // Use clamped meter coordinates directly in 3D space (no remapping)
     const x = clampedX; // Meter position X
     const y = 1.5; // Mid-height for effects
     const z = clampedZ; // Meter position Z (depth)
@@ -67,22 +59,18 @@ const HitEffectVisual: React.FC<{
     return [x, y, z];
   }, [effect.position, arenaBounds]);
 
-  // Animate effect based on type - Update materials directly in the group
   useFrame(() => {
     if (!groupRef.current || !effectRef.current) return;
 
-    // Access fresh progress value from ref and update alpha ref (no setState!)
     const progress = effectRef.current.progress;
     alphaRef.current = 1 - progress;
 
-    // Update all material opacities and positions in the group hierarchy
     let sparkIndex = 0;
     groupRef.current.traverse((object) => {
       if (object instanceof THREE.Mesh && object.material instanceof THREE.MeshBasicMaterial) {
         const baseOpacity = object.material.userData.baseOpacity ?? 1;
         object.material.opacity = alphaRef.current * baseOpacity;
         
-        // For BLOCK effect, animate spark particle positions
         if (effect.type === HitEffectType.BLOCK && object.geometry instanceof THREE.SphereGeometry) {
           if (object.geometry.parameters?.radius === 0.05) { // Spark particles have radius 0.05
             const i = sparkIndex++;
@@ -94,7 +82,6 @@ const HitEffectVisual: React.FC<{
       }
     });
 
-    // Rotate for some effects
     if (
       effect.type === HitEffectType.COUNTER ||
       effect.type === HitEffectType.VITAL_POINT_STRIKE
@@ -102,7 +89,6 @@ const HitEffectVisual: React.FC<{
       groupRef.current.rotation.y += 0.1;
     }
 
-    // Scale pulse for critical hits
     if (effect.type === HitEffectType.CRITICAL_HIT) {
       const pulse =
         1 + Math.sin(effectRef.current.progress * Math.PI * 4) * 0.2;
@@ -110,7 +96,6 @@ const HitEffectVisual: React.FC<{
     }
   });
 
-  // Render based on effect type
   switch (effect.type) {
     case HitEffectType.HIT:
       return (
@@ -370,21 +355,16 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
   onEffectComplete,
   arenaBounds,
 }) => {
-  // Use refs to track effects without causing re-renders
   const effectRefsMap = useRef<
     Map<string, React.MutableRefObject<ActiveEffect | null>>
   >(new Map());
   const completedEffectsRef = useRef<Set<string>>(new Set());
 
-  // Store effectRefs as state to avoid ref access during render
-  // This is updated in useEffect, not during render
   const [effectRefsSnapshot, setEffectRefsSnapshot] = useState<
     Map<string, React.MutableRefObject<ActiveEffect | null>>
   >(new Map());
 
-  // Update effect refs when effects change (minimal state updates)
   useEffect(() => {
-    // Clean up refs for removed effects
     const currentIdSet = new Set(effects.map((e) => e.id));
     effectRefsMap.current.forEach((_ref, id) => {
       if (!currentIdSet.has(id)) {
@@ -393,7 +373,6 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
       }
     });
 
-    // Initialize refs for new effects
     effects.forEach((effect) => {
       if (!effectRefsMap.current.has(effect.id)) {
         effectRefsMap.current.set(effect.id, {
@@ -402,12 +381,9 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
       }
     });
 
-    // Create a snapshot of the refs for use in render
-    // This is a new Map with the same refs (not a deep copy)
     setEffectRefsSnapshot(new Map(effectRefsMap.current));
   }, [effects]);
 
-  // Update progress using refs (no setState in useFrame)
   useFrame(() => {
     const now = Date.now();
 
@@ -420,7 +396,6 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
       );
       ref.current.progress = progress;
 
-      // Handle completion
       const isExpired = progress >= 1;
       if (
         isExpired &&
@@ -433,7 +408,6 @@ export const HitEffects3D: React.FC<HitEffects3DProps> = ({
     });
   });
 
-  // Pre-compute effect data to avoid ref access during render
   const effectsToRender = useMemo(() => {
     return effects
       .map((effect) => {

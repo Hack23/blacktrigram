@@ -89,7 +89,6 @@ export interface MuscleAttachment {
  * @korean 뼈근육매핑
  */
 export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
-  // Shoulders - deltoid muscles
   shoulder_L: [
     {
       name: "SHOULDER_L",
@@ -117,7 +116,6 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
     },
   ],
 
-  // Upper arms - biceps and triceps
   upper_arm_L: [
     {
       name: "BICEP_L",
@@ -167,7 +165,6 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
     },
   ],
 
-  // Forearms
   forearm_L: [
     {
       name: "FOREARM_L",
@@ -195,7 +192,6 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
     },
   ],
 
-  // Spine - chest/core muscles attach to spine_middle
   spine_middle: [
     {
       name: "PECTORALS",
@@ -243,7 +239,6 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
     },
   ],
 
-  // Pelvis - central hip/waist muscles
   pelvis: [
     {
       name: "HIP_FLEXOR_L",
@@ -280,7 +275,6 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
     },
   ],
 
-  // Spine lower - lower back muscles for torso definition
   spine_lower: [
     {
       name: "ERECTOR_SPINAE_L",
@@ -306,7 +300,6 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
     },
   ],
 
-  // Spine upper - lats and traps for V-shaped back
   spine_upper: [
     {
       name: "LAT_L",
@@ -354,7 +347,6 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
     },
   ],
 
-  // Hips - glutes attach here
   hip_L: [
     {
       name: "GLUTE_L",
@@ -382,7 +374,6 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
     },
   ],
 
-  // Thighs - quads and hamstrings
   thigh_L: [
     {
       name: "QUAD_L",
@@ -432,7 +423,6 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
     },
   ],
 
-  // Shins - calves
   shin_L: [
     {
       name: "CALF_L",
@@ -461,7 +451,6 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
   ],
 };
 
-// Import centralized constants
 import {
   MIN_MUSCLE_SCALE,
   MUSCLE_AMPLIFICATION_BASE,
@@ -489,7 +478,6 @@ export const calculateMuscleScaleFactor = (muscleMass: number): number => {
   const massRatio = muscleMass / REFERENCE_MUSCLE_MASS;
   const deviation = massRatio - 1.0;
 
-  // Exponential curve for dramatic differences
   const exponentialDeviation =
     Math.sign(deviation) *
     Math.pow(Math.abs(deviation), MUSCLE_AMPLIFICATION_EXPONENT);
@@ -516,7 +504,6 @@ export const calculateFatLayerOpacity = (fatMass: number): number => {
   const maxFat = 22; // Jojik maximum
   const normalizedFat = (fatMass - minFat) / (maxFat - minFat);
 
-  // Expanded range: 0.05 (lean) to 0.85 (heavy)
   return Math.max(0.05, Math.min(0.85, 0.05 + normalizedFat * 0.8));
 };
 
@@ -536,7 +523,6 @@ export const calculateFatLayerThickness = (fatMass: number): number => {
   const maxFat = 22;
   const normalizedFat = (fatMass - minFat) / (maxFat - minFat);
 
-  // Exponential curve for fat thickness
   const exponentialFat = Math.pow(normalizedFat, 1.5);
 
   return Math.max(0.02, Math.min(0.6, 0.02 + exponentialFat * 0.58));
@@ -581,10 +567,8 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
   const meshRef = useRef<THREE.Mesh>(null);
   const fatMeshRef = useRef<THREE.Mesh>(null);
 
-  // Round tension to reduce unnecessary re-renders
   const roundedTension = Math.round(tension * 100) / 100;
 
-  // Calculate current scale based on tension
   const currentScale = useMemo(() => {
     const t = Math.max(0, Math.min(1, roundedTension));
     const lerp = (start: number, end: number, factor: number) =>
@@ -600,7 +584,6 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
     );
   }, [attachment, roundedTension, muscleScaleFactor]);
 
-  // Fat layer scale
   const fatScale = useMemo(() => {
     return new THREE.Vector3(
       currentScale.x * (1 + fatLayerThickness),
@@ -609,7 +592,6 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
     );
   }, [currentScale, fatLayerThickness]);
 
-  // Muscle color based on tension and exhaustion
   const muscleColor = useMemo(() => {
     if (isShaking) {
       return KOREAN_COLORS.MUSCLE_EXHAUSTED;
@@ -619,7 +601,6 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
     return KOREAN_COLORS.MUSCLE_TONE;
   }, [roundedTension, isShaking]);
 
-  // Shaking animation at 60fps
   useFrame((state) => {
     if (!meshRef.current) return;
 
@@ -628,7 +609,6 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
       return;
     }
 
-    // Shaking frequency: 20Hz
     const shake = Math.sin(state.clock.elapsedTime * 20 * Math.PI * 2) * 0.02;
     meshRef.current.rotation.z = attachment.localRotation.z + shake;
     if (fatMeshRef.current) {
@@ -744,10 +724,8 @@ export const BoneMuscles: React.FC<BoneMusclesProps> = ({
   isExhausted,
   physicalAttributes,
 }) => {
-  // Get muscle attachments for this bone
   const attachments = BONE_MUSCLE_MAP[boneName];
 
-  // Calculate scaling factors
   const muscleScaleFactor = useMemo(() => {
     if (!physicalAttributes) return 1.0;
     return calculateMuscleScaleFactor(physicalAttributes.muscleMass);
@@ -763,7 +741,6 @@ export const BoneMuscles: React.FC<BoneMusclesProps> = ({
     return calculateFatLayerThickness(physicalAttributes.fatMass);
   }, [physicalAttributes]);
 
-  // No muscles for this bone
   if (!attachments || attachments.length === 0) {
     return null;
   }

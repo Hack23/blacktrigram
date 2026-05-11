@@ -38,7 +38,6 @@ export interface GamepadVisualization3DProps {
 export const GamepadVisualization3D: React.FC<GamepadVisualization3DProps> = ({
   isMobile,
 }) => {
-  // Gamepad body material
   const bodyMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -51,30 +50,24 @@ export const GamepadVisualization3D: React.FC<GamepadVisualization3DProps> = ({
     [],
   );
 
-  // Cleanup material on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
       bodyMaterial.dispose();
     };
   }, [bodyMaterial]);
 
-  // Button positions (simplified layout)
   const buttonPositions = useMemo(
     () => ({
-      // Face buttons (right side)
       0: { x: 1.5, y: 0.5, z: 0.15 }, // A
       1: { x: 2.0, y: 0.0, z: 0.15 }, // B
       2: { x: 1.0, y: 0.0, z: 0.15 }, // X
       3: { x: 1.5, y: -0.5, z: 0.15 }, // Y
-      // Shoulder buttons (top)
       4: { x: -2.0, y: 1.0, z: 0.2 }, // LB
       5: { x: 2.0, y: 1.0, z: 0.2 }, // RB
       6: { x: -2.0, y: 1.4, z: 0.2 }, // LT
       7: { x: 2.0, y: 1.4, z: 0.2 }, // RT
-      // Menu buttons (center)
       8: { x: -0.6, y: 0.0, z: 0.15 }, // Back
       9: { x: 0.6, y: 0.0, z: 0.15 }, // Start
-      // Stick buttons (lower)
       10: { x: -1.5, y: -0.8, z: 0.15 }, // L3
       11: { x: 1.5, y: -0.8, z: 0.15 }, // R3
     }),

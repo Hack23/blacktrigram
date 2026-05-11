@@ -36,7 +36,6 @@ import {
  *
  * **Korean**: 카메라 설정
  *
- * @public
  */
 export interface CameraConfiguration {
   /** Field of view in degrees */
@@ -57,7 +56,6 @@ export interface CameraConfiguration {
  * Includes all parameters needed to ensure consistent physics
  * behavior across different screens and device types.
  *
- * @public
  */
 export interface PhysicsConfiguration {
   /** Arena configuration with pixel and meter dimensions */
@@ -95,7 +93,6 @@ export interface PhysicsConfiguration {
  * // { fov: 60, position: [0, 8, 12], near: 0.1, far: 1000 }
  * ```
  *
- * @public
  */
 export function createCameraConfig(isMobile: boolean): CameraConfiguration {
   if (isMobile) {
@@ -147,7 +144,6 @@ export function createCameraConfig(isMobile: boolean): CameraConfiguration {
  * trainingPhysics.pixelsPerMeter === combatPhysics.pixelsPerMeter; // true
  * ```
  *
- * @public
  */
 export function createPhysicsConfig(
   screenWidth: number,

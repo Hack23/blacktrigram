@@ -67,28 +67,23 @@ export interface BloodLossOverlayProps {
 export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
   ({ bloodLoss, isMobile, intensityScale = 1 }) => {
   const overlayStyle = useMemo(() => {
-    // Only show when blood loss exceeds critical threshold
     const criticalThreshold = 50;
     if (bloodLoss < criticalThreshold) {
       return null;
     }
 
-    // Clamp blood loss to 50-100 range for intensity calculation
     const clampedBloodLoss = Math.max(
       criticalThreshold,
       Math.min(100, bloodLoss)
     );
 
-    // Calculate intensity based on blood loss (50-100% -> 0-1)
     const intensity =
       (clampedBloodLoss - criticalThreshold) / (100 - criticalThreshold);
 
-    // Mobile uses reduced intensity, callers may further attenuate.
     const safeScale = Math.max(0, Math.min(1, intensityScale));
     const maxOpacity = (isMobile ? 0.15 : 0.25) * safeScale;
     const baseOpacity = intensity * maxOpacity;
 
-    // Use KOREAN_COLORS.BLOODLOSS_INDICATOR constant
     const rgb = KOREAN_COLORS.BLOODLOSS_INDICATOR;
     const bloodColor = `rgb(${(rgb >> 16) & 255}, ${(rgb >> 8) & 255}, ${
       rgb & 255
@@ -99,7 +94,6 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
       inset: 0,
       pointerEvents: "none" as const,
       backgroundColor: bloodColor,
-      // Use CSS variable for dynamic animation
       ["--base-opacity"]: baseOpacity.toString(),
       animation: "bloodLossPulse 1.5s ease-in-out infinite",
       transition: "opacity 0.5s ease-out",
@@ -107,12 +101,10 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
     } as React.CSSProperties;
   }, [bloodLoss, isMobile, intensityScale]);
 
-  // Don't render if blood loss is below threshold
   if (bloodLoss < 50 || !overlayStyle) {
     return null;
   }
 
-  // Purely visual effect overlay; intentionally hidden from assistive technology via aria-hidden and does not use ARIA roles or live regions
   return (
     <>
       {/* CSS keyframe animation for pulsing with CSS variables */}
@@ -137,18 +129,13 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
   );
   },
   (prevProps, nextProps) => {
-    // Only re-render if blood loss crosses critical threshold or changes significantly
     const wasCritical = prevProps.bloodLoss >= 50;
     const isCritical = nextProps.bloodLoss >= 50;
     
-    // If neither are critical, no need to re-render
     if (!wasCritical && !isCritical) return true;
     
-    // If crossing threshold, need to re-render
     if (wasCritical !== isCritical) return false;
     
-    // If both critical, only re-render if significant change (5+ points)
-    // or if isMobile / intensityScale changes.
     return (
       Math.abs(prevProps.bloodLoss - nextProps.bloodLoss) < 5 &&
       prevProps.isMobile === nextProps.isMobile &&

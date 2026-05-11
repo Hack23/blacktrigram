@@ -1,4 +1,3 @@
-// UI renders outside Canvas in absolute-positioned div - no Html needed
 import { Canvas } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
@@ -31,9 +30,7 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
   width: propWidth,
   height: propHeight,
 }) => {
-  // UI now renders outside Canvas - no mount state needed
 
-  // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in PhilosophyScreen");
@@ -47,14 +44,10 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
   const audio = useAudio();
   const { width, height } = useWindowSize();
 
-  // Use prop dimensions if provided, otherwise use window size
   const screenWidth = propWidth ?? width;
   const screenHeight = propHeight ?? height;
 
-  // Responsive layout calculations with large desktop support
-  // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
   const isMobile = shouldUseMobileControls();
-  // Only use width for tablet/desktop distinction when NOT mobile
   const isTablet = useMemo(
     () => !isMobile && screenWidth >= 768 && screenWidth < 1024,
     [isMobile, screenWidth],
@@ -64,20 +57,17 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
     [isMobile, screenWidth],
   ); // 4K/2K displays
 
-  // Use centralized responsive layout helper for consistent scaling
   const layoutConstants = useMemo(
     () => getLayoutConstants(screenWidth),
     [screenWidth],
   );
 
-  // Use Korean theme hook for consistent theming
   const theme = useKoreanTheme({
     variant: "primary",
     size: "md",
     isMobile,
   });
 
-  // Memoize scrollbar style to prevent re-creating style tag on every render
   const scrollbarStyle = useMemo(
     () => ({
       __html: `
@@ -102,7 +92,6 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
     [theme],
   );
 
-  // Memoize colors from theme for performance
   const colors = useMemo(
     () => ({
       background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.95),
@@ -121,7 +110,6 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
     [theme],
   );
 
-  // Audio lifecycle management for philosophy screen
   useEffect(() => {
     const startMusic = async () => {
       await audio.fadeIn("underground_theme", 2000);
@@ -138,7 +126,6 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
     };
   }, [audio]);
 
-  // Enhanced keyboard handling for screen-level navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" || event.key.toLowerCase() === "m") {
@@ -152,19 +139,16 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onReturnToMenu, audio]);
 
-  // Handle back button click
   const handleBackClick = useCallback(() => {
     audio.playSFX("menu_back");
     onReturnToMenu();
   }, [audio, onReturnToMenu]);
 
-  // Handle ISMS link click
   const handleISMSClick = useCallback(() => {
     audio.playSFX("menu_select");
     window.open("https://github.com/Hack23/ISMS-PUBLIC", "_blank");
   }, [audio]);
 
-  // Get philosophy data
   const martialValues = useMemo(
     () => Object.entries(KoreanCulture.MARTIAL_VALUES),
     [],
@@ -181,7 +165,6 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
 
   const archetypes = useMemo(() => Object.entries(PLAYER_ARCHETYPES_DATA), []);
 
-  // Grid layout calculations
   const valuesPerRow = isMobile ? 3 : isTablet ? 4 : isLargeDesktop ? 8 : 6;
   const trigramsPerRow = isMobile ? 2 : isTablet ? 3 : isLargeDesktop ? 5 : 4;
 

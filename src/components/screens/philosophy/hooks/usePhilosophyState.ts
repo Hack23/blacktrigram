@@ -40,7 +40,6 @@ export type PhilosophyTopic = "trigrams" | "values" | "archetypes";
  * 
  * @returns Philosophy state and control functions
  * 
- * @public
  * @category Philosophy Hooks
  */
 export function usePhilosophyState() {
@@ -74,7 +73,6 @@ export function usePhilosophyState() {
    */
   const setTopic = useCallback((newTopic: PhilosophyTopic) => {
     setTopicInternal(newTopic);
-    // Clear selection when changing topics
     setSelectedTrigram(null);
   }, []);
 

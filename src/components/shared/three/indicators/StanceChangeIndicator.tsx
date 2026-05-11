@@ -62,7 +62,6 @@ export interface StanceChangeIndicatorProps {
  * />
  * ```
  * 
- * @public
  * @korean 자세변경표시기
  */
 export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
@@ -79,7 +78,6 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   const startTimeRef = useRef<number>(0);
   const animationFrameRef = useRef<number | undefined>(undefined);
 
-  // Track component mount state
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
@@ -87,10 +85,7 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
     };
   }, []);
 
-  // Show/hide indicator based on stance change
-  // This effect intentionally sets state synchronously for immediate visual feedback
   useEffect(() => {
-    // Cancel any existing animation frame first
     if (animationFrameRef.current !== undefined) {
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = undefined;
@@ -101,15 +96,12 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
       setProgress(0);
       startTimeRef.current = 0;
 
-      // Trigger haptic feedback for stance change
       triggerStanceChangeHaptic();
 
-      // Animation loop for progress bar
       if (showProgress) {
         const animate = (timestamp: number) => {
           if (!isMountedRef.current) return;
           
-          // Initialize start time on first frame
           if (startTimeRef.current === 0) {
             startTimeRef.current = timestamp;
           }
@@ -142,19 +134,16 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
     }
   }, [currentStance, previousStance, duration, showProgress, transitionDuration]);
 
-  // Get trigram stance from index
   const stance = useMemo(
     () => TRIGRAM_STANCES_ORDER[currentStance] ?? TrigramStance.GEON,
     [currentStance]
   );
 
-  // Get elemental color for stance
   const elementalColor = useMemo(
     () => getTrigramElementColor(stance),
     [stance]
   );
 
-  // Get trigram names using elemental color system
   const koreanName = useMemo(
     () => getTrigramKoreanName(stance),
     [stance]
@@ -170,7 +159,6 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
     [stance]
   );
 
-  // Memoize animation styles to prevent redefinition on every render
   const animationStyles = useMemo(() => (
     <style>
       {`
@@ -202,7 +190,6 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   const subFontSize = isMobile ? 14 : 18;
   const top = isMobile ? "30%" : "20%";
 
-  // Use elemental color system
   const primaryColorHex = hexToRgbaString(elementalColor, 1);
 
   return (

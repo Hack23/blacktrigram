@@ -37,7 +37,6 @@ export interface PhilosophyNavigationProps {
  * />
  * ```
  * 
- * @public
  * @category Philosophy Components
  */
 export const PhilosophyNavigation: React.FC<PhilosophyNavigationProps> = ({

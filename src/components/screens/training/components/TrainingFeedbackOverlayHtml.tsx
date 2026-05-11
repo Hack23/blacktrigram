@@ -51,7 +51,6 @@ export const TrainingFeedbackOverlayHtml = React.memo<TrainingFeedbackOverlayHtm
   );
 },
 (prevProps, nextProps) => {
-  // Only re-render if message or mobile state changes
   return (
     prevProps.message === nextProps.message &&
     prevProps.isMobile === nextProps.isMobile

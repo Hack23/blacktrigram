@@ -35,7 +35,6 @@ import { BodyRegion } from "../../types/common";
  * Records a single injury with its location, severity, and cumulative hit count.
  * Used for progressive bruising visualization.
  * 
- * @public
  * @category Injury Tracking
  * @korean 부상위치
  */
@@ -61,7 +60,6 @@ export interface InjuryLocation {
 /**
  * Configuration for injury tracking behavior.
  * 
- * @public
  * @category Injury Tracking
  */
 export interface InjuryTrackerConfig {
@@ -80,7 +78,6 @@ export interface InjuryTrackerConfig {
 /**
  * Default injury tracker configuration.
  * 
- * @public
  */
 export const DEFAULT_INJURY_TRACKER_CONFIG: InjuryTrackerConfig = {
   maxInjuries: 50, // Reasonable limit for performance
@@ -115,7 +112,6 @@ export const DEFAULT_INJURY_TRACKER_CONFIG: InjuryTrackerConfig = {
  * const injuries = tracker.getInjuries();
  * ```
  * 
- * @public
  * @category Body Part System
  */
 export class InjuryTracker {
@@ -145,7 +141,6 @@ export class InjuryTracker {
    * @param type - Type of injury
    * @returns The created or updated injury, or null if damage is below threshold
    * 
-   * @public
    */
   recordInjury(
     bodyPart: BodyPart,
@@ -218,7 +213,6 @@ export class InjuryTracker {
    * @param threshold - Distance threshold
    * @returns Nearby injury or null
    * 
-   * @public
    */
   findNearbyInjury(
     bodyPart: BodyPart,
@@ -248,7 +242,6 @@ export class InjuryTracker {
    * 
    * @returns Array of all injuries
    * 
-   * @public
    */
   getInjuries(): InjuryLocation[] {
     return Array.from(this.injuries.values());
@@ -262,7 +255,6 @@ export class InjuryTracker {
    * @param bodyPart - Body part to query
    * @returns Array of injuries on that body part
    * 
-   * @public
    */
   getInjuriesByBodyPart(bodyPart: BodyPart): InjuryLocation[] {
     return this.getInjuries().filter((injury) => injury.bodyPart === bodyPart);
@@ -285,7 +277,6 @@ export class InjuryTracker {
    * @param hitCount - Number of hits to same location
    * @returns Hex color string
    * 
-   * @public
    */
   getBruiseColor(severity: number, hitCount: number): string {
     // Progressive darkening with hit count (subtract 1 since first hit shouldn't darken)
@@ -308,7 +299,6 @@ export class InjuryTracker {
    * @param damage - Damage amount
    * @returns Whether to show blood effects
    * 
-   * @public
    */
   shouldShowBloodEffect(damage: number): boolean {
     return damage > this.config.bloodEffectThreshold;
@@ -340,7 +330,6 @@ export class InjuryTracker {
    * 
    * **Korean**: 모든 부상 초기화
    * 
-   * @public
    */
   clearInjuries(): void {
     this.injuries.clear();
@@ -352,7 +341,6 @@ export class InjuryTracker {
    * 
    * **Korean**: 만료된 부상 제거
    * 
-   * @public
    */
   removeExpiredInjuries(): void {
     const now = Date.now();
@@ -374,7 +362,6 @@ export class InjuryTracker {
    * 
    * @returns Current number of tracked injuries
    * 
-   * @public
    */
   getInjuryCount(): number {
     return this.injuries.size;
@@ -397,7 +384,6 @@ export class InjuryTracker {
  * const player2Tracker = new InjuryTracker();
  * ```
  *
- * @public
  * @deprecated Use an explicitly scoped {@link InjuryTracker} instance per
  * player/character instead of relying on this shared module singleton. This
  * export is retained temporarily for backward compatibility with existing

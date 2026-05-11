@@ -95,13 +95,11 @@ const BaseTextComponent: React.FC<BaseTextProps> = ({
   ariaLabel,
   ariaLive = "off",
 }) => {
-  // Use Korean theme hook for consistent text sizing
   const { textSize, koreanTypography } = useKoreanTheme({
     size,
     isMobile,
   });
 
-  // Track screen width for responsive distance factor updates on resize
   const [screenWidth, setScreenWidth] = useState(() =>
     typeof window !== "undefined"
       ? window.innerWidth
@@ -119,17 +117,14 @@ const BaseTextComponent: React.FC<BaseTextProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Calculate optimal distance factor for text
   const distanceFactor = useMemo(() => {
     return calculateDistanceFactor(screenWidth, "text", isMobile);
   }, [screenWidth, isMobile]);
 
-  // Apply Html overlay styles with proper z-index
   const overlayStyle = useMemo(() => {
     return applyHtmlOverlayStyles(layer, false, distanceFactor, true, occlude);
   }, [layer, distanceFactor, occlude]);
 
-  // Memoize text styles for performance with Korean typography optimization
   const textStyle = useMemo<React.CSSProperties>(
     () => ({
       color: hexToRgbaString(color),
@@ -139,7 +134,6 @@ const BaseTextComponent: React.FC<BaseTextProps> = ({
       textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
       userSelect: "none",
       WebkitUserSelect: "none",
-      // Korean typography optimization
       lineHeight: koreanTypography.lineHeight,
       letterSpacing: koreanTypography.letterSpacing,
       wordBreak: koreanTypography.wordBreak,
@@ -154,7 +148,6 @@ const BaseTextComponent: React.FC<BaseTextProps> = ({
       flexDirection: layout === "vertical" ? "column" : "row",
       alignItems: "center",
       gap: layout === "vertical" ? "4px" : "8px",
-      // Apply GPU acceleration from overlay style
       transform: overlayStyle.transform,
       pointerEvents: overlayStyle.pointerEvents,
       zIndex: overlayStyle.zIndex,
@@ -212,7 +205,6 @@ const BaseTextComponent: React.FC<BaseTextProps> = ({
   );
 };
 
-// Export memoized component for performance optimization
 export const BaseText = React.memo(BaseTextComponent);
 
 BaseText.displayName = "BaseText";

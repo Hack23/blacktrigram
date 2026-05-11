@@ -61,11 +61,9 @@ function getLimbPositionOffset(
   limb: ExposedLimbType,
   facingLeft: boolean
 ): [number, number, number] {
-  // Base offsets in meters (approximate human proportions)
   const leftMult = facingLeft ? -1 : 1;
 
   switch (limb) {
-    // Arms (상체)
     case "left_arm":
       return [-0.3 * leftMult, 1.2, 0]; // Shoulder height
     case "right_arm":
@@ -79,7 +77,6 @@ function getLimbPositionOffset(
     case "right_wrist":
       return [0.5 * leftMult, 0.9, 0.2];
 
-    // Legs (하체)
     case "left_leg":
       return [-0.15 * leftMult, 0.8, 0]; // Mid-thigh
     case "right_leg":
@@ -112,13 +109,10 @@ function calculateGlowIntensity(
   vulnerabilityMultiplier: number,
   isMobile: boolean
 ): number {
-  // Clamp multiplier to valid range
   const clamped = Math.max(1.0, Math.min(3.0, vulnerabilityMultiplier));
 
-  // Map to intensity range (1.0 -> 3, 3.0 -> 10)
   const baseIntensity = 3 + ((clamped - 1.0) / 2.0) * 7;
 
-  // Reduce intensity on mobile for performance
   return isMobile ? baseIntensity * 0.7 : baseIntensity;
 }
 
@@ -140,31 +134,24 @@ function calculateFadeFactor(
   windowStart: number,
   windowDuration: number
 ): number {
-  // Guard against invalid window duration
   if (windowDuration <= 0) return 0;
 
   const elapsed = currentTime - windowStart;
 
-  // Before window starts
   if (elapsed < 0) return 0;
 
-  // After window ends
   if (elapsed > windowDuration) return 0;
 
-  // Calculate progress through window (0-1)
   const progress = elapsed / windowDuration;
 
-  // Fade in during first 20%
   if (progress < 0.2) {
     return progress / 0.2;
   }
 
-  // Fade out during last 20%
   if (progress > 0.8) {
     return (1.0 - progress) / 0.2;
   }
 
-  // Sustained at full intensity (20%-80%)
   return 1.0;
 }
 
@@ -186,22 +173,18 @@ function getGlowColor(
   vulnerabilityMultiplier: number,
   allowsBreaking: boolean
 ): THREE.Color {
-  // Breaking opportunities: bright red (NEGATIVE_RED for high danger)
   if (allowsBreaking) {
     return colorCache.breakingRed;
   }
 
-  // High vulnerability (>2.0): red
   if (vulnerabilityMultiplier >= 2.0) {
     return colorCache.highRed;
   }
 
-  // Medium vulnerability (1.5-2.0): orange
   if (vulnerabilityMultiplier >= 1.5) {
     return colorCache.mediumOrange;
   }
 
-  // Low vulnerability (<1.5): yellow
   return colorCache.lowGold;
 }
 
@@ -239,11 +222,9 @@ export const LimbExposureIndicator3D: React.FC<
   currentTime,
   "data-testid": testId = "limb-exposure-indicator",
 }) => {
-  // Track animated intensity for smooth transitions
   const [animatedIntensity, setAnimatedIntensity] = useState(0);
   const intensityRef = useRef(0);
 
-  // Calculate limb position offset (memoized, changes only when opportunity or facing changes)
   const limbOffset = useMemo(
     () =>
       opportunity
@@ -252,7 +233,6 @@ export const LimbExposureIndicator3D: React.FC<
     [opportunity, facingLeft]
   );
 
-  // Calculate final 3D position
   const position3D: [number, number, number] = useMemo(
     () => [
       characterPosition.x + limbOffset[0],
@@ -262,7 +242,6 @@ export const LimbExposureIndicator3D: React.FC<
     [characterPosition, limbOffset]
   );
 
-  // Calculate target intensity based on opportunity
   const targetIntensity = useMemo(() => {
     if (!opportunity) return 0;
 
@@ -282,7 +261,6 @@ export const LimbExposureIndicator3D: React.FC<
     return baseIntensity * fadeFactor;
   }, [opportunity, currentTime, isMobile]);
 
-  // Get glow color (returns cached color instance, not a new one)
   const glowColor = useMemo(
     () =>
       opportunity
@@ -294,9 +272,7 @@ export const LimbExposureIndicator3D: React.FC<
     [opportunity]
   );
 
-  // Smooth intensity transitions using useFrame
   useFrame((_, delta) => {
-    // Lerp towards target intensity
     const lerpSpeed = 5.0; // Speed of intensity transition
     intensityRef.current = THREE.MathUtils.lerp(
       intensityRef.current,
@@ -304,13 +280,11 @@ export const LimbExposureIndicator3D: React.FC<
       delta * lerpSpeed
     );
 
-    // Update state only if changed significantly (avoid unnecessary renders)
     if (Math.abs(intensityRef.current - animatedIntensity) > 0.01) {
       setAnimatedIntensity(intensityRef.current);
     }
   });
 
-  // Don't render if no opportunity or intensity is near zero
   if (!opportunity || animatedIntensity < 0.01) {
     return null;
   }
@@ -341,14 +315,11 @@ export const LimbExposureIndicator3D: React.FC<
   );
 };
 
-// Display name for debugging
 LimbExposureIndicator3D.displayName = "LimbExposureIndicator3D";
 
-// Memoize component to prevent unnecessary re-renders
 export default React.memo(
   LimbExposureIndicator3D,
   (prevProps, nextProps) => {
-    // Re-render only if relevant props change
     return (
       prevProps.opportunity?.exposedLimb === nextProps.opportunity?.exposedLimb &&
       prevProps.opportunity?.windowStart === nextProps.opportunity?.windowStart &&

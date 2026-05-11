@@ -157,8 +157,6 @@ export const PlayerStateOverlayHtml = React.memo<PlayerStateOverlayProps>(
     );
   },
   (prevProps, nextProps) => {
-    // Custom comparison for optimal re-render prevention
-    // Only re-render if any state value actually changed
     return (
       prevProps.pain === nextProps.pain &&
       prevProps.balanceState === nextProps.balanceState &&

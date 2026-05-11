@@ -29,14 +29,12 @@ export const TrainingArena3D: React.FC<TrainingArena3DProps> = ({
 }) => {
   const gridRef = useRef<THREE.GridHelper>(null);
 
-  // Animate grid rotation (matching CombatArena3D)
   useFrame(() => {
     if (gridRef.current) {
       gridRef.current.rotation.y += 0.0002;
     }
   });
 
-  // Create floor texture with Korean pattern
   const floorMaterial = useMemo(() => {
     return new THREE.MeshStandardMaterial({
       color: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
@@ -46,14 +44,12 @@ export const TrainingArena3D: React.FC<TrainingArena3DProps> = ({
     });
   }, []);
 
-  // Cleanup material on unmount
   useEffect(() => {
     return () => {
       floorMaterial.dispose();
     };
   }, [floorMaterial]);
 
-  // Grid helper colors (matching CombatArena3D pattern)
   const gridColor = useMemo(
     () => new THREE.Color(KOREAN_COLORS.PRIMARY_CYAN),
     []
@@ -114,8 +110,6 @@ const CornerMarkers: React.FC<{ size: number }> = ({ size }) => {
     [halfSize]
   );
 
-  // Memoize shared geometry and material for all corner markers
-  // Performance: Prevents WebGL context exhaustion with multiple instances
   const markerGeometry = useMemo(
     () => new THREE.CylinderGeometry(0.2, 0.2, 0.05, 8),
     []
@@ -133,7 +127,6 @@ const CornerMarkers: React.FC<{ size: number }> = ({ size }) => {
     []
   );
 
-  // Cleanup geometry and material on unmount
   useEffect(() => {
     return () => {
       markerGeometry.dispose();

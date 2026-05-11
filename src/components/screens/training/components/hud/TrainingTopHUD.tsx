@@ -75,13 +75,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
   onReturnToMenu,
   onPlaySFX,
 }) => {
-  // Layout calculations for slim top bar
   const layout = React.useMemo(() => {
-    // Use the exact same formula as useHUDLayout's `topOffset`
-    // (getHUDHeight(height, 0.06) * positionScale) so side HUDs start
-    // precisely where the top HUD ends on every viewport, including mobile.
-    // The shared `getHUDHeight` helper already applies a 40px minimum and
-    // 120px maximum, so no extra clamp is needed.
     const hudHeight =
       getHUDHeight(height, TRAINING_TOP_HUD_HEIGHT_PERCENT) * positionScale;
 

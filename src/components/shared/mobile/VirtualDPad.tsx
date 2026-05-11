@@ -132,12 +132,10 @@ const DPadButton = React.memo<DPadButtonProps>(
     radius,
     buttonSize,
   }) => {
-    // Calculate position using polar coordinates
     const radian = (config.angle - 90) * (Math.PI / 180); // -90 to start from top
     const x = Math.cos(radian) * radius;
     const y = Math.sin(radian) * radius;
 
-    // Extract RGB colors using shared utility
     const goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
     const primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
 
@@ -197,8 +195,6 @@ const DPadButton = React.memo<DPadButtonProps>(
     );
   },
   (prevProps, nextProps) => {
-    // Only re-render if active or focused state changes
-    // config.direction comparison removed as config is a stable reference
     return (
       prevProps.active === nextProps.active &&
       prevProps.focused === nextProps.focused
@@ -241,7 +237,6 @@ DPadButton.displayName = "DPadButton";
  * />
  * ```
  *
- * @public
  * @korean 가상방향패드
  */
 const VirtualDPadComponent: React.FC<VirtualDPadProps> = ({
@@ -259,7 +254,6 @@ const VirtualDPadComponent: React.FC<VirtualDPadProps> = ({
     null,
   );
 
-  // Throttle onMove callbacks to ~60fps for performance
   const throttledOnMove = useThrottle(onMove, 16);
 
   /**
@@ -306,7 +300,6 @@ const VirtualDPadComponent: React.FC<VirtualDPadProps> = ({
           setActiveDirection(direction);
           throttledOnMove(direction, "start");
           triggerHaptic("light");
-          // Release after brief delay
           setTimeout(() => {
             setActiveDirection(null);
             throttledOnMove(null, "end");
@@ -317,7 +310,6 @@ const VirtualDPadComponent: React.FC<VirtualDPadProps> = ({
     [disabled, throttledOnMove],
   );
 
-  // Memoize calculated dimensions to avoid recalculation
   const dimensions = useMemo(
     () => ({
       buttonSize: Math.max(48, size * 0.3),
@@ -326,7 +318,6 @@ const VirtualDPadComponent: React.FC<VirtualDPadProps> = ({
     [size],
   );
 
-  // Memoize color values
   const colors = useMemo(
     () => ({
       primary: getColorRGB(KOREAN_COLORS.PRIMARY_CYAN),

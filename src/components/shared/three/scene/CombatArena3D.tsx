@@ -18,7 +18,6 @@ import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import { ThreeObjectPools } from "../../../../utils/threeObjectPool";
-// Re-enabled after fixing KoreanSignage3D font prop issue
 import AtmosphericParticles3D from "./AtmosphericParticles3D";
 import KoreanSignage3D from "./KoreanSignage3D";
 
@@ -39,11 +38,8 @@ export interface CombatArena3DProps {
   readonly enableParticles?: boolean;
 }
 
-// Floor scaling constant for extended arena boundaries
 const FLOOR_SCALE_FACTOR = 1.5;
 
-// Shadow map size constants for performance optimization
-// Upgraded to 2048x2048 for crisp shadows on desktop
 const SHADOW_MAP_SIZE_MOBILE: [number, number] = [1024, 1024]; // Upgraded from 512x512
 const SHADOW_MAP_SIZE_DESKTOP: [number, number] = [2048, 2048]; // Upgraded from 1024x1024
 
@@ -60,30 +56,21 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
 }) => {
   const gridRef = useRef<THREE.GridHelper>(null);
 
-  // Animate grid rotation for cyberpunk effect
   useFrame(() => {
     if (gridRef.current) {
       gridRef.current.rotation.y += 0.0002;
     }
   });
 
-  // Use physics-based world dimensions for 1:1 meter mapping
-  // Floor extends 50% beyond arena bounds for visual buffer
   const effectiveDepth = worldDepthMeters ?? worldWidthMeters;
   const floorWidth = worldWidthMeters * FLOOR_SCALE_FACTOR;
   const floorDepth = effectiveDepth * FLOOR_SCALE_FACTOR;
   const gridSize = worldWidthMeters * FLOOR_SCALE_FACTOR;
-  // Boundary markers at 80% of arena width, 40% of depth
   const markerDistance = worldWidthMeters * 0.8;
   const markerDepth = effectiveDepth * 0.4;
 
-  // Memoized floor material with wet concrete aesthetic and reflections
-  // Performance: Uses ThreeObjectPools for temporary Color objects to reduce GC pressure
-  // Note: Empty dependency array is correct - KOREAN_COLORS is a const object
-  // and doesn't need to be included in dependencies
   const floorMaterial = useMemo(
     () => {
-      // Use pooled Color objects for temporary color creation
       const pooledBaseColor = ThreeObjectPools.color.acquire();
       const pooledEmissiveColor = ThreeObjectPools.color.acquire();
       
@@ -91,7 +78,6 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
         pooledBaseColor.set(0x2a2a2a); // Dark concrete
         pooledEmissiveColor.set(KOREAN_COLORS.PRIMARY_CYAN);
         
-        // Clone colors for material ownership (materials need their own color instances)
         const material = new THREE.MeshPhysicalMaterial({
           color: pooledBaseColor.clone(), // Material takes ownership of cloned color
           roughness: 0.3, // Wet/reflective surface
@@ -99,14 +85,12 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
           clearcoat: 0.3, // Wet sheen
           clearcoatRoughness: 0.4,
           envMapIntensity: 1.5, // Enhanced reflections from Environment preset
-          // Subtle emissive for neon reflection glow
           emissive: pooledEmissiveColor.clone(), // Material takes ownership of cloned color
           emissiveIntensity: 0.05,
         });
         
         return material;
       } finally {
-        // Release pooled colors back to pool after cloning
         ThreeObjectPools.color.release(pooledBaseColor);
         ThreeObjectPools.color.release(pooledEmissiveColor);
       }
@@ -114,7 +98,6 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
     [],
   );
 
-  // Cleanup floor material on unmount
   useEffect(() => {
     return () => {
       floorMaterial.dispose();

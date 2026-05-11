@@ -63,7 +63,6 @@ import type { StanceLaterality } from "../../trigram/types";
  * // sameAnimation === rightPunch (same reference)
  * ```
  *
- * @public
  * @category Animation Transform
  * @korean 애니메이션측면성적용
  */
@@ -294,7 +293,6 @@ function mirrorPosition(position: THREE.Vector3): THREE.Vector3 {
  * getAnimationLaterality(leftAnim);  // → "left"
  * ```
  *
- * @public
  * @category Animation Query
  * @korean 애니메이션측면성식별
  */
@@ -326,7 +324,6 @@ export function getAnimationLaterality(
  * areLateralityVariants(rightPunch, otherMove);  // → false
  * ```
  *
- * @public
  * @category Animation Query
  * @korean 애니메이션측면성변형확인
  */

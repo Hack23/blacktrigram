@@ -13,7 +13,6 @@ import {
 } from "../../../../utils/visualEffects";
 import { StatBar } from "./StatBarOverlayHtml";
 
-// Enhanced shape matching PLAYER_ARCHETYPES_DATA entries
 export interface ArchetypeDataShape {
   readonly id: string;
   readonly korean: string;
@@ -58,11 +57,9 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
       height = 300,
       isMobile: _isMobile = false, // Kept for interface compatibility, layout uses width
     }) => {
-      // Note: _isMobile intentionally unused - layout sizing uses width-based checks
       void _isMobile;
       const selectedArchetype = archetypes[selectedIndex];
 
-      // Responsive sizing with large desktop support - use width for layout
       const isSmallScreen = width < 768;
       const isLargeContainer = width >= 1100;
       const archImageWidth = isSmallScreen ? 140 : isLargeContainer ? 120 : 180;
@@ -95,7 +92,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
         onPlaySFX("menu_hover");
       }, [selectedIndex, archetypes.length, onArchetypeChange, onPlaySFX]);
 
-      // Convert real stats to 0-1 scale for visualization
       const combatStats = useMemo(() => {
         const maxStatValue = 100;
         return [
@@ -126,7 +122,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
         ];
       }, [selectedArchetype.stats]);
 
-      // Memoize RGBA color calculations and enhanced styles
       const colors = useMemo(
         () => ({
           archetypeColor: `#${selectedArchetype.color
@@ -150,7 +145,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
         [selectedArchetype.color],
       );
 
-      // Enhanced overlay styles
       const containerStyle = useMemo(
         () => ({
           ...getEnhancedKoreanOverlayStyles({
@@ -175,7 +169,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
         [width, height, contentGap, containerPadding, colors.archetypeColor],
       );
 
-      // Get archetype image path
       const archetypeImagePath = useMemo(() => {
         return `/assets/visual/archetypes/${selectedArchetype.textureKey}.png`;
       }, [selectedArchetype.textureKey]);
@@ -231,7 +224,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                 aria-label={`${selectedArchetype.korean} ${selectedArchetype.english} - Click or press Enter to cycle to next archetype`}
                 data-testid="archetype-image"
                 onError={(e) => {
-                  // Fallback if image doesn't load: use Black Trigram logo, prevent infinite loop
                   const target = e.currentTarget as HTMLImageElement;
                   if (!target.src.endsWith(FALLBACK_ARCHETYPE_IMAGE)) {
                     target.src = FALLBACK_ARCHETYPE_IMAGE;

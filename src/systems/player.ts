@@ -91,7 +91,6 @@ import {
  * };
  * ```
  *
- * @public
  * @category Player & Archetypes
  * @korean 플레이어상태
  */
@@ -267,7 +266,6 @@ export interface PlayerState {
  * };
  * ```
  *
- * @public
  * @category Player & Archetypes
  * @korean 플레이어생성
  */
@@ -294,7 +292,6 @@ export interface PlayerCreationData {
  *
  * Tracks performance metrics for a single combat match.
  *
- * @public
  * @category Player & Archetypes
  * @korean 경기통계
  */
@@ -339,7 +336,6 @@ export interface PlayerMatchStats {
  * };
  * ```
  *
- * @public
  * @category Player & Archetypes
  */
 export type PlayerUpdateData = Partial<PlayerState>;
@@ -352,7 +348,6 @@ export type PlayerUpdateData = Partial<PlayerState>;
  * Simplified player state for systems that don't require full combat data.
  * Useful for UI displays and simple calculations.
  *
- * @public
  * @category Player & Archetypes
  * @korean 최소상태
  */

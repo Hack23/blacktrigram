@@ -125,25 +125,6 @@ export const BaseHUDContainer: React.FC<BaseHUDContainerProps> = ({
   children,
   dataTestId,
 }) => {
-  // Calculate position-specific styles
-  // Using KOREAN_COLORS directly for stable memoization instead of useKoreanTheme
-  //
-  // Z-index stacking: defaults to Z_INDEX.HUD (50). Combat screen layers
-  // are ordered as: HUD_BACKGROUND (40) < HUD (50) < TECHNIQUE_BAR (55) < HUD_OVERLAY (60).
-  // Left/Right/Top/Bottom HUDs all share the same z-index (HUD = 50) and
-  // rely on DOM order for overlap resolution. The PlayerStateOverlay sits
-  // at HUD_OVERLAY (60) to appear above all HUD panels.
-  //
-  // Safe area note: left/right HUD panels are anchored to the viewport edge
-  // with left: 0 / right: 0. Reducing the width prop alone will not move a
-  // panel out of a landscape notch or horizontal safe-area cutout. If the
-  // parent needs to avoid env(safe-area-inset-left) /
-  // env(safe-area-inset-right), it should also provide a horizontal offset
-  // via the existing style prop (for example, left/right or horizontal
-  // padding) in addition to any width adjustments. Horizontal safe-area
-  // insets affect left/right panel widths and offsets, not topOffset (which
-  // is purely vertical). For portrait notch/status-bar avoidance, the parent
-  // should incorporate layout.safeArea.top into the topOffset calculation.
   const containerStyle = React.useMemo<React.CSSProperties>(() => {
     const baseStyle: React.CSSProperties = {
       position: "absolute",

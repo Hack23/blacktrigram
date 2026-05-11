@@ -145,7 +145,6 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
     return Math.min((timeSinceLastHit / comboWindow) * 100, 100);
   }, [isActive, comboCount, timeSinceLastHit, comboWindow]);
 
-  // Animate count on change
   useEffect(() => {
     if (comboCount > 0) {
       setAnimateCount(true);

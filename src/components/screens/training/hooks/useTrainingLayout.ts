@@ -80,24 +80,15 @@ export function useTrainingLayout(
   width: number,
   height: number,
 ): TrainingLayout {
-  // Determine screen size category using centralized scaling system
   const screenSize = useMemo(() => getScreenSize(width), [width]);
 
-  // Portrait orientation with hysteresis (see responsiveOrientationConstants)
-  // 세로 모드 감지 (히스테리시스 적용)
   const isPortrait = height > width * PORTRAIT_HYSTERESIS_FACTOR;
 
-  // Force mobile branch on narrow portrait viewports even if the user-agent
-  // says we're on desktop (devtools emulation + real rotated phones).
-  // 좁은 세로 화면에서는 모바일 레이아웃 강제
   const isMobile =
     shouldUseMobileControls() ||
     (isPortrait && width < PORTRAIT_FORCE_MAX_WIDTH_PX);
 
-  // Centralized layout constants for easier tweaking
-  // Enhanced with tablet-specific values for better responsive support
   const layoutConstants = useMemo<TrainingLayoutConstants>(() => {
-    // Determine if large desktop
     const isLargeDesktop = screenSize === "xlarge";
     const isTablet = screenSize === "tablet";
 
@@ -117,23 +108,14 @@ export function useTrainingLayout(
     };
   }, [isMobile, screenSize]);
 
-  // Training area bounds using orientation-aware aspect-ratio sizing
-  // Landscape mobile: 4:3 — horizontal dummy + analysis overlay
-  // Portrait mobile : 3:4 — vertical dummy + bottom training controls fit
   const trainingAreaBounds = useMemo<TrainingAreaBounds>(() => {
     const areaY = layoutConstants.headerHeight + layoutConstants.padding;
 
-    // Calculate world dimensions based on screen resolution (not device type)
     const worldDimensions = calculateArenaWorldDimensions(width);
 
-    // Mobile-specific training area sizing for better screen fit
     if (isMobile) {
       const isExtraSmall = width < 380;
       const topClearance = isExtraSmall ? 75 : 80;
-      // Portrait needs the full bottom band reserved (training controls +
-      // footer + virtual controls) so the arena doesn't end up behind them.
-      // Training's virtual-controls band is lighter than Combat's, so the
-      // shared helper picks the "training" variant.
       const bottomClearance = mobileControlsBottomClearance(
         layoutConstants.controlsHeight,
         layoutConstants.footerHeight,
@@ -152,7 +134,6 @@ export function useTrainingLayout(
       );
     }
 
-    // Desktop training area sizing - create 4:3 aspect ratio arena
     const totalReservedHeight =
       layoutConstants.headerHeight +
       layoutConstants.controlsHeight +
@@ -161,18 +142,14 @@ export function useTrainingLayout(
     const availableHeight = height - totalReservedHeight - totalPadding;
     const availableWidth = getDesktopArenaWidthBudget(width);
 
-    // Calculate arena dimensions with 4:3 aspect ratio (width > height)
-    // Start with available width, constrain by height if needed
     let arenaWidth = availableWidth;
     let arenaHeight = arenaWidth * (3 / 4); // 4:3 aspect ratio
 
-    // If height is constrained, recalculate from height
     if (arenaHeight > availableHeight) {
       arenaHeight = availableHeight;
       arenaWidth = arenaHeight * (4 / 3);
     }
 
-    // Calculate pixels-per-meter and scale
     const pixelsPerMeter = arenaWidth / worldDimensions.widthMeters;
     const referencePixelsPerMeter = 100;
     const scale = pixelsPerMeter / referencePixelsPerMeter;

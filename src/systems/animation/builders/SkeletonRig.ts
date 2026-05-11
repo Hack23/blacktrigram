@@ -288,7 +288,6 @@ export const createHumanoidRig = (): SkeletalRig => {
  * // Height: 188cm, Legs: 100cm, Arms: 84cm, Shoulders: 54cm (25% wider!)
  * ```
  *
- * @public
  * @korean 크기조정된인간형골격생성
  */
 export const createScaledHumanoidRig = (
@@ -1121,7 +1120,6 @@ export const createHumanoidRigWithHands = (
  * - 허리회전 (Heorhwoejeon) - Torso rotation
  * - 해부학적제약 (Haebuhakjeok Jeyak) - Anatomical constraints
  *
- * @public
  * @korean 허리회전제약조건
  */
 export const TORSO_CONSTRAINTS = {
@@ -1182,7 +1180,6 @@ export const TORSO_CONSTRAINTS = {
  * // Returns 0 (opponent is already aligned with hips)
  * ```
  *
- * @public
  * @korean 상대를향한허리회전계산
  */
 export function calculateTorsoRotation(
@@ -1240,7 +1237,6 @@ export function calculateTorsoRotation(
  * // Returns 1.05 (5% damage bonus)
  * ```
  *
- * @public
  * @korean 허리회전으로인한데미지배율계산
  */
 export function calculateHipRotationPowerModifier(

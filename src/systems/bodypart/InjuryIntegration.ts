@@ -23,7 +23,6 @@ import { Injury } from "../../types/injury";
  * @param playerId - Optional player ID for multi-player scenarios
  * @returns Injury in TraumaOverlay3D format
  * 
- * @public
  */
 export function convertInjuryForVisualization(
   injuryLocation: InjuryLocation,
@@ -54,7 +53,6 @@ export function convertInjuryForVisualization(
  * @param playerId - Optional player ID
  * @returns Array of injuries in TraumaOverlay3D format
  * 
- * @public
  */
 export function convertInjuriesForVisualization(
   injuryLocations: InjuryLocation[],

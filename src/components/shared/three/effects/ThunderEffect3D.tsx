@@ -47,9 +47,6 @@ const LightningArc: React.FC<{
 }> = ({ start, end, intensity, color }) => {
   const lineRef = useRef<THREE.Line>(null);
 
-  // Create line object with useState lazy initializer. The instance is mutable
-  // THREE.js state which is intentionally modified in-place in useEffect/useFrame
-  // below (disposing and re-creating each frame would leak GPU resources).
   const [line] = useState(() => {
     const points: THREE.Vector3[] = [];
     const segments = 8;
@@ -59,7 +56,6 @@ const LightningArc: React.FC<{
       const t = i / segments;
       const point = new THREE.Vector3().lerpVectors(start, end, t);
 
-      // Add random zigzag displacement (except at endpoints)
       if (i > 0 && i < segments) {
         point.x += (Math.random() - 0.5) * displacement;
         point.y += (Math.random() - 0.5) * displacement;
@@ -80,14 +76,10 @@ const LightningArc: React.FC<{
     return new THREE.Line(geometry, material);
   });
 
-  // Update line geometry and material in-place when props change.
-  // THREE.js objects are mutable GPU resources and must be mutated in-place
-  // rather than replaced (disposing/recreating each frame would leak GPU memory).
   // eslint-disable-next-line react-hooks/immutability
   useEffect(() => {
     const positions = line.geometry.attributes.position.array as Float32Array;
     
-    // Update geometry points
     const segments = 8;
     const displacement = 0.2 * intensity;
     
@@ -95,7 +87,6 @@ const LightningArc: React.FC<{
       const t = i / segments;
       const point = new THREE.Vector3().lerpVectors(start, end, t);
       
-      // Add random zigzag displacement (except at endpoints)
       if (i > 0 && i < segments) {
         point.x += (Math.random() - 0.5) * displacement;
         point.y += (Math.random() - 0.5) * displacement;
@@ -110,7 +101,6 @@ const LightningArc: React.FC<{
     
     line.geometry.attributes.position.needsUpdate = true;
     
-    // Update material properties
     const material = line.material as THREE.LineBasicMaterial;
     material.opacity = intensity;
     material.color.set(color);
@@ -120,7 +110,6 @@ const LightningArc: React.FC<{
   // eslint-disable-next-line react-hooks/immutability
   useFrame(() => {
     if (lineRef.current) {
-      // Flicker effect - mutating THREE.js material is the intended pattern
       const flicker = 0.8 + Math.random() * 0.2;
       const material = line.material as THREE.LineBasicMaterial;
       // eslint-disable-next-line react-hooks/immutability
@@ -153,14 +142,11 @@ const ElectricSpark: React.FC<{
 
   useFrame((_, delta) => {
     if (meshRef.current) {
-      // Update position with velocity
       positionRef.current.addScaledVector(velocityRef.current, delta);
       meshRef.current.position.copy(positionRef.current);
 
-      // Apply gravity
       velocityRef.current.y -= 9.8 * delta;
 
-      // Fade out
       const material = meshRef.current.material as THREE.MeshBasicMaterial;
       material.opacity *= 0.95;
     }
@@ -191,14 +177,11 @@ const ThunderChargeEffect: React.FC<{
 }> = ({ position, intensity }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Create multiple lightning arcs in a sphere pattern
   const arcs = useMemo(() => {
     const arcData: Array<{ start: THREE.Vector3; end: THREE.Vector3 }> = [];
-    // Center at local origin; group.position handles world offset
     const center = new THREE.Vector3(0, 0, 0);
     const radius = 0.5 * intensity;
 
-    // Create 6 arcs from surrounding points to center
     for (let i = 0; i < 6; i++) {
       const angle = (i * Math.PI * 2) / 6;
       const start = new THREE.Vector3(
@@ -214,7 +197,6 @@ const ThunderChargeEffect: React.FC<{
 
   useFrame(() => {
     if (groupRef.current) {
-      // Pulsing rotation
       groupRef.current.rotation.y += 0.05;
       const pulse = Math.sin(Date.now() * 0.005) * 0.1 + 1;
       groupRef.current.scale.setScalar(pulse);
@@ -267,7 +249,6 @@ const ThunderReleaseEffect: React.FC<{
 }> = ({ position, intensity, progressRef, active }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Generate electric sparks - regenerate when position changes or effect activates
   const [sparks, setSparks] = useState<Array<{
     position: THREE.Vector3;
     velocity: THREE.Vector3;
@@ -280,10 +261,8 @@ const ThunderReleaseEffect: React.FC<{
       position: THREE.Vector3;
       velocity: THREE.Vector3;
     }> = [];
-    // Center at local origin; group.position handles world offset
     const center = new THREE.Vector3(0, 0, 0);
 
-    // Create 20 sparks in random directions
     for (let i = 0; i < 20; i++) {
       const angle = Math.random() * Math.PI * 2;
       const elevation = Math.random() * Math.PI - Math.PI / 2;
@@ -304,11 +283,9 @@ const ThunderReleaseEffect: React.FC<{
   useFrame(() => {
     if (groupRef.current) {
       const progress = progressRef.current;
-      // Expanding explosion
       const scale = 1 + progress * 2;
       groupRef.current.scale.setScalar(scale);
 
-      // Fade out over time (skip ElectricSpark meshes which have their own fade logic)
       groupRef.current.traverse((object) => {
         if (
           object instanceof THREE.Mesh &&

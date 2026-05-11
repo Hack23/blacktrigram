@@ -68,7 +68,6 @@ const MAX_COUNTER_RANGE_METERS = 1.0;
  * @param currentTime - Current time in technique execution (ms)
  * @returns Counter opportunity if one exists, undefined otherwise
  *
- * @public
  * @korean 반격기회계산
  */
 export function calculateCounterOpportunity(
@@ -179,7 +178,6 @@ function getRecommendedCounters(
  * @param currentTime - Current time in technique execution (ms)
  * @returns Vulnerability multiplier (1.0 = normal, >1.0 = more vulnerable)
  *
- * @public
  * @korean 취약성배수계산
  */
 export function calculateVulnerabilityMultiplier(
@@ -235,7 +233,6 @@ export function calculateVulnerabilityMultiplier(
  * @param isLeftSided - Whether the technique uses the left side
  * @returns The exposed limb type
  *
- * @public
  * @korean 노출사지결정
  */
 export function determineExposedLimb(
@@ -293,7 +290,6 @@ export function determineExposedLimb(
  * @param exposedLimb - The exposed limb
  * @returns The breaking target joint/bone
  *
- * @public
  * @korean 파쇄목표매핑
  */
 export function mapLimbToBreakingTarget(
@@ -329,7 +325,6 @@ export function mapLimbToBreakingTarget(
  * extensibility. It may be used to apply technique-specific modifiers or
  * validate technique compatibility with the breaking target.
  *
- * @public
  * @korean 파쇄기술효과계산
  */
 export function calculateBreakingResult(
@@ -427,7 +422,6 @@ export function calculateBreakingResult(
  * @param distance - Distance between attacker and defender (meters)
  * @returns Whether the counter can be executed
  *
- * @public
  * @korean 반격실행가능확인
  */
 export function canExecuteCounter(
@@ -460,7 +454,6 @@ export function canExecuteCounter(
  * @param technique - The technique to generate exposure for
  * @returns Generated limb exposure window
  *
- * @public
  * @korean 사지노출시간생성
  */
 export function generateLimbExposureWindow(

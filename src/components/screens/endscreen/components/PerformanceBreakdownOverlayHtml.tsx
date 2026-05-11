@@ -94,23 +94,19 @@ const CategoryRating: React.FC<CategoryRatingProps> = ({
  * Calculate category scores from match statistics
  */
 function calculateCategoryScores(stats: PlayerMatchStats) {
-  // Offense: Based on damage dealt and hits landed
   const offense = Math.min(
     (stats.totalDamageDealt / 100) * 50 + (stats.hitsLanded / 10) * 50,
     100
   );
 
-  // Defense: Based on damage received (inverted) and hits taken (inverted)
   const defenseRaw = Math.max(0, 100 - stats.totalDamageReceived / 2);
   const defense = Math.min(defenseRaw, 100);
 
-  // Technique: Based on perfect strikes and vital point hits
   const technique = Math.min(
     stats.perfectStrikes * 15 + stats.vitalPointHits * 10,
     100
   );
 
-  // Efficiency: Based on damage ratio
   const damageRatio =
     stats.totalDamageReceived > 0
       ? stats.totalDamageDealt / stats.totalDamageReceived
@@ -145,7 +141,6 @@ export const PerformanceBreakdown: React.FC<PerformanceBreakdownProps> = ({
     [winnerStats]
   );
 
-  // Technique breakdown
   const techniqueCount = winnerStats.techniques?.length ?? 0;
   const uniqueTechniques = useMemo(() => {
     if (!winnerStats.techniques || winnerStats.techniques.length === 0) {
