@@ -33,7 +33,6 @@ export type SafeAreaEdge = "top" | "bottom" | "left" | "right";
  * getSafeAreaInset('bottom', 20); // "env(safe-area-inset-bottom, 20px)"
  * ```
  * 
- * @public
  * @korean 안전영역삽입얻기
  */
 export function getSafeAreaInset(
@@ -70,7 +69,6 @@ export function getSafeAreaInset(
  * // }
  * ```
  * 
- * @public
  * @korean 안전영역패딩얻기
  */
 export function getSafeAreaPadding(
@@ -105,7 +103,6 @@ export function getSafeAreaPadding(
  * // "calc(20px + env(safe-area-inset-bottom, 34px))"
  * ```
  * 
- * @public
  * @korean 안전영역위치얻기
  */
 export function getSafeAreaPosition(
@@ -128,7 +125,6 @@ export function getSafeAreaPosition(
  * // "calc(100vh - env(safe-area-inset-top, 44px) - env(safe-area-inset-bottom, 34px))"
  * ```
  * 
- * @public
  * @korean 안전영역높이얻기
  */
 export function getSafeAreaHeight(
@@ -151,7 +147,6 @@ export function getSafeAreaHeight(
  * }
  * ```
  * 
- * @public
  * @korean 안전영역삽입여부
  */
 export function hasSafeAreaInsets(): boolean {
@@ -188,7 +183,6 @@ export function hasSafeAreaInsets(): boolean {
  * });
  * ```
  * 
- * @public
  * @korean 안전영역스타일얻기
  */
 export function getSafeAreaStyles(options: {

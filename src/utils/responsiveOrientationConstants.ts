@@ -18,7 +18,6 @@
  * factor is < 1.0 so near-square viewports (e.g. `1024×1000`) settle into
  * one orientation and don't flap on every pixel of resize.
  *
- * @public
  */
 export const PORTRAIT_HYSTERESIS_FACTOR = 0.9;
 
@@ -30,7 +29,6 @@ export const PORTRAIT_HYSTERESIS_FACTOR = 0.9;
  * This makes devtools emulation of a rotated phone/tablet behave identically
  * to a real device.
  *
- * @public
  */
 export const PORTRAIT_FORCE_MAX_WIDTH_PX = 1024;
 
@@ -47,7 +45,6 @@ export const PORTRAIT_FORCE_MAX_WIDTH_PX = 1024;
  * D-Pad + action buttons + the persistent technique bar. Training uses
  * the smaller 180/140 band because its on-screen controls are lighter.
  *
- * @public
  */
 export const MOBILE_CONTROLS_RESERVED_HEIGHT_PX = {
   /** D-Pad + action buttons + technique bar on combat (standard phones) */
@@ -67,7 +64,6 @@ export const MOBILE_CONTROLS_RESERVED_HEIGHT_PX = {
  * compact values reserve only the visible bottom technique/control band while
  * still keeping the 3D arena above touch controls.
  *
- * @public
  */
 export const LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX = {
   /** Combat bottom band on landscape phones */
@@ -89,7 +85,6 @@ export const LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX = {
  * @param isExtraSmall - true when the viewport is < 380px wide
  * @param variant - "combat" or "training" (differs in control band size)
  *
- * @public
  */
 export function portraitMobileControlsBottomBand(
   controlsHeight: number,
@@ -115,7 +110,6 @@ export function portraitMobileControlsBottomBand(
  * @param isExtraSmall - true when the viewport is < 380px wide
  * @param variant - "combat" or "training"
  *
- * @public
  */
 export function landscapeMobileControlsBottomClearance(
   isExtraSmall: boolean,
@@ -145,7 +139,6 @@ export function landscapeMobileControlsBottomClearance(
  * @param isPortrait - true for portrait orientation
  * @param variant - "combat" or "training"
  *
- * @public
  */
 export function mobileControlsBottomClearance(
   controlsHeight: number,
