@@ -1,8 +1,18 @@
 /**
- * Animation constants for Black Trigram Korean martial arts
+ * Animation constants for Black Trigram Korean martial arts.
+ *
+ * @module types/constants/animations
+ * @category Animation Constants
+ * @korean 애니메이션상수
  */
 
-// Animation durations (in milliseconds)
+/**
+ * Animation durations in milliseconds for UI and combat animations.
+ *
+ * @constant
+ * @category Animation Constants
+ * @korean 애니메이션지속시간
+ */
 export const ANIMATION_DURATIONS = {
   // UI animations
   BUTTON_HOVER: 150,
@@ -29,7 +39,13 @@ export const ANIMATION_DURATIONS = {
   KI_FLOW_PULSE: 1200,
 } as const;
 
-// Animation easing curves
+/**
+ * Animation easing curve definitions.
+ *
+ * @constant
+ * @category Animation Constants
+ * @korean 애니메이션이징곡선
+ */
 export const ANIMATION_EASING = {
   LINEAR: "linear",
   EASE_IN: "ease-in",
@@ -40,7 +56,13 @@ export const ANIMATION_EASING = {
   BACK: "cubic-bezier(0.6, -0.28, 0.735, 0.045)",
 } as const;
 
-// Animation frame configurations
+/**
+ * Animation frame configurations for common animation states.
+ *
+ * @constant
+ * @category Animation Constants
+ * @korean 애니메이션프레임설정
+ */
 export const FRAME_CONFIGS = {
   IDLE: {
     frames: 4,
@@ -69,7 +91,15 @@ export const FRAME_CONFIGS = {
   },
 } as const;
 
-// Korean martial arts animation sequences
+/**
+ * Korean martial arts specific animation sequences.
+ *
+ * Defines stance transitions and technique animations for the Eight Trigram system.
+ *
+ * @constant
+ * @category Animation Constants
+ * @korean 한국무술애니메이션순서
+ */
 export const KOREAN_MARTIAL_ANIMATIONS = {
   STANCE_TRANSITIONS: {
     GEON_TO_TAE: { frames: 12, duration: 500 },
