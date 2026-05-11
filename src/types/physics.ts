@@ -26,7 +26,6 @@ import type {
  * The five main body regions used for bounding box collision detection.
  * Each region contains multiple vital points.
  *
- * @public
  * @category Collision Types
  * @korean 해부영역
  */
@@ -42,7 +41,6 @@ export type AnatomicalRegionPhysics =
  *
  * **Korean**: 경계 상자 형태
  *
- * @public
  * @category Collision Types
  * @korean 경계형태
  */
@@ -55,7 +53,6 @@ export type BoundingBoxType = "sphere" | "box" | "capsule";
  *
  * Defines which body part's length is used for reach calculation.
  *
- * @public
  * @category Combat Types
  * @korean 신체부위
  */
@@ -69,7 +66,6 @@ export type ReachBodyPart = "arm" | "leg" | "torso";
  * Granular limb identification for counter-attack and breaking techniques.
  * Each limb can be targeted during its extension phase.
  *
- * @public
  * @category Combat Types
  * @korean 사지부위
  */
@@ -95,7 +91,6 @@ export type ExposedLimbType =
  * Defines when and how a limb becomes vulnerable during attack execution.
  * Used for counter-attacks, breaking techniques, and defensive opportunities.
  *
- * @public
  * @category Combat Types
  * @korean 사지노출시간
  */
@@ -184,7 +179,6 @@ export interface LimbExposureWindow {
  * };
  * ```
  *
- * @public
  * @category Combat Types
  * @korean 물리적도달설정
  */
@@ -230,7 +224,6 @@ export interface PhysicalReachConfig {
  *
  * @param baseExtension - The base extension multiplier to validate.
  * @returns `true` if the value is within the inclusive range [0.0, 1.5], otherwise `false`.
- * @public
  * @category Combat Types
  * @korean 기본확장배수검증
  */
@@ -249,7 +242,6 @@ export function isValidBaseExtension(baseExtension: number): boolean {
  *
  * @param config - The PhysicalReachConfig instance to validate.
  * @throws RangeError If baseExtension is outside [0.0, 1.5].
- * @public
  * @category Combat Types
  * @korean 물리적도달설정검증
  */
@@ -269,7 +261,6 @@ export function assertValidPhysicalReachConfig(
  *
  * **Korean**: 기술 유형
  *
- * @public
  * @category Combat Types
  * @korean 기술유형
  */
@@ -298,7 +289,6 @@ export type TechniqueType =
  * };
  * ```
  *
- * @public
  * @category Collision Types
  * @korean 경계상자
  */
@@ -323,7 +313,6 @@ export interface BoundingBox {
  *
  * Extends the 2D Position type with a z-coordinate for Three.js integration.
  *
- * @public
  * @category Core Types
  * @korean 3D위치
  */
@@ -356,7 +345,6 @@ export interface Position3D {
  * };
  * ```
  *
- * @public
  * @category Combat Types
  * @korean 공격범위
  */
@@ -396,7 +384,6 @@ export interface AttackReach {
  * };
  * ```
  *
- * @public
  * @category Collision Types
  * @korean 충돌결과
  */
@@ -456,7 +443,6 @@ export interface CollisionVitalPoint {
  * };
  * ```
  *
- * @public
  * @category Combat Types
  * @korean 반격기회
  */
@@ -506,7 +492,6 @@ export interface CounterOpportunity {
  * Specific joint and bone targets for breaking techniques.
  * Used for limb-breaking counter-attacks.
  *
- * @public
  * @category Combat Types
  * @korean 파쇄목표
  */
@@ -526,7 +511,6 @@ export type BreakingTarget =
  * Result of a breaking technique attempt, including injury severity
  * and status effects applied to the broken limb.
  *
- * @public
  * @category Combat Types
  * @korean 파쇄결과
  */
@@ -577,7 +561,6 @@ export interface BreakingResult {
  *
  * Defines the parameters for a raycasting operation from attacker to target.
  *
- * @public
  * @category Collision Types
  * @korean 레이캐스트쿼리
  */
@@ -600,7 +583,6 @@ export interface RaycastQuery {
  *
  * **Korean**: 기본 범위 값
  *
- * @public
  * @category Combat Constants
  * @korean 기본범위값
  */
@@ -622,7 +604,6 @@ export const BASE_REACH: Record<TechniqueType, number> = {
  * - Defensive stances (Mountain) reduce reach
  * - Balanced stances (Heaven, Earth) have minor adjustments
  *
- * @public
  * @category Combat Constants
  * @korean 팔괘범위수정자
  */
@@ -642,7 +623,6 @@ export const STANCE_REACH_MODIFIERS: Record<TrigramStance, number> = {
  *
  * **Korean**: 충돌 감지 용어
  *
- * @public
  * @category Korean Terms
  * @korean 충돌용어
  */
@@ -663,7 +643,6 @@ export const COLLISION_KOREAN_TERMS = {
  *
  * Standard dimensions for adult human anatomical regions used for bounding box creation.
  *
- * @public
  * @category Collision Constants
  * @korean 해부영역치수
  */
