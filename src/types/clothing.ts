@@ -18,7 +18,6 @@ import type { Bone } from "./skeletal";
 /**
  * Clothing item type categories
  *
- * @public
  * @category Clothing
  * @korean 의류종류
  */
@@ -35,7 +34,6 @@ export type ClothingType =
 /**
  * Clothing material types affecting appearance
  *
- * @public
  * @category Clothing
  * @korean 소재
  */
@@ -50,7 +48,6 @@ export type ClothingMaterial =
 /**
  * Clothing fit style
  *
- * @public
  * @category Clothing
  * @korean 착용스타일
  */
@@ -59,7 +56,6 @@ export type ClothingFit = "tight" | "fitted" | "loose" | "oversized";
 /**
  * Individual clothing item configuration
  *
- * @public
  * @category Clothing
  * @korean 의류아이템
  */
@@ -144,7 +140,7 @@ export interface ClothingItem {
 
   /**
    * Bones to attach this clothing to
-   * @korean 부착뼈
+   * @korean 부착뉴
    */
   readonly attachedBones: string[];
 
@@ -164,7 +160,6 @@ export interface ClothingItem {
 /**
  * Complete clothing set for an archetype
  *
- * @public
  * @category Clothing
  * @korean 의류세트
  */
@@ -219,7 +214,6 @@ export interface ClothingSet {
 /**
  * LOD (Level of Detail) settings for performance optimization
  *
- * @public
  * @category Clothing
  * @korean LOD설정
  */
@@ -258,7 +252,6 @@ export interface ClothingLODSettings {
 /**
  * Material preset configurations for common clothing types
  *
- * @public
  * @category Clothing
  * @korean 재료프리셋
  */
@@ -285,7 +278,6 @@ export interface MaterialPreset {
 /**
  * Props for ClothingSystem component
  *
- * @public
  * @category Component Props
  * @korean 의류시스템속성
  */
@@ -304,7 +296,7 @@ export interface ClothingSystemProps {
 
   /**
    * Bone map from skeletal rig for attachment
-   * @korean 뼈맵
+   * @korean 뉴맵
    */
   readonly boneMap: Map<string, Bone>;
 
@@ -330,7 +322,6 @@ export interface ClothingSystemProps {
 /**
  * Props for individual clothing item component
  *
- * @public
  * @category Component Props
  * @korean 의류아이템속성
  */

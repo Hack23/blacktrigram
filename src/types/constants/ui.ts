@@ -1,5 +1,9 @@
 /**
- * UI constants for Black Trigram Korean martial arts interface
+ * UI constants for Black Trigram Korean martial arts interface.
+ *
+ * @module types/constants/ui
+ * @category UI Constants
+ * @korean UI상수
  */
 
 import { KOREAN_COLORS } from "./colors";
@@ -19,7 +23,13 @@ export const SAFE_AREA_INSETS = {
   RIGHT: 0, // No side notches on most devices
 } as const;
 
-// Layout dimensions
+/**
+ * Layout dimension constants for UI components.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean UI치수
+ */
 export const UI_DIMENSIONS = {
   HEADER_HEIGHT: 80,
   FOOTER_HEIGHT: 60,
@@ -46,7 +56,13 @@ export const UI_DIMENSIONS = {
   TOUCH_TARGET_SPACING: 8, // Minimum spacing between touch targets
 } as const;
 
-// Z-index layers
+/**
+ * Z-index layer values for UI stacking context.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean Z인덱스레이어
+ */
 export const Z_INDEX = {
   BACKGROUND: 0,
   GAME_WORLD: 100,
@@ -57,7 +73,13 @@ export const Z_INDEX = {
   DEBUG_OVERLAY: 1000,
 } as const;
 
-// UI spacing
+/**
+ * Spacing values in pixels for consistent layout margins and padding.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean UI간격
+ */
 export const SPACING = {
   XS: 4,
   SM: 8,
@@ -68,7 +90,13 @@ export const SPACING = {
   COMPACT: 12, // Mobile compact spacing
 } as const;
 
-// Border radius values
+/**
+ * Border radius values in pixels for consistent rounded corners.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean 테두리반경
+ */
 export const BORDER_RADIUS = {
   NONE: 0,
   SM: 4,
@@ -78,7 +106,13 @@ export const BORDER_RADIUS = {
   ROUND: 9999,
 } as const;
 
-// Shadow definitions
+/**
+ * Box shadow definitions for depth and elevation effects.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean UI그림자
+ */
 export const SHADOWS = {
   SM: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
   MD: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
@@ -88,7 +122,13 @@ export const SHADOWS = {
   KOREAN_GLOW: "0 0 15px rgba(255, 215, 0, 0.4)",
 } as const;
 
-// Animation curves for UI
+/**
+ * Animation curve CSS transition strings for UI.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean UI애니메이션타이밍
+ */
 export const UI_ANIMATIONS = {
   FAST: "150ms ease-out",
   NORMAL: "250ms ease-in-out",
@@ -96,7 +136,13 @@ export const UI_ANIMATIONS = {
   BOUNCE: "300ms cubic-bezier(0.68, -0.55, 0.265, 1.55)",
 } as const;
 
-// Button states
+/**
+ * Button state colour tokens for normal, hover, pressed, and disabled states.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean 버튼상태
+ */
 export const BUTTON_STATES = {
   NORMAL: {
     background: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
@@ -124,7 +170,13 @@ export const BUTTON_STATES = {
   },
 } as const;
 
-// Health bar colors
+/**
+ * Health bar colour thresholds for player vital display.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean 체력바색상
+ */
 export const HEALTH_COLORS = {
   FULL: KOREAN_COLORS.POSITIVE_GREEN,
   HIGH: KOREAN_COLORS.ACCENT_YELLOW,
@@ -134,7 +186,13 @@ export const HEALTH_COLORS = {
   UNCONSCIOUS: KOREAN_COLORS.UI_GRAY,
 } as const;
 
-// Status effect colors
+/**
+ * Status effect colour tokens for positive, negative, and neutral effects.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean 상태효과색상
+ */
 export const STATUS_COLORS = {
   POSITIVE: KOREAN_COLORS.POSITIVE_GREEN,
   NEGATIVE: KOREAN_COLORS.NEGATIVE_RED,
@@ -143,7 +201,13 @@ export const STATUS_COLORS = {
   PERMANENT: KOREAN_COLORS.ACCENT_PURPLE,
 } as const;
 
-// Combat feedback colors
+/**
+ * Combat feedback colour tokens for hit, block, and special strike results.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean 전투피드백색상
+ */
 export const COMBAT_FEEDBACK_COLORS = {
   HIT: KOREAN_COLORS.ACCENT_RED,
   CRITICAL_HIT: KOREAN_COLORS.CRITICAL_HIT,
@@ -194,6 +258,13 @@ export const UI_CONSTANTS = {
   Z_TOOLTIP: 2000,
 } as const;
 
+/**
+ * Cyberpunk visual-effect intensity values for glows, flickers, and scanlines.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean 사이버팡크UI효과
+ */
 export const CYBERPUNK_UI_EFFECTS = {
   GLOW_INTENSITY: 0.3,
   PULSE_SPEED: 2.0,
@@ -202,6 +273,13 @@ export const CYBERPUNK_UI_EFFECTS = {
   NOISE_INTENSITY: 0.05,
 } as const;
 
+/**
+ * Korean traditional layout proportions and spacing ratios.
+ *
+ * @constant
+ * @category UI Constants
+ * @korean 한국UI레이아웃
+ */
 export const KOREAN_UI_LAYOUTS = {
   // Traditional Korean proportions
   GOLDEN_RATIO: 1.618,
