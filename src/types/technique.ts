@@ -51,6 +51,7 @@ export type TechniqueKey =
  * const thunderStrike: Technique = {
  *   id: "musa_thunder_strike",
  *   name: {
+
  *     korean: "천둥벽력",
  *     english: "Thunder Strike"
  *   },
