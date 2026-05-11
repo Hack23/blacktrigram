@@ -30,7 +30,6 @@ const DESKTOP_ARENA_MAX_WIDTH_PX = 2560;
  * @param width - Viewport width in CSS pixels
  * @returns Width budget for the 4:3 desktop arena
  *
- * @public
  */
 export function getDesktopArenaWidthBudget(width: number): number {
   return Math.min(width * DESKTOP_ARENA_WIDTH_RATIO, DESKTOP_ARENA_MAX_WIDTH_PX);
@@ -89,13 +88,6 @@ const BASE_LAYOUT_VALUES = {
  * @param screenSize - Current screen size category
  * @returns Calculated padding in pixels
  * 
- * @example
- * ```typescript
- * const padding = getResponsivePadding('xlarge'); // 35
- * const padding = getResponsivePadding('mobile'); // 20
- * ```
- * 
- * @public
  */
 export function getResponsivePadding(screenSize: ScreenSize): number {
   return BASE_LAYOUT_VALUES.padding[screenSize];
@@ -107,13 +99,6 @@ export function getResponsivePadding(screenSize: ScreenSize): number {
  * @param screenSize - Current screen size category
  * @returns Calculated header height in pixels
  * 
- * @example
- * ```typescript
- * const headerHeight = getResponsiveHeaderHeight('xlarge'); // 120
- * const headerHeight = getResponsiveHeaderHeight('mobile'); // 90
- * ```
- * 
- * @public
  */
 export function getResponsiveHeaderHeight(screenSize: ScreenSize): number {
   return BASE_LAYOUT_VALUES.headerHeight[screenSize];
@@ -125,13 +110,6 @@ export function getResponsiveHeaderHeight(screenSize: ScreenSize): number {
  * @param screenSize - Current screen size category
  * @returns Calculated footer height in pixels
  * 
- * @example
- * ```typescript
- * const footerHeight = getResponsiveFooterHeight('xlarge'); // 100
- * const footerHeight = getResponsiveFooterHeight('mobile'); // 75
- * ```
- * 
- * @public
  */
 export function getResponsiveFooterHeight(screenSize: ScreenSize): number {
   return BASE_LAYOUT_VALUES.footerHeight[screenSize];
@@ -143,13 +121,6 @@ export function getResponsiveFooterHeight(screenSize: ScreenSize): number {
  * @param screenSize - Current screen size category
  * @returns Calculated section spacing in pixels
  * 
- * @example
- * ```typescript
- * const spacing = getResponsiveSectionSpacing('xlarge'); // 25
- * const spacing = getResponsiveSectionSpacing('mobile'); // 15
- * ```
- * 
- * @public
  */
 export function getResponsiveSectionSpacing(screenSize: ScreenSize): number {
   return BASE_LAYOUT_VALUES.sectionSpacing[screenSize];
@@ -161,13 +132,6 @@ export function getResponsiveSectionSpacing(screenSize: ScreenSize): number {
  * @param screenSize - Current screen size category
  * @returns Calculated button area in pixels
  * 
- * @example
- * ```typescript
- * const buttonArea = getResponsiveButtonArea('xlarge'); // 110
- * const buttonArea = getResponsiveButtonArea('mobile'); // 75
- * ```
- * 
- * @public
  */
 export function getResponsiveButtonArea(screenSize: ScreenSize): number {
   return BASE_LAYOUT_VALUES.buttonArea[screenSize];
@@ -180,19 +144,6 @@ export function getResponsiveButtonArea(screenSize: ScreenSize): number {
  * @param width - Screen width in pixels
  * @returns Object with all layout constant values
  * 
- * @example
- * ```typescript
- * const layout = getLayoutConstants(3840); // 4K display
- * // {
- * //   padding: 35,
- * //   headerHeight: 120,
- * //   footerHeight: 100,
- * //   sectionSpacing: 25,
- * //   buttonArea: 110
- * // }
- * ```
- * 
- * @public
  */
 export function getLayoutConstants(width: number) {
   const screenSize = getScreenSize(width);
@@ -221,22 +172,6 @@ export function getLayoutConstants(width: number) {
  * @param isMobile - Optional: Whether device is mobile (from user-agent detection)
  * @returns Object with combat layout constant values
  * 
- * @example
- * ```typescript
- * // Extra-small mobile (iPhone SE)
- * const layout = getCombatLayoutConstants(375, true);
- * // { padding: 8, hudHeight: 85, controlsHeight: 150, ... }
- * 
- * // High-res mobile (Motorola Edge 60 Pro)
- * const layoutHD = getCombatLayoutConstants(2712, true);
- * // { padding: 10, hudHeight: 95, controlsHeight: 160, ... } (mobile values!)
- * 
- * // Desktop
- * const layoutDesktop = getCombatLayoutConstants(1920, false);
- * // { padding: 10, hudHeight: 135, controlsHeight: 175, ... } (desktop values)
- * ```
- * 
- * @public
  */
 export function getCombatLayoutConstants(width: number, isMobile?: boolean) {
   // For mobile devices, force 'mobile' screen size regardless of pixel width
