@@ -280,7 +280,6 @@ const MobileTimer: React.FC<MobileTimerProps> = ({
  * />
  * ```
  *
- * @public
  * @korean 모바일HUD레이아웃
  */
 export const MobileHUDLayout: React.FC<MobileHUDLayoutProps> = ({

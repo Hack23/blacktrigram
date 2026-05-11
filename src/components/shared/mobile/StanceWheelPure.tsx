@@ -130,7 +130,6 @@ const getStanceColor = (stance: TrigramStance): number => {
  * />
  * ```
  *
- * @public
  * @korean 자세휠순수
  */
 export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({

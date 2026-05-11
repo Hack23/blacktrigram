@@ -296,7 +296,7 @@ export interface Face3DProps {
  * Eye component props
  * 
  * @category Facial Animation
- * @korean 뉕3D속성
+ * @korean 눈3D속성
  */
 export interface EyeProps {
   /** Eye position relative to head */
@@ -315,7 +315,7 @@ export interface EyeProps {
  * Mouth component props
  * 
  * @category Facial Animation
- * @korean 섈3D속성
+ * @korean 입3D속성
  */
 export interface MouthProps {
   /** Mouth position relative to head */

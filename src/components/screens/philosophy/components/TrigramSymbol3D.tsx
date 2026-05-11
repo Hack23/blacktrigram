@@ -48,7 +48,6 @@ export interface TrigramSymbol3DProps {
  * />
  * ```
  * 
- * @public
  * @category Philosophy Components
  */
 export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({

@@ -67,7 +67,6 @@ export interface ResponsiveContainerProps {
  * </ResponsiveContainer>
  * ```
  * 
- * @public
  * @korean 반응형컨테이너
  */
 export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({

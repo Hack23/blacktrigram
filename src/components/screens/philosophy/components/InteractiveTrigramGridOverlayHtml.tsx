@@ -37,7 +37,6 @@ export interface InteractiveTrigramGridProps {
  * />
  * ```
  * 
- * @public
  * @category Philosophy Components
  */
 export const InteractiveTrigramGrid: React.FC<

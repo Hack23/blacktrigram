@@ -27,7 +27,6 @@ import type {
 /**
  * Props for Hand3D component
  *
- * @public
  * @korean 손3D속성
  */
 export interface Hand3DProps {

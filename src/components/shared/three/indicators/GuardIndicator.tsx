@@ -117,7 +117,6 @@ function getWeightIcon(weight: "forward" | "neutral" | "back"): string {
  * />
  * ```
  *
- * @public
  * @korean 방어자세표시기
  */
 export const GuardIndicator: React.FC<GuardIndicatorProps> = ({

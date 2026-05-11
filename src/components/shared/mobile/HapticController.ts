@@ -92,7 +92,6 @@ const ADAPTIVE_HAPTIC_PATTERNS: Record<HapticIntensity, HapticPattern> = {
  * HapticController class
  * Manages haptic feedback with device-aware optimization
  * 
- * @public
  * @korean 햅틱컨트롤러
  */
 export class HapticController {
@@ -207,7 +206,6 @@ export class HapticController {
    * haptic.trigger('strong');
    * ```
    * 
-   * @public
    */
   public trigger(intensity: HapticIntensity): boolean {
     // Check if haptics are supported and enabled
@@ -254,7 +252,6 @@ export class HapticController {
    * haptic.triggerCustom([30, 20, 30, 20, 50]);
    * ```
    * 
-   * @public
    */
   public triggerCustom(pattern: number | number[]): boolean {
     if (!this.isSupported || !this.isEnabled) {
@@ -294,7 +291,6 @@ export class HapticController {
    * @returns True if haptic was stopped
    * @korean 햅틱중지
    * 
-   * @public
    */
   public stop(): boolean {
     if (!this.isSupported) {
@@ -315,7 +311,6 @@ export class HapticController {
    * Enable haptic feedback
    * 
    * @korean 햅틱활성화
-   * @public
    */
   public enable(): void {
     this.isEnabled = true;
@@ -325,7 +320,6 @@ export class HapticController {
    * Disable haptic feedback
    * 
    * @korean 햅틱비활성화
-   * @public
    */
   public disable(): void {
     this.isEnabled = false;
@@ -337,7 +331,6 @@ export class HapticController {
    * 
    * @returns True if haptic is enabled
    * @korean 햅틱활성화상태
-   * @public
    */
   public isHapticEnabled(): boolean {
     return this.isSupported && this.isEnabled;
@@ -348,7 +341,6 @@ export class HapticController {
    * 
    * @returns Performance tier
    * @korean 성능등급가져오기
-   * @public
    */
   public getPerformanceTier(): DevicePerformanceTier {
     return this.performanceTier;
@@ -359,7 +351,6 @@ export class HapticController {
    * 
    * @param intervalMs - Minimum interval in milliseconds
    * @korean 최소간격설정
-   * @public
    */
   public setMinTriggerInterval(intervalMs: number): void {
     this.minTriggerInterval = Math.max(0, intervalMs);
@@ -386,7 +377,6 @@ export class HapticController {
  * triggerOptimizedHaptic('strong');
  * ```
  * 
- * @public
  */
 export function triggerOptimizedHaptic(intensity: HapticIntensity): boolean {
   return HapticController.getInstance().trigger(intensity);
@@ -399,7 +389,6 @@ export function triggerOptimizedHaptic(intensity: HapticIntensity): boolean {
  * @returns True if haptic was triggered
  * @korean 커스텀햅틱실행
  * 
- * @public
  */
 export function triggerCustomOptimizedHaptic(pattern: number | number[]): boolean {
   return HapticController.getInstance().triggerCustom(pattern);
@@ -410,7 +399,6 @@ export function triggerCustomOptimizedHaptic(pattern: number | number[]): boolea
  * 
  * @returns True if haptic was stopped
  * @korean 햅틱중지
- * @public
  */
 export function stopOptimizedHaptic(): boolean {
   return HapticController.getInstance().stop();
@@ -421,7 +409,6 @@ export function stopOptimizedHaptic(): boolean {
  * Pre-configured for common combat scenarios
  * 
  * @korean 전투 햅틱 패턴
- * @public
  */
 export const OptimizedCombatHaptics = {
   /**

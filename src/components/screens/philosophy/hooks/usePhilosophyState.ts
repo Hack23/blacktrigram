@@ -40,7 +40,6 @@ export type PhilosophyTopic = "trigrams" | "values" | "archetypes";
  * 
  * @returns Philosophy state and control functions
  * 
- * @public
  * @category Philosophy Hooks
  */
 export function usePhilosophyState() {

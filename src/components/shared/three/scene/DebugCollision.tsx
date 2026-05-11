@@ -24,7 +24,6 @@ import type {
 /**
  * Props for DebugCollision component.
  *
- * @public
  * @korean 디버그충돌속성
  */
 export interface DebugCollisionProps {
@@ -83,7 +82,6 @@ const REGION_COLORS: Record<AnatomicalRegionPhysics, number> = {
  * </Canvas>
  * ```
  *
- * @public
  * @korean 디버그충돌컴포넌트
  */
 export const DebugCollision: React.FC<DebugCollisionProps> = ({

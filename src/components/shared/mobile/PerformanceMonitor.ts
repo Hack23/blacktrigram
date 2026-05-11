@@ -57,7 +57,6 @@ export interface PerformanceMonitorOptions {
  * PerformanceMonitor class
  * Monitors device performance and provides adaptive recommendations
  * 
- * @public
  * @korean 성능모니터
  */
 export class PerformanceMonitor {
@@ -194,7 +193,6 @@ export class PerformanceMonitor {
    * Begins tracking FPS and frame times
    * 
    * @korean 모니터링시작
-   * @public
    */
   public startMonitoring(): void {
     if (this.isMonitoring) return;
@@ -211,7 +209,6 @@ export class PerformanceMonitor {
    * Stop monitoring performance
    * 
    * @korean 모니터링중지
-   * @public
    */
   public stopMonitoring(): void {
     this.isMonitoring = false;
@@ -307,7 +304,6 @@ export class PerformanceMonitor {
    * 
    * @returns Current performance metrics
    * @korean 메트릭가져오기
-   * @public
    */
   public getMetrics(): PerformanceMetrics {
     return {
@@ -325,7 +321,6 @@ export class PerformanceMonitor {
    * 
    * @returns Performance tier
    * @korean 성능등급가져오기
-   * @public
    */
   public getPerformanceTier(): PerformanceTier {
     return this.tier;
@@ -336,7 +331,6 @@ export class PerformanceMonitor {
    * 
    * @returns True if 60fps is achievable
    * @korean 60fps가능여부
-   * @public
    */
   public canHandle60Fps(): boolean {
     return this.tier !== 'low' && this.fps >= 58;
@@ -347,7 +341,6 @@ export class PerformanceMonitor {
    * 
    * @returns Quality recommendations
    * @korean 품질권장사항가져오기
-   * @public
    */
   public getQualityRecommendations(): {
     enableHaptics: boolean;
@@ -391,7 +384,6 @@ export class PerformanceMonitor {
    * 
    * @returns True if frame drops detected
    * @korean 프레임드롭감지
-   * @public
    */
   public hasFrameDrops(): boolean {
     return this.frameDrops > 3; // More than 3 drops per sample window
@@ -402,7 +394,6 @@ export class PerformanceMonitor {
    * 
    * @returns Current FPS
    * @korean FPS가져오기
-   * @public
    */
   public getCurrentFps(): number {
     return Math.round(this.fps);
@@ -413,7 +404,6 @@ export class PerformanceMonitor {
    * 
    * @returns Average frame time in milliseconds
    * @korean 평균프레임타임가져오기
-   * @public
    */
   public getAvgFrameTime(): number {
     return Math.round(this.avgFrameTime * 100) / 100;
@@ -423,7 +413,6 @@ export class PerformanceMonitor {
    * Reset performance metrics
    * 
    * @korean 메트릭리셋
-   * @public
    */
   public reset(): void {
     this.frameTimes = [];
@@ -438,7 +427,6 @@ export class PerformanceMonitor {
  * 
  * @returns PerformanceMonitor instance
  * @korean 성능모니터가져오기
- * @public
  */
 export function getPerformanceMonitor(): PerformanceMonitor {
   return PerformanceMonitor.getInstance();
@@ -449,7 +437,6 @@ export function getPerformanceMonitor(): PerformanceMonitor {
  * 
  * @returns Performance tier
  * @korean 성능등급가져오기
- * @public
  */
 export function getPerformanceTier(): PerformanceTier {
   return PerformanceMonitor.getInstance().getPerformanceTier();
@@ -460,7 +447,6 @@ export function getPerformanceTier(): PerformanceTier {
  * 
  * @returns True if 60fps is achievable
  * @korean 60fps가능여부
- * @public
  */
 export function canHandle60Fps(): boolean {
   return PerformanceMonitor.getInstance().canHandle60Fps();
@@ -471,7 +457,6 @@ export function canHandle60Fps(): boolean {
  * 
  * @returns Quality recommendations
  * @korean 품질권장사항가져오기
- * @public
  */
 export function getQualityRecommendations() {
   return PerformanceMonitor.getInstance().getQualityRecommendations();

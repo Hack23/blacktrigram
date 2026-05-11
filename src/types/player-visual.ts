@@ -54,7 +54,7 @@ export type PlayerAnimation =
   | "step_forward_right"
   | "step_back_left"
   | "step_back_right"
-  // Stance-specific idle animations (팔괴 자세 애니메이션)
+  // Stance-specific idle animations (팔괘 자세 애니메이션)
   | "stance_geon" // ☰ 건 (Heaven) - Forward stance
   | "stance_tae" // ☱ 태 (Lake) - Cat stance
   | "stance_li" // ☲ 리 (Fire) - Fighting stance
@@ -62,7 +62,7 @@ export type PlayerAnimation =
   | "stance_son" // ☴ 손 (Wind) - Crane stance
   | "stance_gam" // ☵ 감 (Water) - Back stance
   | "stance_gan" // ☶ 간 (Mountain) - Defensive stance
-  | "stance_gon"; // ☷ 공 (Earth) - Low stance
+  | "stance_gon"; // ☷ 곤 (Earth) - Low stance
 
 /**
  * Unified props for Player3D visual component.
@@ -105,7 +105,7 @@ export interface Player3DUnifiedProps {
   readonly balance: BalanceState;
   /** Consciousness level (0-100) @korean 의식 */
   readonly consciousness: number;
-  /** Blood loss amount (0-100) @korean 출혁 */
+  /** Blood loss amount (0-100) @korean 출혈 */
   readonly bloodLoss?: number;
   /** Whether player is currently blocking @korean 방어중 */
   readonly isBlocking: boolean;
@@ -144,9 +144,9 @@ export interface Player3DUnifiedProps {
   readonly enableEyeTracking?: boolean;
   /** Opponent position for eye tracking @korean 상대위치 */
   readonly opponentPosition?: [number, number, number];
-  /** Body facing state for automatic opponent tracking @korean 머향하기상태 */
+  /** Body facing state for automatic opponent tracking @korean 몸향하기상태 */
   readonly bodyFacing?: BodyFacing;
-  /** Callback to update body facing state @korean 머향하기업데이트콜백 */
+  /** Callback to update body facing state @korean 몸향하기업데이트콜백 */
   readonly onBodyFacingUpdate?: (bodyFacing: BodyFacing) => void;
 }
 
@@ -171,7 +171,7 @@ export interface PlayerStateIndicatorsProps {
   readonly consciousness: number;
   /** Pain level (0-100) @korean 통증 */
   readonly pain?: number;
-  /** Blood loss (0-100) @korean 출혁 */
+  /** Blood loss (0-100) @korean 출혈 */
   readonly bloodLoss?: number;
   /** Mobile responsive mode @korean 모바일여부 */
   readonly isMobile: boolean;

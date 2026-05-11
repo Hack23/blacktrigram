@@ -39,7 +39,6 @@ export interface PhilosophyTextOverlayHtmlProps {
  * />
  * ```
  * 
- * @public
  * @category Philosophy Components
  */
 export const PhilosophyTextOverlayHtml: React.FC<

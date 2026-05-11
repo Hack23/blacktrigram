@@ -241,7 +241,6 @@ DPadButton.displayName = "DPadButton";
  * />
  * ```
  *
- * @public
  * @korean 가상방향패드
  */
 const VirtualDPadComponent: React.FC<VirtualDPadProps> = ({

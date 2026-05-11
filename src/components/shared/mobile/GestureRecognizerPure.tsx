@@ -77,7 +77,6 @@ interface GestureFeedback {
  * />
  * ```
  *
- * @public
  * @korean 제스처인식기순수
  */
 export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({

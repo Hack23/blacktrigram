@@ -93,7 +93,6 @@ export interface ActionButtonsProps {
  * />
  * ```
  *
- * @public
  * @korean 액션버튼
  */
 const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({

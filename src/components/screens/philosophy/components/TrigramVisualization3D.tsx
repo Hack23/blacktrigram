@@ -41,7 +41,6 @@ export interface TrigramVisualization3DProps {
  * />
  * ```
  * 
- * @public
  * @category Philosophy Components
  */
 export const TrigramVisualization3D: React.FC<

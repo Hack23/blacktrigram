@@ -29,7 +29,6 @@ export type HapticPattern = number | number[];
  * }
  * ```
  * 
- * @public
  * @korean 햅틱지원여부
  */
 export function isHapticSupported(): boolean {
@@ -61,7 +60,6 @@ export function isHapticSupported(): boolean {
  * triggerGuardHaptic('break');
  * ```
  * 
- * @public
  * @korean 방어햅틱트리거
  */
 export function triggerGuardHaptic(type: "activate" | "break"): void {
@@ -96,7 +94,6 @@ export function triggerGuardHaptic(type: "activate" | "break"): void {
  * triggerStanceChangeHaptic();
  * ```
  * 
- * @public
  * @korean 자세변경햅틱트리거
  */
 export function triggerStanceChangeHaptic(): void {
@@ -133,7 +130,6 @@ export function triggerStanceChangeHaptic(): void {
  * triggerCustomHaptic([100, 50, 100, 50, 100]);
  * ```
  * 
- * @public
  * @korean 사용자정의햅틱트리거
  */
 export function triggerCustomHaptic(pattern: HapticPattern): void {
@@ -161,7 +157,6 @@ export function triggerCustomHaptic(pattern: HapticPattern): void {
  * stopHaptic();
  * ```
  * 
- * @public
  * @korean 햅틱중지
  */
 export function stopHaptic(): void {
@@ -193,7 +188,6 @@ export function stopHaptic(): void {
  * }
  * ```
  * 
- * @public
  * @korean 모바일기기여부
  */
 export function isMobileDevice(): boolean {
@@ -280,7 +274,6 @@ export function applyIntensity(
  * triggerWithSettings(100, settings); // Triggers 70ms vibration
  * ```
  * 
- * @public
  * @korean 설정포함햅틱트리거
  */
 export function triggerWithSettings(

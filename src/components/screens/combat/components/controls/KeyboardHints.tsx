@@ -53,7 +53,6 @@ export interface KeyboardHintsProps {
  * />
  * ```
  * 
- * @public
  * @korean 키보드힌트
  */
 export const KeyboardHints: React.FC<KeyboardHintsProps> = ({

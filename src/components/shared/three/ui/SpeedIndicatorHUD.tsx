@@ -114,7 +114,6 @@ function getSpeedLabel(speedPercent: number): {
  * />
  * ```
  *
- * @public
  * @korean 속도표시기
  */
 export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({

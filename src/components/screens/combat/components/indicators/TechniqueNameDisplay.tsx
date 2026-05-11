@@ -20,7 +20,6 @@ import { hexColorToCSS } from "../../../../../utils/colorUtils";
 /**
  * Props for TechniqueNameDisplay component
  * 
- * @public
  * @korean 기술이름표시속성
  */
 export interface TechniqueNameDisplayProps {
@@ -86,7 +85,6 @@ export interface TechniqueNameDisplayProps {
  * />
  * ```
  * 
- * @public
  * @korean 기술이름표시컴포넌트
  */
 export const TechniqueNameDisplay: React.FC<TechniqueNameDisplayProps> = ({

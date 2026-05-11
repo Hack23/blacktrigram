@@ -62,7 +62,6 @@ export interface StanceChangeIndicatorProps {
  * />
  * ```
  * 
- * @public
  * @korean 자세변경표시기
  */
 export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({

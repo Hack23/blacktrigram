@@ -48,7 +48,6 @@ export interface InputBufferDisplayProps {
  * />
  * ```
  * 
- * @public
  * @korean 입력버퍼표시
  */
 export const InputBufferDisplay: React.FC<InputBufferDisplayProps> = ({

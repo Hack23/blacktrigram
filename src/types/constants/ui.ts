@@ -137,7 +137,7 @@ export const UI_ANIMATIONS = {
 } as const;
 
 /**
- * Button state colour tokens for normal, hover, pressed, and disabled states.
+ * Button state color tokens for normal, hover, pressed, and disabled states.
  *
  * @constant
  * @category UI Constants
@@ -171,7 +171,7 @@ export const BUTTON_STATES = {
 } as const;
 
 /**
- * Health bar colour thresholds for player vital display.
+ * Health bar color thresholds for player vital display.
  *
  * @constant
  * @category UI Constants
@@ -187,7 +187,7 @@ export const HEALTH_COLORS = {
 } as const;
 
 /**
- * Status effect colour tokens for positive, negative, and neutral effects.
+ * Status effect color tokens for positive, negative, and neutral effects.
  *
  * @constant
  * @category UI Constants
@@ -202,7 +202,7 @@ export const STATUS_COLORS = {
 } as const;
 
 /**
- * Combat feedback colour tokens for hit, block, and special strike results.
+ * Combat feedback color tokens for hit, block, and special strike results.
  *
  * @constant
  * @category UI Constants

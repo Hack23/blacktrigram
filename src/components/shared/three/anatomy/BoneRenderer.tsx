@@ -35,7 +35,6 @@ import Hand3D from "./Hand3D";
 /**
  * Props for BoneRenderer component
  *
- * @public
  * @category Component Props
  * @korean 뼈렌더러속성
  */

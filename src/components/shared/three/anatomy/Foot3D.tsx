@@ -21,7 +21,6 @@ import { KOREAN_COLORS } from "../../../../types/constants";
 /**
  * Props for Foot3D component
  *
- * @public
  * @korean 발3D속성
  */
 export interface Foot3DProps {

@@ -74,7 +74,6 @@ export interface TrigramSymbol3DProps {
  * />
  * ```
  * 
- * @public
  * @korean 삼차원팔괘기호컴포넌트
  */
 export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({

@@ -90,7 +90,6 @@ export interface TouchOptimizerReturn {
  * );
  * ```
  * 
- * @public
  * @korean 터치최적화사용
  */
 export function useTouchOptimizer(
@@ -362,7 +361,6 @@ export function useTouchOptimizer(
  * );
  * ```
  * 
- * @public
  * @korean 최적화된업데이트적용
  */
 export function applyOptimizedUpdate(
@@ -406,7 +404,6 @@ export function applyOptimizedUpdate(
  * };
  * ```
  * 
- * @public
  * @korean 변환스타일생성
  */
 export function createTransformStyle(
@@ -427,7 +424,6 @@ export function createTransformStyle(
  * 
  * @returns CSS filter string
  * 
- * @public
  * @korean 필터스타일생성
  */
 export function createFilterStyle(

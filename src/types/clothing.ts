@@ -140,7 +140,7 @@ export interface ClothingItem {
 
   /**
    * Bones to attach this clothing to
-   * @korean 부착뉴
+   * @korean 부착뼈
    */
   readonly attachedBones: string[];
 
@@ -296,7 +296,7 @@ export interface ClothingSystemProps {
 
   /**
    * Bone map from skeletal rig for attachment
-   * @korean 뉴맵
+   * @korean 뼈맵
    */
   readonly boneMap: Map<string, Bone>;
 

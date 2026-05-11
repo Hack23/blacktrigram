@@ -21,7 +21,7 @@ import * as THREE from "three";
  * - SPEAR_HAND (관수): Extended fingers together, pointed thrust
  * - PALM_HEEL (장력): Palm-heel strike position with curled fingers
  * - GRAPPLING (잡기): Fingers curved for grabs and control
- * - OPEN (펼기): Neutral open hand position
+ * - OPEN (펴기): Neutral open hand position
  *
  * @korean 손자세타입
  */
@@ -36,7 +36,7 @@ export enum HandPoseType {
   PALM_HEEL = "palm_heel",
   /** 잡기 - Grappling hand for grabs */
   GRAPPLING = "grappling",
-  /** 펼기 - Open hand neutral position */
+  /** 펴기 - Open hand neutral position */
   OPEN = "open",
   /** 휴식 - Relaxed natural hand position for walking/idle */
   RELAXED = "relaxed",
@@ -129,7 +129,7 @@ export interface HandPose {
     readonly korean: string;
     readonly english: string;
   };
-  /** Which martial art this pose comes from @korean 무술출캘 */
+  /** Which martial art this pose comes from @korean 무술출처 */
   readonly martialArtOrigin:
     | "taekwondo"
     | "hapkido"
