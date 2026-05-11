@@ -25,7 +25,6 @@ import { InjuryType } from "../../types/injury";
  * 
  * **Korean**: 전투 피해 이벤트 데이터
  * 
- * @public
  */
 export interface CombatDamageEvent {
   /** Damage amount (0-100) */
@@ -43,7 +42,6 @@ export interface CombatDamageEvent {
 /**
  * Configuration for combat injury integration.
  * 
- * @public
  */
 export interface CombatInjuryConfig {
   /** Enable automatic injury tracking */
@@ -65,7 +63,6 @@ export interface CombatInjuryConfig {
  * Note: A valid `tracker` must still be supplied by the caller.
  * This provides defaults for other configuration values only.
  * 
- * @public
  */
 export const DEFAULT_COMBAT_INJURY_CONFIG: Omit<CombatInjuryConfig, 'tracker'> = {
   enabled: true,
@@ -104,7 +101,6 @@ export const DEFAULT_COMBAT_INJURY_CONFIG: Omit<CombatInjuryConfig, 'tracker'> =
  * const injuries = handler.getInjuries();
  * ```
  * 
- * @public
  */
 export class CombatInjuryIntegration {
   private tracker: InjuryTracker;
@@ -127,7 +123,6 @@ export class CombatInjuryIntegration {
    * @param event - Combat damage event
    * @returns Whether injury was recorded (false if damage too low)
    * 
-   * @public
    */
   recordCombatDamage(event: CombatDamageEvent): boolean {
     if (!this.config.enabled) {
@@ -169,7 +164,6 @@ export class CombatInjuryIntegration {
    * @param damage - Damage amount
    * @returns Whether to show blood effects
    * 
-   * @public
    */
   shouldShowBloodEffect(damage: number): boolean {
     return damage > this.config.bloodThreshold;
@@ -218,7 +212,6 @@ export class CombatInjuryIntegration {
    * 
    * @returns Array of injuries
    * 
-   * @public
    */
   getInjuries() {
     return this.tracker.getInjuries();
@@ -229,7 +222,6 @@ export class CombatInjuryIntegration {
    * 
    * @returns InjuryTracker instance
    * 
-   * @public
    */
   getTracker(): InjuryTracker {
     return this.tracker;
@@ -240,7 +232,6 @@ export class CombatInjuryIntegration {
    * 
    * **Korean**: 모든 부상 초기화
    * 
-   * @public
    */
   clearInjuries(): void {
     this.tracker.clearInjuries();
@@ -251,7 +242,6 @@ export class CombatInjuryIntegration {
    * 
    * **Korean**: 만료된 부상 제거
    * 
-   * @public
    */
   removeExpiredInjuries(): void {
     this.tracker.removeExpiredInjuries();

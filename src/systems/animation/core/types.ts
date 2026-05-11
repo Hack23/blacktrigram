@@ -22,7 +22,6 @@
  * - Stance transitions: 36 frames (600ms at 60fps)
  * - Tactical steps: 18 frames (300ms at 60fps, 30cm distance)
  *
- * @public
  * @korean 애니메이션상태
  */
 export enum AnimationState {
@@ -466,7 +465,6 @@ export enum AnimationState {
  * to tactical repositioning in Korean martial arts.
  * Recovery animations have highest priority to allow getting up from ground.
  *
- * @public
  * @korean 애니메이션우선순위
  */
 export enum AnimationPriority {
@@ -494,7 +492,6 @@ export const STEP_PRIORITY = AnimationPriority.ATTACK;
  * - guard_break: 방어붕괴 (bangeo bunggoe) - Guard break, defensive stance destroyed
  * - guard_recovery: 방어복구 (bangeo bokgu) - Guard recovery, restore defensive posture
  *
- * @public
  * @korean 방어애니메이션타입
  */
 export type DefensiveAnimationType =
@@ -517,7 +514,6 @@ export type DefensiveAnimationType =
  * - Guard Break: 15 frames (250ms)
  * - Guard Recovery: 12 frames (200ms)
  *
- * @public
  * @korean 애니메이션설정
  */
 export interface AnimationConfig {
@@ -613,7 +609,6 @@ export type MutableAnimationConfig = {
 /**
  * Animation event callback types
  *
- * @public
  * @korean 애니메이션이벤트
  */
 export interface AnimationEvents {
@@ -648,7 +643,6 @@ export interface AnimationEvents {
 /**
  * Animation state machine state
  *
- * @public
  * @korean 애니메이션상태머신상태
  */
 export interface AnimationMachineState {
@@ -686,7 +680,6 @@ export interface AnimationMachineState {
 /**
  * Animation transition rule
  *
- * @public
  * @korean 애니메이션전환규칙
  */
 export interface TransitionRule {
@@ -718,7 +711,6 @@ export interface TransitionRule {
 /**
  * Result of an animation update
  *
- * @public
  * @korean 애니메이션업데이트결과
  */
 export interface AnimationUpdateResult {
@@ -769,7 +761,6 @@ export interface AnimationUpdateResult {
  * Each step moves exactly 30cm (one foot width) for tactical repositioning
  * in Korean martial arts combat.
  *
- * @public
  * @korean 발걸음방향
  */
 export type StepDirection =
@@ -792,7 +783,6 @@ export type StepDirection =
  * - 30cm distance movement
  * - 300ms duration (18 frames at 60fps)
  *
- * @public
  * @korean 발걸음애니메이션설정
  */
 export interface StepConfig extends AnimationConfig {
@@ -827,7 +817,6 @@ export interface StepConfig extends AnimationConfig {
  * Defines weight distribution, foot positions, and body center of gravity
  * at specific frames during the step animation.
  *
- * @public
  * @korean 발걸음키프레임
  */
 export interface StepKeyframe {
@@ -880,7 +869,6 @@ export interface StepKeyframe {
  * - side_left: 좌측낙법 (Jwacheuk Nakbeop) - Left side falling technique
  * - side_right: 우측낙법 (Ucheuk Nakbeop) - Right side falling technique
  *
- * @public
  * @korean 낙법유형
  */
 export type FallType = "forward" | "backward" | "side_left" | "side_right";
@@ -897,7 +885,6 @@ export type FallType = "forward" | "backward" | "side_left" | "side_right";
  * - side_left: 좌측와 (Jwacheuk Wa) - Left side position
  * - side_right: 우측와 (Ucheuk Wa) - Right side position
  *
- * @public
  * @korean 지면자세
  */
 export type GroundState = "prone" | "supine" | "side_left" | "side_right";
@@ -905,7 +892,6 @@ export type GroundState = "prone" | "supine" | "side_left" | "side_right";
 /**
  * Maps fall types to corresponding ground states
  *
- * @public
  * @korean 낙법지면맵
  */
 export const FALL_TO_GROUND_MAP: Record<FallType, GroundState> = {
@@ -918,7 +904,6 @@ export const FALL_TO_GROUND_MAP: Record<FallType, GroundState> = {
 /**
  * Maps fall types to corresponding animation states
  *
- * @public
  * @korean 낙법애니메이션맵
  */
 export const FALL_TYPE_TO_ANIMATION: Record<FallType, AnimationState> = {
@@ -931,7 +916,6 @@ export const FALL_TYPE_TO_ANIMATION: Record<FallType, AnimationState> = {
 /**
  * Maps ground states to corresponding animation states
  *
- * @public
  * @korean 지면애니메이션맵
  */
 export const GROUND_STATE_TO_ANIMATION: Record<GroundState, AnimationState> = {
@@ -956,7 +940,6 @@ export const GROUND_STATE_TO_ANIMATION: Record<GroundState, AnimationState> = {
  * - 머리추적 (Meori Chujok) - Head tracking
  * - 180도회전 (180-do Hoejeon) - 180-degree turn
  *
- * @public
  * @korean 몸향하기상태
  */
 export interface BodyFacing {
@@ -1060,7 +1043,6 @@ export interface BodyFacing {
  * - 상체비틀기 (Sangchebiteulgi) - Upper body twist
  * - 골반고정 (Golbangojeong) - Hip stabilization
  *
- * @public
  * @korean 허리회전상태
  */
 export interface TorsoRotationState {
@@ -1112,7 +1094,6 @@ export interface TorsoRotationState {
  * - Slide: Maintaining stable base while advancing/retreating
  * - Shuffle: Fine-tuning position without commitment
  *
- * @public
  * @korean 보법유형
  */
 export type FootworkPattern = "circular" | "pivot" | "slide" | "shuffle";
@@ -1120,7 +1101,6 @@ export type FootworkPattern = "circular" | "pivot" | "slide" | "shuffle";
 /**
  * Footwork direction for directional patterns
  *
- * @public
  * @korean 보법방향
  */
 export type FootworkDirection = "left" | "right" | "forward" | "back";
@@ -1131,7 +1111,6 @@ export type FootworkDirection = "left" | "right" | "forward" | "back";
  * Maps each footwork pattern to its Korean martial arts terminology
  * with romanization and English translation.
  *
- * @public
  * @korean 보법한글용어
  */
 export const FOOTWORK_KOREAN_TERMS: Record<
@@ -1169,7 +1148,6 @@ export const FOOTWORK_KOREAN_TERMS: Record<
  * - roll: 회전기상 (Hoejeon Gisang) - Roll recovery
  * - defensive: 방어기상 (Bangeo Gisang) - Defensive getup
  *
- * @public
  * @korean 회복애니메이션유형
  */
 export type RecoveryAnimationType =
@@ -1184,7 +1162,6 @@ export type RecoveryAnimationType =
  * Maps each recovery type to its Korean martial arts terminology
  * with romanization and English translation.
  *
- * @public
  * @korean 회복한글용어
  */
 export const RECOVERY_KOREAN_TERMS: Record<
@@ -1216,7 +1193,6 @@ export const RECOVERY_KOREAN_TERMS: Record<
 /**
  * Maps ground states to their default recovery animation
  *
- * @public
  * @korean 지면회복맵
  */
 export const GROUND_STATE_TO_RECOVERY: Record<
@@ -1232,7 +1208,6 @@ export const GROUND_STATE_TO_RECOVERY: Record<
 /**
  * Maps recovery types to their animation states
  *
- * @public
  * @korean 회복애니메이션맵
  */
 export const RECOVERY_TYPE_TO_ANIMATION: Record<
@@ -1256,7 +1231,6 @@ export const RECOVERY_TYPE_TO_ANIMATION: Record<
  * - heavy: Powerful techniques (0.8x speed), high damage
  * - critical: Maximum power (0.6x speed), critical damage
  *
- * @public
  * @category Animation
  * @korean 기술강도
  */
@@ -1273,7 +1247,6 @@ export type TechniqueIntensity = "light" | "medium" | "heavy" | "critical";
  * - throw: Throwing and sweeping techniques
  * - pressure_point: Precise vital point strikes
  *
- * @public
  * @category Combat
  * @korean 기술타입
  */
@@ -1301,7 +1274,6 @@ export type TechniqueTypeCategory =
  * };
  * ```
  *
- * @public
  * @category Animation
  * @korean 기술애니메이션키
  */
@@ -1337,7 +1309,6 @@ export interface TechniqueAnimationKey {
  * };
  * ```
  *
- * @public
  * @category Animation
  * @korean 기술애니메이션
  */
@@ -1408,7 +1379,6 @@ export interface TechniqueAnimation {
  * Reports coverage percentage and lists any missing mappings
  * that need to be filled in.
  *
- * @public
  * @category Animation
  * @korean 매핑검증결과
  */
@@ -1442,7 +1412,6 @@ export interface MappingValidationResult {
  * const invalid = stringToAnimationState("invalid"); // null
  * ```
  *
- * @public
  * @korean 문자열을애니메이션상태로변환
  */
 export function stringToAnimationState(state: string): AnimationState | null {
@@ -1475,7 +1444,6 @@ export function stringToAnimationState(state: string): AnimationState | null {
  * }
  * ```
  *
- * @public
  * @korean 유효한애니메이션상태확인
  */
 export function isValidAnimationState(value: unknown): value is AnimationState {
@@ -1505,7 +1473,6 @@ export function isValidAnimationState(value: unknown): value is AnimationState {
  * });
  * ```
  *
- * @public
  * @korean 모든애니메이션상태가져오기
  */
 export function getAllAnimationStates(): AnimationState[] {
@@ -1530,7 +1497,6 @@ export function getAllAnimationStates(): AnimationState[] {
  * }
  * ```
  *
- * @public
  * @korean 자세방어상태확인
  */
 export function isStanceGuardState(state: AnimationState): boolean {
@@ -1555,7 +1521,6 @@ export function isStanceGuardState(state: AnimationState): boolean {
  * }
  * ```
  *
- * @public
  * @korean 발걸음상태확인
  */
 export function isStepState(state: AnimationState): boolean {
@@ -1580,7 +1545,6 @@ export function isStepState(state: AnimationState): boolean {
  * }
  * ```
  *
- * @public
  * @korean 보법상태확인
  */
 export function isFootworkState(state: AnimationState): boolean {
@@ -1604,7 +1568,6 @@ export function isFootworkState(state: AnimationState): boolean {
  * }
  * ```
  *
- * @public
  * @korean 낙법상태확인
  */
 export function isFallState(state: AnimationState): boolean {
@@ -1629,7 +1592,6 @@ export function isFallState(state: AnimationState): boolean {
  * }
  * ```
  *
- * @public
  * @korean 지면상태확인
  */
 export function isGroundState(state: AnimationState): boolean {
@@ -1654,7 +1616,6 @@ export function isGroundState(state: AnimationState): boolean {
  * }
  * ```
  *
- * @public
  * @korean 회복상태확인
  */
 export function isRecoveryState(state: AnimationState): boolean {

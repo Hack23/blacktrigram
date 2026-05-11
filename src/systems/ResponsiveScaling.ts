@@ -141,7 +141,6 @@ export const FONT_SIZE_CONSTRAINTS = {
  * getScreenSize(1920); // 'xlarge'
  * ```
  * 
- * @public
  * @korean 화면크기얻기
  */
 export function getScreenSize(width: number): ScreenSize {
@@ -174,7 +173,6 @@ export function getScreenSize(width: number): ScreenSize {
  * calculateFontSize(20, 'xlarge', 14, 24); // 24 (clamped from 28)
  * ```
  * 
- * @public
  * @korean 글꼴크기계산
  */
 export function calculateFontSize(
@@ -207,7 +205,6 @@ export function calculateFontSize(
  * calculateSpacing(20, 'xlarge');  // 30 (20 * 1.5)
  * ```
  * 
- * @public
  * @korean 간격계산
  */
 export function calculateSpacing(
@@ -231,7 +228,6 @@ export function calculateSpacing(
  * getFontScale('xlarge');  // 1.4
  * ```
  * 
- * @public
  * @korean 글꼴스케일얻기
  */
 export function getFontScale(screenSize: ScreenSize): number {
@@ -251,7 +247,6 @@ export function getFontScale(screenSize: ScreenSize): number {
  * getSpacingScale('xlarge');  // 1.5
  * ```
  * 
- * @public
  * @korean 간격스케일얻기
  */
 export function getSpacingScale(screenSize: ScreenSize): number {
@@ -273,7 +268,6 @@ export function getSpacingScale(screenSize: ScreenSize): number {
  * // 'font-size 200ms linear, padding 200ms linear, ...'
  * ```
  * 
- * @public
  * @korean 전환문자열생성
  */
 export function createTransitionString(
@@ -310,7 +304,6 @@ export function createTransitionString(
  * console.log(config.spacingScale); // 0.5
  * ```
  * 
- * @public
  * @korean 반응형설정생성
  */
 export function createResponsiveConfig(
@@ -353,7 +346,6 @@ export function createResponsiveConfig(
  * </div>
  * ```
  * 
- * @public
  * @korean 반응형값계산
  */
 export function calculateResponsiveValues(
@@ -410,7 +402,6 @@ export function calculateResponsiveValues(
  * console.log(result.isMobile);    // false
  * ```
  * 
- * @public
  * @korean 화면크기테스트
  */
 export function testScreenSize(
@@ -438,7 +429,6 @@ export function testScreenSize(
  * @param width - Viewport width
  * @returns True if mobile screen size
  * 
- * @public
  * @korean 모바일확인
  */
 export function isMobileSize(width: number): boolean {
@@ -451,7 +441,6 @@ export function isMobileSize(width: number): boolean {
  * @param width - Viewport width
  * @returns True if tablet screen size
  * 
- * @public
  * @korean 태블릿확인
  */
 export function isTabletSize(width: number): boolean {
@@ -464,7 +453,6 @@ export function isTabletSize(width: number): boolean {
  * @param width - Viewport width
  * @returns True if desktop, large, or xlarge screen size
  * 
- * @public
  * @korean 데스크톱확인
  */
 export function isDesktopSize(width: number): boolean {

@@ -23,7 +23,6 @@ import type {
  *
  * **Korean**: 복귀 설정
  *
- * @public
  * @category Animation
  * @korean 복귀설정
  */

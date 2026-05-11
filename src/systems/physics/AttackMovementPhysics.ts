@@ -40,7 +40,6 @@ import { AnimationType } from "@/systems/animation";
  *
  * **Korean**: 공격 이동 설정 (Attack Movement Configuration)
  *
- * @public
  * @korean 공격이동설정
  */
 export interface AttackMovementConfig {
@@ -61,7 +60,6 @@ export interface AttackMovementConfig {
  *
  * Contains displacement vector and timing for attack lunge.
  *
- * @public
  * @korean 공격이동결과
  */
 export interface AttackMovementResult {
@@ -102,7 +100,6 @@ export interface AttackMovementResult {
  * // recoveryDuration: 0.24s (50% of animation)
  * ```
  *
- * @public
  * @korean 공격이동물리
  */
 export class AttackMovementPhysics {
@@ -140,7 +137,6 @@ export class AttackMovementPhysics {
    * // Result: ~0.24m forward (0.3m * 0.8 Gan modifier)
    * ```
    *
-   * @public
    * @korean 공격이동계산
    */
   calculateAttackMovement(
@@ -409,7 +405,6 @@ export class AttackMovementPhysics {
    * }
    * ```
    *
-   * @public
    * @korean 공격이동적용
    */
   applyAttackMovement(
@@ -461,7 +456,6 @@ export class AttackMovementPhysics {
    * @param lungeDuration - Total lunge phase duration
    * @returns True if in forward lunge phase
    *
-   * @public
    * @korean 돌진상태확인
    */
   isInLungePhase(elapsedTime: number, lungeDuration: number): boolean {
@@ -477,7 +471,6 @@ export class AttackMovementPhysics {
    * @param result - Attack movement result with timing
    * @returns True if in recovery return phase
    *
-   * @public
    * @korean 회복상태확인
    */
   isInRecoveryPhase(
@@ -497,7 +490,6 @@ export class AttackMovementPhysics {
    *
    * @returns Korean and English phase names
    *
-   * @public
    * @korean 돌진단계이름
    */
   getLungePhaseName(): { korean: string; english: string } {
@@ -514,7 +506,6 @@ export class AttackMovementPhysics {
    *
    * @returns Korean and English phase names
    *
-   * @public
    * @korean 복귀단계이름
    */
   getRecoveryPhaseName(): { korean: string; english: string } {

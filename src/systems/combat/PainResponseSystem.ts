@@ -103,7 +103,6 @@ interface PainEffects {
  * const recovered = painSystem.applyDissipation(newPlayer, 1000);
  * ```
  * 
- * @public
  * @korean 고통반응시스템
  */
 export class PainResponseSystem {
@@ -248,7 +247,6 @@ export class PainResponseSystem {
    * }
    * ```
    * 
-   * @public
    * @korean 고통적용
    */
   applyPain(
@@ -320,7 +318,6 @@ export class PainResponseSystem {
    * player = system.applyDissipation(player, 16);
    * ```
    * 
-   * @public
    * @korean 고통감소
    */
   applyDissipation(player: PlayerState, deltaTime: number): PlayerState {
@@ -347,7 +344,6 @@ export class PainResponseSystem {
    * @param pain - Pain value (0-100)
    * @returns Current pain level
    * 
-   * @public
    * @korean 고통수준확인
    */
   getPainLevel(pain: number): PainLevel {
@@ -364,7 +360,6 @@ export class PainResponseSystem {
    * @param level - Pain level
    * @returns Effects applied at that level
    * 
-   * @public
    * @korean 고통효과
    */
   getEffects(level: PainLevel): PainEffects {
@@ -381,7 +376,6 @@ export class PainResponseSystem {
    * @param shockEffect - Optional active shock pain effect
    * @returns Modified player state with pain effects
    * 
-   * @public
    * @korean 고통효과적용
    */
   applyEffects(
@@ -437,7 +431,6 @@ export class PainResponseSystem {
    * @param player - Current player state
    * @returns True if player should be stunned from pain
    * 
-   * @public
    * @korean 고통기절확인
    */
   shouldTriggerStun(player: PlayerState): boolean {
@@ -458,7 +451,6 @@ export class PainResponseSystem {
    * @param player - Current player state
    * @returns True if pain is above overload threshold
    * 
-   * @public
    * @korean 고통과부하확인
    */
   isInPainOverload(player: PlayerState): boolean {
@@ -471,7 +463,6 @@ export class PainResponseSystem {
    * @param player - Current player state
    * @returns True if pain is at overload level
    * 
-   * @public
    * @korean 고통무력화확인
    */
   isIncapacitated(player: PlayerState): boolean {
@@ -484,7 +475,6 @@ export class PainResponseSystem {
    * @param level - Pain level
    * @returns Korean and English level names
    * 
-   * @public
    * @korean 고통이름
    */
   getLevelName(level: PainLevel): { korean: string; english: string } {
@@ -520,7 +510,6 @@ export class PainResponseSystem {
    * @param level - Pain level
    * @returns Bilingual description
    * 
-   * @public
    * @korean 고통설명
    */
   getLevelDescription(level: PainLevel): {

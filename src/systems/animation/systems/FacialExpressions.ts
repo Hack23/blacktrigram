@@ -22,7 +22,6 @@ import {
 /**
  * Expression transition configuration
  * 
- * @public
  * @korean 표정전환설정
  */
 export interface ExpressionTransitionConfig {
@@ -39,7 +38,6 @@ export interface ExpressionTransitionConfig {
 /**
  * Default expression transition configuration
  * 
- * @public
  * @korean 기본표정전환설정
  */
 export const DEFAULT_TRANSITION_CONFIG: ExpressionTransitionConfig = {
@@ -83,7 +81,6 @@ export const DEFAULT_TRANSITION_CONFIG: ExpressionTransitionConfig = {
  * // Returns: FacialExpression.VICTORIOUS
  * ```
  * 
- * @public
  * @korean 전투상태로부터표정가져오기
  */
 export const getExpressionFromCombatState = (
@@ -133,7 +130,6 @@ export const getExpressionFromCombatState = (
  * @param transitionTime - Time to transition (seconds)
  * @returns New expression state with transition initialized
  * 
- * @public
  * @korean 새표정상태생성
  */
 export const createExpressionTransition = (
@@ -162,7 +158,6 @@ export const createExpressionTransition = (
  * @param deltaTime - Time since last update (seconds)
  * @returns Updated expression state with transition progress
  * 
- * @public
  * @korean 표정상태업데이트
  */
 export const updateExpressionState = (
@@ -217,7 +212,6 @@ export const updateExpressionState = (
  * // Returns damage state with left eye swelling increased
  * ```
  * 
- * @public
  * @korean 얼굴손상계산
  */
 export const calculateFacialDamage = (
@@ -324,7 +318,6 @@ export const calculateFacialDamage = (
  * @param resetPercentage - Percentage to reduce damage (0-1)
  * @returns Fresh facial damage state
  * 
- * @public
  * @korean 얼굴손상초기화
  */
 export const resetFacialDamage = (
@@ -362,7 +355,6 @@ export const resetFacialDamage = (
  * @param stamina - Stamina level (0-100)
  * @returns Expression intensity (0-1)
  * 
- * @public
  * @korean 표정강도가져오기
  */
 export const getExpressionIntensity = (
@@ -403,7 +395,6 @@ export const getExpressionIntensity = (
  * 
  * @returns Default neutral expression state
  * 
- * @public
  * @korean 기본표정상태생성
  */
 export const createDefaultExpressionState = (): ExpressionState => {
@@ -415,7 +406,6 @@ export const createDefaultExpressionState = (): ExpressionState => {
  * 
  * @returns Default facial damage state with no damage
  * 
- * @public
  * @korean 기본얼굴손상생성
  */
 export const createDefaultFacialDamage = (): FacialDamageState => {

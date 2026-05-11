@@ -54,7 +54,6 @@ import { applyLaterality } from "./LateralityTransform";
  *
  * Contains all animation types for a specific stance with laterality.
  *
- * @public
  * @category Animation Mapping
  * @korean 자세애니메이션모음
  */
@@ -106,7 +105,6 @@ export interface StanceAnimationCollection {
  * // tae.attacks are left-handed versions
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 자세애니메이션가져오기
  */
@@ -190,7 +188,6 @@ export function getAnimationsForStance(
  * const gan = getGuardPoseForStanceWithSide("gan"); // Defaults to right
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 자세방어포즈가져오기
  */
@@ -231,7 +228,6 @@ export function getGuardPoseForStanceWithSide(
  * console.log(allPoses.size); // 16 (8 stances × 2 laterality)
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 모든방어포즈가져오기
  */
@@ -260,7 +256,6 @@ export function getAllGuardPoses(): Map<string, StanceGuardPose> {
  * // Returns 3 right-handed Lake stance attacks (default)
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 공격애니메이션가져오기
  */
@@ -306,7 +301,6 @@ export function getAttackAnimations(
  * // Returns 2 left-handed Water stance defensive moves
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 방어애니메이션가져오기
  */
@@ -352,7 +346,6 @@ export function getDefensiveAnimations(
  * const taeWalk = getWalkAnimation("tae"); // Defaults to right
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 걷기애니메이션가져오기
  */
@@ -400,7 +393,6 @@ export function getWalkAnimation(
  * const ganRun = getRunAnimation("gan"); // Defaults to right
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 달리기애니메이션가져오기
  */
@@ -435,7 +427,6 @@ export function getRunAnimation(
  *
  * **Korean**: 매핑 통계
  *
- * @public
  * @category Animation Mapping
  * @korean 매핑통계
  */
@@ -471,7 +462,6 @@ export interface AnimationMappingStats {
  * console.log(`Total attacks: ${stats.totalAttacks}`); // 8 × 5 × 2 = 80
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 매핑통계가져오기
  */

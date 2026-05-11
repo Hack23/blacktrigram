@@ -52,7 +52,6 @@ const STANCE_GUARD_STATES: readonly AnimationState[] = [
  * - **indirect**: Opposite stances (e.g., geon→gon) - requires intermediate neutral position
  * - **self**: Same stance (no transition needed)
  *
- * @public
  * @category Animation
  * @korean 자세전환유형
  */
@@ -66,7 +65,6 @@ export type StanceTransitionType = "direct" | "indirect" | "self";
  * Defines a single keyframe in a stance transition animation, specifying
  * which stance pose to blend and how much weight to apply.
  *
- * @public
  * @category Animation
  * @korean 자세전환키프레임
  */
@@ -87,7 +85,6 @@ export interface StanceTransitionKeyframe {
  * Defines a complete transition animation between two trigram stances,
  * including keyframes, timing, and transition type.
  *
- * @public
  * @category Animation
  * @korean 자세전환애니메이션
  */

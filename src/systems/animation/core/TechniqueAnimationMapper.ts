@@ -50,7 +50,6 @@ const ANIMATION_TYPE_TO_NAME_MAP: Record<AttackAnimationType, string> = {
  * @param animationType - Attack animation type enum
  * @returns Name of skeletal animation from ATTACK_ANIMATIONS map
  *
- * @public
  * @korean 애니메이션타입에서이름가져오기
  */
 export function getAnimationNameForType(
@@ -65,7 +64,6 @@ export function getAnimationNameForType(
  * @param animationType - Attack animation type enum
  * @returns True if animation exists in ATTACK_ANIMATIONS map
  *
- * @public
  * @korean 애니메이션존재확인
  */
 export function hasAnimationForType(
@@ -86,7 +84,6 @@ export function hasAnimationForType(
  * @param damageType - Type of damage dealt
  * @returns Best-matching attack animation type
  *
- * @public
  * @korean 기술에서애니메이션타입결정
  */
 export function determineAnimationTypeForTechnique(
@@ -225,7 +222,6 @@ export function determineAnimationTypeForTechnique(
  * @param damage - Base damage of the technique
  * @returns Speed modifier (0.8 - 1.2)
  *
- * @public
  * @korean 기술위력에서속도배율계산
  */
 export function calculateSpeedModifierForDamage(damage: number): number {
@@ -244,7 +240,6 @@ export function calculateSpeedModifierForDamage(damage: number): number {
  * @param speedModifier - Speed multiplier (0.8 - 1.2)
  * @returns Adjusted duration in milliseconds
  *
- * @public
  * @korean 조정된애니메이션지속시간
  */
 export function getAdjustedAnimationDuration(
@@ -507,7 +502,6 @@ const STANCE_ANIMATION_CONFIG: Record<TrigramStance, StanceAnimationConfig> = {
  * with intelligent fallback system and build-time validation.
  *
  * @class
- * @public
  */
 export class TechniqueAnimationMapper {
   /** Primary animation mapping table */
@@ -538,7 +532,6 @@ export class TechniqueAnimationMapper {
    * @param key - Technique animation key
    * @returns Technique animation configuration
    *
-   * @public
    * @korean 애니메이션가져오기
    */
   public getAnimation(key: TechniqueAnimationKey): TechniqueAnimation {
@@ -1076,7 +1069,6 @@ export class TechniqueAnimationMapper {
    *
    * @returns Validation result with coverage and missing mappings
    *
-   * @public
    * @korean 완전성검증
    */
   public validateCompleteness(): MappingValidationResult {
@@ -1108,7 +1100,6 @@ export class TechniqueAnimationMapper {
    *
    * @returns Number of mapped combinations
    *
-   * @public
    */
   public getMappedCount(): number {
     return this.animationMap.size;
@@ -1123,7 +1114,6 @@ export class TechniqueAnimationMapper {
  * Use this instance throughout the application for consistent
  * technique animation mapping.
  *
- * @public
  * @korean 싱글톤인스턴스
  */
 export const techniqueAnimationMapper = new TechniqueAnimationMapper();

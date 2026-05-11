@@ -100,7 +100,6 @@ export class CombatSystem implements CombatSystemInterface {
    *
    * @param playerId - ID of the player to cleanup
    *
-   * @public
    * @korean 플레이어데이터정리
    */
   public cleanupPlayerData(playerId: string): void {
@@ -117,7 +116,6 @@ export class CombatSystem implements CombatSystemInterface {
    * detection system to prevent memory leaks. Should be called when the
    * CombatSystem is destroyed or reinitialized.
    *
-   * @public
    * @korean 전투시스템자원정리
    */
   public dispose(): void {
@@ -129,7 +127,6 @@ export class CombatSystem implements CombatSystemInterface {
    * Get the balance system instance for fall checking.
    *
    * @returns BalanceSystem instance
-   * @public
    * @korean 균형시스템가져오기
    */
   public getBalanceSystem(): BalanceSystem {
@@ -140,7 +137,6 @@ export class CombatSystem implements CombatSystemInterface {
    * Get the consciousness system instance for fall checking.
    *
    * @returns ConsciousnessSystem instance
-   * @public
    * @korean 의식시스템가져오기
    */
   public getConsciousnessSystem(): ConsciousnessSystem {
@@ -151,7 +147,6 @@ export class CombatSystem implements CombatSystemInterface {
    * Get the collision detection system instance.
    *
    * @returns CollisionDetection instance
-   * @public
    * @korean 충돌감지시스템가져오기
    */
   public getCollisionDetection(): CollisionDetection {
@@ -188,7 +183,6 @@ export class CombatSystem implements CombatSystemInterface {
     defender: PlayerState,
     damage: number,
   ): CombatResult["knockback"] {
-    // Calculate attack direction vector (attacker → defender)
     const attackDirection = new THREE.Vector3(
       defender.position.x - attacker.position.x,
       0, // Keep knockback on horizontal plane
@@ -202,7 +196,6 @@ export class CombatSystem implements CombatSystemInterface {
 
     attackDirection.normalize();
 
-    // Create knockback configuration
     const config: KnockbackConfig = {
       force: damage * 10, // Convert damage to force (arbitrary scaling)
       direction: attackDirection,
@@ -214,10 +207,8 @@ export class CombatSystem implements CombatSystemInterface {
       currentStance: defender.currentStance,
     };
 
-    // Calculate knockback result
     const result = this.knockbackPhysics.calculateKnockback(config, damage);
 
-    // Convert Three.js Vector3 to plain object for serialization
     return {
       displacement: {
         x: result.displacement.x,
@@ -260,7 +251,6 @@ export class CombatSystem implements CombatSystemInterface {
   ): CombatResult {
     const timestamp = Date.now();
 
-    // Check if attacker can execute the technique
     if (!this.canExecuteTechnique(attacker, technique)) {
       return {
         hit: false,
@@ -278,7 +268,6 @@ export class CombatSystem implements CombatSystemInterface {
       };
     }
 
-    // Check if attacker is being grappled - cannot attack while controlled
     if (attacker.combatState === CombatState.GRAPPLED) {
       return {
         hit: false,
@@ -296,12 +285,9 @@ export class CombatSystem implements CombatSystemInterface {
       };
     }
 
-    // === ANIMATION-AWARE HIT DETECTION ===
-    // If animation context provided, validate timing and reach
     if (animationContext) {
       const { animationType, currentTime } = animationContext;
 
-      // Check if within hit window (extension phase)
       if (!isWithinHitWindow(animationType, currentTime)) {
         return {
           hit: false,
@@ -319,7 +305,6 @@ export class CombatSystem implements CombatSystemInterface {
         };
       }
 
-      // Calculate effective reach based on physical attributes and animation
       const attackerPhysical = getArchetypePhysicalAttributes(
         attacker.archetype,
       );
@@ -331,7 +316,6 @@ export class CombatSystem implements CombatSystemInterface {
         technique.reachConfig, // Pass reachConfig for hybrid reach calculation
       );
 
-      // Check distance to defender using 3D Euclidean distance
       // Physics-first: Position type is 2D in METERS
       // No conversion needed - positions are already in meters
       const centerToCenterDistance = calculateDistance3D(
@@ -339,7 +323,6 @@ export class CombatSystem implements CombatSystemInterface {
         [defender.position.x, defender.position.y, 0],
       );
 
-      // Calculate body radii
       // Note: PhysicalReachCalculator already includes attacker body pivot/offset in reach calculation
       // (shoulder offset for punches, hip rotation for kicks), so we only subtract defender radius
       // to avoid double-counting the attacker's body dimension.
@@ -349,13 +332,11 @@ export class CombatSystem implements CombatSystemInterface {
       );
       const defenderBodyRadius = calculateBodyRadius(defenderPhysical);
 
-      // Effective distance = center-to-center minus defender body radius only
       // Reach is calculated from attacker center to striking limb surface (includes body pivot),
       // so we measure from attacker center to defender surface (subtracting defender radius only).
       // 유효 거리 = 중심간 거리 - 수비자 몸체 반경
       const distance = Math.max(0, centerToCenterDistance - defenderBodyRadius);
 
-      // If out of reach, miss
       if (distance > reachResult.effectiveReach) {
         return {
           hit: false,
@@ -445,7 +426,6 @@ export class CombatSystem implements CombatSystemInterface {
       );
     }
 
-    // Calculate damage using the interface method
     const damageResult = this.calculateDamage(
       technique,
       attacker,
@@ -458,11 +438,9 @@ export class CombatSystem implements CombatSystemInterface {
       },
     );
 
-    // Check for critical hit
     const critRoll = Math.random();
     const isCritical = critRoll <= (technique.critChance ?? 0.1);
 
-    // Determine animation information for technique
     const animationInfo = this.getAnimationInfoForTechnique(technique);
 
     // Calculate knockback physics (밀침 물리)
@@ -514,11 +492,9 @@ export class CombatSystem implements CombatSystemInterface {
     let speedModifier;
 
     if (techniqueData?.animation) {
-      // Use explicit animation configuration
       animationType = techniqueData.animation.type;
       speedModifier = techniqueData.animation.speedModifier;
     } else {
-      // Auto-determine animation from technique characteristics
       const techniqueName =
         technique.name?.english || technique.englishName || "";
       const techniqueId = technique.id || "";
@@ -530,17 +506,11 @@ export class CombatSystem implements CombatSystemInterface {
         damageType,
       );
 
-      // Calculate speed modifier based on technique damage
       speedModifier = calculateSpeedModifierForDamage(technique.damage || 15);
     }
 
-    // Get base animation name from animation type
     const animationName = getAnimationNameForType(animationType);
-
-    // Calculate adjusted duration
     const duration = getAdjustedAnimationDuration(animationName, speedModifier);
-
-    // Get Korean technique name for display
     const techniqueDisplayName =
       technique.name?.korean || technique.koreanName || technique.id;
 
@@ -1077,7 +1047,6 @@ export class CombatSystem implements CombatSystemInterface {
     attacker: PlayerState,
     defender: PlayerState,
   ): { updatedAttacker: PlayerState; updatedDefender: PlayerState } {
-    // Apply damage and effects
     let updatedDefender = defender;
     let updatedAttacker = attacker;
 
@@ -1115,12 +1084,10 @@ export class CombatSystem implements CombatSystemInterface {
         hitsTaken: updatedDefender.hitsTaken + 1,
       };
 
-      // Apply status effects from vital point hit
       if (result.effects && result.effects.length > 0) {
         updatedDefender = addEffectsToPlayer(updatedDefender, result.effects);
       }
 
-      // Track vital point hits
       if (result.vitalPointHit) {
         updatedAttacker = {
           ...updatedAttacker,
@@ -1128,7 +1095,6 @@ export class CombatSystem implements CombatSystemInterface {
         };
       }
 
-      // Track perfect strikes (high accuracy)
       if (result.isCritical) {
         updatedAttacker = {
           ...updatedAttacker,
@@ -1137,7 +1103,6 @@ export class CombatSystem implements CombatSystemInterface {
       }
     }
 
-    // Apply technique costs to attacker
     updatedAttacker = {
       ...updatedAttacker,
       ki: Math.max(0, attacker.ki - 5),
@@ -1162,7 +1127,6 @@ export class CombatSystem implements CombatSystemInterface {
     technique?: KoreanTechnique,
   ): BodyRegion {
     if (!technique) {
-      // Default to torso if no technique specified
       return BodyRegion.TORSO;
     }
 
@@ -1204,7 +1168,6 @@ export class CombatSystem implements CombatSystemInterface {
       techniqueId.includes("kick") ||
       techniqueId.includes("leg")
     ) {
-      // Randomly choose left or right leg
       return Math.random() < 0.5 ? BodyRegion.LEFT_LEG : BodyRegion.RIGHT_LEG;
     }
 
@@ -1215,7 +1178,6 @@ export class CombatSystem implements CombatSystemInterface {
       techniqueName.includes("elbow") ||
       techniqueId.includes("arm")
     ) {
-      // Randomly choose left or right arm
       return Math.random() < 0.5 ? BodyRegion.LEFT_ARM : BodyRegion.RIGHT_ARM;
     }
 
@@ -1301,14 +1263,11 @@ export class CombatSystem implements CombatSystemInterface {
   updatePlayerState(player: PlayerState, deltaTime: number): PlayerState {
     let updatedPlayer = { ...player };
 
-    // Remove expired effects first
     updatedPlayer = removeExpiredEffects(updatedPlayer);
 
-    // Get effect modifiers for resource regeneration
     const effectModifiers = getEffectModifiers(updatedPlayer);
 
-    // Apply natural regeneration with effect modifiers
-    const regenRate = deltaTime / 1000; // Convert to seconds
+    const regenRate = deltaTime / 1000;
 
     // Ki regeneration (slower during combat) - affected by effects
     if (updatedPlayer.ki < updatedPlayer.maxKi) {
@@ -1324,7 +1283,6 @@ export class CombatSystem implements CombatSystemInterface {
     // 체력 재생 속도 - 더 활발한 전투를 위해
     if (updatedPlayer.stamina < updatedPlayer.maxStamina) {
       const baseStaminaRegen = regenRate * BASE_STAMINA_REGEN_RATE * effectModifiers.staminaRegen;
-      // Apply breathing disruption system's stamina regen modifier
       const modifiedStaminaRegen =
         BreathingDisruptionSystem.calculateStaminaRegen(
           updatedPlayer,
@@ -1336,7 +1294,6 @@ export class CombatSystem implements CombatSystemInterface {
       );
     }
 
-    // Health regeneration (very slow)
     if (
       updatedPlayer.health < updatedPlayer.maxHealth &&
       updatedPlayer.health > 0
@@ -1354,7 +1311,6 @@ export class CombatSystem implements CombatSystemInterface {
       Date.now(),
     );
 
-    // Clear temporary combat states
     const currentTime = Date.now();
     if (
       updatedPlayer.lastActionTime &&
@@ -1404,7 +1360,6 @@ export class CombatSystem implements CombatSystemInterface {
       };
     }
 
-    // Use VitalPointSystem's processHit with full archetype support
     return this.vitalPointSystem.processHit(
       vitalPoint.position, // Use vital point position for hit calculation
       { width: 10, height: 10 }, // Standard hit box
@@ -1440,7 +1395,6 @@ export class CombatSystem implements CombatSystemInterface {
    * // Returns: 'parry_deflect', 'block_success', or 'guard_break'
    * ```
    *
-   * @public
    * @korean 방어행동처리
    */
   public processDefensiveAction(
@@ -1466,7 +1420,6 @@ export class CombatSystem implements CombatSystemInterface {
     // Defense stat provides moderate bonus (normalized to 0.5-1.5 range for typical 5-15 defense)
     const defenseBonus = Math.max(0.5, Math.min(1.5, defender.defense / 10));
 
-    // Calculate final defensive power
     const defensePower =
       balanceFactor * staminaFactor * 100 * defenseMultiplier * defenseBonus;
 
@@ -1518,7 +1471,6 @@ export class CombatSystem implements CombatSystemInterface {
       };
     }
 
-    // Calculate damage using the interface method
     const vitalPointHit: VitalPointHitResult = {
       hit: false,
       damage: 0,
@@ -1564,16 +1516,12 @@ export class CombatSystem implements CombatSystemInterface {
     effectsApplied: readonly StatusEffect[];
     finalDefenderState?: Partial<PlayerState>;
   } {
-    // Calculate base damage from technique
     const baseDamage = technique.damage || 15;
 
-    // Apply attacker modifiers
     const attackerBonus = attacker.attackPower * 0.1;
 
-    // Apply vital point modifiers if hit
     let vitalPointMultiplier = 1.0;
     if (hitResult.hit && hitResult.vitalPointHit) {
-      // Use the correct property name
       const severityMultipliers: Record<VitalPointSeverity, number> = {
         [VitalPointSeverity.MINOR]: 1.1,
         [VitalPointSeverity.MODERATE]: 1.3,
@@ -1582,21 +1530,17 @@ export class CombatSystem implements CombatSystemInterface {
         [VitalPointSeverity.LETHAL]: 3.0,
       };
 
-      // Use the severity property directly
       vitalPointMultiplier = severityMultipliers[hitResult.severity] ?? 1.0;
     }
 
-    // Calculate total modifier damage
     const modifierDamage = attackerBonus * vitalPointMultiplier;
 
-    // Apply defense reduction
     const defenseReduction = defender.defense * 0.05;
     const totalDamage = Math.max(
       1,
       baseDamage + modifierDamage - defenseReduction,
     );
 
-    // Combine effects from technique and vital point hit
     const effectsApplied = [...technique.effects, ...hitResult.effects];
 
     return {

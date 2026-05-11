@@ -252,7 +252,6 @@ export class DamageCalculator {
    * console.log(`Critical hit: ${result.isCritical}`);
    * ```
    *
-   * @public
    * @korean 종합급소피해계산
    */
   static calculateEnhancedVitalPointDamage(
@@ -620,7 +619,6 @@ export class DamageCalculator {
    * );
    * ```
    *
-   * @public
    * @korean 던지기충격피해계산
    */
   static calculateThrowImpactDamage(
@@ -708,7 +706,6 @@ export class DamageCalculator {
    * // Result: 6.5 HP restored (5 × 1.3)
    * ```
    *
-   * @public
    * @korean 대지치유계산
    */
   static calculateEarthHealing(

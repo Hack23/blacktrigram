@@ -46,7 +46,6 @@ import { EffectIntensity } from "@/systems/effects";
  * Progressive levels of respiratory impairment from torso strikes.
  * Higher levels stack duration and increase stamina regeneration penalties.
  * 
- * @public
  * @category Combat Systems
  * @korean 호흡곤란수준
  */
@@ -87,7 +86,6 @@ export enum BreathingDisruptionLevel {
  * Tracks active breathing difficulty with Korean-English terminology.
  * Integrates with the status effect system for consistent duration tracking.
  * 
- * @public
  * @category Combat Systems
  * @korean 호흡곤란효과
  */
@@ -175,7 +173,6 @@ const BREATHING_DISRUPTION_CONFIGS: Record<
  * Manages breathing disruption effects from torso targeting.
  * Integrates with vital point system and stamina regeneration.
  * 
- * @public
  * @category Combat Systems
  */
 export class BreathingDisruptionSystem {

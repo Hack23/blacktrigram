@@ -95,7 +95,6 @@ interface ConsciousnessEffects {
  * const recovered = consciousnessSystem.applyRecovery(newPlayer, 1000);
  * ```
  *
- * @public
  * @korean 의식시스템
  */
 export class ConsciousnessSystem {
@@ -198,7 +197,6 @@ export class ConsciousnessSystem {
    * console.log(`Consciousness: ${newPlayer.consciousness}`);
    * ```
    *
-   * @public
    * @korean 의식피해적용
    */
   applyDamage(
@@ -246,7 +244,6 @@ export class ConsciousnessSystem {
    * player = system.applyRecovery(player, 16, player.lastActionTime);
    * ```
    *
-   * @public
    * @korean 의식회복
    */
   applyRecovery(
@@ -311,7 +308,6 @@ export class ConsciousnessSystem {
    * console.log(level2); // UNCONSCIOUS (below incapacitation threshold)
    * ```
    *
-   * @public
    * @korean 의식수준확인
    */
   getLevel(consciousness: number): ConsciousnessLevel {
@@ -327,7 +323,6 @@ export class ConsciousnessSystem {
    * @param level - Consciousness level
    * @returns Effects applied at that level
    *
-   * @public
    * @korean 의식효과
    */
   getEffects(level: ConsciousnessLevel): ConsciousnessEffects {
@@ -342,7 +337,6 @@ export class ConsciousnessSystem {
    * @param player - Current player state
    * @returns Modified player state with consciousness effects
    *
-   * @public
    * @korean 의식효과적용
    */
   applyEffects(player: PlayerState): PlayerState {
@@ -382,7 +376,6 @@ export class ConsciousnessSystem {
    * }
    * ```
    *
-   * @public
    * @korean 무력화한계확인
    */
   isAtIncapacitationThreshold(player: PlayerState): boolean {
@@ -396,7 +389,6 @@ export class ConsciousnessSystem {
    *
    * @returns Helpless duration in milliseconds
    *
-   * @public
    * @korean 무력화지속시간
    */
   getHelplessDuration(): number {
@@ -414,7 +406,6 @@ export class ConsciousnessSystem {
    * @param lastHeadTraumaTime - Timestamp of last head trauma
    * @returns True if recovery is allowed
    *
-   * @public
    * @korean 회복가능확인
    */
   canRecover(lastHeadTraumaTime: number): boolean {
@@ -428,7 +419,6 @@ export class ConsciousnessSystem {
    * @param player - Current player state
    * @returns True if player is unconscious
    *
-   * @public
    * @korean 무의식확인
    */
   isIncapacitated(player: PlayerState): boolean {
@@ -443,7 +433,6 @@ export class ConsciousnessSystem {
    * @param level - Consciousness level
    * @returns Korean and English level names
    *
-   * @public
    * @korean 의식이름
    */
   getLevelName(level: ConsciousnessLevel): { korean: string; english: string } {
@@ -478,7 +467,6 @@ export class ConsciousnessSystem {
    * @param level - Consciousness level
    * @returns Bilingual description
    *
-   * @public
    * @korean 의식설명
    */
   getLevelDescription(level: ConsciousnessLevel): {
@@ -516,7 +504,6 @@ export class ConsciousnessSystem {
    * @param level - Consciousness level
    * @returns Hex color code
    *
-   * @public
    * @korean 의식색상
    */
   getLevelColor(level: ConsciousnessLevel): number {
@@ -554,7 +541,6 @@ export class ConsciousnessSystem {
    * }
    * ```
    *
-   * @public
    * @korean 의식상실낙법확인
    */
   shouldTriggerFall(player: PlayerState): boolean {
@@ -591,7 +577,6 @@ export class ConsciousnessSystem {
    * // Returns: Stance-based fall or 'backward' default
    * ```
    *
-   * @public
    * @korean 의식상실낙법결정
    */
   determineFallType(_player: PlayerState, lastImpactAngle?: number): FallType {
@@ -650,7 +635,6 @@ export class ConsciousnessSystem {
    * // Returns: 'backward' (Mountain has defensive backward bias)
    * ```
    *
-   * @public
    * @korean 자세의식상실낙법
    */
   determineFallTypeFromStance(stance: TrigramStance): FallType {

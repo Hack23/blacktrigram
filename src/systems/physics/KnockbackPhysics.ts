@@ -40,7 +40,6 @@ import { TrigramStance } from '@/types/common';
  * 
  * **Korean**: 균형 상태 (Balance State)
  * 
- * @public
  * @korean 균형상태
  */
 export interface BalanceState {
@@ -55,7 +54,6 @@ export interface BalanceState {
  * 
  * **Korean**: 밀침 설정 (Knockback Configuration)
  * 
- * @public
  * @korean 밀침설정
  */
 export interface KnockbackConfig {
@@ -78,7 +76,6 @@ export interface KnockbackConfig {
  * 
  * Contains displacement vector, animation timing, and fall determination.
  * 
- * @public
  * @korean 밀침결과
  */
 export interface KnockbackResult {
@@ -120,7 +117,6 @@ export interface KnockbackResult {
  * // recoveryWindow: 1.05s (0.7s * 1.5 for low balance)
  * ```
  * 
- * @public
  * @korean 밀침물리
  */
 export class KnockbackPhysics {
@@ -162,7 +158,6 @@ export class KnockbackPhysics {
    * // Result: ~9.6m knockback, shouldFall: true, 3.0s recovery
    * ```
    * 
-   * @public
    * @korean 밀침계산
    */
   calculateKnockback(config: KnockbackConfig, attackDamage: number): KnockbackResult {
@@ -366,7 +361,6 @@ export class KnockbackPhysics {
    * // Progress 1.0: At final position
    * ```
    * 
-   * @public
    * @korean 밀침힘적용
    */
   applyKnockbackForce(
@@ -397,7 +391,6 @@ export class KnockbackPhysics {
    * @param duration - Total knockback duration
    * @returns True if still in knockback animation
    * 
-   * @public
    * @korean 밀침상태확인
    */
   isInKnockback(elapsedTime: number, duration: number): boolean {
@@ -413,7 +406,6 @@ export class KnockbackPhysics {
    * @param recoveryWindow - Total recovery window duration
    * @returns True if in vulnerable recovery state
    * 
-   * @public
    * @korean 회복대기확인
    */
   isInRecoveryWindow(elapsedTime: number, recoveryWindow: number): boolean {
@@ -428,7 +420,6 @@ export class KnockbackPhysics {
    * @param shouldFall - Whether knockback causes fall
    * @returns Korean and English state names
    * 
-   * @public
    * @korean 밀침상태이름
    */
   static getKnockbackStateName(shouldFall: boolean): { korean: string; english: string } {
@@ -452,7 +443,6 @@ export class KnockbackPhysics {
    * 
    * @returns Korean and English state names
    * 
-   * @public
    * @korean 회복상태이름
    */
   getRecoveryStateName(): { korean: string; english: string } {
@@ -469,7 +459,6 @@ export class KnockbackPhysics {
    * 
    * @returns Korean and English state names
    * 
-   * @public
    * @korean 휘청거림상태이름
    */
   getStumblingStateName(): { korean: string; english: string } {

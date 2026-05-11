@@ -37,7 +37,6 @@ export interface BodyPartDamageTarget {
  * @param vitalPoint - Vital point that was struck
  * @returns Corresponding body region
  *
- * @public
  */
 export function getBodyRegionFromVitalPoint(
   vitalPoint: VitalPoint
@@ -160,7 +159,6 @@ export function getBodyRegionFromVitalPoint(
  * @param bodyRegion - Body region that was hit
  * @returns Updated player state with body part damage applied
  *
- * @public
  */
 export function applyDamageToBodyParts<T extends BodyPartDamageTarget>(
   player: T,
@@ -207,7 +205,6 @@ export function applyDamageToBodyParts<T extends BodyPartDamageTarget>(
  * @param vitalPoint - Vital point that was struck
  * @returns Updated player state with vital point damage applied
  *
- * @public
  */
 export function applyVitalPointDamageToBodyParts<
   T extends BodyPartDamageTarget
@@ -240,7 +237,6 @@ export function applyVitalPointDamageToBodyParts<
  * const actualSpeed = baseSpeed * effects.movementSpeedModifier;
  * ```
  *
- * @public
  */
 export function getBodyPartCombatEffects(player: BodyPartDamageTarget) {
   // If no body part health, return no effects
@@ -275,7 +271,6 @@ export function getBodyPartCombatEffects(player: BodyPartDamageTarget) {
  * @param player - Player state to check
  * @returns Whether player is incapacitated
  *
- * @public
  */
 export function isPlayerIncapacitatedByBodyDamage(
   player: BodyPartDamageTarget
@@ -299,7 +294,6 @@ export function isPlayerIncapacitatedByBodyDamage(
  * @param maxHealthPerPart - Optional custom max health per part
  * @returns Player state with body part health initialized
  *
- * @public
  */
 export function initializeBodyPartHealthForPlayer<
   T extends BodyPartDamageTarget
@@ -334,7 +328,6 @@ export function initializeBodyPartHealthForPlayer<
  * @param totalHealAmount - Total healing to distribute
  * @returns Updated player state with healing applied
  *
- * @public
  */
 export function healBodyPartsProportionally<T extends BodyPartDamageTarget>(
   player: T,

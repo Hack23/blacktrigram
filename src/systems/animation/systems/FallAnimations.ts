@@ -61,7 +61,6 @@ export const FALL_IMPACT_FRAMES: Record<FallType, number> = {
  * // Returns: 'side_left'
  * ```
  *
- * @public
  * @korean 낙법방향결정
  */
 export function determineFallDirection(
@@ -141,7 +140,6 @@ export function determineFallDirection(
  * @param defaultFall - Default fall type if stance doesn't suggest direction
  * @returns Likely fall direction for the stance
  *
- * @public
  * @korean 자세낙법방향
  */
 export function determineFallFromStance(
@@ -426,7 +424,6 @@ export const FALL_SIDE_RIGHT_KEYFRAMES: readonly FallKeyframe[] = [
  * @param fallType - Type of fall animation
  * @returns Array of keyframes for that fall type
  *
- * @public
  * @korean 낙법키프레임가져오기
  */
 export function getFallKeyframes(fallType: FallType): readonly FallKeyframe[] {
@@ -450,7 +447,6 @@ export function getFallKeyframes(fallType: FallType): readonly FallKeyframe[] {
  * @param fallType - Type of fall animation
  * @returns Frame number when ground impact occurs
  *
- * @public
  * @korean 충격프레임가져오기
  */
 export function getImpactFrame(fallType: FallType): number {
