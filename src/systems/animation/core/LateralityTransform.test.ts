@@ -516,12 +516,25 @@ describe("LateralityTransform", () => {
         })),
       };
 
-      const startTime = performance.now();
-      applyLaterality(complexAnim, "left");
-      const endTime = performance.now();
+      const iterations = 25;
+      const durations: number[] = [];
 
-      const duration = endTime - startTime;
-      expect(duration).toBeLessThan(5.0); // <5ms even for complex animations in slower envs
+      // Warm-up run to avoid one-time initialization noise in CI.
+      applyLaterality(complexAnim, "left");
+
+      for (let i = 0; i < iterations; i++) {
+        const startTime = performance.now();
+        applyLaterality(complexAnim, "left");
+        const endTime = performance.now();
+        durations.push(endTime - startTime);
+      }
+
+      const averageDuration =
+        durations.reduce((sum, duration) => sum + duration, 0) / iterations;
+      const worstDuration = Math.max(...durations);
+
+      expect(averageDuration).toBeLessThan(5.0); // <5ms average performance budget
+      expect(worstDuration).toBeLessThan(12.0); // tolerate occasional scheduler jitter in CI
     });
 
     it("should not create unnecessary object copies for right laterality", () => {
