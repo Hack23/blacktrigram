@@ -140,7 +140,6 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
   if (player.isBlocking) return "defend";
   if (player.isCountering) return "counter";
 
-  // Check combat state (CombatState enum values are lowercase strings)
   switch (player.combatState) {
     case "attacking":
       return "attack";
@@ -151,8 +150,6 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
     case "recovering":
     case "idle":
     default:
-      // Use stance-specific idle animation for proper guard pose
-      // This ensures correct leg positioning for each trigram stance
       return `stance_${player.currentStance}` as PlayerAnimation;
   }
 }
@@ -208,26 +205,21 @@ export function convertPlayerStateToProps(
     position,
     rotation,
 
-    // Health and resources
     health: player.health,
     maxHealth: player.maxHealth,
     stamina: player.stamina,
     ki: player.ki,
 
-    // Combat states
     pain: player.pain,
     balance: getBalanceState(player.balance),
     consciousness: player.consciousness,
 
-    // Combat flags
     isBlocking: player.isBlocking,
     isStunned: player.isStunned,
     isCountering: player.isCountering,
 
-    // Animation (derived from combat state)
     currentAnimation: getPlayerAnimation(player),
 
-    // Display options
     name: player.name,
     isMobile: options.isMobile ?? false,
     facing: options.facing ?? "right",
@@ -237,7 +229,6 @@ export function convertPlayerStateToProps(
     showStanceIndicator: options.showStanceIndicator,
     onAnimationComplete: options.onAnimationComplete,
 
-    // Facial expression options - 얼굴 표정 옵션
     enableFacialExpressions: options.enableFacialExpressions ?? false,
     enableEyeTracking: options.enableEyeTracking ?? true,
     opponentPosition: options.opponentPosition,
