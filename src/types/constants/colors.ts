@@ -1,16 +1,27 @@
 /**
- * Color palette for Black Trigram Korean martial arts game
- * Cyberpunk aesthetic with Korean traditional influences
- * 
+ * Color palette for Black Trigram Korean martial arts game.
+ *
+ * Cyberpunk aesthetic with Korean traditional influences.
+ *
  * WCAG 2.1 Level AA Compliance:
  * - Text colors meet 4.5:1 contrast ratio on dark backgrounds
  * - UI elements meet 3:1 contrast ratio
  * - Focus indicators use 2px borders with high contrast
- * 
+ *
  * @see https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html
+ *
+ * @module types/constants/colors
+ * @category Color Constants
+ * @korean 색상팔레트
  */
 
-// Primary color palette
+/**
+ * Primary Korean cyberpunk color palette with WCAG 2.1 AA compliance.
+ *
+ * @constant
+ * @category Color Constants
+ * @korean 한국색상
+ */
 export const KOREAN_COLORS = {
   // Primary colors (Cyberpunk neon) - WCAG AA compliant on dark backgrounds
   PRIMARY_CYAN: 0x00e6e6, // Increased brightness for better contrast (was 0x00ffff)
@@ -152,9 +163,15 @@ export const KOREAN_COLORS = {
   NEON_PINK: 0xff1493,
 } as const;
 
-// Cyberpunk color palette
+/**
+ * Cyberpunk-themed color palette for UI elements and effects.
+ *
+ * @constant
+ * @category Color Constants
+ * @korean 사이버팡크색상
+ */
 export const CYBERPUNK_COLORS = {
-  // Primary neon colors - 사이버펑크 네온 색상
+  // Primary neon colors - 사이버팡크 네온 색상
   NEON_CYAN: 0x00ffff, // 네온 시안 - Primary UI
   NEON_PURPLE: 0xff00ff, // 네온 보라 - Secondary accents
   NEON_GREEN: 0x00ff00, // 네온 초록 - Success states
@@ -191,7 +208,13 @@ export const CYBERPUNK_COLORS = {
   HIGHLIGHT: 0xffff80, // 하이라이트 - Selection highlight
 } as const;
 
-// Color utility functions
+/**
+ * Color utility functions for hex color manipulation.
+ *
+ * @constant
+ * @category Color Constants
+ * @korean 색상유틸리티
+ */
 export const colorUtils = {
   /**
    * Convert hex color to RGB components

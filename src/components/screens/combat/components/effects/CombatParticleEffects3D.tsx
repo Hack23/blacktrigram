@@ -71,7 +71,6 @@ function getOrganForPosition(
   position: { x: number; y: number } | undefined,
 ): OrganType {
   if (!position) return "stomach";
-  // Map y-position to organ (based on typical character model height)
   const y = position.y;
   if (y > 1.4) return "heart"; // 심장 - upper chest
   if (y > 1.1) return "stomach"; // 명치 - solar plexus
@@ -141,17 +140,14 @@ function hashToFloat(str: string): number {
 export const CombatParticleEffects3D: React.FC<
   CombatParticleEffects3DProps
 > = ({ hitEffects, enabled = true, isMobile = false }) => {
-  // Track processed hit effect IDs to avoid duplicates
   const processedIds = useRef<Set<string>>(new Set());
 
-  // Effect state arrays
   const [bloodEffects, setBloodEffects] = useState<BloodViscosityEffect[]>([]);
   const [organEffects, setOrganEffects] = useState<InternalDamageEffect[]>([]);
   const [audioTriggers, setAudioTriggers] = useState<ParticleAudioTrigger[]>(
     [],
   );
 
-  // Process new HitEffects in useEffect (not during render)
   useEffect(() => {
     const newBlood: BloodViscosityEffect[] = [];
     const newOrgan: InternalDamageEffect[] = [];
@@ -167,10 +163,8 @@ export const CombatParticleEffects3D: React.FC<
         0,
       ];
 
-      // Blood viscosity effect
       const viscosity = getViscosityForHitType(hit.type);
       if (viscosity) {
-        // Direction: deterministic spray based on hit ID
         const angle = hashToFloat(hit.id) * Math.PI * 2;
         const ySpread = 0.3 + hashToFloat(hit.id + "_y") * 0.4;
         const dir: [number, number, number] = [
@@ -189,7 +183,6 @@ export const CombatParticleEffects3D: React.FC<
         });
       }
 
-      // Internal damage for vital point strikes
       if (hit.type === HitEffectType.VITAL_POINT_STRIKE) {
         newOrgan.push({
           id: `organ_${hit.id}`,
@@ -200,7 +193,6 @@ export const CombatParticleEffects3D: React.FC<
         });
       }
 
-      // Audio trigger
       const audioType = getAudioEffectType(hit.type);
       if (audioType) {
         newAudio.push({
@@ -211,7 +203,6 @@ export const CombatParticleEffects3D: React.FC<
       }
     }
 
-    // Batch merge with existing effects (respecting limits)
     if (newBlood.length > 0) {
       setBloodEffects((prev) =>
         [...prev, ...newBlood].slice(-MAX_BLOOD_EFFECTS),
@@ -226,14 +217,12 @@ export const CombatParticleEffects3D: React.FC<
       setAudioTriggers((prev) => [...prev, ...newAudio]);
     }
 
-    // Clean up old processed IDs periodically
     if (processedIds.current.size > 500) {
       const arr = Array.from(processedIds.current);
       processedIds.current = new Set(arr.slice(-250));
     }
   }, [hitEffects]);
 
-  // Effect completion handlers
   const handleBloodComplete = useCallback((id: string) => {
     setBloodEffects((prev) => prev.filter((e) => e.id !== id));
   }, []);

@@ -69,13 +69,11 @@ const BasePanelComponent: React.FC<BasePanelProps> = ({
   ariaLabel,
   ariaDescribedBy,
 }) => {
-  // Use Korean theme hook for consistent styling
   const { panelVariant, fontFamily } = useKoreanTheme({
     variant,
     isMobile,
   });
 
-  // Memoize panel styles for performance
   const panelStyle = useMemo<React.CSSProperties>(() => {
     return {
       width,
@@ -104,7 +102,6 @@ const BasePanelComponent: React.FC<BasePanelProps> = ({
   );
 };
 
-// Export memoized component for performance optimization
 export const BasePanel = React.memo(BasePanelComponent);
 
 BasePanel.displayName = "BasePanel";

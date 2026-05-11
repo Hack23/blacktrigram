@@ -130,7 +130,6 @@ const DEFAULT_EFFECT_DURATION = 2000;
  * // Result: 2000 * 1.225 * 1.5 * 1.3 * 0.8 * 2.0 = ~9,568ms
  * ```
  * 
- * @public
  * @korean 효과지속시간계산
  */
 export function calculateEffectDuration(
@@ -142,24 +141,19 @@ export function calculateEffectDuration(
 ): number {
   const baseDuration = effect.duration || DEFAULT_EFFECT_DURATION;
 
-  // Accuracy bonus: 0.75x at 0 accuracy, 1.0x at 0.5, 1.25x at 1.0
   const accuracyBonus = 1 + (accuracy - 0.5) * 0.5;
 
-  // Severity multiplier
   const severityMult = SEVERITY_MULTIPLIERS[severity] || 1.0;
 
-  // Attacker offensive modifier
   const offensiveModifier = ARCHETYPE_OFFENSIVE[attackerArchetype] || 1.0;
 
   // Defender resistance modifier (inverted: resistance reduces duration)
   const resistanceModifier =
     1 - (ARCHETYPE_RESISTANCE[defenderArchetype] || 0);
 
-  // Calculate base duration
   let finalDuration =
     baseDuration * accuracyBonus * severityMult * offensiveModifier * resistanceModifier;
 
-  // Critical hit bonus for high accuracy
   if (accuracy >= CRITICAL_HIT_THRESHOLD) {
     finalDuration *= CRITICAL_DURATION_MULTIPLIER;
   }
@@ -187,7 +181,6 @@ export function calculateEffectDuration(
  * // Returns scaled intensity for 90% accuracy hit
  * ```
  * 
- * @public
  * @korean 효과강도계산
  */
 export function calculateEffectIntensity(
@@ -195,8 +188,7 @@ export function calculateEffectIntensity(
   accuracy: number
 ): EffectIntensity {
   // Map intensities to numeric scale
-  const intensityMap: Record<EffectIntensity, number> = {
-    [EffectIntensity.WEAK]: 1,
+  const intensityMap: Record<EffectIntensity, number> = {    [EffectIntensity.WEAK]: 1,
     [EffectIntensity.MINOR]: 2,
     [EffectIntensity.LOW]: 3,
     [EffectIntensity.MEDIUM]: 4,
@@ -207,7 +199,6 @@ export function calculateEffectIntensity(
     [EffectIntensity.EXTREME]: 9,
   };
 
-  // Reverse map for lookup
   const reverseMap: EffectIntensity[] = [
     EffectIntensity.WEAK,
     EffectIntensity.MINOR,
@@ -225,7 +216,6 @@ export function calculateEffectIntensity(
   // Accuracy modifier: 0.5x at 0 accuracy, 1.0x at 0.5, 1.5x at 1.0
   const accuracyModifier = 0.5 + accuracy;
 
-  // Calculate scaled level
   const scaledLevel = Math.max(
     1,
     Math.min(9, Math.round(baseLevel * accuracyModifier))
@@ -248,7 +238,6 @@ export function calculateEffectIntensity(
  * @param timestamp - Current timestamp (for startTime/endTime)
  * @returns StatusEffect with calculated duration and intensity
  * 
- * @public
  * @korean 상태효과변환
  */
 export function convertToStatusEffect(
@@ -307,7 +296,6 @@ export function convertToStatusEffect(
  * );
  * ```
  * 
- * @public
  * @korean 효과중첩적용
  */
 export function applyEffectStacking(
@@ -320,7 +308,6 @@ export function applyEffectStacking(
     (effect) => effect.endTime > currentTime
   );
 
-  // Process each new effect
   for (const newEffect of newEffects) {
     if (!newEffect.stackable) {
       // Remove existing effects of same type (non-stackable)
@@ -329,7 +316,6 @@ export function applyEffectStacking(
       );
     }
 
-    // Add new effect
     activeEffects = [...activeEffects, newEffect];
   }
 
@@ -351,7 +337,6 @@ export function applyEffectStacking(
  * @param archetype - Player archetype
  * @returns Offensive effect multiplier (1.0 - 1.3)
  * 
- * @public
  * @korean 원형공격배율조회
  */
 export function getArchetypeOffensiveModifier(
@@ -368,7 +353,6 @@ export function getArchetypeOffensiveModifier(
  * @param archetype - Player archetype
  * @returns Resistance modifier (-0.1 to 0.2)
  * 
- * @public
  * @korean 원형방어배율조회
  */
 export function getArchetypeDefensiveModifier(
@@ -385,7 +369,6 @@ export function getArchetypeDefensiveModifier(
  * @param accuracy - Hit accuracy (0-1)
  * @returns True if accuracy >= 0.9 (critical hit)
  * 
- * @public
  * @korean 크리티컬판정
  */
 export function isCriticalHit(accuracy: number): boolean {

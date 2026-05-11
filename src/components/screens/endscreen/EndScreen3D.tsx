@@ -52,7 +52,6 @@ const toCssColor = (hex: number): string => hexToRgbaString(hex, 1);
 const BackgroundParticles3D: React.FC<{ color: number }> = ({ color }) => {
   const pointsRef = useRef<THREE.Points>(null);
 
-  // Use useState with lazy initializer for random values - this is only called once
   const [particleData] = useState(() => {
     const count = 100;
     const pos = new Float32Array(count * 3);
@@ -86,7 +85,6 @@ const BackgroundParticles3D: React.FC<{ color: number }> = ({ color }) => {
       array[i3 + 1] += velocities[i3 + 1] * delta;
       array[i3 + 2] += velocities[i3 + 2] * delta;
 
-      // Wrap around
       if (array[i3 + 1] > 15) {
         array[i3 + 1] = -15;
       }
@@ -200,7 +198,6 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   width: propWidth,
   height: propHeight,
 }) => {
-  // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in EndScreen");
@@ -212,19 +209,13 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   const [showStats, setShowStats] = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(false);
 
-  // Use window size for responsive layout with resize support
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const screenWidth = propWidth ?? windowWidth;
-  // Note: windowHeight available but not currently used - screenWidth sufficient for current responsive logic
   void (propHeight ?? windowHeight); // Consumed but not stored
 
-  // Determine if this is a victory screen (winner is player 0 by convention - extracted from id)
   const winnerId = winner.id;
   const isVictory = winnerId === "player-0" || winnerId.endsWith("-0");
 
-  // Responsive layout with proper device detection
-  // Uses user-agent detection for mobile controls (supports high-res phones)
-  // User-agent doesn't change during session, so no dependencies needed
   const isMobile = useMemo(() => shouldUseMobileControls(), []);
   const platform = useMemo(() => detectPlatform(), []);
   const isTablet = useMemo(() => platform.isTablet, [platform]);
@@ -254,14 +245,12 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
     [isMobile, isTablet, isLargeDesktop],
   );
 
-  // Use Korean theme hook for consistent theming
   const theme = useKoreanTheme({
     variant: "primary",
     size: "md",
     isMobile,
   });
 
-  // Play victory/defeat audio on mount
   useEffect(() => {
     if (isVictory) {
       audio.playSFX?.("victory_fanfare");
@@ -293,7 +282,6 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
     setShowBreakdown((prev) => !prev);
   }, [audio]);
 
-  // Audio callbacks for NavigationButtons (inside Html portal which doesn't have AudioProvider context)
   const handlePlaySelectSound = useCallback(() => {
     audio.playSFX?.("menu_select");
   }, [audio]);

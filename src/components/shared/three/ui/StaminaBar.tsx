@@ -43,7 +43,6 @@ export const StaminaBar: React.FC<StaminaBarProps> = React.memo(({
   playerId,
   isMobile,
 }) => {
-  // Calculate stamina percentage
   const staminaPercent = useMemo(
     () => Math.max(0, Math.min(100, (current / max) * 100)),
     [current, max]
@@ -53,7 +52,6 @@ export const StaminaBar: React.FC<StaminaBarProps> = React.memo(({
   const filledSegments = Math.ceil((staminaPercent / 100) * segments);
   const shouldPulse = staminaPercent < 20;
 
-  // Responsive sizing with memoization
   const layout = useMemo(() => ({
     barWidth: isMobile ? 180 : 250,
     barHeight: isMobile ? 10 : 12,

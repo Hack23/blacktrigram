@@ -71,7 +71,6 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
     setIsHovered(false);
   }, []);
 
-  // Memoize card styles for performance
   const cardStyle = useMemo<React.CSSProperties>(() => {
     let background = hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);
     let borderColor = hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.4);
@@ -108,7 +107,6 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
     };
   }, [width, isSelected, isHovered, onSelect]);
 
-  // Memoize header styles for performance
   const headerStyle = useMemo<React.CSSProperties>(
     () => ({
       marginBottom: "12px",

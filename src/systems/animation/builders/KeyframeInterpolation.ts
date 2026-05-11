@@ -31,7 +31,6 @@ type EasingFunction = (t: number) => number;
  * 
  * **Korean**: 3차 베지어 제어점
  * 
- * @public
  * @category Animation
  * @korean 베지어제어점
  */
@@ -163,7 +162,6 @@ export function createBezierEasing(points: BezierControlPoints): EasingFunction 
  * 
  * **Korean**: 무도 동작 이징 곡선
  * 
- * @public
  * @category Animation
  * @korean 무도동작이징곡선
  */
@@ -296,7 +294,6 @@ export const easeExplosivePower: EasingFunction = createBezierEasing(BEZIER_PRES
  * 
  * **Korean**: 확장된 이징 함수 이름
  * 
- * @public
  * @category Animation
  * @korean 확장이징함수이름
  */
@@ -724,7 +721,6 @@ export const crossFadeAnimations = (
  * 
  * Stores recent animation velocities for motion prediction.
  * 
- * @public
  * @category Animation
  * @korean 동작예측상태
  */

@@ -1,14 +1,16 @@
 /**
- * Main constants export for Black Trigram Korean martial arts system
+ * Main constants barrel export for Black Trigram Korean martial arts system.
+ *
+ * @module types/constants
+ * @category Constants
+ * @korean 상수배럴익스포트
  */
 
-// Fix: Remove duplicate exports and ensure proper imports
 export { CYBERPUNK_COLORS, KOREAN_COLORS } from "./colors";
 export {
   FONT_FAMILY,
   FONT_SIZES,
   FONT_WEIGHTS,
-  // KOREAN_FONT_FAMILY, // Not exported from typography.ts
   KOREAN_FONT_WEIGHTS,
   KOREAN_TEXT_SIZES,
   KOREAN_MOBILE_FONT_SIZES,
@@ -53,7 +55,7 @@ export {
   type PerformanceSettings,
 } from "./performance";
 
-// Responsive scaling system exports  
+// Responsive scaling system exports
 export {
   RESPONSIVE_BREAKPOINTS,
   FONT_SCALE_MAP,
@@ -83,14 +85,8 @@ export {
   type ScreenSizeTestResult,
 } from "../../systems/ResponsiveScaling";
 
-// Fix: Provide default export
 export { KOREAN_COLORS as default } from "./colors";
 
-// Fix: Add missing KOREAN_TYPOGRAPHY export
-
-// Fix: Add missing PIXI_FONT_WEIGHTS export
-
-// Fix: Add missing ANIMATION_DURATIONS export
 export { ANIMATION_DURATIONS } from "./animations";
 
 /**

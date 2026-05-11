@@ -26,12 +26,8 @@ const toCssColor = (hex: number): string => hexToRgbaString(hex, 1);
 function calculatePerformanceScore(stats: MatchStatistics): number {
   const winnerStats = stats.winner === 0 ? stats.player1 : stats.player2;
 
-  // Calculate accuracy based on offensive performance only
-  // Use a normalized scale: higher hits landed = better accuracy
   const accuracy = Math.min((winnerStats.hitsLanded / 10) * 100, 100);
 
-  // Calculate damage efficiency (damage dealt / damage taken ratio)
-  // Perfect defense (no damage taken) gets bonus ratio
   const damageRatio =
     winnerStats.totalDamageReceived > 0
       ? winnerStats.totalDamageDealt / winnerStats.totalDamageReceived
@@ -40,16 +36,13 @@ function calculatePerformanceScore(stats: MatchStatistics): number {
       : 0;
   const damageScore = Math.min(damageRatio * 30, 30); // Max 30 points
 
-  // Perfect strikes and vital point hits bonus
   const precisionBonus =
     winnerStats.perfectStrikes * 5 + winnerStats.vitalPointHits * 3;
   const precisionScore = Math.min(precisionBonus, 25); // Max 25 points
 
-  // Speed bonus (shorter match duration is better)
   const speedScore =
     stats.matchDuration < 60 ? 15 : stats.matchDuration < 120 ? 10 : 5;
 
-  // Combine scores
   const totalScore = accuracy * 0.3 + damageScore + precisionScore + speedScore;
 
   return Math.min(Math.round(totalScore), 100);
@@ -93,7 +86,6 @@ export const PerformanceRating: React.FC<PerformanceRatingProps> = ({
 
   const ratingInfo = PERFORMANCE_RATING_THRESHOLDS[rating];
 
-  // Extract winner stats for clarity
   const winnerStats = useMemo(
     () => (matchStats.winner === 0 ? matchStats.player1 : matchStats.player2),
     [matchStats]

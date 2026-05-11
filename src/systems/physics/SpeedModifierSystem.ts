@@ -52,7 +52,6 @@ import { injuryMovementModifier } from "@/systems/movement/InjuryMovementModifie
  * Contains all calculated speed modifiers and final values for application
  * to the physics-based movement system.
  *
- * @public
  * @category Physics System
  * @korean 속도변경상태
  */
@@ -80,7 +79,6 @@ export interface SpeedModifierState {
  *
  * **Korean**: 이동 유형 (Movement Type)
  *
- * @public
  * @category Physics System
  */
 export enum MovementType {
@@ -120,7 +118,6 @@ export enum MovementType {
  * movementPhysics.setAcceleration(modifiers.finalAcceleration);
  * ```
  *
- * @public
  * @category Physics System
  */
 export class SpeedModifierSystem {
@@ -208,7 +205,6 @@ export class SpeedModifierSystem {
    * @param isCrouching - Whether player is in crouching stance
    * @returns Complete speed modifier state with all factors
    *
-   * @public
    */
   public calculateSpeedModifiers(
     playerState: PlayerState,
@@ -490,7 +486,6 @@ export class SpeedModifierSystem {
    * @param movementPhysics - Movement physics system to update
    * @param modifiers - Calculated speed modifier state
    *
-   * @public
    */
   public applySpeedModifiers(
     movementPhysics: {

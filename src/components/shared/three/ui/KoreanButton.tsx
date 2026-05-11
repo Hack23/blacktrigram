@@ -17,7 +17,6 @@ import { BaseButton, type BaseButtonProps } from "../../base";
  * Extends BaseButtonProps for consistency
  */
 export interface KoreanButtonProps extends Omit<BaseButtonProps, "isMobile"> {
-  // All props inherited from BaseButton
 }
 
 /**
@@ -38,8 +37,6 @@ export interface KoreanButtonProps extends Omit<BaseButtonProps, "isMobile"> {
  * ```
  */
 export const KoreanButton: React.FC<KoreanButtonProps> = ({ testId, ...rest }) => {
-  // Simply delegate to BaseButton - all logic is now centralized
-  // Default testId to "korean-button" for backward compatibility
   return <BaseButton testId={testId ?? "korean-button"} {...rest} />;
 };
 

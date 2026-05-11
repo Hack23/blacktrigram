@@ -145,25 +145,18 @@ export const SkeletalPlayer3D: React.FC<
   onBodyFacingUpdate,
   laterality, // Stance laterality (left/right foot forward)
 }) => {
-  // Use laterality with default to "right"
   const effectiveLaterality = laterality ?? "right";
-  // Get physical attributes for the archetype
   const physicalAttributes = useMemo(
     () => getArchetypePhysicalAttributes(archetype),
     [archetype],
   );
 
-  // Create skeletal rig with scaled dimensions based on archetype
   const rig = useMemo<SkeletalRig>(
     () => createScaledHumanoidRig(physicalAttributes),
     [physicalAttributes],
   );
 
-  // ========================================
-  // ANIMATION HOOKS - Modular animation system
-  // ========================================
 
-  // Base skeletal animation (idle, walk, attack, etc.)
   const { updateRigAnimation, diagonalRotationY } = useSkeletalAnimation({
     currentAnimation,
     attackAnimation,
@@ -173,7 +166,6 @@ export const SkeletalPlayer3D: React.FC<
     onAnimationComplete,
   });
 
-  // Hand pose transitions for both hands
   const { leftHandState, rightHandState, updateHandAnimations } =
     useHandPoseTransitions({
       currentAnimation,
@@ -181,18 +173,12 @@ export const SkeletalPlayer3D: React.FC<
       isBlocking,
     });
 
-  // NOTE: Guard pose overlay removed - stance animations built with MartialArtsAnimationBuilder
-  // already include proper guard positions via transitionToStanceGuard()
-  // 가드 포즈 오버레이 제거 - MartialArtsAnimationBuilder로 빌드된 자세 애니메이션에
-  // transitionToStanceGuard()를 통한 적절한 가드 위치가 이미 포함되어 있음
 
-  // Balance animations (sway, stumble, lean based on balance state)
   const { swayPosition, helplessRotation, updateBalanceAnimations } =
     useBalanceAnimations({
       balance,
     });
 
-  // Muscle activation system
   const { muscleStates, updateMuscleActivations } = useMuscleActivation({
     currentAnimation,
     attackAnimation,
@@ -200,10 +186,8 @@ export const SkeletalPlayer3D: React.FC<
     stamina,
   });
 
-  // Get archetype-specific skin tone
   const skinTone = useMemo(() => getArchetypeSkinTone(archetype), [archetype]);
 
-  // Body color - use skin tone for normal, override for special states
   const bodyColor = useMemo(() => {
     if (isStunned) return KOREAN_COLORS.WARNING_YELLOW;
     if (health / maxHealth < 0.3) return KOREAN_COLORS.ACCENT_RED;
@@ -211,16 +195,13 @@ export const SkeletalPlayer3D: React.FC<
     return skinTone; // Use archetype skin tone instead of primary color
   }, [isStunned, health, maxHealth, ki, skinTone]);
 
-  // Stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
   const trigramSymbol = useMemo(() => getTrigramSymbol(stance), [stance]);
 
-  // Track recent combat events for expression calculation
   const [justHit, setJustHit] = useState(false);
   const [justLanded, setJustLanded] = useState(false);
   const lastHealthRef = useRef(health);
 
-  // Detect hit events (health decreased)
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
@@ -238,7 +219,6 @@ export const SkeletalPlayer3D: React.FC<
     };
   }, [health]);
 
-  // Detect successful attacks (currentAnimation changed to attack)
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
@@ -254,7 +234,6 @@ export const SkeletalPlayer3D: React.FC<
     };
   }, [currentAnimation]);
 
-  // Calculate facial expression from combat state (or use provided one)
   const calculatedExpression = useMemo(() => {
     if (!enableFacialExpressions) {
       return FacialExpression.NEUTRAL;
@@ -285,31 +264,21 @@ export const SkeletalPlayer3D: React.FC<
     justLanded,
   ]);
 
-  // Facial damage state
   const calculatedFacialDamage = useMemo(() => {
     return facialDamage ?? createDefaultFacialDamage();
   }, [facialDamage]);
 
-  // Opponent position for eye tracking
   const opponentPos = useMemo(() => {
     if (opponentPosition) {
       return new THREE.Vector3(...opponentPosition);
     }
-    // Default: opponent in front
     return new THREE.Vector3(facing === "right" ? 5 : -5, 2, 0);
   }, [opponentPosition, facing]);
 
-  // ========================================
-  // ANIMATION FRAME LOOP - Modular hook-based system
-  // ========================================
 
-  // Frame counter for periodic updates
   const frameCounter = useRef(0);
 
-  // Animation loop using useFrame (60fps)
   useFrame((_state, delta) => {
-    // Update body facing to track opponent (if enabled)
-    // ONLY track opponent when NOT moving (walk animations handle their own direction)
     const isWalkingAnimation =
       currentAnimation === "walk" ||
       (typeof currentAnimation === "string" &&
@@ -324,7 +293,6 @@ export const SkeletalPlayer3D: React.FC<
       const playerPos = { x: position[0], y: position[2] }; // X and Z for 2D top-down
       const opponentPos = { x: opponentPosition[0], y: opponentPosition[2] };
 
-      // Check if facing should be locked during committed animations
       const isStepAnimation =
         typeof currentAnimation === "string" &&
         currentAnimation.startsWith("step_");
@@ -341,14 +309,11 @@ export const SkeletalPlayer3D: React.FC<
       let updatedFacing = bodyFacing;
 
       if (shouldLock && !bodyFacing.isLocked) {
-        // Lock facing at start of committed action (attack/defend/step/turn)
         updatedFacing = lockFacing(bodyFacing);
       } else if (!shouldLock && bodyFacing.isLocked) {
-        // Unlock facing after committed action completes
         updatedFacing = unlockFacing(bodyFacing);
       }
 
-      // Update facing direction (handles rotation speed, head tracking, turns)
       if (!updatedFacing.isLocked) {
         updatedFacing = updateFacingTowardOpponent(
           updatedFacing,
@@ -359,39 +324,23 @@ export const SkeletalPlayer3D: React.FC<
         );
       }
 
-      // Notify parent if facing changed
       if (updatedFacing !== bodyFacing) {
         onBodyFacingUpdate(updatedFacing);
       }
     }
 
-    // ========================================
-    // HOOK-BASED ANIMATION UPDATES (60fps)
-    // ========================================
 
-    // Update frame counter for periodic state sync
     frameCounter.current = (frameCounter.current + 1) % 10;
 
-    // 1. Base skeletal animation (idle, walk, attack, etc.)
-    // Stance-specific guard positions are built into the MartialArtsAnimationBuilder animations
-    // 자세별 가드 위치가 MartialArtsAnimationBuilder 애니메이션에 포함됨
     updateRigAnimation(rig, delta);
 
-    // 2. Hand pose transitions
     updateHandAnimations(delta);
 
-    // 3. Balance animations (sway, stumble, lean)
     updateBalanceAnimations(delta, frameCounter.current);
 
-    // 5. Muscle activation states
     updateMuscleActivations(delta, frameCounter.current);
 
-    // Apply head rotation toward opponent (if body facing tracking is enabled)
-    // Note: Torso rotation is now handled by guard pose overlay for proper stance positioning
-    // Only the head tracks the opponent independently for natural looking
     if (bodyFacing) {
-      // Apply head rotation to head bone (includes independent offset)
-      // Head can track ±45° independently from torso for natural looking
       const head = rig.bones.get("head");
       if (head) {
         const headRotation = getHeadAngleRadians(bodyFacing);
@@ -400,7 +349,6 @@ export const SkeletalPlayer3D: React.FC<
     }
   });
 
-  // Use diagonal rotation override if set, otherwise use prop rotation
   const effectiveRotation = diagonalRotationY ?? rotation;
 
   return (

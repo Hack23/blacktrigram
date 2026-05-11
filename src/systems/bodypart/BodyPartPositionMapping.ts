@@ -48,7 +48,6 @@ export const CHARACTER_DIMENSIONS = {
  * @param bodyPart - Body part to get position for
  * @returns 3D position vector
  * 
- * @public
  */
 export function getBodyPartPosition(bodyPart: BodyPart): THREE.Vector3 {
   // Calculate positions from CHARACTER_DIMENSIONS
@@ -98,7 +97,6 @@ export function getBodyPartPosition(bodyPart: BodyPart): THREE.Vector3 {
  * @param bodyRegion - Body region to get position for
  * @returns 3D position vector
  * 
- * @public
  */
 export function getBodyRegionPosition(bodyRegion: BodyRegion): THREE.Vector3 {
   // Calculate positions based on CHARACTER_DIMENSIONS for single source of truth
@@ -150,7 +148,6 @@ export function getBodyRegionPosition(bodyRegion: BodyRegion): THREE.Vector3 {
  * @param bodyRegion - Body region to map
  * @returns Corresponding body part
  * 
- * @public
  */
 export function mapBodyRegionToBodyPart(bodyRegion: BodyRegion): BodyPart {
   switch (bodyRegion) {
@@ -196,7 +193,6 @@ export function mapBodyRegionToBodyPart(bodyRegion: BodyRegion): BodyPart {
  * @param maxOffset - Maximum offset in any direction (default: 0.1)
  * @returns New position with random offset
  * 
- * @public
  */
 export function addRandomOffset(
   basePosition: THREE.Vector3,
@@ -223,7 +219,6 @@ export function addRandomOffset(
  * @param maxOffset - Maximum offset for randomization
  * @returns Position with random offset
  * 
- * @public
  */
 export function getInjuryPositionWithOffset(
   bodyRegion: BodyRegion,
@@ -243,7 +238,6 @@ export function getInjuryPositionWithOffset(
  * @param tolerance - Distance tolerance (default: 0.3)
  * @returns Whether position is within body part bounds
  * 
- * @public
  */
 export function isPositionInBodyPart(
   position: THREE.Vector3,

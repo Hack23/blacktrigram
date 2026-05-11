@@ -3,16 +3,10 @@ import { FONT_FAMILY, KOREAN_COLORS } from "@/types/constants";
 import { hexColorToCSS, toHex } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 
-// Declare global APP_VERSION constant (injected by build process)
 declare const APP_VERSION: string | undefined;
 
-// Constants
-// Small delay to show loading state for visual feedback.
-// 100ms is sufficient for users to perceive the state change
-// without feeling sluggish. This value can be tuned for UX.
 const LOADING_DELAY_MS = 100;
 
-// Pre-compute hex colors from Korean color constants
 const HEX_COLORS = {
   PRIMARY_CYAN: toHex(KOREAN_COLORS.PRIMARY_CYAN),
   ACCENT_GOLD: toHex(KOREAN_COLORS.ACCENT_GOLD),
@@ -35,12 +29,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  // Use proper device detection (user-agent priority for high-res phones)
-  // This ensures mobile layout is used even on 4K Android devices
-  // User-agent doesn't change during session, so no dependencies needed
   const isMobile = useMemo(() => shouldUseMobileControls(), []);
 
-  // Memoize responsive layout values
   const layoutCalculation = useMemo(
     () => ({
       titleFontSize: isMobile ? 36 : 64,
@@ -55,7 +45,6 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
 
   const handleStart = useCallback(() => {
     setIsLoading(true);
-    // Small delay to show loading state
     setTimeout(() => {
       onStart();
     }, LOADING_DELAY_MS);

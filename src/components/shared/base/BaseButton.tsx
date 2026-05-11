@@ -106,7 +106,6 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Use Korean theme hook for consistent styling
   const { buttonVariant, buttonSize, fontFamily, accessibility } =
     useKoreanTheme({
       variant,
@@ -115,14 +114,12 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
       isMobile,
     });
 
-  // Auto-focus on mount if requested
   useEffect(() => {
     if (autoFocus && buttonRef.current) {
       buttonRef.current.focus();
     }
   }, [autoFocus]);
 
-  // Track screen width for responsive distance factor updates on resize
   const [screenWidth, setScreenWidth] = useState(() =>
     typeof window !== "undefined"
       ? window.innerWidth
@@ -140,12 +137,10 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Calculate optimal distance factor for button
   const distanceFactor = useMemo(() => {
     return calculateDistanceFactor(screenWidth, "button", isMobile);
   }, [screenWidth, isMobile]);
 
-  // Apply Html overlay styles with proper z-index
   const overlayStyle = useMemo(() => {
     return applyHtmlOverlayStyles(layer, true, distanceFactor, true, occlude);
   }, [layer, distanceFactor, occlude]);
@@ -187,7 +182,6 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      // Set pressed state for visual feedback on keyboard activation
       if ((e.key === "Enter" || e.key === " ") && !disabled) {
         setIsPressed(true);
       }
@@ -197,7 +191,6 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
 
   const handleKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      // Clear pressed state - native button behavior will trigger onClick
       if ((e.key === "Enter" || e.key === " ") && !disabled) {
         setIsPressed(false);
       }
@@ -205,7 +198,6 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
     [disabled],
   );
 
-  // Memoize button styles for performance
   const buttonStyle = useMemo<React.CSSProperties>(() => {
     let background = hexToRgbaString(buttonVariant.background, 0.9);
 
@@ -231,7 +223,6 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
       userSelect: "none",
       WebkitUserSelect: "none",
       width: fullWidth ? "100%" : "auto",
-      // Ensure minimum touch target size on mobile (WCAG 2.1 AA)
       minWidth: isMobile ? accessibility.minTouchTarget : "auto",
       minHeight: isMobile ? accessibility.minTouchTarget : "auto",
       boxShadow:
@@ -240,10 +231,8 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
           : "none",
       transform: isPressed && !disabled ? "scale(0.98)" : "scale(1)",
       textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
-      // Apply GPU acceleration from overlay style
       WebkitTransform: overlayStyle.transform,
       zIndex: overlayStyle.zIndex,
-      // WCAG 2.1 AA compliant focus indicator
       outline: isFocused && !disabled ? accessibility.focusOutline : "none",
       outlineOffset:
         isFocused && !disabled ? accessibility.focusOutlineOffset : "0",
@@ -316,7 +305,6 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
   );
 };
 
-// Export memoized component for performance optimization
 export const BaseButton = React.memo(BaseButtonComponent);
 
 BaseButton.displayName = "BaseButton";

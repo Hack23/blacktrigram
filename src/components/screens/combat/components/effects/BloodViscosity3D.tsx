@@ -58,13 +58,10 @@ export interface BloodViscosity3DProps {
   readonly onEffectComplete?: (id: string) => void;
 }
 
-// Physics constants for blood viscosity
 const BLOOD_VISCOSITY_CONSTANTS = {
-  // Gravity and air resistance
   GRAVITY: -9.8, // m/s²
   AIR_RESISTANCE: 0.94, // Thicker than arterial (0.97) or bone (0.96)
   
-  // Particle counts by viscosity type (desktop)
   PARTICLE_COUNT: {
     thin: 50, // Mist
     medium: 80, // Normal splatter
@@ -72,7 +69,6 @@ const BLOOD_VISCOSITY_CONSTANTS = {
     gout: 200, // Deep wound large gouts
   },
   
-  // Velocity ranges (m/s) - slower than arterial
   VELOCITY: {
     thin: { min: 2.0, max: 4.0 },
     medium: { min: 1.5, max: 3.0 },
@@ -80,7 +76,6 @@ const BLOOD_VISCOSITY_CONSTANTS = {
     gout: { min: 0.5, max: 2.0 },
   },
   
-  // Particle sizes
   SIZE: {
     thin: { min: 0.02, max: 0.04 },
     medium: { min: 0.04, max: 0.08 },
@@ -88,7 +83,6 @@ const BLOOD_VISCOSITY_CONSTANTS = {
     gout: { min: 0.10, max: 0.20 },
   },
   
-  // Spread cone angles (radians)
   SPREAD_ANGLE: {
     thin: Math.PI / 3, // 60° wide spray
     medium: Math.PI / 4, // 45° normal
@@ -96,19 +90,15 @@ const BLOOD_VISCOSITY_CONSTANTS = {
     gout: Math.PI / 8, // 22.5° very narrow
   },
   
-  // Lifetimes
   ACTIVE_LIFETIME: 2.5, // Active falling time
   CLING_LIFETIME: 3.0, // Time stuck to ground
   TOTAL_LIFETIME: 5.5, // Total before cleanup
   
-  // Ground cling physics
   GROUND_LEVEL: 0.1, // y-position for ground contact
   CLING_DAMPING: 0.3, // Velocity reduction on contact
   
-  // Color
   BLOOD_COLOR: 0x8b0000, // Dark red
   
-  // Max delta time to prevent physics spiral
   MAX_DELTA: 1 / 30,
 } as const;
 
@@ -128,7 +118,6 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
   isMobile = false,
   onEffectComplete,
 }) => {
-  // Track active effect instances
   const [effectInstances, setEffectInstances] = React.useState<
     Map<
       string,
@@ -142,7 +131,6 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
     >
   >(new Map());
 
-  // Calculate particle count based on viscosity and mobile
   const getParticleCount = useMemo(
     () => (viscosityType: ViscosityType) => {
       const baseCount = BLOOD_VISCOSITY_CONSTANTS.PARTICLE_COUNT[viscosityType];
@@ -151,7 +139,6 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
     [isMobile]
   );
 
-  // Create particle system for blood droplets
   const createBloodParticles = useMemo(
     () => (effect: BloodViscosityEffect) => {
       const count = getParticleCount(effect.viscosityType);
@@ -162,7 +149,6 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
       const velocities: THREE.Vector3[] = [];
       const clinging: boolean[] = [];
 
-      // Pooled objects for calculations - PERFORMANCE: Eliminates 2 + (count * 3) allocations
       const tempDirection = ThreeObjectPools.vector3.acquire();
       const tempColor = ThreeObjectPools.color.acquire();
       const tempVelocity = ThreeObjectPools.vector3.acquire();
@@ -174,37 +160,30 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
         const velocityRange = BLOOD_VISCOSITY_CONSTANTS.VELOCITY[effect.viscosityType];
         const sizeRange = BLOOD_VISCOSITY_CONSTANTS.SIZE[effect.viscosityType];
 
-        // Set color once from pool
         tempColor.set(BLOOD_VISCOSITY_CONSTANTS.BLOOD_COLOR);
 
         for (let i = 0; i < count; i++) {
-          // Start at impact position
           positions[i * 3] = 0;
           positions[i * 3 + 1] = 0;
           positions[i * 3 + 2] = 0;
 
-          // Dark red color (reuse pooled color)
           colors[i * 3] = tempColor.r;
           colors[i * 3 + 1] = tempColor.g;
           colors[i * 3 + 2] = tempColor.b;
 
-          // Variable size based on viscosity
           const size =
             sizeRange.min +
             Math.random() * (sizeRange.max - sizeRange.min) *
               effect.intensity;
           sizes[i] = size;
 
-          // Calculate velocity with spread
           const speed =
             velocityRange.min +
             Math.random() * (velocityRange.max - velocityRange.min);
 
-          // Random deviation within spread angle
           const theta = (Math.random() - 0.5) * spreadAngle;
           const phi = Math.random() * Math.PI * 2;
 
-          // Use pooled vectors for calculation
           tempDeviation.set(
             Math.sin(theta) * Math.cos(phi),
             Math.sin(theta) * Math.sin(phi),
@@ -216,12 +195,10 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
             .normalize()
             .multiplyScalar(speed);
 
-          // Clone for ownership - particles own their velocity vectors
           velocities.push(tempVelocity.clone());
           clinging.push(false);
         }
       } finally {
-        // Release all pooled objects back to pool
         ThreeObjectPools.vector3.release(tempDirection);
         ThreeObjectPools.color.release(tempColor);
         ThreeObjectPools.vector3.release(tempVelocity);
@@ -250,7 +227,6 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
     [getParticleCount]
   );
 
-  // Update effect instances
   useEffect(() => {
     if (!enabled) return;
 
@@ -286,7 +262,6 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
     });
   }, [effects, enabled, createBloodParticles]);
 
-  // Animation loop
   useFrame((_state, delta) => {
     if (!enabled || effectInstances.size === 0) return;
 
@@ -297,7 +272,6 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
     effectInstances.forEach((instance, id) => {
       const elapsed = (now - instance.startTime) / 1000;
 
-      // Check for completion
       if (elapsed >= BLOOD_VISCOSITY_CONSTANTS.TOTAL_LIFETIME) {
         completedIds.push(id);
         return;
@@ -307,26 +281,21 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
       const positions = geometry.attributes.position.array as Float32Array;
       const count = positions.length / 3;
 
-      // Update each particle
       for (let i = 0; i < count; i++) {
         const idx = i * 3;
 
         if (!instance.clinging[i]) {
-          // Apply gravity
           instance.velocities[i].y +=
             BLOOD_VISCOSITY_CONSTANTS.GRAVITY * clampedDelta;
 
-          // Apply air resistance
           instance.velocities[i].multiplyScalar(
             BLOOD_VISCOSITY_CONSTANTS.AIR_RESISTANCE
           );
 
-          // Update position
           positions[idx] += instance.velocities[i].x * clampedDelta;
           positions[idx + 1] += instance.velocities[i].y * clampedDelta;
           positions[idx + 2] += instance.velocities[i].z * clampedDelta;
 
-          // Check ground contact
           if (positions[idx + 1] <= BLOOD_VISCOSITY_CONSTANTS.GROUND_LEVEL) {
             positions[idx + 1] = BLOOD_VISCOSITY_CONSTANTS.GROUND_LEVEL;
             instance.velocities[i].multiplyScalar(
@@ -339,7 +308,6 @@ export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
 
       geometry.attributes.position.needsUpdate = true;
 
-      // Fade out during cling phase
       if (elapsed >= BLOOD_VISCOSITY_CONSTANTS.ACTIVE_LIFETIME) {
         const fadeProgress =
           (elapsed - BLOOD_VISCOSITY_CONSTANTS.ACTIVE_LIFETIME) /

@@ -20,7 +20,6 @@ import * as THREE from "three";
 /**
  * Body side for limb-specific movements
  * 
- * @public
  * @korean 신체측면
  */
 export type BodySide = 'left' | 'right';
@@ -35,7 +34,6 @@ export type BodySide = 'left' | 'right';
  * - hook: 후려차기 (Huryeochagi)
  * - axe: 내려차기 (Naeryeochagi)
  * 
- * @public
  * @korean 차기기술유형
  */
 export type KickType = 'front' | 'roundhouse' | 'side' | 'hook' | 'axe';
@@ -50,7 +48,6 @@ export type KickType = 'front' | 'roundhouse' | 'side' | 'hook' | 'axe';
  * - ridge-hand: 손날등 (Sonnaldeung)
  * - hammer-fist: 망치주먹 (Mangchijumeok)
  * 
- * @public
  * @korean 수격기술유형
  */
 export type HandStrikeType = 'backfist' | 'knife-hand' | 'palm-heel' | 'ridge-hand' | 'hammer-fist';
@@ -63,7 +60,6 @@ export type HandStrikeType = 'backfist' | 'knife-hand' | 'palm-heel' | 'ridge-ha
  * - 1: 중단 (Jungdan) - Middle section
  * - 2: 상단 (Sangdan) - High section
  * 
- * @public
  * @korean 차기높이
  */
 export type KickHeight = 0 | 1 | 2;
@@ -76,7 +72,6 @@ export type KickHeight = 0 | 1 | 2;
  * - extension: 확장 (Hwakjang) - Extension
  * - retraction: 회수 (Hoesu) - Retraction
  * 
- * @public
  * @korean 기술단계
  */
 export type TechniquePhase = 'chamber' | 'extension' | 'retraction';
@@ -89,7 +84,6 @@ export type TechniquePhase = 'chamber' | 'extension' | 'retraction';
  * - impact: 타격 (Tagyeok) - Impact
  * - follow-through: 후속동작 (Husok Dongjak) - Follow-through
  * 
- * @public
  * @korean 타격단계
  */
 export type StrikePhase = 'wind-up' | 'impact' | 'follow-through';
@@ -104,7 +98,6 @@ export type StrikePhase = 'wind-up' | 'impact' | 'follow-through';
  * - shrug: 어깨올리기 (Eokkae Olligi)
  * - neutral: 중립 (Jungnip)
  * 
- * @public
  * @korean 어깨기술유형
  */
 export type ShoulderTechniqueType = 'high-block' | 'overhead-strike' | 'rising-block' | 'shrug' | 'neutral';
@@ -117,7 +110,6 @@ export type ShoulderTechniqueType = 'high-block' | 'overhead-strike' | 'rising-b
  * - execution: 실행 (Silhaeng)
  * - recovery: 복귀 (Bokgwi)
  * 
- * @public
  * @korean 어깨단계
  */
 export type ShoulderPhase = 'preparation' | 'execution' | 'recovery';
@@ -133,7 +125,6 @@ export type ShoulderPhase = 'preparation' | 'execution' | 'recovery';
  * - low-attack: 낮은공격 (Najeun Gonggyeok) - Low attack
  * - neutral: 중립 (Jungnip) - Neutral
  * 
- * @public
  * @korean 척추동작유형
  */
 export type SpinalMovementType = 'duck' | 'lean-back' | 'lean-left' | 'lean-right' | 'low-attack' | 'neutral';
@@ -147,7 +138,6 @@ export type SpinalMovementType = 'duck' | 'lean-back' | 'lean-left' | 'lean-righ
  * - push-kick: 밀어차기 (Mireo Chagi)
  * - neutral: 중립 (Jungnip)
  * 
- * @public
  * @korean 무릎기술유형
  */
 export type KneeTechniqueType = 'knee-strike' | 'clinch-control' | 'push-kick' | 'neutral';
@@ -160,7 +150,6 @@ export type KneeTechniqueType = 'knee-strike' | 'clinch-control' | 'push-kick' |
  * - execution: 실행 (Silhaeng)
  * - recovery: 복귀 (Bokgwi)
  * 
- * @public
  * @korean 무릎단계
  */
 export type KneePhase = 'wind-up' | 'execution' | 'recovery';
@@ -174,7 +163,6 @@ export type KneePhase = 'wind-up' | 'execution' | 'recovery';
  * 
  * Korean: 고관절 회전 상태
  * 
- * @public
  */
 export interface HipRotationState {
   /**
@@ -222,7 +210,6 @@ export interface HipRotationState {
  * 
  * Korean: 어깨 들어올림 상태
  * 
- * @public
  */
 export interface ShoulderElevationState {
   /**
@@ -250,7 +237,6 @@ export interface ShoulderElevationState {
  * 
  * Korean: 발목 관절 상태
  * 
- * @public
  */
 export interface AnkleArticulationState {
   /**
@@ -286,7 +272,6 @@ export interface AnkleArticulationState {
  * 
  * Korean: 손목 스냅 상태
  * 
- * @public
  */
 export interface WristSnapState {
   /**
@@ -318,7 +303,6 @@ export interface WristSnapState {
  * 
  * Korean: 무릎 밀어올림 상태
  * 
- * @public
  */
 export interface KneeDriveState {
   /**
@@ -352,7 +336,6 @@ export interface KneeDriveState {
  * 
  * Korean: 척추 굽힘 상태
  * 
- * @public
  */
 export interface SpinalFlexionState {
   /**
@@ -466,7 +449,6 @@ export const ADVANCED_JOINT_CONSTRAINTS = {
  * // Returns frontal: 1.5, sagittal: 1.3, transverse: 0.6 for high roundhouse
  * ```
  * 
- * @public
  * @korean 차기용고관절회전계산
  */
 export function calculateHipRotationForKick(
@@ -557,7 +539,6 @@ export function calculateHipRotationForKick(
  * // Returns ~1.35 for properly executed high roundhouse
  * ```
  * 
- * @public
  * @korean 고관절회전에서차기파워계산
  */
 export function calculateKickPowerFromHipRotation(
@@ -604,7 +585,6 @@ export function calculateKickPowerFromHipRotation(
  * @param hipState - Hip rotation state
  * @returns Three.js Euler angles (X=sagittal, Y=transverse, Z=frontal)
  * 
- * @public
  * @korean 고관절회전을오일러각으로적용
  */
 export function applyHipRotationToEuler(hipState: HipRotationState): THREE.Euler {
@@ -633,7 +613,6 @@ export function applyHipRotationToEuler(hipState: HipRotationState): THREE.Euler
  * // Returns: { flexion: 0.5, inversion: 0, side: 'right' }
  * ```
  * 
- * @public
  * @korean 차기챔버용발목관절계산
  */
 export function calculateAnkleArticulation(
@@ -734,7 +713,6 @@ export function calculateAnkleArticulation(
  * // Returns: { rotation: 1.2, velocity: 25.0, side: 'right' }
  * ```
  * 
- * @public
  * @korean 수격용손목스냅계산
  */
 export function calculateWristSnap(
@@ -838,7 +816,6 @@ export function calculateWristSnap(
  * // Returns ~1.20 for proper backfist snap
  * ```
  * 
- * @public
  * @korean 손목스냅파워배율계산
  */
 export function calculateWristSnapPowerModifier(wristState: WristSnapState): number {
@@ -872,7 +849,6 @@ export function calculateWristSnapPowerModifier(wristState: WristSnapState): num
  * // Returns: { elevation: 0.04, side: 'left' }
  * ```
  * 
- * @public
  * @korean 블록및상단공격용어깨들어올림계산
  */
 export function calculateShoulderElevation(
@@ -951,7 +927,6 @@ export function calculateShoulderElevation(
  * // Returns: { flexion: 0.6, lateralBend: 0 }
  * ```
  * 
- * @public
  * @korean 회피및하단공격용척추굽힘계산
  */
 export function calculateSpinalFlexion(
@@ -1026,7 +1001,6 @@ export function calculateSpinalFlexion(
  * // Returns: { height: 0.7, forward: 0.25, side: 'right' }
  * ```
  * 
- * @public
  * @korean 무릎차기및클린치용무릎밀어올림계산
  */
 export function calculateKneeDrive(
@@ -1109,7 +1083,6 @@ export function calculateKneeDrive(
  * // Returns ~1.30 for properly executed knee strike
  * ```
  * 
- * @public
  * @korean 무릎차기파워배율계산
  */
 export function calculateKneeStrikePowerModifier(kneeState: KneeDriveState): number {

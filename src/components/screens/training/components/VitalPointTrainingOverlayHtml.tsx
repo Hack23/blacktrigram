@@ -70,7 +70,6 @@ const getDifficultyStars = (difficulty: number): string => {
 export const VitalPointTrainingOverlayHtml =
   React.memo<VitalPointTrainingOverlayHtmlProps>(
     ({ selectedVitalPoint, onVitalPointSelect, isMobile }) => {
-      // Use first 6 vital points for training panel (compact)
       const availableVitalPoints = useMemo(
         () => KOREAN_VITAL_POINTS.slice(0, isMobile ? 4 : 6),
         [isMobile],
@@ -81,7 +80,6 @@ export const VitalPointTrainingOverlayHtml =
         [availableVitalPoints, selectedVitalPoint],
       );
 
-      // Memoize glow effect for selected vital points to avoid repeated calculations
       const selectedVitalPointGlow = React.useMemo(
         () => getNeonGlowEffect(KOREAN_COLORS.ACCENT_GOLD, "strong", true),
         [],
@@ -90,7 +88,6 @@ export const VitalPointTrainingOverlayHtml =
       const panelWidth = isMobile ? 200 : 240;
       const padding = getResponsiveSpacing("sm", isMobile);
 
-      // Compact panel styles
       const panelStyle: React.CSSProperties = {
         ...getEnhancedKoreanOverlayStyles({
           opacity: 0.88,
@@ -136,7 +133,6 @@ export const VitalPointTrainingOverlayHtml =
               const severityColor = getSeverityColor(point.severity);
               const severityColorRgba = hexToRgbaString(severityColor);
 
-              // Enhanced glow effect for selected vital points (memoized to avoid recalculation)
               const glowEffect = isSelected
                 ? selectedVitalPointGlow
                 : undefined;
@@ -255,9 +251,6 @@ export const VitalPointTrainingOverlayHtml =
       );
     },
     (prevProps, nextProps) => {
-      // Re-render when vital point selection, mobile state, or callback changes
-      // Including callback prop prevents stale closures when parent provides
-      // a new function that captures updated state.
       return (
         prevProps.selectedVitalPoint === nextProps.selectedVitalPoint &&
         prevProps.isMobile === nextProps.isMobile &&

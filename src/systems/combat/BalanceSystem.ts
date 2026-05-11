@@ -161,7 +161,6 @@ interface BalanceEffects {
  * const recovered = balanceSystem.applyRecovery(newPlayer, 1000);
  * ```
  *
- * @public
  * @korean 균형시스템
  */
 export class BalanceSystem {
@@ -271,7 +270,6 @@ export class BalanceSystem {
    * );
    * ```
    *
-   * @public
    * @korean 균형파괴
    */
   disruptBalance(
@@ -327,7 +325,6 @@ export class BalanceSystem {
    * player = system.applyRecovery(player, 16); // ~60fps
    * ```
    *
-   * @public
    * @korean 균형회복
    */
   applyRecovery(player: BalancePlayerState, deltaTime: number): BalancePlayerState {
@@ -370,7 +367,6 @@ export class BalanceSystem {
    * @param balance - Balance value (0-100)
    * @returns Current balance level
    *
-   * @public
    * @korean 균형수준확인
    */
   getBalanceLevel(balance: number): BalanceLevel {
@@ -386,7 +382,6 @@ export class BalanceSystem {
    * @param level - Balance level
    * @returns Effects applied at that level
    *
-   * @public
    * @korean 균형효과
    */
   getEffects(level: BalanceLevel): BalanceEffects {
@@ -401,7 +396,6 @@ export class BalanceSystem {
    * @param player - Current player state
    * @returns Modified player state with balance effects
    *
-   * @public
    * @korean 균형효과적용
    */
   applyEffects(player: PlayerState): PlayerState {
@@ -421,7 +415,6 @@ export class BalanceSystem {
    * @param player - Current player state
    * @returns True if off-balance or falling
    *
-   * @public
    * @korean 균형취약확인
    */
   isVulnerable(player: PlayerState): boolean {
@@ -435,7 +428,6 @@ export class BalanceSystem {
    * @param player - Current player state
    * @returns Damage multiplier (1.0 = normal, >1.0 = increased damage)
    *
-   * @public
    * @korean 취약성배율
    */
   getVulnerabilityMultiplier(player: PlayerState): number {
@@ -451,7 +443,6 @@ export class BalanceSystem {
    * @param randomFn - Optional random number generator (returns number in [0,1)), defaults to Math.random
    * @returns True if knockdown should occur
    *
-   * @public
    * @korean 넘어짐확인
    */
   shouldKnockdown(
@@ -469,7 +460,6 @@ export class BalanceSystem {
    * @param level - Balance level
    * @returns Korean and English level names
    *
-   * @public
    * @korean 균형이름
    */
   getLevelName(level: BalanceLevel): { korean: string; english: string } {
@@ -501,7 +491,6 @@ export class BalanceSystem {
    * @param level - Balance level
    * @returns Hex color code
    *
-   * @public
    * @korean 균형색상
    */
   getLevelColor(level: BalanceLevel): number {
@@ -536,7 +525,6 @@ export class BalanceSystem {
    * }
    * ```
    *
-   * @public
    * @korean 낙법발동확인
    */
   shouldTriggerFall(player: PlayerState): boolean {
@@ -580,7 +568,6 @@ export class BalanceSystem {
    * // Returns: 'side_right' (swept to the side)
    * ```
    *
-   * @public
    * @korean 낙법유형결정
    */
   determineFallType(
@@ -613,7 +600,6 @@ export class BalanceSystem {
    * // Returns: 'forward' (Heaven stance has forward bias)
    * ```
    *
-   * @public
    * @korean 자세낙법결정
    */
   determineFallTypeFromStance(stance: TrigramStance): FallType {
@@ -638,7 +624,6 @@ export class BalanceSystem {
    * // Returns: false
    * ```
    *
-   * @public
    * @korean 지면상태확인
    */
   isGrounded(animationState: string): boolean {
@@ -663,7 +648,6 @@ export class BalanceSystem {
    * // Returns: null
    * ```
    *
-   * @public
    * @korean 지면자세가져오기
    */
   getGroundState(animationState: string): GroundState | null {
@@ -709,7 +693,6 @@ export class BalanceSystem {
    * // Returns: true (no stamina requirement)
    * ```
    *
-   * @public
    * @korean 회복가능확인
    */
   canRecoverWithType(
@@ -739,7 +722,6 @@ export class BalanceSystem {
    * // recovered.stamina = player.stamina - 20
    * ```
    *
-   * @public
    * @korean 회복비용적용
    */
   applyRecoveryCost(
@@ -779,7 +761,6 @@ export class BalanceSystem {
    * // Returns: 1.0 (full damage)
    * ```
    *
-   * @public
    * @korean 회복피해배율
    */
   getRecoveryDamageMultiplier(
@@ -821,7 +802,6 @@ export class BalanceSystem {
    * // transitioning.transitionState.vulnerabilityMultiplier = 1.5
    * ```
    *
-   * @public
    * @korean 자세전환시작
    */
   startStanceTransition(
@@ -891,7 +871,6 @@ export class BalanceSystem {
    * player = balanceSystem.updateTransition(player, Date.now());
    * ```
    *
-   * @public
    * @korean 전환상태갱신
    */
   updateTransition(
@@ -942,7 +921,6 @@ export class BalanceSystem {
    * const effectiveBalance = player.balance * modifier;
    * ```
    *
-   * @public
    * @korean 균형조정계수계산
    */
   calculateBalanceModifier(player: BalancePlayerState): number {
@@ -1002,7 +980,6 @@ export class BalanceSystem {
    * const effectiveKnockback = baseKnockback * (1.0 / resistance);
    * ```
    *
-   * @public
    * @korean 넉백저항계산
    */
   getKnockbackResistance(stance: TrigramStance): number {
@@ -1042,7 +1019,6 @@ export class BalanceSystem {
    * }
    * ```
    *
-   * @public
    * @korean 급속변경벌칙확인
    */
   isRapidChangePenaltyActive(
@@ -1071,7 +1047,6 @@ export class BalanceSystem {
    * const finalDamage = baseDamage * multiplier;
    * ```
    *
-   * @public
    * @korean 총취약성배율
    */
   getTotalVulnerabilityMultiplier(player: BalancePlayerState): number {

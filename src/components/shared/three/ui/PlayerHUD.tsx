@@ -108,7 +108,6 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
   const playerId = player.id;
   const isLeft = position === "left";
 
-  // Memoize responsive sizing to avoid recalculation
   const layout = useMemo(
     () => ({
       fontSize: isMobile ? 11 : 13,
@@ -120,7 +119,6 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
     [isMobile],
   );
 
-  // Get archetype image path (memoized)
   const archetypeImagePath = useMemo(() => {
     const archetypeKey = player.archetype.toLowerCase();
     const assets =
@@ -128,8 +126,6 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
     return assets?.image ?? FALLBACK_ARCHETYPE_IMAGE;
   }, [player.archetype]);
 
-  // Memoize style objects to prevent recreating on every render
-  // Uses relative positioning for embedding in container HUDs
   const containerStyle = useMemo(
     () => ({
       position: "relative" as const,
@@ -196,7 +192,6 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
     };
   }, [isMobile, isLeft]);
 
-  // Memoize error handler to prevent recreating on every render
   const handleImageError = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
       const target = e.target as HTMLImageElement;
@@ -276,7 +271,6 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
 export const PlayerHUD = React.memo(
   PlayerHUDComponent,
   (prevProps, nextProps) => {
-    // Compare player state
     const healthSame = prevProps.player.health === nextProps.player.health;
     const maxHealthSame =
       prevProps.player.maxHealth === nextProps.player.maxHealth;
@@ -292,7 +286,6 @@ export const PlayerHUD = React.memo(
       prevProps.player.name.korean === nextProps.player.name.korean &&
       prevProps.player.name.english === nextProps.player.name.english;
 
-    // Compare statusEffects for BreathingIndicator updates
     const statusEffectsSame =
       prevProps.player.statusEffects.length ===
         nextProps.player.statusEffects.length &&
@@ -300,8 +293,6 @@ export const PlayerHUD = React.memo(
         (effect, index) => effect === nextProps.player.statusEffects[index],
       );
 
-    // Compare combat readiness factors for CombatReadinessBar updates
-    // These properties are used by calculateCombatReadiness()
     const bodyPartHealthSame =
       prevProps.player.bodyPartHealth === nextProps.player.bodyPartHealth;
     const painSame = prevProps.player.pain === nextProps.player.pain;
@@ -309,12 +300,10 @@ export const PlayerHUD = React.memo(
       prevProps.player.consciousness === nextProps.player.consciousness;
     const balanceSame = prevProps.player.balance === nextProps.player.balance;
 
-    // Compare other props
     const positionSame = prevProps.position === nextProps.position;
     const mobileSame = prevProps.isMobile === nextProps.isMobile;
     const lateralitySame = prevProps.laterality === nextProps.laterality;
 
-    // Return true if all relevant props are the same (skip re-render)
     return (
       healthSame &&
       maxHealthSame &&

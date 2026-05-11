@@ -108,7 +108,6 @@ export function applyCounterStanceDamage(
  * const recommendedStance = trigramSystem.recommendStance(playerState);
  * ```
  *
- * @public
  * @category Trigram System
  * @korean 팔괘시스템
  */
@@ -150,7 +149,6 @@ export class TrigramSystem {
    * console.log(offensive); // "offensive"
    * ```
    *
-   * @public
    * @korean 자세특성조회
    */
   getStanceCharacteristic(
@@ -185,7 +183,6 @@ export class TrigramSystem {
    * }
    * ```
    *
-   * @public
    * @korean 방어자세확인
    */
   isDefensiveStance(stance: TrigramStance): boolean {
@@ -207,7 +204,6 @@ export class TrigramSystem {
    * }
    * ```
    *
-   * @public
    * @korean 공격자세확인
    */
   isOffensiveStance(stance: TrigramStance): boolean {
@@ -234,7 +230,6 @@ export class TrigramSystem {
    * );
    * ```
    *
-   * @public
    * @korean 자세전환가능확인
    */
   canTransitionTo(
@@ -271,7 +266,6 @@ export class TrigramSystem {
    * console.log(`Consider switching to ${recommended}`);
    * ```
    *
-   * @public
    * @korean 최적자세추천
    */
   recommendStance(player: PlayerState): TrigramStance {
@@ -319,7 +313,6 @@ export class TrigramSystem {
    * console.log(`Cost: ${cost.ki} Ki, ${cost.stamina} Stamina`);
    * ```
    *
-   * @public
    * @korean 자세전환비용
    */
   public getTransitionCost(
@@ -379,7 +372,6 @@ export class TrigramSystem {
    * ); // Returns > 1.0 (Water beats Fire)
    * ```
    *
-   * @public
    * @korean 자세효과성계산
    */
   calculateStanceEffectiveness(
@@ -406,7 +398,6 @@ export class TrigramSystem {
    * console.log(`${name.korean} (${name.english})`); // "건 (Heaven)"
    * ```
    *
-   * @public
    * @korean 자세이름조회
    */
   getStanceName(stance: TrigramStance): { korean: string; english: string } {
@@ -446,7 +437,6 @@ export class TrigramSystem {
    * console.log(counterStance); // TrigramStance.GAM (Water counters Heaven)
    * ```
    * 
-   * @public
    * @korean 상극자세조회
    */
   getCounterStance(opponentStance: TrigramStance): TrigramStance {
@@ -475,7 +465,6 @@ export class TrigramSystem {
    * }
    * ```
    * 
-   * @public
    * @korean 상극자세확인
    */
   isCounterStance(myStance: TrigramStance, opponentStance: TrigramStance): boolean {
@@ -490,7 +479,6 @@ export class TrigramSystem {
    * @param stance - Stance to get data for
    * @returns Stance data object
    *
-   * @public
    * @korean 자세데이터조회
    */
   getCurrentStanceData(stance: TrigramStance): {
@@ -531,7 +519,6 @@ export class TrigramSystem {
    * }
    * ```
    *
-   * @public
    * @korean 자세전환검증
    */
   validateTransition(

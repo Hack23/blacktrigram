@@ -99,9 +99,7 @@ export const useGrapplingAudio = () => {
   const activeSoundCount = useRef(0); // Track concurrent sound instances
   const activeTimers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set()); // Track active timers for cleanup
 
-  // Cleanup all active timers on unmount
   useEffect(() => {
-    // Capture the current ref value for cleanup
     const timers = activeTimers.current;
     return () => {
       timers.forEach((timer) => clearTimeout(timer));
@@ -116,12 +114,10 @@ export const useGrapplingAudio = () => {
     const now = Date.now();
     const lastTime = lastPlayTime.current[soundType] ?? 0;
 
-    // Rate limiting check
     if (now - lastTime < MIN_AUDIO_INTERVAL) {
       return false;
     }
 
-    // Check simultaneous sounds limit (track actual concurrent plays)
     if (activeSoundCount.current >= MAX_SIMULTANEOUS_SOUNDS) {
       return false;
     }
@@ -158,7 +154,6 @@ export const useGrapplingAudio = () => {
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.CONNECT];
       const volumeModifier = getTargetVolumeModifier(target);
 
-      // AudioManager automatically selects from registered variations
       audio.playSFX(placeholderId, volume * volumeModifier * 0.8);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.CONNECT] = Date.now();
@@ -182,7 +177,6 @@ export const useGrapplingAudio = () => {
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.STRUGGLE];
 
-      // AudioManager automatically selects from registered variations
       audio.playSFX(placeholderId, intensity * 0.7);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.STRUGGLE] = Date.now();
@@ -206,7 +200,6 @@ export const useGrapplingAudio = () => {
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.ESCAPE];
 
-      // AudioManager automatically selects from registered variations
       audio.playSFX(placeholderId, volume * 0.9);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.ESCAPE] = Date.now();
@@ -232,7 +225,6 @@ export const useGrapplingAudio = () => {
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.BONE_CRACK];
 
-      // AudioManager automatically selects from registered variations
       audio.playSFX(placeholderId, severity * 0.85);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.BONE_CRACK] = Date.now();
@@ -256,7 +248,6 @@ export const useGrapplingAudio = () => {
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.COUNTER_ATTACK];
 
-      // AudioManager automatically selects from registered variations
       audio.playSFX(placeholderId, volume * 0.9);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.COUNTER_ATTACK] = Date.now();
@@ -280,7 +271,6 @@ export const useGrapplingAudio = () => {
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING];
 
-      // AudioManager automatically selects from registered variations
       audio.playSFX(placeholderId, volume * 0.5);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING] = Date.now();
@@ -300,17 +290,14 @@ export const useGrapplingAudio = () => {
    */
   const playStateTransition = useCallback(
     (newState: GrappleState, previousState: GrappleState | null, target: GrappleTarget) => {
-      // GRABBING -> CONTROLLING: Connection established
       if (previousState === GrappleState.GRABBING && newState === GrappleState.CONTROLLING) {
         playGrappleConnect(target);
       }
 
-      // Any -> ESCAPING: Escape attempt
       if (newState === GrappleState.ESCAPING && previousState !== GrappleState.ESCAPING) {
         playGrappleStruggle(0.9);
       }
 
-      // ESCAPING -> any other state: State change (potentially successful)
       if (previousState === GrappleState.ESCAPING && newState !== GrappleState.ESCAPING && newState !== GrappleState.CONTROLLING) {
         playGrappleEscape();
       }

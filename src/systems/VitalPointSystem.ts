@@ -52,7 +52,6 @@
  * }
  * ```
  *
- * @public
  * @category Vital Point System
  * @korean 급소시스템
  */
@@ -92,7 +91,6 @@ export class VitalPointSystem {
    * @param initialHour - Optional initial hour of day (0-23) for meridian flow calculations
    */
   constructor(initialHour: number = 12) {
-    // Initialize with comprehensive Korean vital points database
     this.initializeVitalPoints();
     this.currentHour = initialHour;
   }
@@ -110,7 +108,6 @@ export class VitalPointSystem {
    * vitalPointSystem.setCurrentHour(20); // 8 PM - Pericardium peak time
    * ```
    *
-   * @public
    * @korean 시간설정
    */
   setCurrentHour(hour: number): void {
@@ -127,7 +124,6 @@ export class VitalPointSystem {
    *
    * @returns Current hour (0-23)
    *
-   * @public
    * @korean 시간조회
    */
   getCurrentHour(): number {
@@ -142,7 +138,6 @@ export class VitalPointSystem {
    * @param meridianId - ID of the meridian
    * @param disruptionLevel - Disruption level (0-1, where 1 is fully blocked)
    *
-   * @public
    * @korean 경락차단업데이트
    */
   setMeridianDisruption(meridianId: string, disruptionLevel: number): void {
@@ -160,7 +155,6 @@ export class VitalPointSystem {
    * @param meridianId - ID of the meridian
    * @returns Disruption level (0-1)
    *
-   * @public
    * @korean 경락차단조회
    */
   getMeridianDisruption(meridianId: string): number {
@@ -172,7 +166,6 @@ export class VitalPointSystem {
    *
    * **Korean**: 경락 상태 초기화
    *
-   * @public
    * @korean 경락초기화
    */
   clearMeridianDisruptions(): void {
@@ -229,7 +222,6 @@ export class VitalPointSystem {
    * );
    * ```
    *
-   * @public
    * @korean 타격처리
    */
   processHit(
@@ -241,7 +233,6 @@ export class VitalPointSystem {
     defenderArchetype?: PlayerArchetype,
     defenderStance?: TrigramStance,
   ): VitalPointHitResult {
-    // Use provided hour or current system hour
     const effectiveHour = hour ?? this.currentHour;
     const effectiveAttackerArchetype =
       attackerArchetype ?? PlayerArchetype.MUSA;
@@ -275,7 +266,6 @@ export class VitalPointSystem {
       };
     }
 
-    // Calculate distance to determine hit accuracy
     const distance = this.calculateDistance(
       targetPosition,
       closestVitalPoint.position,
@@ -315,7 +305,6 @@ export class VitalPointSystem {
    * }
    * ```
    *
-   * @public
    * @korean 급소조회
    */
   getVitalPointById(id: string): VitalPoint | null {
@@ -333,7 +322,6 @@ export class VitalPointSystem {
    * console.log(`${allPoints.length} vital points registered`);
    * ```
    *
-   * @public
    * @korean 급소목록조회
    */
   getVitalPoints(): readonly VitalPoint[] {
@@ -368,7 +356,6 @@ export class VitalPointSystem {
    * );
    * ```
    *
-   * @public
    * @korean 기술타격계산
    */
   calculateHit(
@@ -379,7 +366,6 @@ export class VitalPointSystem {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- stance type is dynamically determined by combat system
     _defenderStance: any, // Prefixed with underscore to indicate intentionally unused
   ): VitalPointHitResult {
-    // Find closest vital point to attack
     const closestVitalPoint = this.findClosestVitalPoint(attackerPosition);
 
     if (!closestVitalPoint) {
@@ -391,7 +377,6 @@ export class VitalPointSystem {
       };
     }
 
-    // Calculate hit based on technique accuracy and distance
     const distance = this.calculateDistance(
       attackerPosition,
       closestVitalPoint.position,
@@ -493,13 +478,10 @@ export class VitalPointSystem {
     const baseDamage = this.calculateBaseDamage(vitalPoint, distance);
     const now = Date.now(); // Single timestamp for all effects
 
-    // Calculate hit accuracy (0-1 scale based on distance)
     const accuracy = Math.max(0, 1 - distance / 50);
 
-    // Get meridians for this vital point
     const meridians = getMeridiansForVitalPoint(vitalPoint.id);
 
-    // Calculate meridian flow effectiveness (highest value if multiple meridians)
     let meridianMultiplier = 1.0;
     const allMeridianEffects: StatusEffect[] = [];
 
@@ -520,13 +502,11 @@ export class VitalPointSystem {
         );
         this.setMeridianDisruption(meridianId, newDisruption);
 
-        // Generate effects if disruption is significant (using shared timestamp)
         const effects = generateMeridianEffects(meridianId, newDisruption, now);
         allMeridianEffects.push(...effects);
       });
     }
 
-    // Calculate enhanced vulnerability based on anatomical zone, stance, meridian flow, and time
     const meridianStates: Record<string, number> = {};
     meridians.forEach((meridianId) => {
       // Convert disruption (0=normal, 1=blocked) to flow state (1=normal, 0=blocked)
@@ -546,7 +526,6 @@ export class VitalPointSystem {
       baseDamage * meridianMultiplier * vulnerabilityMultiplier,
     );
 
-    // Convert VitalPointEffect to StatusEffect with comprehensive calculations
     const vitalPointStatusEffects: StatusEffect[] = vitalPoint.effects.map(
       (effect) =>
         convertToStatusEffect(
@@ -560,7 +539,6 @@ export class VitalPointSystem {
         ),
     );
 
-    // Combine vital point effects with meridian effects
     const combinedEffects = [...vitalPointStatusEffects, ...allMeridianEffects];
 
     return {
@@ -608,7 +586,6 @@ export class VitalPointSystem {
    * @korean 급소초기화
    */
   private initializeVitalPoints(): void {
-    // Load all 70 vital points from the comprehensive database
     this.vitalPoints = [...VITAL_POINTS_DATA];
   }
 }

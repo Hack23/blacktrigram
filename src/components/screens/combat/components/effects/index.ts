@@ -16,21 +16,18 @@
  * @korean 입자효과체계
  */
 
-// Particle pooling system for performance
 export {
   ParticlePool,
   globalParticlePool,
 } from "../../../../../utils/particlePool";
 export type { ParticlePoolConfig } from "../../../../../utils/particlePool";
 
-// Blood particle effects
 export { BloodParticles3D } from "./BloodParticles3D";
 export type {
   BloodSplatterEffect,
   BloodParticles3DProps,
 } from "./BloodParticles3D";
 
-// Arterial spray effects for vital point strikes
 export { ArterialSpray3D } from "./ArterialSpray3D";
 export type {
   ArterialSprayEffect,
@@ -38,7 +35,6 @@ export type {
   ArterialVitalPoint,
 } from "./ArterialSpray3D";
 
-// Bone fracture particles for bone-breaking techniques
 export { BoneCrackParticles3D } from "./BoneCrackParticles3D";
 export type {
   BoneCrackEffect,
@@ -47,14 +43,12 @@ export type {
   BoneType,
 } from "./BoneCrackParticles3D";
 
-// Nerve strike particles for vital point feedback
 export { NerveStrikeParticles3D } from "./NerveStrikeParticles3D";
 export type {
   NerveStrikeEffect,
   NerveStrikeParticles3DProps,
 } from "./NerveStrikeParticles3D";
 
-// Internal damage visualization for organ strikes
 export { InternalDamage3D } from "./InternalDamage3D";
 export type {
   InternalDamageEffect,
@@ -63,7 +57,6 @@ export type {
   PenetrationDepth,
 } from "./InternalDamage3D";
 
-// Enhanced blood viscosity for realistic droplets
 export { BloodViscosity3D } from "./BloodViscosity3D";
 export type {
   BloodViscosityEffect,
@@ -71,7 +64,6 @@ export type {
   ViscosityType,
 } from "./BloodViscosity3D";
 
-// Particle audio integration for synchronized sound effects
 export { ParticleAudio3D, createAudioTrigger } from "./ParticleAudio3D";
 export type {
   ParticleAudioTrigger,
@@ -79,35 +71,28 @@ export type {
   ParticleEffectType,
 } from "./ParticleAudio3D";
 
-// Combat particle effects coordinator (integrates blood, organ, audio)
 export { CombatParticleEffects3D } from "./CombatParticleEffects3D";
 export type { CombatParticleEffects3DProps } from "./CombatParticleEffects3D";
 
-// Impact spark effects for critical hits
 export { ImpactSparks3D } from "./ImpactSparks3D";
 export type { ImpactSparkEffect, ImpactSparks3DProps } from "./ImpactSparks3D";
 
-// Dust cloud effects for movement and impacts
 export { DustClouds3D } from "./DustClouds3D";
 export type { DustCloudEffect, DustClouds3DProps } from "./DustClouds3D";
 
-// Earth crack effects for Gon (Earth) trigram techniques
 export { EarthCrackEffect3D } from "./EarthCrackEffect3D";
 export type {
   EarthCrackEffect,
   EarthCrackEffect3DProps,
 } from "./EarthCrackEffect3D";
 
-// Earth healing effects for Gon supportive techniques
 export { EarthHealingEffect3D } from "./EarthHealingEffect3D";
 export type {
   EarthHealingEffect,
   EarthHealingEffect3DProps,
 } from "./EarthHealingEffect3D";
 
-// Korean trigram symbol particles (removed: component was dead code)
 
-// Hit effects (moved to shared)
 export { default as HitEffects3D } from "../../../../shared/three/effects/HitEffects3D";
 export type { HitEffects3DProps } from "../../../../shared/three/effects/HitEffects3D";
 

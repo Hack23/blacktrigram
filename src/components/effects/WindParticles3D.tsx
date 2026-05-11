@@ -168,12 +168,9 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
   const [trails, setTrails] = useState<Map<string, WindTrail>>(new Map());
   const completedEffectsRef = useRef<Set<string>>(new Set());
   
-  // Track particles and trails for cleanup
   const particlesRef = useRef<WindParticle[]>([]);
   const trailsRef = useRef<Map<string, WindTrail>>(new Map());
 
-  // Reusable color object to avoid creating new THREE.Color on every frame
-  // This significantly reduces GC pressure when rendering many particles
   const windColor = useMemo(
     () => new THREE.Color(KOREAN_COLORS.TRIGRAM_SON_PRIMARY),
     []
@@ -183,7 +180,6 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
     ? WIND_CONSTANTS.MAX_PARTICLES_MOBILE
     : WIND_CONSTANTS.MAX_PARTICLES_DESKTOP;
 
-  // Update refs when state changes
   useEffect(() => {
     particlesRef.current = particles;
   }, [particles]);
@@ -192,7 +188,6 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
     trailsRef.current = trails;
   }, [trails]);
 
-  // Initialize wind trails from effects
   useEffect(() => {
     if (!enabled) return;
 
@@ -200,7 +195,6 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
     
     effects.forEach((effect) => {
       if (!newTrails.has(effect.id) && !completedEffectsRef.current.has(effect.id)) {
-        // Acquire Vector3 objects from pool
         const position = ThreeObjectPools.vector3.acquire();
         const direction = ThreeObjectPools.vector3.acquire();
         
@@ -220,20 +214,17 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
     setTrails(newTrails);
   }, [effects, enabled, trails]);
 
-  // Emit particles along wind trails
   useFrame((_, delta) => {
     if (!enabled || trails.size === 0) return;
 
     const safeDelta = Math.min(delta, WIND_CONSTANTS.MAX_DELTA);
     const particlesToEmit = Math.floor(WIND_CONSTANTS.EMISSION_RATE * safeDelta);
 
-    // Update existing particles
     const updatedParticles = particles
       .map((particle) => {
         particle.age += safeDelta;
 
         if (particle.age >= particle.lifetime) {
-          // Release pooled vectors
           if (particle.isPooled) {
             ThreeObjectPools.vector3.release(particle.position);
             ThreeObjectPools.vector3.release(particle.velocity);
@@ -241,14 +232,11 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
           return null;
         }
 
-        // Update swirl phase
         particle.swirlPhase += WIND_CONSTANTS.SWIRL_SPEED * safeDelta;
 
-        // Calculate swirl offset
         const swirlX = Math.cos(particle.swirlPhase) * particle.swirlRadius;
         const swirlY = Math.sin(particle.swirlPhase) * particle.swirlRadius;
 
-        // Update position with velocity and swirl
         particle.position.x += (particle.velocity.x + swirlX) * safeDelta;
         particle.position.y += (particle.velocity.y + swirlY) * safeDelta;
         particle.position.z += particle.velocity.z * safeDelta;
@@ -257,7 +245,6 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
       })
       .filter((p): p is WindParticle => p !== null);
 
-    // Emit new particles from active trails
     const newParticles: WindParticle[] = [];
     const updatedTrails = new Map(trails);
     const trailsToRemove: string[] = [];
@@ -270,7 +257,6 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
         completedEffectsRef.current.add(effectId);
         onEffectComplete?.(effectId);
 
-        // Release pooled vectors
         if (trail.isPooled) {
           ThreeObjectPools.vector3.release(trail.position);
           ThreeObjectPools.vector3.release(trail.direction);
@@ -278,21 +264,17 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
         return;
       }
 
-      // Emit particles along trail
       if (updatedParticles.length + newParticles.length < maxParticles) {
         for (let i = 0; i < particlesToEmit; i++) {
           const t = Math.random(); // Random position along trail
           const spreadAngle = (Math.random() - 0.5) * Math.PI / 4; // ±45° spread
 
-          // Calculate emission position along trail
           const position = ThreeObjectPools.vector3.acquire();
           position.copy(trail.position).addScaledVector(trail.direction, t * trail.length);
 
-          // Calculate velocity with spread
           const velocity = ThreeObjectPools.vector3.acquire();
           velocity.copy(trail.direction).multiplyScalar(WIND_CONSTANTS.BASE_VELOCITY);
           
-          // Add perpendicular spread
           const perpendicular = ThreeObjectPools.vector3.acquire();
           perpendicular.set(-trail.direction.z, 0, trail.direction.x).normalize();
           velocity.addScaledVector(perpendicular, Math.sin(spreadAngle) * WIND_CONSTANTS.VELOCITY_SPREAD);
@@ -313,14 +295,11 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
       }
     });
 
-    // Remove completed trails
     trailsToRemove.forEach((id) => updatedTrails.delete(id));
     setTrails(updatedTrails);
 
-    // Update particles state
     setParticles([...updatedParticles, ...newParticles]);
 
-    // Update Points geometry
     if (pointsRef.current && updatedParticles.length > 0) {
       const positions = new Float32Array(updatedParticles.length * 3);
       const colors = new Float32Array(updatedParticles.length * 3);
@@ -331,7 +310,6 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
         positions[i3 + 1] = particle.position.y;
         positions[i3 + 2] = particle.position.z;
 
-        // Fade color based on age using pre-allocated color object
         const alpha = 1.0 - particle.age / particle.lifetime;
         colors[i3] = windColor.r * alpha;
         colors[i3 + 1] = windColor.g * alpha;
@@ -346,10 +324,8 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
     }
   });
 
-  // Cleanup on unmount - uses refs to access latest state
   useEffect(() => {
     return () => {
-      // Release all pooled vectors from latest particles
       particlesRef.current.forEach((particle) => {
         if (particle.isPooled) {
           ThreeObjectPools.vector3.release(particle.position);
@@ -357,7 +333,6 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
         }
       });
 
-      // Release all pooled vectors from latest trails
       trailsRef.current.forEach((trail) => {
         if (trail.isPooled) {
           ThreeObjectPools.vector3.release(trail.position);

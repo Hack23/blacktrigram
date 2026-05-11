@@ -116,11 +116,9 @@ const MODE_INFO: Record<
 export const TrainingModeSelectorOverlayHtml =
   React.memo<TrainingModeSelectorOverlayHtmlProps>(
     ({ currentMode, onModeChange, isMobile }) => {
-      // Use 100% width to fill container instead of fixed width
       const padding = getResponsiveSpacing("sm", isMobile);
       const gap = getResponsiveSpacing("xs", isMobile);
 
-      // Enhanced panel styles with neon glow - now uses 100% width
       const panelStyle: React.CSSProperties = {
         ...getEnhancedKoreanOverlayStyles({
           opacity: 0.9,
@@ -243,9 +241,6 @@ export const TrainingModeSelectorOverlayHtml =
       );
     },
     (prevProps, nextProps) => {
-      // Only re-render if current mode, mobile state, or mode change callback changes.
-      // Including onModeChange here prevents stale callback closures when the parent
-      // provides a new function that captures updated state.
       return (
         prevProps.currentMode === nextProps.currentMode &&
         prevProps.isMobile === nextProps.isMobile &&

@@ -60,7 +60,6 @@ function isMobileUserAgent(userAgent: string): boolean {
     "Android",
     "webOS",
     "iPhone",
-    // 'iPad' is handled separately in isTabletUserAgent
     "iPod",
     "BlackBerry",
     "IEMobile",
@@ -79,12 +78,10 @@ function isMobileUserAgent(userAgent: string): boolean {
  * @returns True if user-agent indicates tablet
  */
 function isTabletUserAgent(userAgent: string): boolean {
-  // iPad is always a tablet
   if (userAgent.includes("iPad")) {
     return true;
   }
 
-  // Android tablets typically include "Tablet" or have Mobile absent
   if (userAgent.includes("Android")) {
     return userAgent.includes("Tablet") || !userAgent.includes("Mobile");
   }
@@ -113,8 +110,6 @@ function detectOS(userAgent: string): PlatformInfo["os"] {
     return "windows";
   }
   if (userAgent.includes("Mac")) {
-    // Handle iPadOS 13+ in desktop mode, which reports a Mac-like user agent
-    // e.g. "Macintosh; Intel Mac OS X" but still has touch support
     const isLikelyIPadOSDesktop =
       typeof navigator !== "undefined" &&
       typeof navigator.maxTouchPoints === "number" &&
@@ -139,12 +134,10 @@ function detectOS(userAgent: string): PlatformInfo["os"] {
  * @returns True if touch is supported
  */
 function hasTouchSupport(): boolean {
-  // Check for touch events support
   if ("ontouchstart" in window) {
     return true;
   }
 
-  // Check for touch points (must be defined and > 0)
   if (
     typeof navigator !== "undefined" &&
     typeof navigator.maxTouchPoints !== "undefined" &&
@@ -153,7 +146,6 @@ function hasTouchSupport(): boolean {
     return true;
   }
 
-  // Check for pointer events with touch
   if (
     typeof window !== "undefined" &&
     window.matchMedia?.("(pointer: coarse)")?.matches
@@ -206,7 +198,7 @@ function readCSSEnvInsets(): { top: number; bottom: number } | null {
         return result;
       }
     } catch {
-      // Fall through to null
+      // intentional: fall through to null
     }
   }
 
@@ -225,7 +217,6 @@ let cachedScreenHeight = 0;
  * Useful when window is resized or device emulation changes
  * Also clears CSS environment variable cache
  *
- * @public
  */
 export function clearPlatformCache(): void {
   cachedPlatform = null;
@@ -267,7 +258,6 @@ export function clearPlatformCache(): void {
  * }
  * ```
  *
- * @public
  * @korean 플랫폼감지
  */
 export function detectPlatform(): PlatformInfo {
@@ -276,7 +266,6 @@ export function detectPlatform(): PlatformInfo {
   const screenHeight =
     typeof window !== "undefined" ? window.innerHeight : 1080;
 
-  // Return cached result if screen dimensions haven't changed
   if (
     cachedPlatform !== null &&
     cachedScreenWidth === screenWidth &&
@@ -285,51 +274,35 @@ export function detectPlatform(): PlatformInfo {
     return cachedPlatform;
   }
 
-  // Detect OS
   const os = detectOS(userAgent);
-
-  // Detect touch capability
   const hasTouch = hasTouchSupport();
-
-  // Detect if mobile by user-agent (most reliable method)
   const isMobileUA = isMobileUserAgent(userAgent);
-
-  // Detect if tablet by user-agent
   const isTabletUA = isTabletUserAgent(userAgent);
-
-  // Detect by screen size (fallback method)
   const isMobileBySize = screenWidth <= MOBILE_BREAKPOINT;
   const isTabletBySize =
     screenWidth > MOBILE_BREAKPOINT && screenWidth <= TABLET_BREAKPOINT;
 
-  // Determine device type
-  // Priority: User-agent > Screen size
   let deviceType: DeviceType;
   let isMobile: boolean;
   let isTablet: boolean;
 
   if (isMobileUA && !isTabletUA) {
-    // User-agent indicates phone
     deviceType = DeviceType.MOBILE;
     isMobile = true;
     isTablet = false;
   } else if (isTabletUA) {
-    // User-agent indicates tablet
     deviceType = DeviceType.TABLET;
     isMobile = false;
     isTablet = true;
   } else if (isMobileBySize) {
-    // Small screen, assume mobile
     deviceType = DeviceType.MOBILE;
     isMobile = true;
     isTablet = false;
   } else if (isTabletBySize && hasTouch) {
-    // Medium screen with touch, assume tablet
     deviceType = DeviceType.TABLET;
     isMobile = false;
     isTablet = true;
   } else {
-    // Desktop
     deviceType = DeviceType.DESKTOP;
     isMobile = false;
     isTablet = false;
@@ -348,7 +321,6 @@ export function detectPlatform(): PlatformInfo {
     screenHeight,
   };
 
-  // Cache the result along with screen dimensions
   cachedPlatform = result;
   cachedScreenWidth = screenWidth;
   cachedScreenHeight = screenHeight;
@@ -362,7 +334,6 @@ export function detectPlatform(): PlatformInfo {
  *
  * @returns True if device is mobile or tablet
  *
- * @public
  * @korean 모바일확인
  */
 export function isMobileDevice(): boolean {
@@ -394,29 +365,23 @@ export function isMobileDevice(): boolean {
  * }
  * ```
  *
- * @public
  * @korean 모바일컨트롤사용
  */
 export function shouldUseMobileControls(): boolean {
   const platform = detectPlatform();
 
-  // Always use mobile controls on phones
   if (platform.isMobile) {
     return true;
   }
 
-  // Use mobile controls on tablets (better touch experience)
   if (platform.isTablet) {
     return true;
   }
 
-  // Use mobile controls on any touch-enabled device up to tablet breakpoint
-  // This catches Windows tablets, Chromebooks in tablet mode, etc.
   if (platform.hasTouch && platform.screenWidth <= TABLET_BREAKPOINT) {
     return true;
   }
 
-  // Use mobile controls on small desktop screens with touch
   if (platform.screenWidth <= MOBILE_BREAKPOINT && platform.hasTouch) {
     return true;
   }
@@ -433,15 +398,12 @@ export function shouldUseMobileControls(): boolean {
  *
  * @returns Safe area insets in pixels
  *
- * @public
  * @korean 안전영역인셋
  */
 export function getSafeAreaInsets() {
   const platform = detectPlatform();
 
-  // iOS devices - distinguish between notched and non-notched
   if (platform.os === "ios" && platform.isMobile) {
-    // Try to read CSS environment variables first (most accurate)
     const cssEnvInsets = readCSSEnvInsets();
     if (cssEnvInsets) {
       return {
@@ -452,26 +414,20 @@ export function getSafeAreaInsets() {
       };
     }
 
-    // Detect orientation
     const isLandscape = platform.screenWidth > platform.screenHeight;
 
-    // Heuristic: iPhone X and later have notches and specific screen dimensions
-    // iPhone X/XS/11 Pro: 375x812, iPhone XR/11: 414x896, iPhone 12/13/14: 390x844, etc.
-    // Only devices with height >= 812 (portrait) or width >= 812 (landscape) have notches
     const hasNotch =
       platform.screenHeight >= 812 || platform.screenWidth >= 812;
 
     if (hasNotch) {
       if (isLandscape) {
-        // In landscape, notch is on the side
         return {
           top: 0,
-          bottom: 21, // Home indicator
-          left: 44, // Notch side
-          right: 44, // Opposite side for symmetry
+          bottom: 21,
+          left: 44,
+          right: 44,
         };
       } else {
-        // In portrait, notch is at top
         return {
           top: 44,
           bottom: 34,
@@ -480,9 +436,8 @@ export function getSafeAreaInsets() {
         };
       }
     } else {
-      // Older iPhones without notch (iPhone 8, SE, etc.)
       return {
-        top: 20, // Status bar height
+        top: 20,
         bottom: 0,
         left: 0,
         right: 0,
@@ -490,7 +445,6 @@ export function getSafeAreaInsets() {
     }
   }
 
-  // Android devices (standard status bar)
   if (platform.os === "android" && platform.isMobile) {
     return {
       top: 24,
@@ -500,7 +454,6 @@ export function getSafeAreaInsets() {
     };
   }
 
-  // Tablets and desktop - no safe area needed
   return {
     top: 0,
     bottom: 0,

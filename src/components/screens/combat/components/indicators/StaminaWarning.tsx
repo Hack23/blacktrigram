@@ -64,32 +64,21 @@ export const StaminaWarning: React.FC<StaminaWarningProps> = ({
   const theme = useKoreanTheme({ variant: "danger", size: "md", isMobile });
   
   const warningStyle = useMemo(() => {
-    // Only show when stamina is critically low
     const criticalThreshold = 20;
     if (stamina >= criticalThreshold) {
       return null;
     }
 
-    // Clamp stamina to 0-20 range for intensity calculation
     const clampedStamina = Math.max(0, Math.min(criticalThreshold, stamina));
 
-    // Calculate urgency based on how low stamina is (20-0% -> 0-1)
     const urgency = (criticalThreshold - clampedStamina) / criticalThreshold;
 
-    // Attenuation (e.g. 0.5 on portrait mobile). Applied to the glow and
-    // a separate `borderColor` alpha, but the border itself always renders
-    // at full opacity so the warning frame stays visible.
     const safeScale = Math.max(0, Math.min(1, intensityScale));
 
-    // Mobile uses thinner border
     const borderWidth = isMobile ? "4px" : "6px";
 
-    // Border stays at full alpha so the warning outline is always visible,
-    // regardless of `intensityScale`.
     const borderColor = hexToRgbaString(theme.colors.WARNING_YELLOW, 1);
-    // Glow is attenuated so the overall flash is subtler when requested.
     const glowColor = hexToRgbaString(theme.colors.WARNING_YELLOW, safeScale);
-    // Animation speed increases with urgency
     const animationDuration = Math.max(0.6, 1.2 - urgency * 0.6);
 
     return {
@@ -104,7 +93,6 @@ export const StaminaWarning: React.FC<StaminaWarningProps> = ({
     };
   }, [stamina, isMobile, intensityScale, theme.colors.WARNING_YELLOW]);
 
-  // Don't render if stamina is not critical
   if (stamina >= 20 || !warningStyle) {
     return null;
   }

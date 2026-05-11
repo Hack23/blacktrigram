@@ -22,7 +22,6 @@ import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { DEFAULT_PHYSICS_ARENA_BOUNDS, type PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 
-// Animation phase thresholds (as percentage of total duration)
 /** Fade in completes at 20% of total duration */
 const FADE_IN_THRESHOLD = 0.2;
 /** Fade out begins at 80% of total duration */
@@ -121,31 +120,23 @@ const SingleFeedback: React.FC<SingleFeedbackProps> = ({
   const [progress, setProgress] = useState(0);
   const startTimeRef = useRef(feedback.timestamp);
 
-  // Calculate 3D position from meter-based coordinates (physics-first architecture)
-  // Position is in meters relative to arena center (0, 0)
-  // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
-  // So we use meter coordinates directly too for alignment
   const halfWidth = arenaBounds.worldWidthMeters / 2;
   const halfDepth = arenaBounds.worldDepthMeters / 2;
   
-  // Clamp position to arena boundaries in meters
   const clampedX = Math.min(halfWidth, Math.max(-halfWidth, feedback.position.x));
   const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, feedback.position.y));
   
-  // Use clamped meter coordinates directly in 3D space (no remapping)
   const x = clampedX; // Meter position X
   const y = 2.5 + progress * 1.5; // Float upward
   const z = clampedZ; // Meter position Z (depth)
   const position3D: [number, number, number] = [x, y, z];
 
-  // Update progress using useFrame
   useFrame(() => {
     const elapsed = Date.now() - startTimeRef.current;
     const newProgress = Math.min(elapsed / animationDuration, 1);
     setProgress(newProgress);
   });
 
-  // Don't render if expired
   if (progress >= 1) return null;
 
   const opacity = 1 - progress;
@@ -207,7 +198,6 @@ export const ActionFeedback: React.FC<ActionFeedbackProps> = ({
   arenaBounds = DEFAULT_PHYSICS_ARENA_BOUNDS,
   animationDuration = 1200,
 }) => {
-  // Derive visible feedbacks from props - no need for state sync
   const visibleFeedbacks = useMemo(() => [...feedbacks], [feedbacks]);
 
   return (
@@ -250,26 +240,21 @@ export const TechniqueName: React.FC<TechniqueNameProps> = ({
 }) => {
   const [opacity, setOpacity] = useState(0);
   const [scale, setScale] = useState(0.5);
-  // Use useState lazy initializer for Date.now() to avoid impure function during render
   const [startTime] = useState(() => Date.now());
   const startTimeRef = useRef(startTime);
 
-  // Animation phases: fade in (0-FADE_IN_THRESHOLD), hold (FADE_IN_THRESHOLD-FADE_OUT_THRESHOLD), fade out (FADE_OUT_THRESHOLD-1)
   useFrame(() => {
     const elapsed = Date.now() - startTimeRef.current;
     const progress = Math.min(elapsed / duration, 1);
 
     if (progress < FADE_IN_THRESHOLD) {
-      // Fade in phase
       const fadeInProgress = progress / FADE_IN_THRESHOLD;
       setOpacity(fadeInProgress);
       setScale(0.5 + fadeInProgress * 0.5);
     } else if (progress < FADE_OUT_THRESHOLD) {
-      // Hold phase
       setOpacity(1);
       setScale(1);
     } else {
-      // Fade out phase
       const fadeOutProgress =
         (progress - FADE_OUT_THRESHOLD) / (1 - FADE_OUT_THRESHOLD);
       setOpacity(1 - fadeOutProgress);
@@ -281,7 +266,6 @@ export const TechniqueName: React.FC<TechniqueNameProps> = ({
     }
   });
 
-  // Position at center of scene, slightly below top
   const position3D: [number, number, number] = [0, 3.5, 0];
 
   const mainFontSize = isMobile ? 28 : 42;

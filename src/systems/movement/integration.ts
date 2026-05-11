@@ -36,7 +36,6 @@ import { TrigramStance } from "@/types/common";
  * movementState.legInjuryFactor = legInjuryFactor;
  * ```
  * 
- * @public
  * @korean 다리손상요소계산
  */
 export function calculateLegInjuryFactor(
@@ -88,7 +87,6 @@ export function calculateLegInjuryFactor(
  * movementPhysics.setMaxSpeed(finalSpeed);
  * ```
  * 
- * @public
  * @korean 종합이동속도계산
  */
 export function calculateMovementSpeed(
@@ -120,7 +118,6 @@ export function calculateMovementSpeed(
  * @param bodyPartHealth - Current body part health
  * @returns Speed multiplier (0.1-1.0)
  * 
- * @public
  * @korean 손상속도배수계산
  */
 export function calculateInjuryMultiplier(

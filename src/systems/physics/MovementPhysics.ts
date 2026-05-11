@@ -30,7 +30,6 @@ import * as THREE from "three";
  *
  * **Korean**: 이동 입력 (Movement Input)
  *
- * @public
  * @category Physics System
  * @korean 이동입력
  */
@@ -55,7 +54,6 @@ export interface MovementInput {
  * Contains position, velocity, and current movement parameters.
  * All vectors are mutable for performance (updated in-place during physics loop).
  *
- * @public
  * @category Physics System
  * @korean 이동상태
  */
@@ -153,7 +151,6 @@ export const STANCE_SPEED_MODIFIERS: Record<TrigramStance, number> = {
  * physics.updateMovement(state, input, deltaTime);
  * ```
  *
- * @public
  * @category Physics System
  * @korean 이동물리엔진
  */
@@ -266,7 +263,6 @@ export class MovementPhysics {
    * const largePhysics = new MovementPhysics(14.0);
    * ```
    *
-   * @public
    */
   constructor(arenaWidthMeters: number = 10.0) {
     if (arenaWidthMeters <= 0 || !Number.isFinite(arenaWidthMeters)) {
@@ -592,7 +588,6 @@ export class MovementPhysics {
    *
    * @param speed - Maximum speed in m/s
    *
-   * @public
    */
   public setMaxSpeed(speed: number): void {
     this._overrideMaxSpeed = speed;
@@ -609,7 +604,6 @@ export class MovementPhysics {
    *
    * @param acceleration - Acceleration in m/s²
    *
-   * @public
    */
   public setAcceleration(acceleration: number): void {
     this._overrideAcceleration = acceleration;
@@ -623,7 +617,6 @@ export class MovementPhysics {
    * Resets movement to use default calculations without external
    * override values.
    *
-   * @public
    */
   public clearOverrides(): void {
     this._overrideMaxSpeed = null;
@@ -642,7 +635,6 @@ export class MovementPhysics {
    * @param widthMeters - Arena width in meters (must be positive)
    * @throws {Error} If widthMeters is not a positive number
    *
-   * @public
    */
   public setArenaWidth(widthMeters: number): void {
     if (widthMeters <= 0 || !Number.isFinite(widthMeters)) {
@@ -661,7 +653,6 @@ export class MovementPhysics {
    *
    * @returns Arena width in meters
    *
-   * @public
    */
   public getArenaWidth(): number {
     return this._arenaWidthMeters;
@@ -676,7 +667,6 @@ export class MovementPhysics {
    *
    * @returns Arena-based speed multiplier (0.7 to 1.3)
    *
-   * @public
    */
   public getArenaSpeedScale(): number {
     return this._cachedArenaSpeedScale;

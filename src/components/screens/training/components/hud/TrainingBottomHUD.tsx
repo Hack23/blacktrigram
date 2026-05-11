@@ -87,7 +87,6 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
   onArchetypeSelect,
   onPlaySFX,
 }) => {
-  // isMobile only used for showing mobile controls
   const showMobileControls = shouldShowMobileControls(width, isMobile);
   const showArchetypeSelector =
     showMobileControls &&
@@ -95,21 +94,13 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     selectedArchetype !== undefined;
 
   const layout = React.useMemo(() => {
-    // Resolution-based HUD height (11% of screen height, 40-120px range)
     const hudHeight = getHUDHeight(height, 0.11) * positionScale;
     
-    // Resolution-based padding
     const padding = getResponsivePadding(width) * positionScale;
 
-    // Compute the actual pixel width available to TechniqueBar so it can make
-    // accurate scale/scroll decisions. The technique section has flex:1 but
-    // loses pixels to: HUD padding (both sides), the absolute volume control
-    // reserve, and (on mobile) the absolute archetype selector reserve.
     const volumeReserve = showMobileControls
       ? HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE
       : HUD_SIDE_CONTROL_RESERVES.VOLUME_CONTROL;
-    // showArchetypeSelector is only true with mobile controls, so the mobile
-    // technique-bar reserve is the only reachable archetype selector reserve.
     const archetypeReserve = showArchetypeSelector
       ? HUD_SIDE_CONTROL_RESERVES.TECHNIQUE_BAR_MOBILE
       : 0;

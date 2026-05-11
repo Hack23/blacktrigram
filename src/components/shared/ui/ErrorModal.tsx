@@ -17,7 +17,6 @@ interface ErrorModalProps {
   readonly onContinue: () => void;
 }
 
-// Pre-compute hex colors from Korean color constants
 const HEX_COLORS = {
   PRIMARY_CYAN: toHex(KOREAN_COLORS.PRIMARY_CYAN),
   ACCENT_GOLD: toHex(KOREAN_COLORS.ACCENT_GOLD),
@@ -45,7 +44,6 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
     onContinue();
   }, [onContinue]);
 
-  // Handle keyboard events (Escape key to close)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {

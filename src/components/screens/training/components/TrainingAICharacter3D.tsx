@@ -66,7 +66,6 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
   const groupRef = useRef<THREE.Group>(null);
   const stanceAuraRef = useRef<THREE.Mesh>(null);
 
-  // Attack movement physics
   const attackPhysics = useMemo(() => new AttackMovementPhysics(), []);
   const attackStartTimeRef = useRef<number | null>(null);
   const originalPositionRef = useRef<THREE.Vector3 | null>(null);
@@ -74,31 +73,25 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     typeof attackPhysics.calculateAttackMovement
   > | null>(null);
 
-  // Track attack state changes
   const wasAttackingRef = useRef(false);
 
-  // Initialize original position ref
   useEffect(() => {
     originalPositionRef.current ??= new THREE.Vector3(...position);
   }, [position]);
 
-  // Keep original position synced with external position while not attacking
   useEffect(() => {
     if (!isAttacking && originalPositionRef.current) {
       originalPositionRef.current.set(...position);
     }
   }, [position, isAttacking]);
 
-  // Reset attack movement when attack starts
   useEffect(() => {
     if (isAttacking && !wasAttackingRef.current) {
-      // Attack just started - initialize movement
       attackStartTimeRef.current = performance.now() / 1000;
       if (originalPositionRef.current) {
         originalPositionRef.current.set(...position);
       }
 
-      // Calculate attack movement if we have animation type
       if (attackAnimationType) {
         const direction = new THREE.Vector3(0, 0, -1); // Forward toward player
         attackMovementResultRef.current = attackPhysics.calculateAttackMovement(
@@ -111,7 +104,6 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
         );
       }
     } else if (!isAttacking && wasAttackingRef.current) {
-      // Attack ended - clean up
       attackStartTimeRef.current = null;
       attackMovementResultRef.current = null;
     }
@@ -119,12 +111,8 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     wasAttackingRef.current = isAttacking;
   }, [isAttacking, attackAnimationType, stance, position, attackPhysics]);
 
-  // Memoize stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
 
-  // Memoize geometries to prevent recreation on every render
-  // Performance: Avoids WebGL context exhaustion and reduces memory allocations
-  // Note: Health ring geometry is not memoized as it requires dynamic args based on healthPercent
   const geometries = useMemo(
     () => ({
       body: new THREE.CapsuleGeometry(0.4, 1.2, 16, 32),
@@ -134,8 +122,6 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     []
   );
 
-  // Memoize materials for consistent shading
-  // Materials are recreated when stance changes for proper color updates
   const materials = useMemo(
     () => ({
       body: new THREE.MeshStandardMaterial({
@@ -160,8 +146,6 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     [stanceColor, isAttacking]
   );
 
-  // Cleanup geometries on unmount only (geometries are stable)
-  // Dependencies intentionally omitted to prevent premature disposal
   useEffect(() => {
     return () => {
       Object.values(geometries).forEach((geom) => geom.dispose());
@@ -169,8 +153,6 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Cleanup old materials when new ones are created
-  // This prevents memory leaks when stance or attacking state changes
   useEffect(() => {
     const currentMaterials = materials;
     return () => {
@@ -178,26 +160,17 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     };
   }, [materials]);
 
-  // Animation loop
   useFrame((state) => {
     if (!groupRef.current || !stanceAuraRef.current) return;
 
     const time = state.clock.elapsedTime;
 
-    // Breathing animation
-    // NOTE: This per-character animation is acceptable for training mode (single AI opponent).
-    // If planning to display multiple AI characters simultaneously (e.g., multiplayer),
-    // batch breathing animations using InstancedMesh or limit animation to active combat participants only.
-    // 한 명의 AI 상대만 표시되는 훈련 모드에서는 성능 문제가 없으나,
-    // 다수의 AI가 동시에 표시되는 경우에는 InstancedMesh 또는 배치 애니메이션으로 최적화 필요.
     const breathScale = Math.sin(time * 2) * 0.02 + 1;
     groupRef.current.scale.y = breathScale;
 
-    // Stance aura pulsing
     const auraPulse = Math.sin(time * 3) * 0.1 + 0.9;
     stanceAuraRef.current.scale.setScalar(auraPulse);
 
-    // Physics-based attack movement
     if (
       isAttacking &&
       attackStartTimeRef.current !== null &&
@@ -208,14 +181,12 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
       const elapsedTime = currentTime - attackStartTimeRef.current;
       const result = attackMovementResultRef.current;
 
-      // Determine if in lunge or recovery phase
       const isRecoveryPhase =
         elapsedTime >= result.lungeDuration &&
         elapsedTime < result.totalDuration;
       const isInAttackMovement = elapsedTime < result.totalDuration;
 
       if (isInAttackMovement) {
-        // Apply attack movement physics
         const newPosition = attackPhysics.applyAttackMovement(
           originalPositionRef.current,
           result,
@@ -223,14 +194,11 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
           isRecoveryPhase
         );
 
-        // Update group position
         groupRef.current.position.copy(newPosition);
       } else {
-        // Attack movement complete - return to original position
         groupRef.current.position.copy(originalPositionRef.current);
       }
     } else if (!isAttacking && originalPositionRef.current) {
-      // Not attacking - stay at base position
       groupRef.current.position.copy(originalPositionRef.current);
     }
   });

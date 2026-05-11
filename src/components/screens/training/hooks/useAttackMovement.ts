@@ -82,16 +82,13 @@ export function useAttackMovement(
     animationDuration = 0.4,
   } = config;
 
-  // Attack movement physics engine
   const physicsRef = useRef(new AttackMovementPhysics());
 
-  // Attack timing
   const attackStartTimeRef = useRef<number | null>(null);
   const attackMovementResultRef = useRef<ReturnType<
     typeof physicsRef.current.calculateAttackMovement
   > | null>(null);
 
-  // Current position state
   const [currentPosition, setCurrentPosition] = useState<
     [number, number, number]
   >(basePosition);
@@ -99,23 +96,18 @@ export function useAttackMovement(
   const [isRecovering, setIsRecovering] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Track previous attack state
   const wasAttackingRef = useRef(false);
 
-  // Keep position synced with basePosition when not attacking
   useEffect(() => {
     if (!isAttacking) {
       setCurrentPosition(basePosition);
     }
   }, [isAttacking, basePosition]);
 
-  // Initialize attack movement and manage animation loop
   useEffect(() => {
     if (isAttacking && !wasAttackingRef.current) {
-      // Attack just started - initialize movement
       attackStartTimeRef.current = performance.now() / 1000;
 
-      // Calculate attack movement if we have animation type
       if (animationType && attackDirection) {
         attackMovementResultRef.current =
           physicsRef.current.calculateAttackMovement({
@@ -126,7 +118,6 @@ export function useAttackMovement(
           });
       }
     } else if (!isAttacking && wasAttackingRef.current) {
-      // Attack ended - clean up
       attackStartTimeRef.current = null;
       attackMovementResultRef.current = null;
       setIsLunging(false);
@@ -136,7 +127,6 @@ export function useAttackMovement(
 
     wasAttackingRef.current = isAttacking;
 
-    // Only start animation loop if attacking
     if (!isAttacking || !attackStartTimeRef.current || !attackMovementResultRef.current) {
       return;
     }
@@ -150,7 +140,6 @@ export function useAttackMovement(
       const currentTime = performance.now() / 1000;
       const elapsedTime = currentTime - attackStartTimeRef.current;
 
-      // Determine phase
       const lunging = physicsRef.current.isInLungePhase(
         elapsedTime,
         result.lungeDuration
@@ -163,12 +152,10 @@ export function useAttackMovement(
       setIsLunging(lunging);
       setIsRecovering(recovering);
 
-      // Calculate progress
       const totalProgress = Math.min(1.0, elapsedTime / result.totalDuration);
       setProgress(totalProgress);
 
       if (lunging || recovering) {
-        // Apply attack movement physics
         const basePos = new THREE.Vector3(...basePosition);
         const newPosition = physicsRef.current.applyAttackMovement(
           basePos,
@@ -179,10 +166,8 @@ export function useAttackMovement(
 
         setCurrentPosition([newPosition.x, newPosition.y, newPosition.z]);
 
-        // Continue animation
         animationFrameId = requestAnimationFrame(updatePosition);
       } else {
-        // Attack movement complete - return to base
         setCurrentPosition(basePosition);
         setIsLunging(false);
         setIsRecovering(false);
@@ -190,7 +175,6 @@ export function useAttackMovement(
       }
     };
 
-    // Start animation loop
     animationFrameId = requestAnimationFrame(updatePosition);
 
     return () => {

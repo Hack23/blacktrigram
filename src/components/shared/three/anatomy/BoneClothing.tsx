@@ -117,15 +117,12 @@ const calculateBodyThickness = (
   const referenceMuscle = 35; // Reference: athletic build
   const referenceFat = 12; // Reference: low body fat
 
-  // Linear scaling with limits (not square root which causes excessive inflation)
   const muscleRatio = muscleMass / referenceMuscle;
   const fatRatio = fatMass / referenceFat;
 
-  // Base 0.85, muscle adds up to +0.15, fat adds up to +0.20
   const muscleContribution = (muscleRatio - 1.0) * 0.15;
   const fatContribution = (fatRatio - 1.0) * 0.2;
 
-  // Cap at 1.20x maximum to prevent "michelin man" effect
   return Math.max(
     0.75,
     Math.min(1.2, 0.85 + muscleContribution + fatContribution),
@@ -184,7 +181,6 @@ const getClothingForBone = (
     physicalAttributes.fatMass,
   );
 
-  // Scaling factors
   const torsoScale = physicalAttributes.torsoLength / 59;
   const legScale = physicalAttributes.legLength / 96;
 
@@ -229,12 +225,9 @@ const getAttachmentsForItem = (
 
   switch (item.type) {
     case "torso":
-      // Main torso on spine_middle - wraps fully around body
       if (boneName === "spine_middle") {
         const height = (59 / 100) * torsoScale * 1.2; // Using base torsoLength
-        // Clothing wraps around the torso using CylinderGeometry (full 360°)
         const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale;
-        // Torso radius: average of shoulder width and pectorals depth
         const torsoRadius =
           ((physicalAttributes.shoulderWidth / 100) * 0.5 * bodyThickness +
             PECTORALS_RADIUS * bodyThickness) *
@@ -262,10 +255,7 @@ const getAttachmentsForItem = (
         });
       }
 
-      // Sleeves
       if (boneName === "upper_arm_L" || boneName === "upper_arm_R") {
-        // Uses centralized BICEP_RADIUS from bodyDimensions
-        // Clothing wraps around muscle, so offset outward
         const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale;
         const clothingRadius = calculateClothingRadius(
           BICEP_RADIUS,
@@ -292,8 +282,6 @@ const getAttachmentsForItem = (
       }
 
       if (boneName === "forearm_L" || boneName === "forearm_R") {
-        // Uses centralized FOREARM_RADIUS from bodyDimensions
-        // Clothing must be OUTSIDE, so use larger radius
         const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale * 0.8;
         const clothingRadius = calculateClothingRadius(
           FOREARM_RADIUS,
@@ -321,10 +309,7 @@ const getAttachmentsForItem = (
       break;
 
     case "pants":
-      // Thigh segments
       if (boneName === "thigh_L" || boneName === "thigh_R") {
-        // Uses centralized QUAD_RADIUS from bodyDimensions
-        // Clothing wraps around muscle, so offset outward
         const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale * 1.3;
         const clothingRadius = calculateClothingRadius(
           QUAD_RADIUS,
@@ -351,10 +336,7 @@ const getAttachmentsForItem = (
         });
       }
 
-      // Shin segments
       if (boneName === "shin_L" || boneName === "shin_R") {
-        // Uses centralized CALF_RADIUS from bodyDimensions
-        // Clothing must be OUTSIDE, so use larger radius
         const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale;
         const clothingRadius = calculateClothingRadius(
           CALF_RADIUS,
@@ -384,7 +366,6 @@ const getAttachmentsForItem = (
 
     case "belt":
       if (boneName === "pelvis") {
-        // Belt wraps fully around waist using CylinderGeometry
         const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale;
         const waistRadius = CORE_RADIUS * bodyThickness;
         const beltRadius = calculateClothingRadius(
@@ -414,9 +395,7 @@ const getAttachmentsForItem = (
     case "vest":
       if (boneName === "spine_middle") {
         const height = (59 / 100) * 0.75 * torsoScale;
-        // Vest wraps fully around torso using CylinderGeometry
         const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale;
-        // Vest sits slightly outside the torso clothing layer
         const torsoRadius =
           ((physicalAttributes.shoulderWidth / 100) * 0.5 * bodyThickness +
             (PECTORALS_RADIUS + 0.01) * bodyThickness) *
@@ -462,7 +441,6 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
   archetype,
   physicalAttributes,
 }) => {
-  // Default physical attributes if not provided - memoized to prevent new object on every render
   const attrs = useMemo(
     () =>
       physicalAttributes ?? {
@@ -476,13 +454,11 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
     [physicalAttributes],
   );
 
-  // Get clothing attachments for this bone
   const attachments = useMemo(
     () => getClothingForBone(boneName, archetype, attrs),
     [boneName, archetype, attrs],
   );
 
-  // Get clothing set for fabric texture generation
   const clothingSet = useMemo(
     () => getArchetypeClothing(archetype),
     [archetype],
@@ -497,7 +473,6 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
    * @korean 직물텍스처생성
    */
   const fabricTextures = useMemo(() => {
-    // Generate textures for each unique clothing item
     const textureMap = new Map<string, FabricTextureSet>();
 
     for (const item of clothingSet.items) {
@@ -514,7 +489,6 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
     return textureMap;
   }, [clothingSet]);
 
-  // Cleanup fabric textures on unmount
   useEffect(() => {
     return () => {
       fabricTextures.forEach((textureSet) => textureSet.dispose());
@@ -537,14 +511,12 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
    */
   const materials = useMemo(() => {
     return attachments.map((attachment) => {
-      // Find the clothing item for this attachment to get its material type
       const clothingItem = clothingSet.items.find((item) =>
         attachment.itemId.startsWith(item.id),
       );
       const materialType = clothingItem?.material ?? "fabric";
       const textureSet = fabricTextures.get(materialType);
 
-      // Create normal scale safely (Vector2 may not be available in test environments)
       let normalScale: THREE.Vector2 | undefined;
       try {
         normalScale = new THREE.Vector2(0.3, 0.3);
@@ -554,7 +526,6 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
 
       const mat = new THREE.MeshPhysicalMaterial({
         color: attachment.color,
-        // Apply fabric texture maps for realistic dobok appearance
         map: textureSet?.colorMap ?? null,
         normalMap: textureSet?.normalMap ?? null,
         normalScale, // Subtle normal effect
@@ -563,33 +534,25 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
         emissiveIntensity: attachment.emissiveIntensity ?? 0,
         metalness: attachment.metalness ?? 0.1, // Lower metalness for fabric
         roughness: attachment.roughness ?? 0.8, // Higher roughness for cloth
-        // Enhanced cloth realism with clearcoat for depth
         clearcoat: 0.2,
         clearcoatRoughness: 0.6,
-        // Subsurface scattering for realistic fabric translucency
-        // Subtle effect for cloth materials (not skin)
         transmission: 0.03, // Minimal light transmission through fabric
         thickness: 0.15, // Thin fabric thickness
         ior: 1.4, // Index of refraction for fabric (lower than glass)
-        // Enable proper reflections
         reflectivity: 0.2,
-        // Double-sided rendering for cloth that may fold
         side: THREE.DoubleSide,
-        // Improved shading for folds
         flatShading: false,
       });
       return mat;
     });
   }, [attachments, clothingSet, fabricTextures]);
 
-  // Cleanup materials on unmount
   useEffect(() => {
     return () => {
       materials.forEach((mat) => mat.dispose());
     };
   }, [materials]);
 
-  // Cleanup geometries on unmount
   useEffect(() => {
     return () => {
       attachments.forEach((attachment) => {

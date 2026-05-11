@@ -172,7 +172,6 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
   "data-testid": dataTestId,
   componentName,
 }) => {
-  // Calculate position based on grid or responsive config
   const calculatedPosition = useMemo(() => {
     const screenSize = defaultLayoutSystem.getScreenSize(
       containerWidth,
@@ -183,7 +182,6 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
     let y = 0;
     let width = elementWidth;
 
-    // Development-mode validation: warn if alignment props are used without dimensions
     if (process.env.NODE_ENV === 'development') {
       const prefix = componentName
         ? `ResponsiveContainer [${componentName}]`
@@ -202,7 +200,6 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
       }
     }
 
-    // Calculate based on grid
     if (grid) {
       const gridPos = defaultLayoutSystem.calculateGridPosition(
         grid.column,
@@ -212,20 +209,14 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
       );
       x = gridPos.x;
       width = gridPos.width;
-      // Use DEFAULT_ROW_HEIGHT for vertical grid positioning
       y = grid.row ? grid.row * DEFAULT_ROW_HEIGHT : 0;
     }
-    // Calculate based on responsive position
     else if (position) {
       const pos = defaultLayoutSystem.calculateResponsivePosition(position, screenSize);
       x = pos.x;
       y = pos.y;
     }
 
-    // Apply horizontal alignment if specified
-    // Note: When both grid and horizontalAlign are specified, alignment overrides
-    // the grid x position, but maintains grid-based width. This allows
-    // grid-sized elements with custom horizontal positioning.
     if (horizontalAlign && elementWidth) {
       x = defaultLayoutSystem.alignHorizontal(
         elementWidth,
@@ -235,9 +226,6 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
       );
     }
 
-    // Apply vertical alignment if specified
-    // Note: When both grid and verticalAlign are specified, alignment overrides
-    // the grid y position. This allows custom vertical positioning with grid columns.
     if (verticalAlign && containerHeight && elementHeight) {
       y = defaultLayoutSystem.alignVertical(
         elementHeight,
@@ -247,7 +235,6 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
       );
     }
 
-    // Apply safe area if needed
     if (useSafeArea && safeAreaEdge) {
       const safePos = defaultLayoutSystem.calculateSafePosition({ x, y }, safeAreaEdge);
       x = safePos.x;
@@ -270,7 +257,6 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
     componentName,
   ]);
 
-  // Combine calculated position with provided styles
   const containerStyle: React.CSSProperties = useMemo(
     () => ({
       position: "absolute",

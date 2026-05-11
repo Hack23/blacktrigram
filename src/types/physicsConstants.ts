@@ -43,7 +43,6 @@
  * );
  * ```
  *
- * @public
  * @category Combat Constants
  * @korean 기본체력재생속도
  */
@@ -70,7 +69,6 @@ export const BASE_STAMINA_REGEN_RATE = 15.0 as const;
  * const velocityChange = effectiveAcceleration * deltaTime;
  * ```
  *
- * @public
  * @category Physics Constants
  * @korean 기본이동가속도
  */
@@ -98,7 +96,6 @@ export const BASE_MOVEMENT_ACCELERATION = 30.0 as const;
  * const scale = actualPixelsPerMeter / REFERENCE_PIXELS_PER_METER;
  * ```
  *
- * @public
  * @category Coordinate Constants
  * @korean 참조픽셀미터비율
  */
@@ -115,7 +112,6 @@ export const REFERENCE_PIXELS_PER_METER = 100 as const;
  * `METERS_TO_PIXELS_SCALE` from `blacktrigram/types` and will be removed in a
  * future major release.
  *
- * @public
  * @category Coordinate Constants
  * @korean 미터-픽셀변환 (구형)
  */
@@ -139,7 +135,6 @@ export const METERS_TO_PIXELS_SCALE = REFERENCE_PIXELS_PER_METER;
  * const reachInUnits = reachInMeters * METERS_TO_TRAINING_UNITS;
  * ```
  *
- * @public
  * @category Coordinate Constants
  * @korean 미터훈련비율
  */
@@ -174,7 +169,6 @@ export const METERS_TO_TRAINING_UNITS = 1.0 as const;
  * const effectiveDistance = centerToCenter - radius;
  * ```
  *
- * @public
  * @category Physics Constants
  * @korean 기본몸체반경
  */
@@ -190,7 +184,6 @@ export const DEFAULT_BODY_RADIUS_METERS = 0.23 as const;
  * importing `BODY_RADIUS_METERS` from `blacktrigram/types` and will be removed
  * in a future major release.
  *
- * @public
  * @category Physics Constants
  * @korean 몸체반경별칭
  */
@@ -199,7 +192,6 @@ export const BODY_RADIUS_METERS = DEFAULT_BODY_RADIUS_METERS;
 /**
  * Standard arena sizes in meters (4:3 aspect ratio).
  *
- * @public
  */
 export const ARENA_SIZE_METERS = {
   /** Small screens (< 768px): 6m × 4.5m */
@@ -222,7 +214,6 @@ export const ARENA_SIZE_METERS = {
  * These values define combat distance thresholds for AI decision-making
  * and hit detection. Use these instead of pixel-based COMBAT_RANGES.
  *
- * @public
  */
 export const COMBAT_RANGES_METERS = {
   /** Melee range: very close, grappling distance (0.5m) */
@@ -242,7 +233,6 @@ export const COMBAT_RANGES_METERS = {
  *
  * **Korean**: AI이동상수미터 (AI Movement Constants in Meters)
  *
- * @public
  */
 export const AI_MOVEMENT_METERS = {
   /** Step size for AI movement (0.5m per step) */
@@ -267,7 +257,6 @@ export const AI_MOVEMENT_METERS = {
  * Use these ratios with arena dimensions to calculate starting positions:
  * - playerStartX = arenaX + (arenaWidth * PLAYER_START_POSITIONS.PLAYER1_X)
  *
- * @public
  */
 export const PLAYER_START_POSITIONS = {
   /** Player 1 starts at 25% from left edge */
@@ -283,7 +272,6 @@ export const PLAYER_START_POSITIONS = {
  *
  * **Korean**: AI성격최적범위미터 (AI Personality Optimal Ranges in Meters)
  *
- * @public
  */
 export const AI_OPTIMAL_RANGE_METERS = {
   /** Musa - Traditional warrior: close quarters */

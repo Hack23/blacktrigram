@@ -15,12 +15,9 @@ export const VictoryAnimation3D: React.FC = () => {
   const ringsRef = useRef<THREE.Group>(null);
   const symbolsRef = useRef<THREE.Group>(null);
 
-  // Reusable objects for animation calculations to avoid per-frame allocations
-  // These are reused across all animation frames for scale and position updates
   const [reusableScale] = useState(() => new THREE.Vector3());
   const [reusablePosition] = useState(() => new THREE.Vector3());
 
-  // Create victory particles - use useState with lazy initializer
   const [particlePositions] = useState(() => {
     const count = 200; // Increased from 150 for more dramatic effect
     const positions = new Float32Array(count * 3);
@@ -39,7 +36,6 @@ export const VictoryAnimation3D: React.FC = () => {
     return positions;
   });
 
-  // Create secondary particle layer for depth
   const [secondaryParticles] = useState(() => {
     const count = 50;
     const positions = new Float32Array(count * 3);
@@ -57,50 +53,40 @@ export const VictoryAnimation3D: React.FC = () => {
     return positions;
   });
 
-  // Animate victory effects - optimized for 60fps
   useFrame((state) => {
     const time = state.clock.elapsedTime;
 
-    // Rotate entire group
     if (groupRef.current) {
       groupRef.current.rotation.y = time * 0.3;
     }
 
-    // Pulse particles with wave effect - use reusable objects
     if (particlesRef.current) {
       const scale = 1 + Math.sin(time * 2) * 0.2;
       reusableScale.setScalar(scale);
       particlesRef.current.scale.copy(reusableScale);
       
-      // Rising motion
       reusablePosition.set(0, Math.sin(time * 0.8) * 0.5, 0);
       particlesRef.current.position.copy(reusablePosition);
     }
 
-    // Rotate rings at different speeds
     if (ringsRef.current) {
       ringsRef.current.rotation.x = time * 0.5;
       ringsRef.current.rotation.z = time * 0.3;
     }
 
-    // Rotate Korean symbols
     if (symbolsRef.current) {
       symbolsRef.current.rotation.y = -time * 0.4;
       symbolsRef.current.rotation.x = Math.sin(time * 0.5) * 0.1;
     }
   });
 
-  // Cleanup Three.js resources on unmount
   useEffect(() => {
-    // Capture ref values at effect setup time to avoid stale references in cleanup
     const group = groupRef.current;
     const particles = particlesRef.current;
     const rings = ringsRef.current;
     const symbols = symbolsRef.current;
 
     return () => {
-      // Dispose geometries and materials to prevent memory leaks
-      // Clean up specific refs (these are children of groupRef but we handle them explicitly)
       if (particles) {
         particles.geometry?.dispose();
         if (particles.material) {
@@ -127,11 +113,8 @@ export const VictoryAnimation3D: React.FC = () => {
           }
         });
       }
-      // Additionally iterate groupRef.current.children to dispose any meshes/points without explicit refs
-      // (e.g., secondary particles, central glow sphere, outer glow sphere, inner glow layer)
       if (group?.children && Array.isArray(group.children)) {
         group.children.forEach((child) => {
-          // Skip objects that are already handled via specific refs
           if (
             child === particles ||
             child === rings ||

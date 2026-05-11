@@ -34,10 +34,8 @@ export const BreathingIndicator: React.FC<BreathingIndicatorProps> = ({
   player,
   isMobile = false,
 }) => {
-  // Use state to trigger re-renders for timer updates
   const [currentTime, setCurrentTime] = useState(() => Date.now());
 
-  // Update current time every 100ms to keep the timer accurate
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(Date.now());
@@ -46,7 +44,6 @@ export const BreathingIndicator: React.FC<BreathingIndicatorProps> = ({
     return () => clearInterval(interval);
   }, []);
 
-  // Get current breathing disruption state
   const breathingState = useMemo(() => {
     const level = BreathingDisruptionSystem.getCurrentLevel(player);
     const activeEffect = BreathingDisruptionSystem.getActiveEffect(player);
@@ -58,17 +55,14 @@ export const BreathingIndicator: React.FC<BreathingIndicatorProps> = ({
     return createBreathingIndicator(level, timeRemaining, isRecovering);
   }, [player, currentTime]);
 
-  // Don't render if no breathing disruption
   if (!breathingState.visible) {
     return null;
   }
 
-  // Responsive sizing
   const iconSize = isMobile ? 24 : 32;
   const fontSize = isMobile ? 10 : 12;
   const padding = isMobile ? "4px 8px" : "6px 12px";
 
-  // Format time remaining
   const secondsRemaining = Math.ceil(breathingState.timeRemaining / 1000);
 
   return (

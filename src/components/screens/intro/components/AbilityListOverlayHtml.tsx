@@ -57,27 +57,20 @@ export interface AbilityListProps {
  */
 export const AbilityList: React.FC<AbilityListProps> = React.memo(
   ({ abilities, maxAbilities = 3, color = KOREAN_COLORS.ACCENT_GOLD, isMobile = false }) => {
-    // Use Korean theme hook for consistent styling
     const { koreanTypography, calculateResponsiveSize, fontFamily } = useKoreanTheme({
       size: "small",
       isMobile,
     });
 
-    // Normalize abilities to consistent format
     const normalizedAbilities = useMemo(() => {
       return abilities.slice(0, maxAbilities).map((ability, index) => {
         if (typeof ability === "string") {
-          // TEMPORARY: This fallback violates PRIO 2 bilingual support guidelines.
-          // All abilities should use the object format with Korean/English fields.
-          // See: src/systems/types.ts PLAYER_ARCHETYPES_DATA for correct format.
-          // Replace with proper bilingual objects as soon as translations are available.
           return {
             id: `ability-${index}`,
             english: ability,
             korean: ability, // TEMPORARY: English used as Korean fallback
           };
         } else {
-          // Object format with Korean/English
           return {
             id: `ability-${index}`,
             english: ability.english,
@@ -88,7 +81,6 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
       });
     }, [abilities, maxAbilities]);
 
-    // Memoize color calculations with Korean theme
     const colors = useMemo(
       () => ({
         abilityBorder: hexToRgbaString(color, 0.5),
@@ -102,7 +94,6 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
       [color]
     );
 
-    // Responsive sizing using Korean theme utilities
     const fontSize = calculateResponsiveSize(isMobile ? 10 : 12);
     const descFontSize = calculateResponsiveSize(isMobile ? 8 : 10);
     const padding = isMobile ? `${calculateResponsiveSize(6)}px ${calculateResponsiveSize(10)}px` : `${calculateResponsiveSize(8)}px ${calculateResponsiveSize(12)}px`;
@@ -128,7 +119,6 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
             fontWeight: "bold",
             fontFamily: fontFamily.KOREAN,
             color: colors.abilityText,
-            // Apply Korean typography optimization
             lineHeight: koreanTypography.lineHeight,
             letterSpacing: koreanTypography.letterSpacing,
           }}
@@ -166,7 +156,6 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
                   fontWeight: "bold",
                   fontFamily: fontFamily.KOREAN,
                   color: colors.abilityText,
-                  // Apply Korean typography optimization
                   lineHeight: koreanTypography.lineHeight,
                   letterSpacing: koreanTypography.letterSpacing,
                   wordBreak: koreanTypography.wordBreak,
@@ -184,7 +173,6 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
                     fontStyle: "italic",
                     fontFamily: fontFamily.KOREAN,
                     color: colors.descriptionText,
-                    // Apply Korean typography optimization
                     lineHeight: koreanTypography.lineHeight,
                     letterSpacing: koreanTypography.letterSpacing,
                     wordBreak: koreanTypography.wordBreak,

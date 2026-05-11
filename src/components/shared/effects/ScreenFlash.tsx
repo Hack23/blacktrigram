@@ -66,11 +66,9 @@ export const ScreenFlash: React.FC<ScreenFlashProps> = ({
       return;
     }
 
-    // Start flash at full intensity
     setOpacity(config.intensity);
     setIsAnimating(true);
 
-    // Fade out over duration
     const startTime = Date.now();
     const fadeInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -86,7 +84,6 @@ export const ScreenFlash: React.FC<ScreenFlashProps> = ({
         return;
       }
 
-      // Apply fade curve
       let fadeProgress: number;
       switch (config.fadeCurve) {
         case "ease-out":
@@ -99,7 +96,6 @@ export const ScreenFlash: React.FC<ScreenFlashProps> = ({
               : 1 - Math.pow(-2 * progress + 2, 2) / 2;
           break;
         default:
-          // linear
           fadeProgress = progress;
       }
 
@@ -113,7 +109,6 @@ export const ScreenFlash: React.FC<ScreenFlashProps> = ({
     return null;
   }
 
-  // Convert hex color to RGB
   const color = config.color ?? colors.ACCENT_GOLD;
   const r = (color >> 16) & 255;
   const g = (color >> 8) & 255;

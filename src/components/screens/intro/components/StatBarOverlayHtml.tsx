@@ -58,19 +58,16 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
     showValue = true,
     isMobile = false,
   }) => {
-    // Use Korean theme hook for consistent styling
     const { koreanTypography, colors: themeColors, calculateResponsiveSize } = useKoreanTheme({
       size: "small",
       isMobile,
     });
 
-    // Calculate percentage for bar width
     const percentage = useMemo(
       () => Math.min(100, Math.max(0, (value / max) * 100)),
       [value, max]
     );
 
-    // Memoize color calculations with Korean theme
     const statBarColors = useMemo(
       () => ({
         barBackground: hexToRgbaString(themeColors.UI_BACKGROUND_MEDIUM, 1),
@@ -82,7 +79,6 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
       [color, themeColors]
     );
 
-    // Responsive sizing using Korean theme utilities
     const fontSize = calculateResponsiveSize(isMobile ? 9 : 11);
     const labelWidth = calculateResponsiveSize(isMobile ? 70 : 80);
     const valueWidth = calculateResponsiveSize(isMobile ? 25 : 30);
@@ -109,7 +105,6 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            // Apply Korean typography optimization
             lineHeight: koreanTypography.lineHeight,
             letterSpacing: koreanTypography.letterSpacing,
             wordBreak: koreanTypography.wordBreak,

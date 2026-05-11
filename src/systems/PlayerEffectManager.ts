@@ -43,7 +43,6 @@ import { applyEffectStacking, MAX_CONCURRENT_EFFECTS } from "./EffectCalculator"
  * );
  * ```
  * 
- * @public
  * @korean 효과추가
  */
 export function addEffectsToPlayer(
@@ -52,14 +51,12 @@ export function addEffectsToPlayer(
 ): PlayerState {
   const currentTime = Date.now();
 
-  // Apply stacking logic
   const updatedEffects = applyEffectStacking(
     player.statusEffects,
     effects,
     currentTime
   );
 
-  // Update activeEffects array with effect IDs
   const activeEffectIds = updatedEffects.map((effect) => effect.id);
 
   return {
@@ -85,7 +82,6 @@ export function addEffectsToPlayer(
  * const updatedPlayer = removeExpiredEffects(player, Date.now());
  * ```
  * 
- * @public
  * @korean 만료효과제거
  */
 export function removeExpiredEffects(
@@ -119,7 +115,6 @@ export function removeExpiredEffects(
  * const updatedPlayer = removeEffectById(player, "stun_12345");
  * ```
  * 
- * @public
  * @korean 효과제거
  */
 export function removeEffectById(
@@ -156,7 +151,6 @@ export function removeEffectById(
  * );
  * ```
  * 
- * @public
  * @korean 유형별효과제거
  */
 export function removeEffectsByType(
@@ -191,7 +185,6 @@ export function removeEffectsByType(
  * const clearedPlayer = clearAllEffects(player);
  * ```
  * 
- * @public
  * @korean 전체효과제거
  */
 export function clearAllEffects(player: PlayerState): PlayerState {
@@ -219,7 +212,6 @@ export function clearAllEffects(player: PlayerState): PlayerState {
  * const effectiveSpeed = baseSpeed * modifiers.speed;
  * ```
  * 
- * @public
  * @korean 효과배율계산
  */
 export function getEffectModifiers(player: PlayerState): {
@@ -344,7 +336,6 @@ export function getEffectModifiers(player: PlayerState): {
  * }
  * ```
  * 
- * @public
  * @korean 효과확인
  */
 export function hasEffect(
@@ -363,7 +354,6 @@ export function hasEffect(
  * @param effectType - Type to retrieve
  * @returns Array of matching effects
  * 
- * @public
  * @korean 유형별효과조회
  */
 export function getEffectsByType(
@@ -381,7 +371,6 @@ export function getEffectsByType(
  * @param player - Current player state
  * @returns Number of active effects
  * 
- * @public
  * @korean 효과개수조회
  */
 export function getActiveEffectCount(player: PlayerState): number {
@@ -396,7 +385,6 @@ export function getActiveEffectCount(player: PlayerState): number {
  * @param player - Current player state
  * @returns True if under MAX_CONCURRENT_EFFECTS limit
  * 
- * @public
  * @korean 효과추가가능확인
  */
 export function canAddMoreEffects(player: PlayerState): boolean {

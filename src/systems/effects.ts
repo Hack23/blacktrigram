@@ -1,10 +1,12 @@
-// Import enums from enums.ts
+/**
+ * Combat effects and status system for Korean martial arts.
+ *
+ * @module systems/effects
+ * @category Combat Effects
+ * @korean 전투효과시스템
+ */
 
-// Combat effects and status system for Korean martial arts
-
-// Hit effect for visual feedback
-// Hit effect types
-
+/** Hit effect type discriminator for combat feedback */
 export enum HitEffectType {
   GENERAL_DAMAGE = "general_damage",
   CRITICAL_HIT = "critical_hit",
@@ -17,7 +19,7 @@ export enum HitEffectType {
   HIT = "hit",
 }
 
-// Effect types for status effects
+/** Additional hit effect variants for status effects */
 export enum HitEffectEnum {
   STUN = "stun",
   WEAKNESS = "weakness",
@@ -33,7 +35,7 @@ export enum HitEffectEnum {
   CONFUSION = "confusion",
 }
 
-// Effect intensity levels
+/** Effect intensity levels for status effects */
 export enum EffectIntensity {
   WEAK = "weak",
   MINOR = "minor",
@@ -46,8 +48,7 @@ export enum EffectIntensity {
   EXTREME = "extreme",
 }
 
-// Status effects that can be applied to players
-// Effect types
+/** Union type of all applicable status effect identifiers */
 export type EffectType =
   | "stun"
   | "poison"

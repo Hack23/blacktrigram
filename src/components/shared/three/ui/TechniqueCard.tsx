@@ -90,15 +90,11 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
-  // Calculate effective reach if player info is available
   const reachInfo = useMemo(() => {
     if (!playerArchetype || !playerStance || !technique.animation?.type) {
       return null;
     }
 
-    // Map TechniqueAnimationConfig.type to AnimationType
-    // For now, use a simple default mapping
-    // TODO: Create proper mapping from AttackAnimationType to AnimationType
     const animationType = AnimationType.JAB; // Default fallback
 
     const physicalAttributes = getArchetypePhysicalAttributes(playerArchetype);
@@ -108,7 +104,6 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
       playerStance
     );
 
-    // Determine body part from technique type using PhysicalReachCalculator
     const techniqueType = physicalReachCalculator.getTechniqueTypeFromAnimation(animationType);
     let bodyPart: string;
     
@@ -133,7 +128,6 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
     };
   }, [playerArchetype, playerStance, technique.animation]);
 
-  // Calculate card size based on device
   const cardSize = useMemo(
     () => ({
       width: isMobile ? 70 : 90,
@@ -144,28 +138,24 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
     [isMobile]
   );
 
-  // Format cooldown time
   const cooldownText = useMemo(() => {
     if (!remainingCooldown || remainingCooldown <= 0) return null;
     const seconds = Math.ceil(remainingCooldown / 1000);
     return `${seconds}s`;
   }, [remainingCooldown]);
 
-  // Card background color based on state
   const backgroundColor = useMemo(() => {
     if (!isAvailable) return hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.8);
     if (isSelected) return hexToRgbaString(KOREAN_COLORS.NEON_CYAN, 0.3);
     return hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.9);
   }, [isAvailable, isSelected]);
 
-  // Border color based on state
   const borderColor = useMemo(() => {
     if (!isAvailable) return hexColorToCSS(KOREAN_COLORS.UI_DISABLED_TEXT);
     if (isSelected) return hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN);
     return hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD);
   }, [isAvailable, isSelected]);
 
-  // Pre-computed hex color strings for styling
   const primaryCyanHex = useMemo(
     () => hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN),
     []
@@ -175,7 +165,6 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
     []
   );
 
-  // Border glow effect for selected card
   const boxShadow = useMemo(() => {
     if (isSelected && isAvailable) {
       return `0 0 15px ${hexToRgbaString(KOREAN_COLORS.NEON_CYAN, 0.8)}, 0 0 25px ${hexToRgbaString(KOREAN_COLORS.NEON_CYAN, 0.5)}`;
@@ -186,13 +175,11 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
     return `0 2px 8px ${hexToRgbaString(KOREAN_COLORS.BLACK, 0.5)}`;
   }, [isSelected, isAvailable]);
 
-  // Animation class based on availability state
   const animationClass = useMemo(
     () => (isAvailable ? "hud-animated" : ""),
     [isAvailable]
   );
 
-  // Touch handler for mobile - provides immediate response without 300ms delay
   const handleTouch = useCallback(
     (e: React.TouchEvent) => {
       if (!isAvailable) return;

@@ -37,16 +37,13 @@ export interface InteractiveTrigramGridProps {
  * />
  * ```
  * 
- * @public
  * @category Philosophy Components
  */
 export const InteractiveTrigramGrid: React.FC<
   InteractiveTrigramGridProps
 > = ({ selectedTrigram, onTrigramSelect, isMobile = false }) => {
-  // Use canonical trigram ordering from shared constants
   const trigrams = TRIGRAM_STANCES_ORDER;
 
-  // Grid configuration based on device
   const columns = isMobile ? 2 : 4;
 
   return (

@@ -73,7 +73,6 @@ function getSpeedColor(speedPercent: number): string {
     colorValue = KOREAN_COLORS.ACCENT_RED;
   }
 
-  // Convert number to properly formatted hex string with # prefix
   return `#${colorValue.toString(16).padStart(6, "0")}`;
 }
 
@@ -114,7 +113,6 @@ function getSpeedLabel(speedPercent: number): {
  * />
  * ```
  *
- * @public
  * @korean 속도표시기
  */
 export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
@@ -125,7 +123,6 @@ export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
   visible = true,
 }) => {
   const speedData = useMemo(() => {
-    // Calculate speed as percentage of base
     const speedPercent = baseSpeed > 0 ? (finalSpeed / baseSpeed) * 100 : 100;
     const color = getSpeedColor(speedPercent);
     const label = getSpeedLabel(speedPercent);

@@ -65,24 +65,18 @@ export const ConsciousnessBlur: React.FC<ConsciousnessBlurProps> = ({
   intensityScale = 1,
 }) => {
   const blurStyle = useMemo(() => {
-    // Clamp consciousness to 0-100 range
     const clampedConsciousness = Math.max(0, Math.min(100, consciousness));
 
-    // Caller-provided attenuation (e.g. 0.5 on portrait mobile).
     const safeScale = Math.max(0, Math.min(1, intensityScale));
 
-    // Calculate blur amount (inverse of consciousness)
-    // 100 consciousness = 0px blur, 0 consciousness = 12px blur (8px on mobile)
     const maxBlur = (isMobile ? 8 : 12) * safeScale;
     const blurAmount = Math.round(
       ((100 - clampedConsciousness) / 100) * maxBlur
     );
 
-    // Also add slight opacity darkening for dramatic effect
     const opacity =
       Math.pow((100 - clampedConsciousness) / 100, 2) * 0.3 * safeScale;
 
-    // Don't apply blur if consciousness is high (> 90)
     if (clampedConsciousness > 90) {
       return null;
     }
@@ -100,12 +94,10 @@ export const ConsciousnessBlur: React.FC<ConsciousnessBlurProps> = ({
     };
   }, [consciousness, isMobile, intensityScale]);
 
-  // Don't render if consciousness is very high
   if (consciousness > 90 || !blurStyle) {
     return null;
   }
 
-  // Decorative visual overlay; aria-hidden with no live region or additional ARIA roles needed
   return (
     <div
       data-testid="consciousness-blur"

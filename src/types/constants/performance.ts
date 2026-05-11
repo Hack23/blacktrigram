@@ -105,36 +105,28 @@ export const PERFORMANCE_SETTINGS_BY_TIER: Record<PerformanceTier, PerformanceSe
  * getPerformanceTier(1920, false); // 'high' (desktop)
  * ```
  * 
- * @public
  * @korean 성능등급결정
  */
 export function getPerformanceTier(
   screenWidth: number,
   isMobile: boolean
 ): PerformanceTier {
-  // Mobile device tiers (user-agent detection takes priority)
   if (isMobile) {
-    // Extra-small mobile devices (<380px) are always low tier
     if (screenWidth < 380) {
       return 'low';
     }
-    
-    // High-resolution mobile devices (≥768px, 2K+ displays like Motorola Edge 60 Pro)
-    // Get optimized settings for Super HD mobile displays
+
     if (screenWidth >= 768) {
       return 'mobile-high';
     }
-    
-    // Standard mobile devices (380-768px)
+
     return 'medium';
   }
-  
-  // Non-mobile devices (tablets and desktop)
+
   if (screenWidth < 1024) {
-    return 'medium'; // Tablet tier
+    return 'medium';
   }
-  
-  // Desktop and large displays are high tier
+
   return 'high';
 }
 
@@ -171,7 +163,6 @@ export function getPerformanceTier(
  * />
  * ```
  * 
- * @public
  * @korean 성능설정얻기
  */
 export function getPerformanceSettings(

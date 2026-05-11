@@ -186,7 +186,6 @@ export interface CombatActions {
 export function useCombatState() {
   const [state, dispatch] = useReducer(combatReducer, initialState);
 
-  // Memoized action creators to prevent recreation on every render
   const actions: CombatActions = {
     setHitEffects: useCallback(
       (effects: HitEffect[]) => dispatch({ type: "SET_HIT_EFFECTS", payload: effects }),

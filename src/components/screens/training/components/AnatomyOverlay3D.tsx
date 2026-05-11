@@ -10,25 +10,12 @@ import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
-// Visual effect constants for bloom optimization
-// Note: Emissive intensity values are balanced for visual clarity and performance.
-// When applied to many simultaneous overlays/markers, emissive intensities above ~2.0 can
-// increase rendering cost and bloom pass overhead. VitalPointMarker3D intentionally uses
-// higher emissive values (up to ~3.5) for a small number of selected markers, which is
-// acceptable because the total marker count is low. For dense anatomy overlays, prefer
-// keeping emissive intensities at or below ~2.0 and consider implementing LOD or
-// distance-based emissive scaling if brighter values or higher object counts are needed.
-// See VitalPointMarker3D for a concrete example: it exposes a configurable
-// `maxEmissiveIntensity` prop that caps per-marker glow. Use higher caps there for a
-// small number of critical vital point markers, while keeping dense overlay layers like
-// those in AnatomyOverlay3D within the ~2.0 guideline to maintain 60fps performance.
 const SKELETON_EMISSIVE_INTENSITY = 1.0; // Enhanced glow for skeletal structure
 const NERVE_EMISSIVE_INTENSITY = 1.5; // Balanced for bloom without performance impact
 const VASCULAR_EMISSIVE_INTENSITY = 2.0; // Moderate intensity for blood vessels
 const VASCULAR_PULSE_BASE = 1.0; // Base intensity for vascular pulse animation
 const VASCULAR_PULSE_AMPLITUDE = 0.5; // Pulse variation amplitude (max 1.5 total)
 
-// Transmission constants for glass-like anatomy layers
 const SKELETON_MAJOR_TRANSMISSION = 0.1; // Reduced transmission for more solid bone appearance (was 0.3)
 const SKELETON_MAJOR_THICKNESS = 0.5; // Increased thickness for realistic bone structure (was 0.3)
 const SKELETON_LIMB_TRANSMISSION = 0.05; // Reduced transmission for limbs (was 0.2)
@@ -62,25 +49,19 @@ export interface AnatomyOverlay3DProps {
 const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Memoize skull geometry to prevent recreating on every render
-  // 두개골 기하학 메모화 | Skull geometry memoization
   const skullGeometry = useMemo(() => new THREE.SphereGeometry(0.25, 16, 16), []);
 
-  // 자원 정리 | Resource cleanup - Dispose skull geometry on unmount
   useEffect(() => {
     return () => {
       skullGeometry.dispose();
     };
   }, [skullGeometry]);
 
-  // Pulsing emissive animation for skeleton layer
   useFrame((state) => {
     if (!groupRef.current) return;
 
-    // Enhanced pulse for better visibility (amplitude increased from 0.2 to 0.4)
     const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.4 + 0.6;
 
-    // Rebuild mesh cache each frame to ensure all meshes are captured
     const meshes: THREE.Mesh[] = [];
     groupRef.current.traverse((child) => {
       if (
@@ -91,7 +72,6 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       }
     });
 
-    // Update all meshes with pulsing emissive
     meshes.forEach((mesh) => {
       if (mesh.material instanceof THREE.MeshPhysicalMaterial) {
         mesh.material.emissiveIntensity = pulse;
@@ -115,7 +95,6 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          // Bone surface detail
           ior={1.55} // Index of refraction for bone
           sheen={0.1} // Slight sheen for bone surface
           sheenRoughness={0.9}
@@ -147,7 +126,6 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             metalness={0} // Bone is non-metallic
             emissive={KOREAN_COLORS.PRIMARY_CYAN}
             emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-            // Bone surface detail
             ior={1.55} // Index of refraction for bone
             sheen={0.1} // Slight sheen for bone surface
             sheenRoughness={0.9}
@@ -169,7 +147,6 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          // Bone surface detail
           ior={1.55} // Index of refraction for bone
           sheen={0.1} // Slight sheen for bone surface
           sheenRoughness={0.9}
@@ -189,7 +166,6 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          // Bone surface detail
           ior={1.55} // Index of refraction for bone
           sheen={0.1} // Slight sheen for bone surface
           sheenRoughness={0.9}
@@ -209,7 +185,6 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          // Bone surface detail
           ior={1.55} // Index of refraction for bone
           sheen={0.1} // Slight sheen for bone surface
           sheenRoughness={0.9}
@@ -229,7 +204,6 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          // Bone surface detail
           ior={1.55} // Index of refraction for bone
           sheen={0.1} // Slight sheen for bone surface
           sheenRoughness={0.9}
@@ -247,7 +221,6 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          // Bone surface detail
           ior={1.55} // Index of refraction for bone
           sheen={0.1} // Slight sheen for bone surface
           sheenRoughness={0.9}
@@ -264,14 +237,12 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Pulsing animation for nerve pathways
   useFrame((state) => {
     if (!groupRef.current) return;
 
     const pulse = Math.sin(state.clock.elapsedTime * 3) * 0.5 + 0.5;
     const targetIntensity = 1.0 + pulse * 0.5;
 
-    // Rebuild mesh cache each frame to ensure all meshes are captured
     const meshes: THREE.Mesh[] = [];
     groupRef.current.traverse((child) => {
       if (
@@ -282,7 +253,6 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       }
     });
 
-    // Update all meshes with pulsing emissive
     meshes.forEach((mesh) => {
       if (mesh.material instanceof THREE.MeshPhysicalMaterial) {
         mesh.material.emissiveIntensity = targetIntensity;
@@ -377,14 +347,12 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Pulsing animation simulating blood flow
   useFrame((state) => {
     if (!groupRef.current) return;
 
     const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.5 + 0.5;
     const targetIntensity = VASCULAR_PULSE_BASE + pulse * VASCULAR_PULSE_AMPLITUDE;
 
-    // Rebuild mesh cache each frame to ensure all meshes are captured
     const meshes: THREE.Mesh[] = [];
     groupRef.current.traverse((child) => {
       if (
@@ -395,7 +363,6 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       }
     });
 
-    // Update all meshes with pulsing emissive
     meshes.forEach((mesh) => {
       if (mesh.material instanceof THREE.MeshPhysicalMaterial) {
         mesh.material.emissiveIntensity = targetIntensity;
@@ -574,7 +541,6 @@ export const AnatomyOverlay3D: React.FC<AnatomyOverlay3DProps> = ({
   visibleLayers,
   opacity = 0.7,
 }) => {
-  // Memoize layer visibility checks
   const showSkeleton = useMemo(
     () => visibleLayers.includes("skeleton"),
     [visibleLayers]

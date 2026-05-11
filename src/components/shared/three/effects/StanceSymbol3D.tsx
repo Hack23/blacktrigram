@@ -77,21 +77,17 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
 }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Get stance properties
   const symbol = useMemo(() => getTrigramSymbol(stance), [stance]);
   const koreanName = useMemo(() => getStanceKoreanName(stance), [stance]);
   const colorHex = useMemo(() => getStanceColorHex(stance), [stance]);
 
-  // Animation loop - rotation and pulse
   useFrame((state) => {
     if (!animated || !groupRef.current) return;
 
     const time = state.clock.elapsedTime;
 
-    // Rotate symbol slowly
     groupRef.current.rotation.y = time * ANIMATION_CONSTANTS.ROTATION_SPEED;
 
-    // Gentle vertical bob - oscillate around heightOffset
     groupRef.current.position.y =
       heightOffset +
       Math.sin(time * ANIMATION_CONSTANTS.BOB_FREQUENCY) *

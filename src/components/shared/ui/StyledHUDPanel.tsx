@@ -73,7 +73,6 @@ export const StyledHUDPanel: React.FC<StyledHUDPanelProps> = ({
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
-  // Base styles from design system
   const baseStyles: React.CSSProperties = {
     background: HUD_STYLE.background,
     border: variant === 'accent' ? BORDERS.accent : BORDERS.default,
@@ -87,7 +86,6 @@ export const StyledHUDPanel: React.FC<StyledHUDPanelProps> = ({
     ...style,
   };
 
-  // Hover handlers
   const handleMouseEnter = () => {
     if (hover) {
       setIsHovered(true);

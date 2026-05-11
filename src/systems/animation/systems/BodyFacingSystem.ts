@@ -82,7 +82,6 @@ export const HEAD_TRACKING_SMOOTHING = 0.1;
  * normalizeAngle(-30); // Returns 330
  * ```
  *
- * @public
  * @korean 각도정규화
  */
 export function normalizeAngle(angle: number): number {
@@ -111,7 +110,6 @@ export function normalizeAngle(angle: number): number {
  * calculateAngleDifference(0, 180); // Returns 180
  * ```
  *
- * @public
  * @korean 각도차이계산
  */
 export function calculateAngleDifference(from: number, to: number): number {
@@ -148,7 +146,6 @@ export function calculateAngleDifference(from: number, to: number): number {
  * calculateAngleToTarget({ x: 0, y: 0 }, { x: 0, y: 1 }); // Returns 90° (down)
  * ```
  *
- * @public
  * @korean 목표각도계산
  */
 export function calculateAngleToTarget(from: Position, to: Position): number {
@@ -183,7 +180,6 @@ function lerp(start: number, end: number, t: number): number {
  * @param initialAngle - Initial facing angle in degrees (default: 0)
  * @returns Default BodyFacing state
  *
- * @public
  * @korean 기본몸향하기생성
  */
 export function createDefaultBodyFacing(initialAngle = 0): BodyFacing {
@@ -223,7 +219,6 @@ export function createDefaultBodyFacing(initialAngle = 0): BodyFacing {
  * // Rotates ~0.72° toward 90° (45°/sec * 0.016s)
  * ```
  *
- * @public
  * @korean 몸향하기업데이트
  */
 export function updateBodyFacing(
@@ -333,7 +328,6 @@ export function updateBodyFacing(
  * // Faces toward opponent (pointing right in this case)
  * ```
  *
- * @public
  * @korean 상대방향하기업데이트
  */
 export function updateFacingTowardOpponent(
@@ -356,7 +350,6 @@ export function updateFacingTowardOpponent(
  * @param facing - Current body facing state
  * @returns Updated body facing state with lock enabled
  *
- * @public
  * @korean 회전잠금
  */
 export function lockFacing(facing: BodyFacing): BodyFacing {
@@ -374,7 +367,6 @@ export function lockFacing(facing: BodyFacing): BodyFacing {
  * @param facing - Current body facing state
  * @returns Updated body facing state with lock disabled
  *
- * @public
  * @korean 회전잠금해제
  */
 export function unlockFacing(facing: BodyFacing): BodyFacing {
@@ -390,7 +382,6 @@ export function unlockFacing(facing: BodyFacing): BodyFacing {
  * @param facing - Current body facing state
  * @returns True if 180° turn animation is in progress
  *
- * @public
  * @korean 회전중확인
  */
 export function isTurning(facing: BodyFacing): boolean {
@@ -404,7 +395,6 @@ export function isTurning(facing: BodyFacing): boolean {
  * @param facing - Current body facing state
  * @returns Current facing angle in radians
  *
- * @public
  * @korean 라디안각도
  */
 export function getFacingAngleRadians(facing: BodyFacing): number {
@@ -418,7 +408,6 @@ export function getFacingAngleRadians(facing: BodyFacing): number {
  * @param facing - Current body facing state
  * @returns Head rotation angle in radians
  *
- * @public
  * @korean 머리각도라디안
  */
 export function getHeadAngleRadians(facing: BodyFacing): number {
@@ -433,7 +422,6 @@ export function getHeadAngleRadians(facing: BodyFacing): number {
  * @param facing - Current body facing state
  * @returns Torso rotation in radians (defaults to 0 if not set)
  *
- * @public
  * @korean 허리회전라디안
  */
 export function getTorsoRotationRadians(facing: BodyFacing): number {
@@ -447,7 +435,6 @@ export function getTorsoRotationRadians(facing: BodyFacing): number {
  * @param facing - Current body facing state
  * @returns Hip rotation in radians
  *
- * @public
  * @korean 골반회전라디안
  */
 export function getHipRotationRadians(facing: BodyFacing): number {
@@ -459,7 +446,6 @@ export function getHipRotationRadians(facing: BodyFacing): number {
  *
  * Provides centralized system for body facing calculations and updates.
  *
- * @public
  * @korean 몸향하기시스템
  */
 export class BodyFacingSystem {
@@ -469,7 +455,6 @@ export class BodyFacingSystem {
    * @param initialAngle - Initial facing angle in degrees
    * @returns Default body facing state
    *
-   * @public
    * @korean 기본상태생성
    */
   createDefaultState(initialAngle = 0): BodyFacing {
@@ -486,7 +471,6 @@ export class BodyFacingSystem {
    * @param currentTime - Current timestamp
    * @returns Updated body facing state
    *
-   * @public
    * @korean 업데이트
    */
   update(
@@ -511,7 +495,6 @@ export class BodyFacingSystem {
    * @param facing - Current body facing state
    * @returns Updated state with lock
    *
-   * @public
    * @korean 잠금
    */
   lock(facing: BodyFacing): BodyFacing {
@@ -524,7 +507,6 @@ export class BodyFacingSystem {
    * @param facing - Current body facing state
    * @returns Updated state without lock
    *
-   * @public
    * @korean 잠금해제
    */
   unlock(facing: BodyFacing): BodyFacing {
@@ -535,7 +517,6 @@ export class BodyFacingSystem {
 /**
  * Default body facing system instance
  *
- * @public
  * @korean 기본몸향하기시스템
  */
 export const bodyFacingSystem = new BodyFacingSystem();

@@ -33,12 +33,9 @@ function generateParticlePositions(
 ): Float32Array {
   const pos = new Float32Array(count * 3);
 
-  // Use a simple pseudo-random pattern based on index
-  // This creates deterministic but varied positions
   for (let i = 0; i < count; i++) {
     const t = i / count; // Normalized index [0, 1]
 
-    // Create pseudo-random offsets using trigonometric functions
     const offsetX = Math.sin(t * 123.456) * Math.cos(t * 789.012);
     const offsetY = Math.sin(t * 234.567) * Math.cos(t * 890.123);
     const offsetZ = Math.sin(t * 345.678) * Math.cos(t * 901.234);
@@ -67,12 +64,10 @@ export const AtmosphericParticles3D: React.FC<
   const particlesRef = useRef<THREE.Points>(null);
   const [geometry] = useState(() => new THREE.BufferGeometry());
 
-  // Scale-aware spread dimensions
   const spreadX = 40 * scale;
   const spreadY = 20;
   const spreadZ = 40 * scale;
 
-  // Initialize particle positions once on mount
   useEffect(() => {
     const positions = generateParticlePositions(
       count,
@@ -81,20 +76,13 @@ export const AtmosphericParticles3D: React.FC<
       spreadZ
     );
     
-    // Note: BufferAttribute doesn't have a dispose method in Three.js
-    // The geometry cleanup on unmount will handle attribute cleanup
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
     return () => {
-      // Clean up geometry on unmount (this also cleans up attributes)
       geometry.dispose();
     };
   }, [count, spreadX, spreadY, spreadZ, geometry]);
 
-  // Animate particles (rain/mist effect)
-  // Performance note: Current implementation modifies geometry buffer every frame.
-  // This is acceptable for up to ~500 particles but may impact performance beyond 1000.
-  // For larger particle counts, consider using shader-based vertex displacement or instancing.
   useFrame((_state, delta) => {
     if (!particlesRef.current) return;
 

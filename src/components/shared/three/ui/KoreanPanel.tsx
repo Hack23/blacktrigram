@@ -16,7 +16,6 @@ import { BasePanel, type BasePanelProps } from "../../base";
  * Extends BasePanelProps for consistency
  */
 export interface KoreanPanelProps extends Omit<BasePanelProps, "isMobile"> {
-  // All props inherited from BasePanel
 }
 
 /**
@@ -33,8 +32,6 @@ export interface KoreanPanelProps extends Omit<BasePanelProps, "isMobile"> {
  * ```
  */
 export const KoreanPanel: React.FC<KoreanPanelProps> = ({ testId, ...rest }) => {
-  // Simply delegate to BasePanel - all logic is now centralized
-  // Default testId to "korean-panel" for backward compatibility
   return <BasePanel testId={testId ?? "korean-panel"} {...rest} />;
 };
 

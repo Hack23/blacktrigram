@@ -34,22 +34,17 @@ export interface ComboCounterProps {
  */
 function getComboColor(combo: number): string {
   if (combo >= 10) {
-    // Rainbow effect for high combos - use magenta
     return hexColorToCSS(KOREAN_COLORS.SECONDARY_MAGENTA);
   }
   if (combo >= 7) {
-    // Critical tier - red
     return hexColorToCSS(KOREAN_COLORS.ACCENT_RED);
   }
   if (combo >= 5) {
-    // High tier - gold
     return hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD);
   }
   if (combo >= 3) {
-    // Medium tier - cyan
     return hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN);
   }
-  // Low tier - white
   return hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY);
 }
 
@@ -112,7 +107,6 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
   isMobile = false,
   minDisplayCombo = 2,
 }) => {
-  // Animation state - all values that affect render must be in state
   const [scale, setScale] = useState(1);
   const [showMilestone, setShowMilestone] = useState(false);
   const [prevCombo, setPrevCombo] = useState(combo);
@@ -121,19 +115,14 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
   );
   const scaleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Calculate 3D position - center top of screen
   const position3D: [number, number, number] = useMemo(() => {
-    // Position at top center of scene
     return [0, 4.5, 0];
   }, []);
 
-  // Handle combo changes via useEffect - this is the proper React pattern
   useEffect(() => {
     if (combo > prevCombo) {
-      // Scale up on combo increment - defer to avoid cascading renders
       setTimeout(() => setScale(1.3), 0);
 
-      // Clear previous scale timeout
       if (scaleTimeoutRef.current) {
         clearTimeout(scaleTimeoutRef.current);
       }
@@ -141,7 +130,6 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
         setScale(1);
       }, 150);
 
-      // Check for milestone
       const milestone = getComboMilestone(combo);
       if (milestone) {
         setTimeout(() => setShowMilestone(true), 0);
@@ -153,11 +141,9 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
         }, 1500);
       }
     }
-    // Defer prevCombo update to avoid cascading renders
     setTimeout(() => setPrevCombo(combo), 0);
   }, [combo, prevCombo]);
 
-  // Cleanup
   useEffect(() => {
     return () => {
       if (milestoneTimeoutRef.current) {
@@ -169,7 +155,6 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
     };
   }, []);
 
-  // Don't render if combo is below minimum
   if (combo < minDisplayCombo) {
     return null;
   }
@@ -177,7 +162,6 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
   const milestone = getComboMilestone(combo);
   const comboColor = getComboColor(combo);
   const glowColor = getGlowColor(combo);
-  // Get background color with alpha for milestone box
   const getMilestoneBackground = (comboVal: number): string => {
     if (comboVal >= 10) {
       return hexToRgbaString(KOREAN_COLORS.SECONDARY_MAGENTA, 0.3);
@@ -194,7 +178,6 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
     return hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 0.3);
   };
 
-  // Font sizes
   const mainFontSize = isMobile ? 32 : 48;
   const subFontSize = isMobile ? 16 : 20;
   const milestoneFontSize = isMobile ? 20 : 28;

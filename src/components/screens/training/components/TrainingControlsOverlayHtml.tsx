@@ -79,11 +79,9 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
   const panelHeight = isCompact ? (isMobile ? 40 : 44) : isMobile ? 90 : 100;
   const padding = isCompact ? getResponsiveSpacing("xs", isMobile) : getResponsiveSpacing("sm", isMobile);
 
-  // Use Korean colors for border based on training state
   const stateColor = isTraining ? KOREAN_COLORS.ACCENT_GREEN : KOREAN_COLORS.ACCENT_RED;
   const borderColor = hexToRgbaString(stateColor, 0.9);
 
-  // Enhanced panel styles with neon glow
   const panelStyle: React.CSSProperties = {
     ...getEnhancedKoreanOverlayStyles({
       opacity: 0.88,
@@ -106,7 +104,6 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
     fontFamily: FONT_FAMILY.KOREAN,
   };
 
-  // Enhanced button styles (memoized, interaction states handled internally by getKoreanButtonWithGlow)
   const buttonStyles = React.useMemo(
     () =>
       getKoreanButtonWithGlow({
@@ -160,8 +157,6 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
         className={`training-button ${isTraining ? "training-button-stop" : "training-button-start"}`}
         style={{
           ...buttonStyles,
-          // Note: fontSize from buttonStyles is intentionally overridden with titleFontSize
-          // to maintain consistent sizing with the training header/title typography
           fontSize: `${titleFontSize}px`,
           height: isCompact ? "30px" : "35px",
           minWidth: isCompact ? "72px" : undefined,
@@ -201,11 +196,6 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
   );
   },
   (prevProps, nextProps) => {
-    // Re-render when training state, mobile state, variant, or callbacks change.
-    // variant must be compared so switching between "panel" and "compact"
-    // triggers a re-render and the layout updates accordingly.
-    // Including callback props here avoids stale-closure issues where the
-    // component would keep calling outdated handlers that reference old state.
     return (
       prevProps.isTraining === nextProps.isTraining &&
       prevProps.isMobile === nextProps.isMobile &&

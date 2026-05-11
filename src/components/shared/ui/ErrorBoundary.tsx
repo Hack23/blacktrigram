@@ -52,13 +52,10 @@ export class ErrorBoundary extends Component<Props, State> {
    * Full reload is used as a last resort if recovery fails.
    */
   private handleReset = () => {
-    // Mark as not recovered yet
     this.didRecover = false;
 
-    // Try to recover by resetting error state
     this.setState({ hasError: false, error: null });
 
-    // Give React a chance to re-render, then reload if recovery failed
     setTimeout(() => {
       if (!this.didRecover) {
         window.location.reload();
@@ -119,7 +116,6 @@ export class ErrorBoundary extends Component<Props, State> {
       );
     }
 
-    // Mark recovery as successful when rendering children
     this.didRecover = true;
     return this.props.children;
   }

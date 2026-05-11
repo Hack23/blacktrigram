@@ -91,7 +91,6 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
   bloodLoss = 0,
   isMobile,
 }) => {
-  // Calculate percentages
   const healthPercent = useMemo(
     () => Math.max(0, Math.min(100, (health / maxHealth) * 100)),
     [health, maxHealth]
@@ -109,7 +108,6 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
     [consciousness]
   );
 
-  // Responsive sizing
   const sizing = useMemo(
     () => ({
       width: isMobile ? "60px" : "80px",
@@ -121,14 +119,12 @@ export const PlayerStateIndicators: React.FC<PlayerStateIndicatorsProps> = ({
     [isMobile]
   );
 
-  // Health bar color based on percentage
   const healthColor = useMemo(() => {
     if (healthPercent > 50) return "#00ff00"; // Green
     if (healthPercent > 25) return "#ffff00"; // Yellow
     return "#ff0000"; // Red
   }, [healthPercent]);
 
-  // Balance state color
   const balanceColor = useMemo(() => getBalanceColor(balance), [balance]);
   const balanceTextKorean = useMemo(() => getBalanceText(balance), [balance]);
 

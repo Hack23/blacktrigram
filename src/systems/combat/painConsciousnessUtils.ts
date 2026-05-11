@@ -55,7 +55,6 @@ export interface PainConsciousnessStatus {
  * console.log(`Status: ${status.statusDescription.english}`);
  * ```
  * 
- * @public
  * @korean 상태확인
  */
 export function getPainConsciousnessStatus(
@@ -118,7 +117,6 @@ export function getPainConsciousnessStatus(
  * @param category - Vital point category if known
  * @returns True if result should cause head trauma
  * 
- * @public
  * @korean 두부외상확인
  */
 export function isHeadTraumaHit(
@@ -156,7 +154,6 @@ export function isHeadTraumaHit(
  * @param result - Combat result
  * @returns Vital point category if determinable
  * 
- * @public
  * @korean 급소분류추출
  */
 export function extractVitalPointCategory(result: CombatResult): VitalPointCategory | undefined {
@@ -210,7 +207,6 @@ export function extractVitalPointCategory(result: CombatResult): VitalPointCateg
  * console.log(`Recovery needed: ${recoveryTime}s`);
  * ```
  * 
- * @public
  * @korean 회복시간계산
  */
 export function getRecommendedRecoveryTime(
@@ -252,7 +248,6 @@ export function getRecommendedRecoveryTime(
  * @param shockEffect - Shock pain effect to check
  * @returns True if effect is still active
  * 
- * @public
  * @korean 충격통활성확인
  */
 export function isShockPainActive(shockEffect: ShockPainEffect): boolean {
@@ -266,7 +261,6 @@ export function isShockPainActive(shockEffect: ShockPainEffect): boolean {
  * @param shockEffect - Shock pain effect
  * @returns Remaining duration in milliseconds, or 0 if expired
  * 
- * @public
  * @korean 충격통잔여시간
  */
 export function getShockPainRemainingDuration(shockEffect: ShockPainEffect): number {
@@ -287,7 +281,6 @@ export function getShockPainRemainingDuration(shockEffect: ShockPainEffect): num
  * console.log(display.consciousness); // "Consciousness: 85/100"
  * ```
  * 
- * @public
  * @korean 표시형식
  */
 export function formatPainConsciousnessDisplay(player: PlayerState): {

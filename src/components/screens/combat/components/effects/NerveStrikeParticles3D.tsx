@@ -68,26 +68,21 @@ export interface NerveStrikeParticles3DProps {
  * 신경 타격 파티클 물리 상수
  */
 const NERVE_STRIKE_CONSTANTS = {
-  // Particle counts
   PARTICLES_DESKTOP: 80, // Electric arc particles (desktop)
   PARTICLES_MOBILE: 40, // Electric arc particles (mobile)
   
-  // Timing
   PULSE_DURATION: 0.1, // Rapid initial pulse (seconds)
   GLOW_DURATION: 1.0, // Lingering glow after pulse (seconds)
   TOTAL_LIFETIME: 1.1, // Total effect duration (seconds)
   
-  // Physics
   EXPANSION_SPEED: 3.0, // How fast electric arc spreads (m/s)
   MAX_RADIUS: 0.8, // Maximum arc radius (meters)
   
-  // Visual
   COLOR_BASE: 0x00d4ff, // Electric blue
   COLOR_PARALYSIS: 0xffff00, // Yellow for paralysis indicator
   PULSE_INTENSITY: 2.0, // Emissive intensity during pulse
   GLOW_INTENSITY: 0.5, // Emissive intensity during glow
   
-  // Maximum delta time to prevent physics instability
   MAX_DELTA: 1 / 30,
 } as const;
 
@@ -109,12 +104,10 @@ export const NerveStrikeParticles3D: React.FC<NerveStrikeParticles3DProps> = ({
   const groupRef = useRef<THREE.Group>(null);
   const effectInstancesRef = useRef<Map<string, EffectInstance>>(new Map());
   
-  // Determine particle count based on device
   const particleCount = isMobile 
     ? NERVE_STRIKE_CONSTANTS.PARTICLES_MOBILE 
     : NERVE_STRIKE_CONSTANTS.PARTICLES_DESKTOP;
   
-  // Track which effects need initialization
   useEffect(() => {
     if (!enabled) return;
     
@@ -130,7 +123,6 @@ export const NerveStrikeParticles3D: React.FC<NerveStrikeParticles3DProps> = ({
     });
   }, [effects, enabled, particleCount]);
   
-  // Animation loop
   useFrame((_state, delta) => {
     if (!enabled || !groupRef.current) return;
     
@@ -140,13 +132,11 @@ export const NerveStrikeParticles3D: React.FC<NerveStrikeParticles3DProps> = ({
     effectInstancesRef.current.forEach((instance, id) => {
       const elapsed = (currentTime - instance.startTime) / 1000; // Convert to seconds
       
-      // Check if effect is complete
       if (elapsed >= NERVE_STRIKE_CONSTANTS.TOTAL_LIFETIME) {
         if (!instance.completed) {
           instance.completed = true;
           onEffectComplete?.(id);
           
-          // Remove from scene
           if (instance.particleSystem.parent) {
             groupRef.current?.remove(instance.particleSystem);
           }
@@ -157,12 +147,10 @@ export const NerveStrikeParticles3D: React.FC<NerveStrikeParticles3DProps> = ({
         return;
       }
       
-      // Add to scene if not already added
       if (!instance.particleSystem.parent) {
         groupRef.current?.add(instance.particleSystem);
       }
       
-      // Update particle animation
       updateParticleAnimation(instance, elapsed, safeDelta);
     });
   });
@@ -190,18 +178,14 @@ function createParticleSystem(
 ): THREE.Points {
   const geometry = new THREE.BufferGeometry();
   
-  // Initialize particle positions in a sphere around impact point
   const positions = new Float32Array(particleCount * 3);
   const velocities = new Float32Array(particleCount * 3);
   const initialRadii = new Float32Array(particleCount);
   
-  // Use pooled Vector3 for direction calculations
-  // Pool strategy: Acquire temp vector, use for calculations, release
   const tempDir = ThreeObjectPools.vector3.acquire();
   
   try {
     for (let i = 0; i < particleCount; i++) {
-      // Random point on unit sphere
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
       
@@ -209,22 +193,18 @@ function createParticleSystem(
       const y = Math.sin(phi) * Math.sin(theta);
       const z = Math.cos(phi);
       
-      // Start at impact point
       positions[i * 3] = effect.position[0];
       positions[i * 3 + 1] = effect.position[1];
       positions[i * 3 + 2] = effect.position[2];
       
-      // Store direction for expansion (normalized)
       tempDir.set(x, y, z).normalize();
       velocities[i * 3] = tempDir.x;
       velocities[i * 3 + 1] = tempDir.y;
       velocities[i * 3 + 2] = tempDir.z;
       
-      // Store initial radius for arc pattern
       initialRadii[i] = Math.random() * 0.3;
     }
   } finally {
-    // Always release pooled vector
     ThreeObjectPools.vector3.release(tempDir);
   }
   
@@ -232,7 +212,6 @@ function createParticleSystem(
   geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
   geometry.setAttribute('initialRadius', new THREE.BufferAttribute(initialRadii, 1));
   
-  // Material with additive blending for electric glow
   const color = effect.paralysisIndicator 
     ? NERVE_STRIKE_CONSTANTS.COLOR_PARALYSIS 
     : NERVE_STRIKE_CONSTANTS.COLOR_BASE;
@@ -272,15 +251,12 @@ function updateParticleAnimation(
   
   const particleCount = positions.length / 3;
   
-  // Calculate expansion radius based on time
   const expansionProgress = Math.min(
     elapsed / (NERVE_STRIKE_CONSTANTS.PULSE_DURATION + NERVE_STRIKE_CONSTANTS.GLOW_DURATION),
     1.0
   );
   const currentRadius = expansionProgress * NERVE_STRIKE_CONSTANTS.MAX_RADIUS;
   
-  // Use pooled vectors for target position calculations
-  // Pool strategy: Acquire temps once per update, reuse for all particles
   const tempTarget = ThreeObjectPools.vector3.acquire();
   const tempDelta = ThreeObjectPools.vector3.acquire();
   const effectPos = ThreeObjectPools.vector3.acquire();
@@ -288,17 +264,14 @@ function updateParticleAnimation(
   try {
     effectPos.set(effect.position[0], effect.position[1], effect.position[2]);
     
-    // Update particle positions (electric arc expansion)
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3;
       
-      // Expand outward along velocity direction
       const targetRadius = currentRadius + initialRadii[i];
       tempTarget.set(velocities[i3], velocities[i3 + 1], velocities[i3 + 2]);
       tempTarget.multiplyScalar(targetRadius);
       tempTarget.add(effectPos);
       
-      // Smooth interpolation to target position
       tempDelta.set(positions[i3], positions[i3 + 1], positions[i3 + 2]);
       tempDelta.sub(tempTarget).multiplyScalar(-delta * 10);
       
@@ -307,7 +280,6 @@ function updateParticleAnimation(
       positions[i3 + 2] += tempDelta.z;
     }
   } finally {
-    // Always release pooled objects
     ThreeObjectPools.vector3.release(tempTarget);
     ThreeObjectPools.vector3.release(tempDelta);
     ThreeObjectPools.vector3.release(effectPos);
@@ -315,23 +287,18 @@ function updateParticleAnimation(
   
   geometry.attributes.position.needsUpdate = true;
   
-  // Update opacity based on phase (pulse vs glow)
   if (elapsed < NERVE_STRIKE_CONSTANTS.PULSE_DURATION) {
-    // Rapid pulse phase
     const pulseProgress = elapsed / NERVE_STRIKE_CONSTANTS.PULSE_DURATION;
     material.opacity = 1.0 - pulseProgress * 0.5; // Fade slightly during pulse
   } else {
-    // Lingering glow phase
     const glowElapsed = elapsed - NERVE_STRIKE_CONSTANTS.PULSE_DURATION;
     const glowProgress = glowElapsed / NERVE_STRIKE_CONSTANTS.GLOW_DURATION;
     material.opacity = (1.0 - glowProgress) * 0.8; // Fade out during glow
   }
   
-  // Update size based on effectiveness
   const baseSize = 0.12;
   const effectivenessMultiplier = 0.5 + effect.effectiveness * 0.5; // 0.5x to 1.0x
   material.size = baseSize * effectivenessMultiplier;
 }
 
-// Set display name for debugging
 NerveStrikeParticles3D.displayName = 'NerveStrikeParticles3D';

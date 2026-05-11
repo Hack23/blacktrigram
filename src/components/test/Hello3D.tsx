@@ -29,8 +29,6 @@ interface RotatingBoxProps {
 const RotatingBox: React.FC<RotatingBoxProps> = ({ color }) => {
   const meshRef = useRef<Mesh>(null);
 
-  // Use @react-three/fiber's useFrame hook for animation
-  // This properly manages the animation loop lifecycle
   useFrame(() => {
     if (meshRef.current) {
       meshRef.current.rotation.x += 0.01;

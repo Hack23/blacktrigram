@@ -42,7 +42,6 @@ export interface PhilosophySectionProps {
  * </PhilosophySection>
  * ```
  * 
- * @public
  * @category Philosophy Components
  */
 export const PhilosophySection: React.FC<PhilosophySectionProps> = ({

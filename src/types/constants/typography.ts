@@ -1,8 +1,18 @@
 /**
- * Typography constants for Black Trigram
+ * Typography constants for Black Trigram Korean martial arts.
+ *
+ * @module types/constants/typography
+ * @category Typography Constants
+ * @korean 타이포그래피상수
  */
 
-// Font Families
+/**
+ * Font family stacks for Korean and Latin text rendering.
+ *
+ * @constant
+ * @category Typography Constants
+ * @korean 폰트패밀리
+ */
 export const FONT_FAMILY = {
   PRIMARY: '"Noto Sans KR", "Malgun Gothic", Arial, sans-serif',
   SECONDARY: '"Nanum Gothic", Arial, sans-serif',
@@ -13,7 +23,13 @@ export const FONT_FAMILY = {
   KOREAN: '"Noto Sans KR", "Malgun Gothic", Arial, sans-serif',
 } as const;
 
-// Font sizes
+/**
+ * Font size scale in pixels for UI text elements.
+ *
+ * @constant
+ * @category Typography Constants
+ * @korean 폰트크기
+ */
 export const FONT_SIZES = {
   xsmall: 8,
   tiny: 10,
@@ -27,7 +43,13 @@ export const FONT_SIZES = {
   subtitle: 28,
 } as const;
 
-// Font weights
+/**
+ * Font weight numeric values for text hierarchy.
+ *
+ * @constant
+ * @category Typography Constants
+ * @korean 폰트굵기
+ */
 export const FONT_WEIGHTS = {
   light: 300,
   normal: 400,
@@ -38,7 +60,13 @@ export const FONT_WEIGHTS = {
   heavy: 900,
 } as const;
 
-// Korean text sizes
+/**
+ * Korean text size scale in pixels with appropriate Hangul sizing.
+ *
+ * @constant
+ * @category Typography Constants
+ * @korean 한국어텍스트크기
+ */
 export const KOREAN_TEXT_SIZES: Record<string, number> = {
   tiny: 10,
   small: 12,
@@ -95,7 +123,6 @@ export const KOREAN_MOBILE_FONT_SIZES = {
  * getKoreanFontSize('MEDIUM', 768); // 19 (regular)
  * ```
  * 
- * @public
  * @korean 한글글꼴크기얻기
  */
 export function getKoreanFontSize(
@@ -113,7 +140,13 @@ export function getKoreanFontSize(
   }
 }
 
-// Korean font weights
+/**
+ * Korean font weights for text emphasis and hierarchy.
+ *
+ * @constant
+ * @category Typography Constants
+ * @korean 한국어폰트굵기
+ */
 export const KOREAN_FONT_WEIGHTS: Record<string, number> = {
   light: 300,
   normal: 400,

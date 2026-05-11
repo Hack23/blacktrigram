@@ -41,7 +41,6 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
   const divRef = useRef<HTMLDivElement>(null);
   const completedRef = useRef(false);
 
-  // Get color based on type
   const color =
     type === "critical"
       ? "#ff0000"
@@ -49,14 +48,11 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
       ? "#ffd700"
       : "#ffffff";
 
-  // Apply Html overlay styles for damage numbers (effects layer)
   const overlayStyle = useMemo(() => {
     return applyHtmlOverlayStyles("effects", false, 10, true, false);
   }, []);
 
-  // Animate floating and fading using refs to avoid unnecessary re-renders
   useFrame(() => {
-    // Lazy initialize start time on first frame
     startTimeRef.current ??= performance.now();
 
     const elapsed = (performance.now() - startTimeRef.current) / 1000;
@@ -70,11 +66,9 @@ export const DamageNumber3D: React.FC<DamageNumber3DProps> = ({
 
     if (completedRef.current) return; // Stop processing after completion
 
-    // Float upward with easing - use CSS transform for position animation
     const floatDistance = 1.5;
     const yOffset = floatDistance * progress;
 
-    // Update DOM directly to avoid React re-renders
     if (divRef.current) {
       divRef.current.style.transform = `translateY(-${yOffset * 30}px)`; // Scale to pixels
       divRef.current.style.opacity = String(1 - progress);

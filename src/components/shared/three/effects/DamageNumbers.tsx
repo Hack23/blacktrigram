@@ -85,37 +85,28 @@ const SingleDamageNumber = React.memo<SingleDamageNumberProps>(({
   const [progress, setProgress] = useState(0);
   const startTimeRef = useRef(damage.timestamp);
 
-  // Calculate 3D position from meter-based coordinates (physics-first architecture)
-  // Position is in meters relative to arena center (0, 0)
-  // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
-  // So we use meter coordinates directly too for alignment
   const halfWidth = arenaBounds.worldWidthMeters / 2;
   const halfDepth = arenaBounds.worldDepthMeters / 2;
   
-  // Clamp position to arena boundaries in meters
   const clampedX = Math.min(halfWidth, Math.max(-halfWidth, damage.position.x));
   const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, damage.position.y));
   
-  // Use clamped meter coordinates directly in 3D space (no remapping)
   const x = clampedX; // Meter position X
   const y = 2 + progress * 2; // Float upward
   const z = clampedZ; // Meter position Z (depth)
   const position3D: [number, number, number] = [x, y, z];
 
-  // Update progress using useFrame
   useFrame(() => {
     const elapsed = Date.now() - startTimeRef.current;
     const newProgress = Math.min(elapsed / animationDuration, 1);
     setProgress(newProgress);
   });
 
-  // Don't render if expired
   if (progress >= 1) return null;
 
   const opacity = 1 - progress;
   const scale = 1 + progress * 0.3; // Slight scale up during animation
   const fontSize = isMobile ? 20 : 28;
-  // Calculate critical bonus based on damage type
   const getCriticalBonus = (): number => {
     if (damage.type === "critical") return 8;
     if (damage.type === "vital") return 4;
@@ -155,7 +146,6 @@ const SingleDamageNumber = React.memo<SingleDamageNumberProps>(({
     </Html>
   );
 }, (prevProps, nextProps) => {
-  // Custom comparison: re-render only when props that affect rendering change
   const prevArena = prevProps.arenaBounds;
   const nextArena = nextProps.arenaBounds;
 
@@ -199,7 +189,6 @@ const DamageNumbersComponent: React.FC<DamageNumbersProps> = ({
   arenaBounds = DEFAULT_PHYSICS_ARENA_BOUNDS,
   animationDuration = 1500,
 }) => {
-  // Derive visible damages from props - no need for state sync
   const visibleDamages = useMemo(() => [...damages], [damages]);
 
   return (
@@ -224,19 +213,16 @@ const DamageNumbersComponent: React.FC<DamageNumbersProps> = ({
 export const DamageNumbers = React.memo(
   DamageNumbersComponent,
   (prevProps, nextProps) => {
-    // Compare damages array length and contents
     if (prevProps.damages.length !== nextProps.damages.length) {
       return false;
     }
     
-    // Check if array contents changed (compare IDs)
     for (let i = 0; i < prevProps.damages.length; i++) {
       if (prevProps.damages[i].id !== nextProps.damages[i].id) {
         return false;
       }
     }
     
-    // Check other props
     return (
       prevProps.isMobile === nextProps.isMobile &&
       prevProps.animationDuration === nextProps.animationDuration &&

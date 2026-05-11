@@ -309,7 +309,6 @@ export const RECOVERY_DEFENSIVE_KEYFRAMES: readonly RecoveryKeyframe[] = [
  * @param recoveryType - Type of recovery animation
  * @returns Array of keyframes for that recovery type
  *
- * @public
  * @korean 기상키프레임가져오기
  */
 export function getRecoveryKeyframes(
@@ -339,7 +338,6 @@ export function getRecoveryKeyframes(
  * @param frame - Current frame number (0-indexed)
  * @returns True if player is vulnerable at this frame
  *
- * @public
  * @korean 취약프레임확인
  */
 export function isVulnerableFrame(
@@ -379,7 +377,6 @@ export function isVulnerableFrame(
  * // Returns: "roll_recovery" (default for side positions)
  * ```
  *
- * @public
  * @korean 기상유형결정
  */
 export function determineRecoveryType(
@@ -394,7 +391,6 @@ export function determineRecoveryType(
  * @param recoveryType - Recovery animation type
  * @returns Animation state name
  *
- * @public
  * @korean 기상애니메이션상태
  */
 export function getRecoveryAnimationState(
@@ -471,7 +467,6 @@ export const RECOVERY_CONFIGS: Record<RecoveryAnimationType, RecoveryConfig> = {
  * @param recoveryType - Recovery animation type
  * @returns Recovery configuration
  *
- * @public
  * @korean 기상설정가져오기
  */
 export function getRecoveryConfig(

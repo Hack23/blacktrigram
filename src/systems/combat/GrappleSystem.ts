@@ -626,7 +626,6 @@ export class GrappleSystem {
    * // Result: 1800ms (uses technique metadata)
    * ```
    *
-   * @public
    * @korean 기술별제어시간조회
    */
   getTechniqueControlDuration(
@@ -675,7 +674,6 @@ export class GrappleSystem {
    * // advantage.duration = 1800ms (from technique metadata)
    * ```
    *
-   * @public
    * @korean 던지기후우세적용
    */
   applyPostThrowAdvantage(

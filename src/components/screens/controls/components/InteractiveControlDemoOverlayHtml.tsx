@@ -55,7 +55,6 @@ const KeyPressEntryDisplay = React.memo<KeyPressEntryDisplayProps>(({
   isMobile,
   theme,
 }) => {
-  // Memoize styles based on props
   const containerStyle = useMemo(() => ({
     display: 'flex',
     alignItems: 'center',
@@ -150,7 +149,6 @@ export const InteractiveControlDemo: React.FC<InteractiveControlDemoProps> = ({
   const [keyPresses, setKeyPresses] = useState<KeyPressEntry[]>([]);
   const [currentTime, setCurrentTime] = useState(() => Date.now());
 
-  // Update current time for opacity calculations using requestAnimationFrame
   useEffect(() => {
     let frameId: number;
 
@@ -166,9 +164,7 @@ export const InteractiveControlDemo: React.FC<InteractiveControlDemoProps> = ({
     };
   }, []);
 
-  // Track pressed keys and add to history
   useEffect(() => {
-    // Find newly pressed keys
     const currentCodes = Array.from(pressedKeys);
 
     if (currentCodes.length === 0) {
@@ -181,13 +177,11 @@ export const InteractiveControlDemo: React.FC<InteractiveControlDemoProps> = ({
       let updated = prev;
 
       currentCodes.forEach((code) => {
-        // Check if key is not already in the recent list
         const alreadyRecorded = updated.some(
           (entry) => entry.keyData.code === code && now - entry.timestamp < 100
         );
 
         if (!alreadyRecorded) {
-          // Find key data
           const keyData = KEYBOARD_LAYOUT.find((k) => k.code === code);
           if (keyData) {
             const newEntry: KeyPressEntry = {
@@ -200,7 +194,6 @@ export const InteractiveControlDemo: React.FC<InteractiveControlDemoProps> = ({
         }
       });
 
-      // Keep only last 5 entries
       if (updated.length > 5) {
         updated = updated.slice(0, 5);
       }
@@ -209,21 +202,18 @@ export const InteractiveControlDemo: React.FC<InteractiveControlDemoProps> = ({
     });
   }, [pressedKeys]);
 
-  // Auto-remove entries after 2 seconds
   useEffect(() => {
     setKeyPresses((prev) =>
       prev.filter((entry) => currentTime - entry.timestamp < 2000)
     );
   }, [currentTime]);
 
-  // Calculate opacity based on age
   const getOpacity = (timestamp: number): number => {
     const age = currentTime - timestamp;
     const maxAge = 2000;
     return Math.max(0, 1 - age / maxAge);
   };
 
-  // Container style
   const containerStyle = useMemo(() => ({
     position: 'fixed' as const,
     bottom: isMobile ? '15px' : '20px',
@@ -246,7 +236,6 @@ export const InteractiveControlDemo: React.FC<InteractiveControlDemoProps> = ({
     zIndex: 1000,
   }), [isMobile, theme]);
 
-  // Title style
   const titleStyle = useMemo(() => ({
     fontFamily: FONT_FAMILY.KOREAN,
     fontSize: isMobile ? '12px' : '13px',

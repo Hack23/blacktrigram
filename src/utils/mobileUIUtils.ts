@@ -55,15 +55,6 @@ export interface TouchTargetSize {
  * @param width - Viewport width in pixels
  * @returns Viewport size category
  * 
- * @example
- * ```typescript
- * getViewportSize(375); // 'xs' (iPhone SE)
- * getViewportSize(768); // 'sm' (Standard phones, high-end mobiles start here)
- * getViewportSize(2712); // 'md' (Motorola Edge 60 Pro Super HD)
- * getViewportSize(1200); // 'lg' (Desktop)
- * ```
- * 
- * @public
  * @korean 뷰포트크기얻기
  */
 export function getViewportSize(width: number): ViewportSize {
@@ -85,16 +76,6 @@ export function getViewportSize(width: number): ViewportSize {
  * @param viewportWidth - Optional viewport width for fine-tuning
  * @returns Touch target size configuration
  * 
- * @example
- * ```typescript
- * const buttonSize = getTouchTargetSize(true, 375);
- * // { minWidth: 48, minHeight: 48, padding: 12, spacing: 8 }
- * 
- * const superHDButtonSize = getTouchTargetSize(true, 2712);
- * // { minWidth: 56, minHeight: 56, padding: 16, spacing: 12 }
- * ```
- * 
- * @public
  * @korean 터치타겟크기얻기
  */
 export function getTouchTargetSize(
@@ -142,15 +123,6 @@ export function getTouchTargetSize(
  * @param viewportWidth - Viewport width in pixels
  * @returns Font size in pixels
  * 
- * @example
- * ```typescript
- * getMobileKoreanFontSize('SMALL', 375); // 16
- * getMobileKoreanFontSize('MEDIUM', 410); // 18
- * getMobileKoreanFontSize('MEDIUM', 2712); // 20 (Super HD enhanced)
- * getMobileKoreanFontSize('LARGE', 768); // 24
- * ```
- * 
- * @public
  * @korean 모바일한글글꼴크기얻기
  */
 export function getMobileKoreanFontSize(
@@ -176,13 +148,6 @@ export function getMobileKoreanFontSize(
  * @param isMobile - Whether on mobile device
  * @returns Scaled spacing in pixels
  * 
- * @example
- * ```typescript
- * getResponsiveSpacing(SPACING.MD, true); // 12 (COMPACT on mobile)
- * getResponsiveSpacing(SPACING.MD, false); // 16 (original)
- * ```
- * 
- * @public
  * @korean 반응형간격얻기
  */
 export function getResponsiveSpacing(
@@ -201,13 +166,6 @@ export function getResponsiveSpacing(
  * @param minMargin - Minimum margin on each side (default: 20px)
  * @returns Panel width in pixels
  * 
- * @example
- * ```typescript
- * getResponsivePanelWidth(375, true); // ~335px (375 - 40 margin)
- * getResponsivePanelWidth(1200, false); // ~400px (max width applied)
- * ```
- * 
- * @public
  * @korean 반응형패널폭얻기
  */
 export function getResponsivePanelWidth(
@@ -230,13 +188,6 @@ export function getResponsivePanelWidth(
  * @param viewportHeight - Viewport height in pixels
  * @returns Whether in landscape orientation
  * 
- * @example
- * ```typescript
- * isLandscape(812, 375); // true (iPhone X landscape)
- * isLandscape(375, 812); // false (iPhone X portrait)
- * ```
- * 
- * @public
  * @korean 가로모드여부
  */
 export function isLandscape(
@@ -253,19 +204,6 @@ export function isLandscape(
  * @param viewportWidth - Optional viewport width
  * @returns CSS properties for button
  * 
- * @example
- * ```typescript
- * const buttonStyles = getResponsiveButtonStyles(true, 375);
- * // {
- * //   minWidth: '48px',
- * //   minHeight: '48px',
- * //   padding: '12px',
- * //   fontSize: '16px',
- * //   ...
- * // }
- * ```
- * 
- * @public
  * @korean 반응형버튼스타일얻기
  */
 export function getResponsiveButtonStyles(
@@ -297,17 +235,6 @@ export function getResponsiveButtonStyles(
  * @param viewportWidth - Viewport width in pixels
  * @returns CSS properties for text
  * 
- * @example
- * ```typescript
- * const textStyles = getResponsiveTextStyles('MEDIUM', true, 375);
- * // {
- * //   fontSize: '18px',
- * //   lineHeight: '1.5',
- * //   letterSpacing: '0.02em',
- * // }
- * ```
- * 
- * @public
  * @korean 반응형텍스트스타일얻기
  */
 export function getResponsiveTextStyles(
@@ -333,13 +260,6 @@ export function getResponsiveTextStyles(
  * @param isMobile - Whether on mobile device
  * @returns Minimum spacing in pixels
  * 
- * @example
- * ```typescript
- * getMinimumInteractiveSpacing(true); // 8px (mobile)
- * getMinimumInteractiveSpacing(false); // 12px (desktop)
- * ```
- * 
- * @public
  * @korean 최소상호작용간격얻기
  */
 export function getMinimumInteractiveSpacing(isMobile: boolean): number {
@@ -357,16 +277,10 @@ export function getMinimumInteractiveSpacing(isMobile: boolean): number {
  * @korean 뷰포트감지
  */
 export const ViewportDetection = {
-  /**
-   * Check if iPhone SE or similar small device
-   * @korean iPhone SE여부
-   */
+  /** Check if iPhone SE or similar small device @korean iPhone SE여부 */
   isSmallMobile: (width: number) => width <= 375,
 
-  /**
-   * Check if standard mobile device (excluding high-end)
-   * @korean 표준모바일여부
-   */
+  /** Check if standard mobile device (excluding high-end) @korean 표준모바일여부 */
   isMobile: (width: number) => width < 768,
 
   /**
@@ -382,22 +296,13 @@ export const ViewportDetection = {
     return shortSide >= 400 && shortSide <= 600 && longSide >= 800 && dpr >= 2;
   },
 
-  /**
-   * Check if tablet device
-   * @korean 태블릿여부
-   */
+  /** Check if tablet device @korean 태블릿여부 */
   isTablet: (width: number) => width >= 768 && width < 1024,
 
-  /**
-   * Check if desktop device
-   * @korean 데스크톱여부
-   */
+  /** Check if desktop device @korean 데스크톱여부 */
   isDesktop: (width: number) => width >= 1024,
 
-  /**
-   * Check if device has notch (iPhone X+)
-   * @korean 노치여부
-   */
+  /** Check if device has notch (iPhone X+) @korean 노치여부 */
   hasNotch: (width: number, height: number) =>
     (width === 375 && height === 812) || // iPhone X, XS, 11 Pro
     (width === 414 && height === 896) || // iPhone XR, XS Max, 11, 11 Pro Max

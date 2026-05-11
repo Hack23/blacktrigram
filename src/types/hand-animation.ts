@@ -23,7 +23,6 @@ import * as THREE from "three";
  * - GRAPPLING (잡기): Fingers curved for grabs and control
  * - OPEN (펴기): Neutral open hand position
  *
- * @public
  * @korean 손자세타입
  */
 export enum HandPoseType {
@@ -46,7 +45,6 @@ export enum HandPoseType {
 /**
  * Finger identification
  *
- * @public
  * @korean 손가락
  */
 export enum FingerType {
@@ -70,7 +68,6 @@ export enum FingerType {
  * - 0.5: Half curled (slightly bent)
  * - 1.0: Fully curled (tight fist)
  *
- * @public
  * @korean 손가락구부림량
  */
 export interface FingerCurl {
@@ -91,7 +88,6 @@ export interface FingerCurl {
  *
  * Controls the lateral spacing between fingers.
  *
- * @public
  * @korean 손가락벌림량
  */
 export interface FingerSpread {
@@ -111,75 +107,35 @@ export interface FingerSpread {
  * Complete hand configuration including finger positions and wrist rotation
  * for authentic Korean martial arts hand techniques.
  *
- * @public
  * @korean 손자세정의
  */
 export interface HandPose {
-  /**
-   * Pose identifier
-   * @korean 자세ID
-   */
+  /** Pose identifier @korean 자세ID */
   readonly type: HandPoseType;
-
-  /**
-   * Korean name for the pose
-   * @korean 한글이름
-   */
+  /** Korean name for the pose @korean 한글이름 */
   readonly nameKorean: string;
-
-  /**
-   * English name for the pose
-   * @korean 영어이름
-   */
+  /** English name for the pose @korean 영어이름 */
   readonly nameEnglish: string;
-
-  /**
-   * Romanized Korean name
-   * @korean 로마자이름
-   */
+  /** Romanized Korean name @korean 로마자이름 */
   readonly romanized: string;
-
-  /**
-   * Finger curl amounts (0-1 per finger)
-   * @korean 손가락구부림
-   */
+  /** Finger curl amounts (0-1 per finger) @korean 손가락구부림 */
   readonly fingerCurl: FingerCurl;
-
-  /**
-   * Finger spread amounts (0-1 between fingers)
-   * @korean 손가락벌림
-   */
+  /** Finger spread amounts (0-1 between fingers) @korean 손가락벌림 */
   readonly fingerSpread: FingerSpread;
-
-  /**
-   * Wrist rotation for the technique
-   * @korean 손목회전
-   */
+  /** Wrist rotation for the technique @korean 손목회전 */
   readonly wristRotation: THREE.Euler;
-
-  /**
-   * Description of the technique
-   * @korean 설명
-   */
+  /** Description of the technique @korean 설명 */
   readonly description: {
     readonly korean: string;
     readonly english: string;
   };
-
-  /**
-   * Which martial art this pose comes from
-   * @korean 무술출처
-   */
+  /** Which martial art this pose comes from @korean 무술출처 */
   readonly martialArtOrigin:
     | "taekwondo"
     | "hapkido"
     | "taekyon"
     | "traditional";
-
-  /**
-   * Primary striking surface
-   * @korean 타격면
-   */
+  /** Primary striking surface @korean 타격면 */
   readonly strikingSurface:
     | "knuckles"
     | "palm_heel"
@@ -193,56 +149,24 @@ export interface HandPose {
  *
  * Current state of hand animation including pose transition progress.
  *
- * @public
  * @korean 손애니메이션상태
  */
 export interface HandAnimationState {
-  /**
-   * Current hand pose
-   * @korean 현재자세
-   */
+  /** Current hand pose @korean 현재자세 */
   readonly currentPose: HandPoseType;
-
-  /**
-   * Target hand pose (during transition)
-   * @korean 목표자세
-   */
+  /** Target hand pose (during transition) @korean 목표자세 */
   readonly targetPose: HandPoseType | null;
-
-  /**
-   * Transition progress (0-1)
-   * @korean 전환진행률
-   */
+  /** Transition progress (0-1) @korean 전환진행률 */
   readonly transitionProgress: number;
-
-  /**
-   * Current finger curl values (interpolated)
-   * @korean 현재손가락구부림
-   */
+  /** Current finger curl values (interpolated) @korean 현재손가락구부림 */
   readonly currentFingerCurl: FingerCurl;
-
-  /**
-   * Current finger spread values (interpolated)
-   * @korean 현재손가락벌림
-   */
+  /** Current finger spread values (interpolated) @korean 현재손가락벌림 */
   readonly currentFingerSpread: FingerSpread;
-
-  /**
-   * Current wrist rotation (interpolated)
-   * @korean 현재손목회전
-   */
+  /** Current wrist rotation (interpolated) @korean 현재손목회전 */
   readonly currentWristRotation: THREE.Euler;
-
-  /**
-   * Whether hand is highlighted for vital point targeting
-   * @korean 급소표시여부
-   */
+  /** Whether hand is highlighted for vital point targeting @korean 급소표시여부 */
   readonly isHighlighted: boolean;
-
-  /**
-   * Highlight mode for different striking surfaces
-   * @korean 표시모드
-   */
+  /** Highlight mode for different striking surfaces @korean 표시모드 */
   readonly highlightMode:
     | "none"
     | "knuckles"
@@ -255,7 +179,6 @@ export interface HandAnimationState {
 /**
  * Hand side identification
  *
- * @public
  * @korean 손쪽
  */
 export type HandSide = "left" | "right";
@@ -265,32 +188,16 @@ export type HandSide = "left" | "right";
  *
  * Maps attack technique names to appropriate hand poses.
  *
- * @public
  * @korean 공격기술손자세
  */
 export interface TechniqueHandPose {
-  /**
-   * Technique name (e.g., "jab", "cross", "knife_hand_strike")
-   * @korean 기술이름
-   */
+  /** Technique name (e.g., "jab", "cross", "knife_hand_strike") @korean 기술이름 */
   readonly techniqueName: string;
-
-  /**
-   * Hand pose for left hand
-   * @korean 왼손자세
-   */
+  /** Hand pose for left hand @korean 왼손자세 */
   readonly leftHandPose: HandPoseType;
-
-  /**
-   * Hand pose for right hand
-   * @korean 오른손자세
-   */
+  /** Hand pose for right hand @korean 오른손자세 */
   readonly rightHandPose: HandPoseType;
-
-  /**
-   * Transition duration in seconds
-   * @korean 전환시간
-   */
+  /** Transition duration in seconds @korean 전환시간 */
   readonly transitionDuration: number;
 }
 
@@ -299,7 +206,6 @@ export interface TechniqueHandPose {
  *
  * Performance optimization by adjusting hand detail based on camera distance.
  *
- * @public
  * @korean 손상세도설정
  */
 export interface HandLODConfig {
@@ -311,7 +217,6 @@ export interface HandLODConfig {
    * @korean 상세도
    */
   readonly detailLevel: "high" | "medium" | "low";
-
   /**
    * Distance thresholds for LOD switching
    * @korean 거리기준
@@ -321,17 +226,9 @@ export interface HandLODConfig {
     readonly medium: number; // Camera distance for medium detail (< 15 units)
     readonly low: number; // Camera distance for low detail (>= 15 units)
   };
-
-  /**
-   * Whether to render individual fingers
-   * @korean 손가락렌더링여부
-   */
+  /** Whether to render individual fingers @korean 손가락렌더링여부 */
   readonly renderFingers: boolean;
-
-  /**
-   * Number of segments per finger
-   * @korean 손가락세그먼트수
-   */
+  /** Number of segments per finger @korean 손가락세그먼트수 */
   readonly fingerSegments: number;
 }
 
@@ -346,82 +243,41 @@ export interface HandLODConfig {
  *
  * Note: Thumb has no intermediate phalanx (2 bones instead of 3)
  *
- * @public
  * @korean 손가락뼈세그먼트
  */
 export interface FingerSegments {
-  /**
-   * Metacarpal bone (knuckle base)
-   * @korean 중수골
-   */
+  /** Metacarpal bone (knuckle base) @korean 중수골 */
   readonly metacarpal: THREE.Vector3;
-
-  /**
-   * Proximal phalanx (first joint)
-   * @korean 근위지골
-   */
+  /** Proximal phalanx (first joint) @korean 근위지골 */
   readonly proximal: THREE.Vector3;
-
   /**
    * Intermediate phalanx (middle joint)
    * Note: Thumb does not have this bone
    * @korean 중위지골
    */
   readonly intermediate: THREE.Vector3 | null;
-
-  /**
-   * Distal phalanx (fingertip)
-   * @korean 원위지골
-   */
+  /** Distal phalanx (fingertip) @korean 원위지골 */
   readonly distal: THREE.Vector3;
 }
 
 /**
  * Complete hand structure with all finger bones
  *
- * @public
  * @korean 손뼈구조
  */
 export interface HandStructure {
-  /**
-   * Palm base position
-   * @korean 손바닥위치
-   */
+  /** Palm base position @korean 손바닥위치 */
   readonly palm: THREE.Vector3;
-
-  /**
-   * Wrist position
-   * @korean 손목위치
-   */
+  /** Wrist position @korean 손목위치 */
   readonly wrist: THREE.Vector3;
-
-  /**
-   * Thumb segments (2 bones: no intermediate)
-   * @korean 엄지뼈
-   */
+  /** Thumb segments (2 bones: no intermediate) @korean 엄지뼈 */
   readonly thumb: FingerSegments;
-
-  /**
-   * Index finger segments (3 bones)
-   * @korean 검지뼈
-   */
+  /** Index finger segments (3 bones) @korean 검지뼈 */
   readonly index: FingerSegments;
-
-  /**
-   * Middle finger segments (3 bones)
-   * @korean 중지뼈
-   */
+  /** Middle finger segments (3 bones) @korean 중지뼈 */
   readonly middle: FingerSegments;
-
-  /**
-   * Ring finger segments (3 bones)
-   * @korean 약지뼈
-   */
+  /** Ring finger segments (3 bones) @korean 약지뼈 */
   readonly ring: FingerSegments;
-
-  /**
-   * Pinky finger segments (3 bones)
-   * @korean 새끼뼈
-   */
+  /** Pinky finger segments (3 bones) @korean 새끼뼈 */
   readonly pinky: FingerSegments;
 }

@@ -83,7 +83,6 @@ export const MenuButtons: React.FC<MenuButtonsProps> = ({
   width = 800,
   isMobile: _isMobile = false, // Prefix with _ to indicate intentionally unused
 }) => {
-  // Responsive sizing based on screen width
   const isSmallScreen = width < 768;
   const useGridLayout = !isSmallScreen;
   const buttonHeight = isSmallScreen ? 44 : 40;
@@ -92,7 +91,6 @@ export const MenuButtons: React.FC<MenuButtonsProps> = ({
     : 13;
   const buttonGap = isSmallScreen ? 6 : 8;
 
-  // Memoize button state colors
   const colors = useMemo(
     () => ({
       buttonSelectedBg: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.98),
@@ -149,7 +147,6 @@ export const MenuButtons: React.FC<MenuButtonsProps> = ({
         const isSelected = selectedIndex === index;
         const isHovered = hoveredIndex === index;
 
-        // Get only visual effects (glow, transitions, transforms)
         const visualEffects = getButtonVisualEffectsOnly({
           variant: "primary",
           isHovered,
@@ -188,7 +185,6 @@ export const MenuButtons: React.FC<MenuButtonsProps> = ({
               fontFamily: FONT_FAMILY.KOREAN,
               width: "100%",
               height: `${buttonHeight}px`,
-              // Menu-specific color, background, and border
               color: isSelected
                 ? colors.textSelected
                 : isHovered

@@ -52,10 +52,8 @@ export function useControlsState(): UseControlsStateReturn {
   const [category, setCategory] = useState<'keyboard' | 'gamepad'>('keyboard');
   const [selectedTab, setSelectedTab] = useState<'combat' | 'movement' | 'system'>('combat');
 
-  // Keyboard event handlers
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Don't track if user is typing in input field
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
         return;
       }
@@ -75,23 +73,19 @@ export function useControlsState(): UseControlsStateReturn {
       });
     };
 
-    // Add event listeners
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
 
-    // Cleanup on unmount
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
   }, []);
 
-  // Memoized category setter
   const handleSetCategory = useCallback((newCategory: 'keyboard' | 'gamepad') => {
     setCategory(newCategory);
   }, []);
 
-  // Memoized tab setter
   const handleSetSelectedTab = useCallback((tab: 'combat' | 'movement' | 'system') => {
     setSelectedTab(tab);
   }, []);

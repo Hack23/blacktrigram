@@ -68,7 +68,6 @@ import {
  * const actualSpeed = baseSpeed * penalty.speedMultiplier;
  * ```
  * 
- * @public
  * @category Body Part System
  */
 export class MovementPenaltySystem {
@@ -86,7 +85,6 @@ export class MovementPenaltySystem {
    * @param currentTime - Current timestamp for instant penalty expiry check
    * @returns Movement penalty with all modifiers
    * 
-   * @public
    */
   calculateMovementPenalty(
     health: BodyPartHealth,
@@ -195,7 +193,6 @@ export class MovementPenaltySystem {
    * @param movementDirection - Direction of movement (positive = right, negative = left)
    * @returns Additional speed multiplier for asymmetric penalty
    * 
-   * @public
    */
   calculateAsymmetricPenalty(
     health: BodyPartHealth,
@@ -250,7 +247,6 @@ export class MovementPenaltySystem {
    * @param currentTime - Timestamp when strike occurred
    * @returns Instant movement penalty configuration
    * 
-   * @public
    */
   createInstantPenalty(
     affectedPart: BodyPart.LEG_LEFT | BodyPart.LEG_RIGHT,
@@ -276,7 +272,6 @@ export class MovementPenaltySystem {
    * @param maxHealth - Maximum health values
    * @returns True if player should enter vulnerable state
    * 
-   * @public
    */
   shouldEnterVulnerableState(
     health: BodyPartHealth,
@@ -302,7 +297,6 @@ export class MovementPenaltySystem {
    * @param maxHealth - Maximum health values
    * @returns True if player should enter helpless state
    * 
-   * @public
    */
   shouldEnterHelplessState(
     health: BodyPartHealth,
@@ -334,7 +328,6 @@ export class MovementPenaltySystem {
    * @param currentTime - Current timestamp
    * @returns Final movement speed with all penalties applied
    * 
-   * @public
    */
   calculateModifiedSpeed(
     baseSpeed: number,
@@ -371,6 +364,5 @@ export class MovementPenaltySystem {
  * 
  * Provides global access to the movement penalty system throughout the game.
  * 
- * @public
  */
 export const movementPenaltySystem = new MovementPenaltySystem();

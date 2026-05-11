@@ -53,7 +53,6 @@ export interface KeyboardHintsProps {
  * />
  * ```
  * 
- * @public
  * @korean 키보드힌트
  */
 export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
@@ -64,7 +63,6 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
 }) => {
   const theme = useKoreanTheme({ variant: "bordered", size: "md", isMobile });
   
-  // Get stance keys (default or custom)
   const stanceKeys = useMemo(() => {
     if (customBindings?.stances) {
       return customBindings.stances;
@@ -72,7 +70,6 @@ export const KeyboardHints: React.FC<KeyboardHintsProps> = ({
     return ["1", "2", "3", "4", "5", "6", "7", "8"];
   }, [customBindings]);
 
-  // Layout calculations
   const layout = useMemo(() => {
     const keySize = isMobile ? 32 : 48;
     const gap = isMobile ? 4 : 8;

@@ -38,7 +38,6 @@ import { VITAL_POINTS_DATA } from "./VitalPointsData";
  * - MODERATE (16 points): Moderate effectiveness
  * - MINOR (4 points): Low damage points
  *
- * @public
  * @korean 급소시스템
  */
 export const KOREAN_VITAL_POINTS: readonly VitalPoint[] = VITAL_POINTS_DATA;
@@ -49,7 +48,6 @@ export const KOREAN_VITAL_POINTS: readonly VitalPoint[] = VITAL_POINTS_DATA;
  * @param category - The vital point category to filter by
  * @returns Array of vital points in that category
  *
- * @public
  * @korean 범주별급소
  */
 export const getVitalPointsByCategory = (
@@ -64,7 +62,6 @@ export const getVitalPointsByCategory = (
  * @param regionPrefix - Region prefix to filter by (e.g., "head_", "torso_")
  * @returns Array of vital points in that region
  *
- * @public
  * @korean 부위별급소
  */
 export const getVitalPointsByRegion = (regionPrefix: string): VitalPoint[] => {
@@ -77,7 +74,6 @@ export const getVitalPointsByRegion = (regionPrefix: string): VitalPoint[] => {
  * @param id - Unique vital point identifier
  * @returns The vital point or undefined if not found
  *
- * @public
  * @korean 급소검색
  */
 export const getVitalPointById = (id: string): VitalPoint | undefined => {
@@ -90,7 +86,6 @@ export const getVitalPointById = (id: string): VitalPoint | undefined => {
  * @param stance - Trigram stance to check effectiveness for
  * @returns Array of vital points effective for that stance
  *
- * @public
  * @korean 자세별급소
  */
 export const getVitalPointsByStance = (stance: TrigramStance): VitalPoint[] => {
@@ -106,7 +101,6 @@ export const getVitalPointsByStance = (stance: TrigramStance): VitalPoint[] => {
  * @param maxDifficulty - Maximum difficulty (0.0 to 1.0)
  * @returns Array of vital points within difficulty range
  *
- * @public
  * @korean 난이도별급소
  */
 export const getVitalPointsByDifficulty = (
@@ -126,7 +120,6 @@ export const getVitalPointsByDifficulty = (
  * @param severity - Severity level to filter by
  * @returns Array of vital points at that severity
  *
- * @public
  * @korean 심각도별급소
  */
 export const getVitalPointsBySeverity = (
@@ -140,7 +133,6 @@ export const getVitalPointsBySeverity = (
  *
  * @returns Statistics about the vital points system
  *
- * @public
  * @korean 급소통계
  */
 export const getVitalPointsStats = () => {

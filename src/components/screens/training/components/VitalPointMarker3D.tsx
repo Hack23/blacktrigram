@@ -93,7 +93,6 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
   pulseAmplitude,
   maxEmissiveIntensity = 3.5,
 }) => {
-  // Default pulse settings: higher frequency/amplitude for selected, lower for training mode
   const defaultPulseFrequency = isTraining && !isSelected ? 4 : 6;
   const defaultPulseAmplitude = isTraining && !isSelected ? 0.15 : 0.25;
   
@@ -102,25 +101,18 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
-  // Calculate marker size (larger on mobile, adjustable by difficulty)
   const baseSize = isMobile ? 0.15 : 0.1;
   const markerSize = baseSize * sizeMultiplier;
 
-  // Reusable vector for scale animation
   const targetScale = useMemo(() => new THREE.Vector3(1, 1, 1), []);
 
-  // Animate selected and hovered markers
-  // Note: Pulse frequency and amplitude are configurable via props to allow adjustment
-  // for extended training sessions where high frequency may cause visual fatigue.
   useFrame((state) => {
     if (!meshRef.current) return;
 
     if (isSelected || hovered) {
-      // Pulsing animation with configurable frequency and amplitude
       const pulse = Math.sin(state.clock.elapsedTime * activePulseFrequency) * activePulseAmplitude + PULSE_BASE_SCALE;
       meshRef.current.scale.setScalar(pulse);
     } else {
-      // Smooth return to normal scale
       targetScale.set(1, 1, 1);
       meshRef.current.scale.lerp(targetScale, 0.1);
     }
@@ -131,25 +123,18 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
     [vitalPoint.severity]
   );
 
-  // Memoize marker material to avoid recreating on every render
   const markerMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
         color: isSelected ? KOREAN_COLORS.ACCENT_GOLD : color,
         emissive: isSelected ? KOREAN_COLORS.ACCENT_GOLD : color,
         emissiveIntensity: isSelected || hovered ? maxEmissiveIntensity : 2.0,
-        // Note: High emissive intensity (default 3.5 for selected) is optimized for
-        // a small number of simultaneously highlighted markers. When many markers are
-        // active (e.g., displaying all 70 vital points), reduce maxEmissiveIntensity
-        // via props or implement LOD to cap total high-intensity markers at ~10-15.
-        // See AnatomyOverlay3D.tsx for consistent guidance on emissive thresholds.
         metalness: 0.9, // Increased metalness for more reflective appearance (was 0.8)
         roughness: 0.1, // Reduced roughness for stronger reflections (was 0.2)
         clearcoat: 1.0,
         clearcoatRoughness: 0.05, // Reduced for sharper clearcoat (was 0.1)
         transparent: true,
         opacity: isTraining ? 0.9 : 0.6,
-        // Enhanced PBR properties
         transmission: 0.1, // Slight transmission for glass-like effect
         thickness: 0.2,
         ior: 2.4, // High IOR for gem-like appearance
@@ -159,14 +144,12 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
     [isSelected, hovered, color, maxEmissiveIntensity, isTraining]
   );
 
-  // Dispose marker material on unmount or when a new material is created
   useEffect(() => {
     return () => {
       markerMaterial.dispose();
     };
   }, [markerMaterial]);
 
-  // Track screen width for responsive distance factor updates on resize
   const [screenWidth, setScreenWidth] = useState(() =>
     typeof window !== "undefined"
       ? window.innerWidth
@@ -184,12 +167,10 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Calculate optimal distance factor for tooltip overlay
   const tooltipDistanceFactor = useMemo(() => {
     return calculateDistanceFactor(screenWidth, "text", isMobile);
   }, [screenWidth, isMobile]);
 
-  // Apply Html overlay styles for tooltip
   const tooltipOverlayStyle = useMemo(() => {
     return applyHtmlOverlayStyles(
       "tooltip",

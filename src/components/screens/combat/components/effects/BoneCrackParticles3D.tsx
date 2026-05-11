@@ -150,7 +150,6 @@ export const BoneCrackParticles3D: React.FC<BoneCrackParticles3DProps> = ({
     Map<string, BoneParticleInstance>
   >(new Map());
 
-  // Create particle instances for new effects
   useEffect(() => {
     if (!enabled) return;
 
@@ -160,22 +159,18 @@ export const BoneCrackParticles3D: React.FC<BoneCrackParticles3DProps> = ({
         const fragmentSize = getFragmentSize(effect.fractureType);
         const velocitySpread = getVelocitySpread(effect.fractureType);
 
-        // Create positions buffer
         const positions = new Float32Array(particleCount * 3);
         const velocities = new Float32Array(particleCount * 3);
         const rotations = new Float32Array(particleCount * 3);
         const lifetimes = new Float32Array(particleCount);
 
-        // Initialize particles at impact position
         for (let i = 0; i < particleCount; i++) {
           const i3 = i * 3;
 
-          // Start at impact position
           positions[i3] = effect.position[0];
           positions[i3 + 1] = effect.position[1];
           positions[i3 + 2] = effect.position[2];
 
-          // Velocity: explosion pattern based on impact direction
           const angle = (Math.PI * 2 * i) / particleCount;
           const elevation = Math.random() * Math.PI * 0.5; // 0-90 degrees
 
@@ -188,26 +183,22 @@ export const BoneCrackParticles3D: React.FC<BoneCrackParticles3DProps> = ({
             effect.impactDirection[2] +
             Math.sin(angle) * Math.cos(elevation) * speed;
 
-          // Random rotation velocities for tumbling
           rotations[i3] = (Math.random() - 0.5) * BONE_PHYSICS.ROTATION_SPEED;
           rotations[i3 + 1] =
             (Math.random() - 0.5) * BONE_PHYSICS.ROTATION_SPEED;
           rotations[i3 + 2] =
             (Math.random() - 0.5) * BONE_PHYSICS.ROTATION_SPEED;
 
-          // Lifetime (active + ground persistence)
           lifetimes[i] =
             BONE_PHYSICS.LIFETIME_ACTIVE + BONE_PHYSICS.LIFETIME_GROUND;
         }
 
-        // Create geometry
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
           'position',
           new THREE.BufferAttribute(positions, 3)
         );
 
-        // White/ivory material for bone fragments
         const material = new THREE.PointsMaterial({
           color: 0xf5f5dc, // Ivory/bone color
           size: fragmentSize,
@@ -234,7 +225,6 @@ export const BoneCrackParticles3D: React.FC<BoneCrackParticles3DProps> = ({
     });
   }, [effects, enabled, isMobile, particleInstances]);
 
-  // Animate bone fragments with physics
   useFrame((_state, delta) => {
     if (!enabled) return;
 
@@ -257,22 +247,17 @@ export const BoneCrackParticles3D: React.FC<BoneCrackParticles3DProps> = ({
           const elapsed =
             (currentTime - instance.startTime) / 1000 - i * 0.01; // Stagger
 
-          // Active falling phase
           if (elapsed < BONE_PHYSICS.LIFETIME_ACTIVE) {
-            // Apply velocity
             positions[i3] += instance.velocities[i3] * safeDelta;
             positions[i3 + 1] += instance.velocities[i3 + 1] * safeDelta;
             positions[i3 + 2] += instance.velocities[i3 + 2] * safeDelta;
 
-            // Apply gravity
             instance.velocities[i3 + 1] += BONE_PHYSICS.GRAVITY * safeDelta;
 
-            // Apply air resistance
             instance.velocities[i3] *= BONE_PHYSICS.AIR_RESISTANCE;
             instance.velocities[i3 + 1] *= BONE_PHYSICS.AIR_RESISTANCE;
             instance.velocities[i3 + 2] *= BONE_PHYSICS.AIR_RESISTANCE;
 
-            // Ground collision
             if (positions[i3 + 1] <= 0) {
               positions[i3 + 1] = 0;
               instance.velocities[i3 + 1] = 0;
@@ -280,14 +265,11 @@ export const BoneCrackParticles3D: React.FC<BoneCrackParticles3DProps> = ({
               instance.velocities[i3 + 2] *= 0.3;
             }
           }
-          // Ground persistence phase - fragments remain visible
           else {
-            // Ensure fragments stay on ground
             if (positions[i3 + 1] > 0) {
               positions[i3 + 1] = 0;
             }
 
-            // Fade out in last second
             const timeRemaining = lifetime - elapsed;
             if (timeRemaining < 1.0) {
               const opacity = timeRemaining;
@@ -296,14 +278,12 @@ export const BoneCrackParticles3D: React.FC<BoneCrackParticles3DProps> = ({
             }
           }
 
-          // Decrease lifetime
           instance.lifetimes[i] -= safeDelta;
         }
       }
 
       instance.points.geometry.attributes.position.needsUpdate = true;
 
-      // Clean up expired effect
       if (allExpired) {
         instance.points.geometry.dispose();
         (instance.points.material as THREE.Material).dispose();

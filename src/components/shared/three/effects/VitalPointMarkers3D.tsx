@@ -69,20 +69,12 @@ const getSeverityColor = (severity: VitalPointSeverity): number => {
   }
 };
 
-// Coordinate conversion constants
-// The vital point data uses pixel coordinates where:
-// - X: ~50-150 range, centered around 100 (character center)
-// - Y: 0 at top of head, ~200 at feet
-// The 3D character is:
-// - X: centered at 0, width ~0.8 units
-// - Y: 0 at feet, ~2.8 at top of head
 const CHARACTER_CENTER_X = 100; // Pixel center of character sprite
 const CHARACTER_SPRITE_HEIGHT = 200; // Pixel height of character sprite
 const CHARACTER_3D_HEIGHT = 2.8; // 3D model height in world units
 const CHARACTER_3D_WIDTH = 0.8; // Approximate 3D model width
 const SPRITE_WIDTH = 100; // Half-width of sprite (total ~200 pixels)
 
-// Label styling constants
 const LABEL_STYLES = {
   padding: "4px 8px",
   borderRadius: "4px",
@@ -119,17 +111,12 @@ const convert2DTo3D = (
   pos2D: Position,
   basePosition: [number, number, number]
 ): [number, number, number] => {
-  // Convert X from pixel (100=center) to 3D offset
-  // Map from [50, 150] to [-0.4, 0.4] approximately
   const normalizedX = (pos2D.x - CHARACTER_CENTER_X) / SPRITE_WIDTH;
   const x3D = normalizedX * CHARACTER_3D_WIDTH;
 
-  // Convert Y from pixel (0=top, 200=bottom) to 3D height (0=feet, 2.8=head)
-  // Invert Y axis and scale to 3D height
   const normalizedY = 1 - pos2D.y / CHARACTER_SPRITE_HEIGHT;
   const y3D = normalizedY * CHARACTER_3D_HEIGHT;
 
-  // Z offset - slight forward position for visibility
   const z3D = 0.15;
 
   return [basePosition[0] + x3D, basePosition[1] + y3D, basePosition[2] + z3D];
@@ -164,15 +151,12 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
   const sphereRef = useRef<THREE.Mesh>(null);
   const ringRef = useRef<THREE.Mesh>(null);
 
-  // Animate marker
   useFrame((state) => {
     if (!sphereRef.current || !animated) return;
 
-    // Pulsing animation
     const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.1 + 1;
     sphereRef.current.scale.setScalar(pulse * scale);
 
-    // Rotate ring for selected/hovered
     if (ringRef.current && (selected || hovered)) {
       ringRef.current.rotation.z += 0.05;
     }
@@ -185,8 +169,6 @@ const VitalPointMarker: React.FC<VitalPointMarkerProps> = ({
   }, [selected, hovered, vitalPoint.severity]);
 
   const markerSize = useMemo(() => {
-    // Base marker size and severity multipliers
-    // Increased base size for better visibility in combat
     const DEFAULT_MARKER_SIZE = 0.08;
 
     switch (vitalPoint.severity) {
@@ -300,37 +282,30 @@ export const VitalPointMarkers3D: React.FC<VitalPointMarkers3DProps> = ({
 }) => {
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
 
-  // Filter vital points based on severity, region, and search
   const visiblePoints = useMemo(() => {
     let points = [...KOREAN_VITAL_POINTS];
 
-    // Filter by severity
     if (severityFilter && severityFilter.length > 0) {
       points = points.filter((vp) => severityFilter.includes(vp.severity));
     }
 
-    // Filter by region
     if (regionFilter !== "all") {
       if (regionFilter === "arms") {
-        // Match both left and right arm vital points
         points = points.filter(
           (vp) =>
             vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_")
         );
       } else if (regionFilter === "legs") {
-        // Match both left and right leg vital points
         points = points.filter(
           (vp) =>
             vp.id.startsWith("leg_left_") || vp.id.startsWith("leg_right_")
         );
       } else {
-        // Simple prefix match for head_ or torso_
         const prefix = `${regionFilter}_`;
         points = points.filter((vp) => vp.id.startsWith(prefix));
       }
     }
 
-    // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       points = points.filter(
@@ -345,14 +320,12 @@ export const VitalPointMarkers3D: React.FC<VitalPointMarkers3DProps> = ({
     return points;
   }, [severityFilter, regionFilter, searchQuery]);
 
-  // Handle point hover
   const handlePointHover = (vitalPointId: string, hovered: boolean) => {
     const newHovered = hovered ? vitalPointId : null;
     setHoveredPoint(newHovered);
     onPointHover?.(newHovered);
   };
 
-  // Handle point click
   const handlePointClick = (vitalPointId: string) => {
     onPointClick?.(vitalPointId);
   };

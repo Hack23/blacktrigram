@@ -1,10 +1,14 @@
 /**
- * Barrel exports for systems types
+ * Barrel exports for the systems module.
+ *
+ * Re-exports all types, classes, and utilities from the combat,
+ * vital point, effect, layout, and player subsystems.
+ *
  * @module systems
  * @category Game Systems
  */
 
-// Export base types
+// Base system interface types
 export type {
   AISystemConfig,
   AnimationSystemInterface,

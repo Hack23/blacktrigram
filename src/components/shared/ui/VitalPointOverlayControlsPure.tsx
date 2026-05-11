@@ -126,15 +126,12 @@ export const VitalPointOverlayControlsPure: React.FC<
 }) => {
   const [expanded, setExpanded] = useState(false);
 
-  // Use internal state if no external control provided
   const [internalSearchQuery, setInternalSearchQuery] = useState("");
   const searchQuery = externalSearchQuery ?? internalSearchQuery;
   const setSearchQuery = onSearchQueryChange ?? setInternalSearchQuery;
 
-  // Get system statistics
   const stats = useMemo(() => getVitalPointsStats(), []);
 
-  // Default screen position - left side, below player 1 status (accounting for stance indicator)
   const defaultPosition: {
     top?: string;
     left?: string;
@@ -150,37 +147,30 @@ export const VitalPointOverlayControlsPure: React.FC<
 
   const finalPosition = screenPosition ?? defaultPosition;
 
-  // Get filtered count
   const filteredCount = useMemo(() => {
     let points = [...KOREAN_VITAL_POINTS];
 
-    // Filter by severity
     if (severityFilters.length > 0) {
       points = points.filter((vp) => severityFilters.includes(vp.severity));
     }
 
-    // Filter by region
     if (regionFilter !== "all") {
       if (regionFilter === "arms") {
-        // Match both left and right arm vital points
         points = points.filter(
           (vp) =>
             vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_"),
         );
       } else if (regionFilter === "legs") {
-        // Match both left and right leg vital points
         points = points.filter(
           (vp) =>
             vp.id.startsWith("leg_left_") || vp.id.startsWith("leg_right_"),
         );
       } else {
-        // Simple prefix match for head_ or torso_
         const prefix = `${regionFilter}_`;
         points = points.filter((vp) => vp.id.startsWith(prefix));
       }
     }
 
-    // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       points = points.filter(
@@ -195,7 +185,6 @@ export const VitalPointOverlayControlsPure: React.FC<
     return points.length;
   }, [severityFilters, regionFilter, searchQuery]);
 
-  // Toggle severity filter
   const toggleSeverityFilter = useCallback(
     (severity: VitalPointSeverity) => {
       const newFilters = severityFilters.includes(severity)
@@ -206,7 +195,6 @@ export const VitalPointOverlayControlsPure: React.FC<
     [severityFilters, onSeverityFiltersChange],
   );
 
-  // Severity options
   const severityOptions: VitalPointSeverity[] = [
     VitalPointSeverity.LETHAL,
     VitalPointSeverity.CRITICAL,
@@ -215,7 +203,6 @@ export const VitalPointOverlayControlsPure: React.FC<
     VitalPointSeverity.MINOR,
   ];
 
-  // Region options
   const regionOptions: {
     value: BodyRegionFilter;
     label: string;
@@ -228,7 +215,6 @@ export const VitalPointOverlayControlsPure: React.FC<
     { value: "legs", label: "Legs", korean: "다리" },
   ];
 
-  // Panel styles
   const panelWidth = isMobile ? 280 : 350;
   const buttonHeight = isMobile ? 32 : 36;
   const fontSize = isMobile ? 11 : 13;

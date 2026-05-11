@@ -46,7 +46,6 @@ export interface PreloadCombatAudioState {
  * These are the most frequently used sounds in combat
  */
 const CRITICAL_COMBAT_ASSETS = [
-  // Attack sounds (most common)
   "attack_punch_light_1",
   "attack_punch_light_2",
   "attack_punch_medium_1",
@@ -55,21 +54,17 @@ const CRITICAL_COMBAT_ASSETS = [
   "attack_medium",
   "attack_heavy",
 
-  // Hit reactions (essential feedback)
   "hit_light_1",
   "hit_medium_1",
   "hit_heavy_1",
   "hit_critical_1",
 
-  // Defense sounds
   "block_success_1",
   "block_break_1",
   "dodge_1",
 
-  // Movement
   "stance_change_1",
 
-  // Music
   "combat_theme",
 ] as const;
 
@@ -121,11 +116,8 @@ export function usePreloadCombatAudio(): PreloadCombatAudioState {
     let loadedCount = 0;
     const totalCount = CRITICAL_COMBAT_ASSETS.length;
 
-    // Load each asset sequentially to avoid overwhelming the browser
     for (const assetId of CRITICAL_COMBAT_ASSETS) {
       try {
-        // Get asset from registry (try SFX first, then Music)
-        // Need to use type union since getSFX returns SoundEffect and getMusic returns MusicTrack
         const sfxAsset = audioAssetRegistry.getSFX(assetId);
         const musicAsset = sfxAsset
           ? undefined

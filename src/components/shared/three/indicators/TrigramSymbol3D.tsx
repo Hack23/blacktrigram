@@ -74,7 +74,6 @@ export interface TrigramSymbol3DProps {
  * />
  * ```
  * 
- * @public
  * @korean 삼차원팔괘기호컴포넌트
  */
 export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
@@ -89,34 +88,28 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
   className = "",
   testId = "trigram-symbol-3d",
 }) => {
-  // Calculate responsive font size
   const fontSize = useMemo(() => {
     if (customFontSize) return customFontSize;
     return isMobile ? 48 : 64;
   }, [customFontSize, isMobile]);
 
-  // Convert color to CSS format
   const colorString = useMemo(() => {
     if (typeof color === "string") {
       return color;
     }
-    // Convert hex number to CSS hex string
     const hexString = color.toString(16).padStart(6, "0");
     return `#${hexString}`;
   }, [color]);
 
-  // Calculate scaled font size
   const scaledFontSize = useMemo(() => {
     return Math.round(fontSize * scale);
   }, [fontSize, scale]);
 
-  // Brushstroke text-shadow effect
   const textShadow = useMemo(() => {
     if (!brushstroke) {
       return `0 0 20px ${colorString}, 0 0 40px ${colorString}`;
     }
 
-    // Multi-layered shadow for Korean brushstroke effect
     return `
       0 0 20px ${colorString},
       0 0 40px ${colorString},
@@ -126,7 +119,6 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
     `.trim();
   }, [brushstroke, colorString]);
 
-  // Style object
   const style = useMemo(
     () => ({
       fontSize: `${scaledFontSize}px`,

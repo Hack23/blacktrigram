@@ -33,8 +33,6 @@ export interface KoreanSignage3DProps {
 export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
   scale = 1.0,
 }) => {
-  // Emissive material for glowing neon text
-  // Using MeshBasicMaterial with toneMapped: false for bloom compatibility
   const goldNeonMaterial = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
@@ -62,7 +60,6 @@ export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
     [],
   );
 
-  // Scale-aware positioning and sizing
   const leftWallX = -12 * scale;
   const rightWallX = 12 * scale;
   const backWallZ = -14 * scale;
@@ -70,7 +67,6 @@ export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
   const fontSize = 1.5 * scale;
   const outlineWidth = 0.05 * scale;
 
-  // Cleanup materials on unmount
   useEffect(() => {
     return () => {
       goldNeonMaterial.dispose();

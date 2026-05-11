@@ -18,7 +18,6 @@ import { BodyRegion } from "./common";
  * 
  * **Korean**: 부상 유형 분류
  * 
- * @public
  */
 export enum InjuryType {
   /** Blunt force trauma */
@@ -38,7 +37,6 @@ export enum InjuryType {
  * 
  * Used by both the injury tracking system and trauma visualization components.
  * 
- * @public
  */
 export interface Injury {
   /** Unique identifier */

@@ -109,29 +109,23 @@ export const Player3DWithTransitions: React.FC<
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [fromStance, setFromStance] = useState<TrigramStance>(stance);
 
-  // Detect stance changes - external effect (audio) justifies useEffect
 
   useEffect(() => {
     const previousStance = prevStanceRef.current;
 
-    // Only trigger if stance actually changed
     if (previousStance !== stance) {
       prevStanceRef.current = stance;
 
-      // External effects: audio playback (external system) and callbacks
-      // These setState calls are intentional - triggered by prop change, not creating infinite loops
       setIsTransitioning(true);
       setFromStance(previousStance);
       onStanceTransitionStart?.(previousStance, stance);
 
-      // External system: audio playback
       if (enableStanceAudio) {
         audio.playSFX(AUDIO_ASSETS.STANCE_CHANGE);
       }
     }
   }, [stance, audio, enableStanceAudio, onStanceTransitionStart]);
 
-  // Handle transition completion
   const handleTransitionComplete = useCallback(() => {
     setIsTransitioning(false);
     onStanceTransitionComplete?.(stance);

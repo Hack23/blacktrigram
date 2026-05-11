@@ -146,7 +146,6 @@ const REGION_DEPTH_OFFSETS: Record<AnatomicalRegionPhysics, number> = {
  * Provides bidirectional mapping between the 2D UI overlay coordinate system
  * and the 3D physics world coordinate system.
  * 
- * @public
  * @category Physics System
  * @korean 좌표변환기
  */

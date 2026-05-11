@@ -43,7 +43,6 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 }) => {
   const audio = useAudio();
 
-  // Handle keyboard shortcuts
   useEffect(() => {
     if (!isOpen) return;
 
@@ -81,7 +80,6 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         pointerEvents: "auto",
       }}
       onClick={(e) => {
-        // Close on backdrop click
         if (e.target === e.currentTarget) {
           onCancel();
         }

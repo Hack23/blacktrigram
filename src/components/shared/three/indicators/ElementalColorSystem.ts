@@ -90,7 +90,6 @@ export const TRIGRAM_TO_ELEMENT: Record<TrigramStance, Element> = {
  * // Returns 0xffffff (white/metal)
  * ```
  * 
- * @public
  * @korean 팔괘원소색상얻기
  */
 export function getTrigramElementColor(stance: TrigramStance): number {
@@ -113,7 +112,6 @@ export function getTrigramElementColor(stance: TrigramStance): number {
  * // Returns "☰" (Heaven)
  * ```
  * 
- * @public
  * @korean 팔괘기호얻기
  */
 export function getTrigramSymbol(stance: TrigramStance): string {
@@ -132,7 +130,6 @@ export function getTrigramSymbol(stance: TrigramStance): string {
  * // Returns "fire"
  * ```
  * 
- * @public
  * @korean 팔괘원소얻기
  */
 export function getTrigramElement(stance: TrigramStance): Element {
@@ -153,7 +150,6 @@ export function getTrigramElement(stance: TrigramStance): Element {
  * // Returns "건"
  * ```
  * 
- * @public
  * @korean 팔괘한글명얻기
  */
 export function getTrigramKoreanName(stance: TrigramStance): string {
@@ -174,7 +170,6 @@ export function getTrigramKoreanName(stance: TrigramStance): string {
  * // Returns "Heaven"
  * ```
  * 
- * @public
  * @korean 팔괘영문명얻기
  */
 export function getTrigramEnglishName(stance: TrigramStance): string {
@@ -203,7 +198,6 @@ export function getTrigramEnglishName(stance: TrigramStance): string {
  * // }
  * ```
  * 
- * @public
  * @korean 팔괘정보얻기
  */
 export function getTrigramInfo(stance: TrigramStance): {

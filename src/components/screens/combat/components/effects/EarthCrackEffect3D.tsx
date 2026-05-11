@@ -113,30 +113,25 @@ const generateCrackSegments = (
 ): CrackSegment[] => {
   const segments: CrackSegment[] = [];
   
-  // Pooled objects for calculations
   const tempOrigin = ThreeObjectPools.vector3.acquire();
   const tempDir = ThreeObjectPools.vector3.acquire();
   const tempOffset = ThreeObjectPools.vector3.acquire();
 
   try {
     tempOrigin.set(...effect.position);
-    // Ensure crack origin is at ground level
     tempOrigin.y = CRACK_CONSTANTS.GROUND_OFFSET;
 
     const maxLength = CRACK_CONSTANTS.BASE_LENGTH + 
       (effect.intensity * CRACK_CONSTANTS.LENGTH_INTENSITY_SCALE);
     const segmentLength = maxLength / segmentsPerLine;
 
-    // Generate radiating crack lines
     for (let i = 0; i < crackLines; i++) {
       const angle = (i / crackLines) * Math.PI * 2;
       tempDir.set(Math.cos(angle), 0, Math.sin(angle));
 
       let currentPos = tempOrigin.clone();
 
-      // Generate segments along this crack line
       for (let j = 0; j < segmentsPerLine; j++) {
-        // Add jagged offset for pottery-style cracks (Korean aesthetic)
         const jaggedAngle = angle + (Math.random() - 0.5) * CRACK_CONSTANTS.JAGGED_OFFSET;
         tempOffset.set(
           Math.cos(jaggedAngle) * segmentLength,
@@ -146,7 +141,6 @@ const generateCrackSegments = (
 
         const nextPos = currentPos.clone().add(tempOffset);
 
-        // Crack width decreases with distance from impact
         const widthFactor = 1.0 - (j / segmentsPerLine) * 0.7;
         const maxWidth = 
           CRACK_CONSTANTS.WIDTH_MIN + 
@@ -221,7 +215,6 @@ const CrackSegmentMesh: React.FC<{
   color: THREE.Color;
   opacity: number;
 }> = React.memo(({ position, dirX, dirY, dirZ, radius, length, color, opacity }) => {
-  // Memoize quaternion calculation to avoid creating new Vector3/Quaternion objects per frame
   const quaternion = useMemo(() => {
     const dir = new THREE.Vector3(dirX, dirY, dirZ);
     const up = new THREE.Vector3(0, 1, 0);
@@ -257,7 +250,6 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
   const completedEffectsRef = useRef<Set<string>>(new Set());
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
-  // Configuration based on device
   const config = useMemo(() => ({
     crackLines: isMobile 
       ? CRACK_CONSTANTS.CRACK_LINES_MOBILE 
@@ -267,13 +259,11 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
       : CRACK_CONSTANTS.SEGMENTS_PER_LINE_DESKTOP,
   }), [isMobile]);
 
-  // Crack color - Korean brown/earth tones (황토색)
   const crackColor = useMemo(() => 
     new THREE.Color(KOREAN_COLORS.TRIGRAM_GAN_PRIMARY).multiplyScalar(0.7), 
     []
   );
 
-  // Initialize segments for new effects
   useEffect(() => {
     if (!enabled) return;
 
@@ -288,7 +278,6 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
       }
     });
 
-    // Clean up removed effects
     const effectIds = new Set(effects.map((e) => e.id));
     segmentsRef.current.forEach((_, id) => {
       if (!effectIds.has(id)) {
@@ -298,7 +287,6 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
     });
   }, [effects, enabled, config]);
 
-  // Animation loop
   useFrame((_, delta) => {
     if (!enabled || !groupRef.current) return;
 
@@ -316,10 +304,8 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
           hasActiveSegments = true;
           needsUpdate = true;
 
-          // Crack appears (expands) during first 400ms
           if (segment.age < CRACK_CONSTANTS.APPEAR_DURATION) {
             const appearProgress = segment.age / CRACK_CONSTANTS.APPEAR_DURATION;
-            // Ease-out curve for smooth expansion
             const easedProgress = 1 - Math.pow(1 - appearProgress, 3);
             segment.width = segment.maxWidth * easedProgress;
           } else {
@@ -328,28 +314,21 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
         }
       }
 
-      // Check if effect is complete
       if (!hasActiveSegments && !completedEffectsRef.current.has(effectId)) {
         completedEffectsRef.current.add(effectId);
         onEffectComplete?.(effectId);
       }
     });
 
-    // Force re-render to update line geometries
     if (needsUpdate) {
       forceUpdate();
     }
   });
 
-  // Don't render if disabled or no effects
   if (!enabled || effects.length === 0) {
     return null;
   }
 
-  // Create render list for current frame
-  // Note: Accessing refs during render is intentional here - forceUpdate() ensures re-renders
-  // when segments change. This is a legitimate pattern for performance-critical rendering
-  // where we need to avoid expensive useMemo recalculations on every frame.
   const renderList: Array<{ effectId: string; segments: CrackSegment[] }> = [];
   // eslint-disable-next-line react-hooks/refs -- Intentional ref access with forceUpdate() pattern
   segmentsRef.current.forEach((segments, effectId) => {
@@ -360,7 +339,6 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
     <group ref={groupRef} data-testid="earth-crack-effect-3d">
       {renderList.map(({ effectId, segments }) =>
         segments.map((segment, index) => {
-          // Calculate opacity based on age
           const fadeStartTime = CRACK_CONSTANTS.APPEAR_DURATION;
           const fadeProgress = 
             segment.age < fadeStartTime 
@@ -371,8 +349,6 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
 
           if (opacity <= 0.01) return null;
 
-          // Calculate cylinder transform between start and end positions
-          // Using cylinders instead of lines for consistent cross-browser rendering
           const start = segment.startPos;
           const end = segment.endPos;
           const dx = end.x - start.x;
@@ -384,13 +360,10 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
           const midY = (start.y + end.y) * 0.5;
           const midZ = (start.z + end.z) * 0.5;
 
-          // Calculate rotation to align cylinder with crack direction
-          // Optimized: use memoized objects to avoid allocations in render
           const dirX = dx / length;
           const dirY = dy / length;
           const dirZ = dz / length;
 
-          // Radius scaled from segment.width for visual thickness
           const radius = segment.width * 0.015; // Scaled for visible cracks
 
           return (

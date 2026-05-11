@@ -42,7 +42,6 @@ export const VisualKeyboard3D: React.FC<VisualKeyboard3DProps> = ({
   pressedKeys,
   selectedTab,
 }) => {
-  // Filter keys by selected category
   const filteredKeys = useMemo<readonly KeyData[]>(() => {
     return filterKeysByCategory(KEYBOARD_LAYOUT, selectedTab);
   }, [selectedTab]);
