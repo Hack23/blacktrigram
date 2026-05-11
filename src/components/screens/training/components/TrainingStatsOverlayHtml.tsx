@@ -85,24 +85,20 @@ export const TrainingStatsOverlayHtml =
       distanceToDummy,
       effectiveReach = 0.7, // Default punch reach
     }) => {
-      // Use full width of container (passed from parent HUD)
       const panelWidth = width > 10 ? width : isMobile ? 180 : 200;
       const padding = getResponsiveSpacing("sm", isMobile);
       const gap = getResponsiveSpacing("xs", isMobile);
 
-      // Safe area support for notched devices
       const safeAreaStyles = useMemo(
         () => (isMobile ? getSafeAreaPadding(["top"], padding) : {}),
         [isMobile, padding],
       );
 
-      // Format accuracy with memoization
       const formattedAccuracy = useMemo(
         () => stats.accuracy.toFixed(1),
         [stats.accuracy],
       );
 
-      // Format session duration
       const formattedDuration = useMemo(() => {
         if (!stats.sessionDuration) return "00:00";
         const minutes = Math.floor(stats.sessionDuration / 60);
@@ -110,7 +106,6 @@ export const TrainingStatsOverlayHtml =
         return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
       }, [stats.sessionDuration]);
 
-      // Format distance to dummy and check if in range
       const distanceInfo = useMemo(() => {
         if (distanceToDummy === undefined) return null;
         const isInRange = distanceToDummy <= effectiveReach;
@@ -123,14 +118,12 @@ export const TrainingStatsOverlayHtml =
         };
       }, [distanceToDummy, effectiveReach]);
 
-      // Calculate perfect strike rate
       const perfectRate = useMemo(() => {
         const totalAttempts = stats.hits + stats.misses;
         if (totalAttempts === 0 || !stats.perfectStrikes) return "0";
         return ((stats.perfectStrikes / totalAttempts) * 100).toFixed(1);
       }, [stats.hits, stats.misses, stats.perfectStrikes]);
 
-      // Enhanced panel styles with neon glow and safe area support
       const panelStyle: React.CSSProperties = {
         ...getEnhancedKoreanOverlayStyles({
           opacity: 0.92,
@@ -144,7 +137,6 @@ export const TrainingStatsOverlayHtml =
         padding: `${padding}px`,
       };
 
-      // Header title styles with improved mobile font size (16px+ for Korean)
       const titleFontSize = isMobile
         ? getMobileKoreanFontSize("SMALL", width ?? 375) // 16px minimum
         : 18;
@@ -316,8 +308,6 @@ export const TrainingStatsOverlayHtml =
       );
     },
     (prevProps, nextProps) => {
-      // Custom comparison for optimal re-render prevention
-      // Only re-render if stats values actually changed
       return (
         prevProps.stats.score === nextProps.stats.score &&
         prevProps.stats.combo === nextProps.stats.combo &&
@@ -355,7 +345,6 @@ const StatRow = React.memo<{
   isMobile: boolean;
   width: number; // Width for Super HD font scaling
 }>(({ korean, english, value, color, isMobile, width }) => {
-  // Improved font sizes for mobile readability (min 16px for Korean body text)
   const labelFontSize = isMobile
     ? getMobileKoreanFontSize("SMALL", width) // 16px minimum
     : 14;

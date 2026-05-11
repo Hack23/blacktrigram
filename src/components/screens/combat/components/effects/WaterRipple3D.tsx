@@ -168,13 +168,10 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   
-  // PERFORMANCE: Reuse materials instead of creating on every render
   const materialsRef = useRef<Map<number, THREE.MeshBasicMaterial>>(new Map());
   
-  // PERFORMANCE: Reuse geometries instead of creating on every render
   const geometriesRef = useRef<Map<string, THREE.RingGeometry>>(new Map());
 
-  // Create ring meshes for each effect
   const ringMeshes = useMemo(() => {
     if (!enabled || effects.length === 0) return [];
 
@@ -193,24 +190,19 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
     }));
   }, [effects, enabled, isMobile]);
   
-  // Cleanup materials and geometries on unmount
   React.useEffect(() => {
-    // Capture ref values in closure to avoid accessing refs in cleanup
     const materials = materialsRef.current;
     const geometries = geometriesRef.current;
     
     return () => {
-      // Dispose all cached materials
       materials.forEach((material) => material.dispose());
       materials.clear();
       
-      // Dispose all cached geometries
       geometries.forEach((geometry) => geometry.dispose());
       geometries.clear();
     };
   }, []);
   
-  // Get or create reusable material for a color
   const getMaterial = React.useCallback((color: number): THREE.MeshBasicMaterial => {
     if (!materialsRef.current.has(color)) {
       materialsRef.current.set(
@@ -231,14 +223,10 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
     return material;
   }, []);
   
-  // Get or create reusable geometry for a radius (quantized to fixed steps)
   const getGeometry = React.useCallback((radius: number): THREE.RingGeometry => {
-    // PERFORMANCE: Quantize radius into 64 discrete steps to prevent unbounded geometry growth
-    // Without quantization, continuous radius expansion creates ~4000 unique geometries per effect
     const GEOMETRY_STEP_COUNT = 64;
     const maxRadius = RIPPLE_CONSTANTS.MAX_RADIUS;
     
-    // Quantize radius to nearest step
     const step = Math.floor((radius / maxRadius) * GEOMETRY_STEP_COUNT);
     const quantizedRadius = (step / GEOMETRY_STEP_COUNT) * maxRadius;
     const key = `${step}`;
@@ -260,7 +248,6 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
     return geometry;
   }, []);
 
-  // Physics update loop
   useFrame((_state, delta) => {
     if (!enabled || !groupRef.current) return;
 
@@ -268,38 +255,29 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
 
     ringMeshes.forEach((meshData) => {
       meshData.rings.forEach((ring) => {
-        // Update ring age
         ring.age += safeDelta;
 
-        // Skip if not yet spawned
         if (ring.age < 0) {
           ring.opacity = 0;
           return;
         }
 
-        // Expand radius
         ring.radius += ring.speed * safeDelta;
 
-        // Calculate opacity based on lifetime
         const lifeProgress = ring.age / ring.lifetime;
         if (lifeProgress < 0.2) {
-          // Fade in
           ring.opacity = lifeProgress * 5;
         } else if (lifeProgress > 0.8) {
-          // Fade out
           ring.opacity = (1 - lifeProgress) * 5;
         } else {
-          // Full visibility
           ring.opacity = 1;
         }
 
-        // Check if ring expired
         if (ring.age >= ring.lifetime || ring.radius >= RIPPLE_CONSTANTS.MAX_RADIUS) {
           ring.opacity = 0;
         }
       });
 
-      // Check if all rings expired
       const allExpired = meshData.rings.every(
         (ring) => ring.age >= ring.lifetime || ring.radius >= RIPPLE_CONSTANTS.MAX_RADIUS
       );
@@ -320,25 +298,18 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
       {/* eslint-disable react-hooks/refs */}
       {ringMeshes.flatMap((meshData) =>
         meshData.rings.map((ring, ringIndex) => {
-          // Skip rings not yet spawned or expired
           if (ring.age < 0 || ring.opacity <= 0) {
             return null;
           }
 
-          // Get geometry and material (cached in refs for performance)
           const geometry = getGeometry(ring.radius);
           const baseMaterial = getMaterial(meshData.color);
 
-          // Calculate wave amplitude with oscillation
-          // Use ring age for animation timing (deterministic, not impure like performance.now)
           const waveOffset =
             Math.sin(ring.age * RIPPLE_CONSTANTS.WAVE_FREQUENCY + ring.phaseOffset) *
             RIPPLE_CONSTANTS.WAVE_AMPLITUDE *
             ring.opacity;
 
-          // Clone material per ring to prevent shared opacity issues
-          // (Multiple rings would otherwise share the same material and opacity)
-          // Note: React Three Fiber automatically disposes cloned materials on unmount
           const material = baseMaterial.clone();
           material.opacity = ring.opacity * 0.6;
           material.transparent = true;

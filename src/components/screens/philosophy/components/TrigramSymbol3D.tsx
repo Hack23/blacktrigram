@@ -64,7 +64,6 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
   const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
 
-  // Memoize target scales to avoid recreation in useFrame
   const targetScaleSelected = useMemo(
     () => new THREE.Vector3(1.5 * scale, 1.5 * scale, 1.5 * scale),
     [scale]
@@ -78,7 +77,6 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
     [scale]
   );
 
-  // Memoize material properties and color strings
   const materialConfig = useMemo(() => {
     const baseColor = trigram.theme.primary;
     const emissiveColor = isSelected
@@ -92,7 +90,6 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
       emissiveIntensity,
       metalness: 0.7,
       roughness: 0.3,
-      // Pre-calculate color strings for Html overlay
       symbolColor: `#${baseColor.toString(16).padStart(6, "0")}`,
       glowColor: isSelected
         ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`
@@ -101,18 +98,14 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
     };
   }, [trigram.theme.primary, isSelected, isHovered]);
 
-  // 60fps animation loop
   useFrame((state, delta) => {
     if (!meshRef.current || !glowRef.current) return;
 
-    // Smooth rotation
     meshRef.current.rotation.y += delta * 0.5;
     meshRef.current.rotation.x += delta * 0.2;
 
-    // Glow rotation in opposite direction
     glowRef.current.rotation.y -= delta * 0.3;
 
-    // Scale animation with lerp for smooth transitions
     let targetScale = targetScaleNormal;
     if (isSelected) {
       targetScale = targetScaleSelected;
@@ -121,7 +114,6 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
     }
     meshRef.current.scale.lerp(targetScale, 0.1);
 
-    // Pulsing glow effect, scaled relative to the main mesh
     const pulseFactor = Math.sin(state.clock.elapsedTime * 2) * 0.1 + 1;
     const baseScale = meshRef.current.scale.x;
     const glowBaseScale = 1.3 * baseScale;

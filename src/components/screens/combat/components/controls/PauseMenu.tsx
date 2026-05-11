@@ -71,7 +71,6 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
   const [focusedIndex, setFocusedIndex] = useState<number>(0);
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  // Memoize menuItems to prevent recreation on every render
   const menuItems: MenuItem[] = React.useMemo(
     () => [
       {
@@ -133,14 +132,12 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
     [audio, onResume]
   );
 
-  // Focus first button on mount
   useEffect(() => {
     if (buttonRefs.current[0]) {
       buttonRefs.current[0].focus();
     }
   }, [menuItems]);
 
-  // Keyboard navigation handler
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent, index: number) => {
       handleKeyboardNav(e.nativeEvent, {
@@ -166,7 +163,6 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
     [menuItems, onResume]
   );
 
-  // ESC key handling is now managed by the parent (CombatScreen3D) to avoid conflicts
 
   return (
     <>

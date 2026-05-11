@@ -60,7 +60,6 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 
-  // Detect user preference for reduced motion
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -71,7 +70,6 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
       setReducedMotion(e.matches);
     };
 
-    // Modern browsers
     mediaQuery.addEventListener("change", handleChange);
 
     return () => {
@@ -79,7 +77,6 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
     };
   }, []);
 
-  // Apply high contrast theme globally
   useEffect(() => {
     if (typeof document === "undefined") return;
 
@@ -90,12 +87,10 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
     }
   }, [highContrast]);
 
-  // Toggle high contrast mode
   const toggleHighContrast = useCallback(() => {
     setHighContrast((prev) => !prev);
   }, []);
 
-  // Memoize context value to prevent unnecessary re-renders
   const value = useMemo<AccessibilityContextValue>(
     () => ({
       highContrast,

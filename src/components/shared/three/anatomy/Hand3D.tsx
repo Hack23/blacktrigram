@@ -145,7 +145,6 @@ const FingerSegment: React.FC<FingerSegmentProps> = ({
   radius,
   color,
 }) => {
-  // Memoize material to avoid recreating on every render
   const material = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
@@ -154,20 +153,17 @@ const FingerSegment: React.FC<FingerSegmentProps> = ({
         roughness: 0.6,
         clearcoat: 0.3,
         clearcoatRoughness: 0.5,
-        // PBR skin properties
         transmission: 0,
         thickness: 0.1,
         ior: 1.4, // Index of refraction for skin
         sheen: 0.1, // Subtle skin sheen
         sheenRoughness: 0.8,
-        // Subtle emissive for alive appearance
         emissive: new THREE.Color(color),
         emissiveIntensity: 0.02,
       }),
     [color],
   );
 
-  // Dispose material on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
       material.dispose();
@@ -204,13 +200,7 @@ const Finger: React.FC<FingerProps> = ({
   isHighlighted,
   skinColor,
 }) => {
-  // Finger dimensions based on anatomical proportions
-  // For ~180cm person: index ~7cm, middle ~8cm, ring ~7.5cm, pinky ~6cm, thumb ~5cm
-  // These dimensions are in METERS for Three.js
   const dimensions = useMemo(() => {
-    // Finger segment lengths based on anatomical proportions (in meters)
-    // Total finger length: proximal + intermediate + distal
-    // Index: ~7cm total = 0.03 + 0.022 + 0.018
     const baseLength =
       fingerName === "thumb"
         ? 0.025 // Thumb proximal is shorter
@@ -218,7 +208,6 @@ const Finger: React.FC<FingerProps> = ({
           ? 0.022 // Pinky is shorter
           : 0.03; // Other fingers
 
-    // Finger thickness: ~1.5-1.8cm diameter (0.75-0.9cm radius)
     const baseRadius =
       fingerName === "pinky"
         ? 0.006 // Pinky is thinner
@@ -234,9 +223,6 @@ const Finger: React.FC<FingerProps> = ({
     };
   }, [fingerName]);
 
-  // Calculate curl rotations for each segment
-  // Curl value 0-1 maps to rotation angles
-  // These factors represent biomechanical constraints of human finger joints
   const PROXIMAL_CURL_FACTOR = 0.5; // Proximal joint bends less (0-90 degrees)
   const INTERMEDIATE_CURL_FACTOR = 0.7; // Middle joint bends moderately (0-126 degrees)
   const DISTAL_CURL_FACTOR = 1.0; // Distal joint bends most (0-180 degrees)
@@ -245,7 +231,6 @@ const Finger: React.FC<FingerProps> = ({
   const intermediateCurl = curl * INTERMEDIATE_CURL_FACTOR * Math.PI;
   const distalCurl = curl * DISTAL_CURL_FACTOR * Math.PI;
 
-  // Highlight with color change only (NO glow/emissive)
   const highlightColor = isHighlighted ? KOREAN_COLORS.ACCENT_RED : skinColor;
 
   return (
@@ -323,7 +308,6 @@ const Finger: React.FC<FingerProps> = ({
  */
 export const Hand3D: React.FC<Hand3DProps> = ({
   side,
-  // pose, // TODO: Reserved for future pose-specific hand adjustments (e.g., different palm sizes per pose)
   fingerCurl,
   distanceFromCamera,
   wristRotation,
@@ -332,30 +316,22 @@ export const Hand3D: React.FC<Hand3DProps> = ({
   skinColor = 0xffdbac,
   scale = 1.0,
 }) => {
-  // Determine LOD based on distance
   const lodConfig = useMemo(
     () => getLODConfig(distanceFromCamera),
     [distanceFromCamera],
   );
 
-  // Hand orientation
   const sideMultiplier = side === "left" ? -1 : 1;
 
-  // Palm dimensions (realistic for ~180cm person)
-  // Palm width: ~8-9cm, Palm length (metacarpal area): ~9-10cm
-  // Total hand length including palm and fingers: ~18-19cm
-  // These dimensions are in METERS for Three.js
   const palmWidth = 0.085 * scale; // 8.5cm palm width
   const palmLength = 0.095 * scale; // 9.5cm palm/metacarpal length
   const palmThickness = 0.025 * scale; // 2.5cm palm thickness
 
-  // Determine which parts to highlight
   const highlightKnuckles = highlightMode === "knuckles";
   const highlightPalm = highlightMode === "palm";
   const highlightKnifeEdge = highlightMode === "knife_edge";
   const highlightFingertips = highlightMode === "fingertips";
 
-  // Palm color (highlight with brighter color, NO emissive/glow)
   const palmColor =
     isHighlighted && highlightPalm ? KOREAN_COLORS.ACCENT_GOLD : skinColor;
 
@@ -397,13 +373,11 @@ export const Hand3D: React.FC<Hand3DProps> = ({
           roughness={0.6}
           clearcoat={0.3}
           clearcoatRoughness={0.5}
-          // PBR skin properties
           transmission={0}
           thickness={0.1}
           ior={1.4} // Index of refraction for skin
           sheen={0.1} // Subtle skin sheen
           sheenRoughness={0.8}
-          // Subtle emissive for alive appearance
           emissive={new THREE.Color(0xff6040)}
           emissiveIntensity={0.02}
         />
@@ -424,7 +398,6 @@ export const Hand3D: React.FC<Hand3DProps> = ({
             roughness={0.2}
             clearcoat={0.8}
             clearcoatRoughness={0.1}
-            // High emissive for striking surface visibility
             emissive={KOREAN_COLORS.ACCENT_GOLD}
             emissiveIntensity={2.0}
             transmission={0}

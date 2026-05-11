@@ -42,7 +42,6 @@ export interface TraumaOverlay3DProps {
   readonly showFractures?: boolean;
 }
 
-// Re-export for backward compatibility
 export { InjuryType };
 export type { Injury };
 
@@ -85,7 +84,6 @@ const InjuryMarker: React.FC<{
   characterPosition: [number, number, number];
   isMobile: boolean;
 }> = ({ injury, characterPosition, isMobile }) => {
-  // Calculate world position relative to character
   const worldPosition: [number, number, number] = useMemo(() => {
     return [
       characterPosition[0] + injury.position[0],
@@ -96,7 +94,6 @@ const InjuryMarker: React.FC<{
 
   const size = useMemo(() => getInjurySize(injury.severity), [injury.severity]);
 
-  // Render based on injury type
   switch (injury.type) {
     case InjuryType.BRUISE: {
       const color = getBruiseColor(injury.severity, injury.hitCount);
@@ -192,11 +189,8 @@ const FractureWarning: React.FC<{
   health: number;
   isMobile: boolean;
 }> = ({ health, isMobile }) => {
-  // Calculate opacity before early return to avoid conditional hook call
   const warningOpacity = useMemo(() => {
-    // Pulse more intensely as health drops
     const rawOpacity = 0.5 + (30 - health) / 60; // 0.5 at 30% health, 1.0 at 0% health
-    // Clamp to valid CSS opacity range [0, 1] in case health falls outside [0, 30]
     return Math.min(1, Math.max(0, rawOpacity));
   }, [health]);
 
@@ -292,17 +286,11 @@ export const TraumaOverlay3D: React.FC<TraumaOverlay3DProps> = ({
   isMobile = false,
   showFractures = true,
 }) => {
-  // Filter injuries for this player
   const playerInjuries = useMemo(() => {
-    // In multi-player scenarios, filter by player when available
     if (playerId === null || playerId === undefined) {
-      // Single-player or unspecified player: show all injuries
       return injuries;
     }
 
-    // Backward-compatible filtering:
-    // - If an injury has a playerId, it must match the current playerId.
-    // - If an injury has no playerId, include it (legacy/global injuries).
     return injuries.filter((injury) => {
       if (injury.playerId === null || injury.playerId === undefined) {
         return true;
@@ -311,7 +299,6 @@ export const TraumaOverlay3D: React.FC<TraumaOverlay3DProps> = ({
     });
   }, [injuries, playerId]);
 
-  // Separate fractures from other injuries
   const { fractures, otherInjuries } = useMemo(() => {
     const frac = playerInjuries.filter((i) => i.type === InjuryType.FRACTURE);
     const other = playerInjuries.filter((i) => i.type !== InjuryType.FRACTURE);

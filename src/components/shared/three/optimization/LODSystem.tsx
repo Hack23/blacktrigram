@@ -43,7 +43,6 @@ export interface LODDistances {
 export const DEFAULT_LOD_DISTANCES: LODDistances = {
   high: 0, // 0-12 units (close range)
   medium: 12, // 12-20 units (mid range)
-  // Beyond 20 units uses low detail
 };
 
 /**
@@ -52,7 +51,6 @@ export const DEFAULT_LOD_DISTANCES: LODDistances = {
 export const MOBILE_LOD_DISTANCES: LODDistances = {
   high: 0, // 0-8 units (very close)
   medium: 8, // 8-15 units (mid range)
-  // Beyond 15 units uses low detail
 };
 
 /**
@@ -94,11 +92,9 @@ export const LODCharacter: React.FC<LODCharacterProps> = ({
   distances,
   isMobile = false,
 }) => {
-  // Use mobile distances if on mobile, otherwise use defaults
   const lodDistances =
     distances ?? (isMobile ? MOBILE_LOD_DISTANCES : DEFAULT_LOD_DISTANCES);
 
-  // Detailed component requires array of distances
   const distanceArray = [
     lodDistances.high,
     lodDistances.medium,
@@ -175,17 +171,13 @@ export function calculateLODDistances(
   arenaWidth: number,
   arenaDepth: number,
 ): LODDistances {
-  // High detail: within 40% of arena diagonal
   const diagonal = Math.sqrt(arenaWidth * arenaWidth + arenaDepth * arenaDepth);
   const highDistance = diagonal * 0.4;
 
-  // Medium detail: within 70% of arena diagonal (not used directly, implicit in structure)
-  // const mediumDistance = diagonal * 0.7;
 
   return {
     high: 0,
     medium: highDistance,
-    // Low detail beyond mediumDistance
   };
 }
 

@@ -148,12 +148,10 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
   const effectInstancesRef = useRef<Map<string, EffectInstance>>(new Map());
   const pointsRef = useRef<THREE.Points>(null);
 
-  // Get particle count based on device
   const maxParticles = isMobile
     ? ARTERIAL_CONSTANTS.MAX_PARTICLES_MOBILE
     : ARTERIAL_CONSTANTS.MAX_PARTICLES_DESKTOP;
 
-  // Initialize particle buffers
   const { positionArray, sizeArray, opacityArray } = useMemo(() => {
     const maxTotal = maxParticles * 10; // Support up to 10 simultaneous effects
     return {
@@ -163,21 +161,16 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
     };
   }, [maxParticles]);
 
-  // Create new effect instances
   React.useEffect(() => {
     if (!enabled) return;
 
     effects.forEach((effect) => {
       if (!effectInstancesRef.current.has(effect.id)) {
-        // Calculate particle count based on artery type
         const arterySizeMultiplier = effect.vitalPoint === "carotid" ? 1.2 : 1.0;
         const particleCount = Math.floor(maxParticles * arterySizeMultiplier);
 
-        // Initialize particles in narrow jet pattern
         const particles: ArterialParticle[] = [];
         
-        // Use pooled objects for direction vector calculations
-        // Pool strategy: Acquire temp vectors for calculations, store owned vectors
         const tempDir = ThreeObjectPools.vector3.acquire();
         const tempAxis = ThreeObjectPools.vector3.acquire();
         const tempUp = ThreeObjectPools.vector3.acquire();
@@ -188,26 +181,21 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
           tempUp.set(0, 1, 0);
 
           for (let i = 0; i < particleCount; i++) {
-            // Random angle within spray cone
             const theta = Math.random() * Math.PI * 2;
             const phi =
               Math.random() * ARTERIAL_CONSTANTS.SPRAY_CONE_ANGLE;
 
-            // Convert to velocity direction
-            // Use pooled temp vectors for rotation calculations
             tempAxis.copy(tempUp).cross(tempDir).normalize();
             tempVel.copy(tempDir);
             tempVel.applyAxisAngle(tempAxis, phi);
             tempVel.applyAxisAngle(tempDir, theta);
 
-            // High-velocity arterial spray
             const speed =
               ARTERIAL_CONSTANTS.VELOCITY_MIN +
               Math.random() *
                 (ARTERIAL_CONSTANTS.VELOCITY_MAX - ARTERIAL_CONSTANTS.VELOCITY_MIN);
             tempVel.multiplyScalar(speed * effect.pressure);
 
-            // Clone for storage - particles own their vectors
             particles.push({
               position: new THREE.Vector3(...effect.position),
               velocity: tempVel.clone(),
@@ -224,7 +212,6 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
             });
           }
         } finally {
-          // Always release pooled objects
           ThreeObjectPools.vector3.release(tempDir);
           ThreeObjectPools.vector3.release(tempAxis);
           ThreeObjectPools.vector3.release(tempUp);
@@ -239,7 +226,6 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
       }
     });
 
-    // Clean up removed effects
     const activeIds = new Set(effects.map((e) => e.id));
     effectInstancesRef.current.forEach((_, id) => {
       if (!activeIds.has(id)) {
@@ -248,7 +234,6 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
     });
   }, [effects, enabled, maxParticles]);
 
-  // Animate particles with pulsating arterial flow
   useFrame((_, delta) => {
     if (!enabled || !pointsRef.current) return;
 
@@ -260,7 +245,6 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
       const { particles, startTime, effect } = instance;
       const elapsed = (currentTime - startTime) / 1000;
 
-      // Pulsating intensity based on heart rate
       const pulseFactor = effect.pulsating
         ? 1.0 +
           Math.sin(elapsed * ARTERIAL_CONSTANTS.PULSE_FREQUENCY * Math.PI * 2) *
@@ -276,21 +260,16 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
           allSettled = false;
 
           if (!particle.settled) {
-            // Apply pulsating velocity during active spray phase
             if (particle.age < ARTERIAL_CONSTANTS.DURATION) {
               particle.velocity.multiplyScalar(pulseFactor);
             }
 
-            // Update position
             particle.position.addScaledVector(particle.velocity, safeDelta);
 
-            // Apply gravity
             particle.velocity.y += ARTERIAL_CONSTANTS.GRAVITY * safeDelta;
 
-            // Air resistance
             particle.velocity.multiplyScalar(ARTERIAL_CONSTANTS.AIR_RESISTANCE);
 
-            // Check floor collision
             if (particle.position.y <= ARTERIAL_CONSTANTS.FLOOR_Y) {
               particle.position.y = ARTERIAL_CONSTANTS.FLOOR_Y;
               particle.velocity.set(0, 0, 0);
@@ -298,7 +277,6 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
             }
           }
 
-          // Update buffer arrays
           if (particleIndex < positionArray.length / 3) {
             const i3 = particleIndex * 3;
             positionArray[i3] = particle.position.x;
@@ -307,7 +285,6 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
 
             sizeArray[particleIndex] = particle.size;
 
-            // Calculate opacity with fade-out
             let opacity = 1.0;
             if (particle.settled) {
               const poolAge = particle.age - ARTERIAL_CONSTANTS.DURATION;
@@ -325,13 +302,11 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
         }
       });
 
-      // Notify completion
       if (allSettled && onEffectComplete) {
         onEffectComplete(effectId);
       }
     });
 
-    // Update geometry
     const geometry = pointsRef.current.geometry;
     if (geometry.attributes.position) {
       geometry.attributes.position.needsUpdate = true;

@@ -115,7 +115,6 @@ export class HapticController {
     this.isSupported = this.detectHapticSupport();
     this.performanceTier = this.detectPerformanceTier();
     
-    // Disable haptics on low-end devices by default
     if (this.performanceTier === 'low') {
       this.isEnabled = false;
     }
@@ -143,7 +142,6 @@ export class HapticController {
       return false;
     }
 
-    // Check for Vibration API
     return 'vibrate' in navigator;
   }
 
@@ -159,30 +157,22 @@ export class HapticController {
       return 'medium';
     }
 
-    // Check navigator.hardwareConcurrency (CPU cores)
     const cores = navigator.hardwareConcurrency ?? 4;
     
-    // Check device memory (if available)
     const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 4;
     
-    // Check if running on mobile
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    // Heuristic scoring
     let score = 0;
     
-    // More cores = better performance
     if (cores >= 8) score += 2;
     else if (cores >= 4) score += 1;
     
-    // More memory = better performance
     if (memory >= 8) score += 2;
     else if (memory >= 4) score += 1;
     
-    // Desktop generally performs better
     if (!isMobile) score += 1;
     
-    // Determine tier
     if (score >= 4) return 'high';
     if (score >= 2) return 'medium';
     return 'low';
@@ -208,19 +198,16 @@ export class HapticController {
    * 
    */
   public trigger(intensity: HapticIntensity): boolean {
-    // Check if haptics are supported and enabled
     if (!this.isSupported || !this.isEnabled || intensity === 'disabled') {
       return false;
     }
 
-    // Throttle haptic triggers to prevent excessive vibration
     const now = performance.now();
     if (now - this.lastTriggerTime < this.minTriggerInterval) {
       return false;
     }
     this.lastTriggerTime = now;
 
-    // Select pattern based on device performance
     const patterns = this.performanceTier === 'low' 
       ? ADAPTIVE_HAPTIC_PATTERNS 
       : HAPTIC_PATTERNS;
@@ -228,7 +215,6 @@ export class HapticController {
     const pattern = patterns[intensity];
 
     try {
-      // Trigger vibration (see class-level comment for browser compatibility notes)
       const result = navigator.vibrate(pattern.vibration);
       return result !== false; // Return true if not explicitly false
     } catch (error) {
@@ -258,7 +244,6 @@ export class HapticController {
       return false;
     }
 
-    // Throttle haptic triggers
     const now = performance.now();
     if (now - this.lastTriggerTime < this.minTriggerInterval) {
       return false;
@@ -266,7 +251,6 @@ export class HapticController {
     this.lastTriggerTime = now;
 
     try {
-      // Adapt pattern for low-end devices (reduce durations by 50%)
       let adaptedPattern = pattern;
       if (this.performanceTier === 'low') {
         if (Array.isArray(pattern)) {
@@ -276,7 +260,6 @@ export class HapticController {
         }
       }
 
-      // Trigger vibration (see class-level comment for browser compatibility notes)
       const result = navigator.vibrate(adaptedPattern);
       return result !== false; // Return true if not explicitly false
     } catch (error) {
@@ -298,7 +281,6 @@ export class HapticController {
     }
 
     try {
-      // Stop vibration (see class-level comment for browser compatibility notes)
       const result = navigator.vibrate(0);
       return result !== false; // Return true if not explicitly false
     } catch (error) {

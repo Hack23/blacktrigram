@@ -56,7 +56,6 @@ export const InputBufferDisplay: React.FC<InputBufferDisplayProps> = ({
 }) => {
   const theme = useKoreanTheme({ variant: "primary", size: "sm", isMobile });
   
-  // Memoize animation styles to prevent redefinition on every render
   const animationStyles = useMemo(() => (
     <style>
       {`
@@ -119,7 +118,6 @@ export const InputBufferDisplay: React.FC<InputBufferDisplayProps> = ({
         {/* Input list */}
         <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
           {queuedInputs.map((input, index) => {
-            // Calculate opacity based on age (newer = more opaque)
             const opacity = 1 - index * 0.3;
 
             return (

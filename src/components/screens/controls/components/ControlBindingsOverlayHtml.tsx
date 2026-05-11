@@ -48,12 +48,10 @@ export const ControlBindingsOverlayHtml: React.FC<ControlBindingsOverlayHtmlProp
 }) => {
   const theme = useKoreanTheme({ variant: 'primary', size: 'md', isMobile });
 
-  // Filter keys by selected category
   const filteredKeys = useMemo<readonly KeyData[]>(() => {
     return filterKeysByCategory(KEYBOARD_LAYOUT, selectedTab);
   }, [selectedTab]);
 
-  // Container styles - grid for desktop, list for mobile
   const containerStyle = useMemo(() => ({
     display: 'grid',
     gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))',
@@ -68,7 +66,6 @@ export const ControlBindingsOverlayHtml: React.FC<ControlBindingsOverlayHtmlProp
     boxShadow: `0 4px 15px ${hexToRgbaString(theme.colors.BLACK_SOLID, 0.5)}`,
   }), [isMobile, theme]);
 
-  // Individual binding card style
   const getBindingCardStyle = (keyData: KeyData) => ({
     display: 'flex',
     flexDirection: 'column' as const,
@@ -81,7 +78,6 @@ export const ControlBindingsOverlayHtml: React.FC<ControlBindingsOverlayHtmlProp
     cursor: 'default',
   });
 
-  // Key label style (the actual key)
   const keyLabelStyle = (keyData: KeyData) => ({
     fontFamily: FONT_FAMILY.KOREAN,
     fontSize: isMobile ? '16px' : '18px',
@@ -93,7 +89,6 @@ export const ControlBindingsOverlayHtml: React.FC<ControlBindingsOverlayHtmlProp
     gap: '8px',
   });
 
-  // Korean label style
   const koreanLabelStyle = {
     fontFamily: FONT_FAMILY.KOREAN,
     fontSize: isMobile ? '13px' : '14px',
@@ -101,7 +96,6 @@ export const ControlBindingsOverlayHtml: React.FC<ControlBindingsOverlayHtmlProp
     color: hexToRgbaString(theme.colors.ACCENT_GOLD),
   };
 
-  // Description style
   const descriptionStyle = {
     fontFamily: FONT_FAMILY.KOREAN,
     fontSize: isMobile ? '11px' : '12px',

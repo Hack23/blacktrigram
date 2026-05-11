@@ -157,7 +157,6 @@ const generateWaveParticles = (
   const particles: WaterParticle[] = [];
   const intensity = effect.intensity ?? 1.0;
 
-  // Pooled objects for calculations
   const tempOrigin = ThreeObjectPools.vector3.acquire();
   const tempDirection = ThreeObjectPools.vector3.acquire();
   const tempVelocity = ThreeObjectPools.vector3.acquire();
@@ -167,12 +166,10 @@ const generateWaveParticles = (
     tempOrigin.set(...effect.position);
     tempDirection.set(...effect.direction).normalize();
 
-    // Perpendicular vectors for spread
     const perpX = ThreeObjectPools.vector3.acquire();
     const perpY = ThreeObjectPools.vector3.acquire();
 
     try {
-      // Create perpendicular basis
       if (Math.abs(tempDirection.y) < 0.9) {
         perpX.set(0, 1, 0).cross(tempDirection).normalize();
       } else {
@@ -181,18 +178,15 @@ const generateWaveParticles = (
       perpY.copy(tempDirection).cross(perpX).normalize();
 
       for (let i = 0; i < particleCount; i++) {
-        // Random spread angle
         const angle = (Math.random() - 0.5) * WAVE_CONSTANTS.SPREAD_ANGLE;
         const elevation = (Math.random() - 0.3) * (WAVE_CONSTANTS.SPREAD_ANGLE / 2);
 
-        // Calculate spread direction
         tempVelocity.copy(tempDirection);
         tempVelocity
           .addScaledVector(perpX, Math.sin(angle))
           .addScaledVector(perpY, Math.sin(elevation))
           .normalize();
 
-        // Random speed based on flow type
         const speed =
           (WAVE_CONSTANTS.VELOCITY_MIN[effect.flowType] +
             Math.random() *
@@ -202,7 +196,6 @@ const generateWaveParticles = (
 
         tempVelocity.multiplyScalar(speed);
 
-        // Create curve tangent for flowing motion
         const curveFactor = WAVE_CONSTANTS.CURVE_INTENSITY[effect.flowType];
         tempTangent.set(
           (Math.random() - 0.5) * curveFactor,
@@ -210,13 +203,11 @@ const generateWaveParticles = (
           (Math.random() - 0.5) * curveFactor
         );
 
-        // Particle size (larger for perfect counters)
         const size = effect.isPerfect
           ? WAVE_CONSTANTS.SIZE_PERFECT
           : WAVE_CONSTANTS.SIZE_MIN +
             Math.random() * (WAVE_CONSTANTS.SIZE_MAX - WAVE_CONSTANTS.SIZE_MIN);
 
-        // CRITICAL: Acquire pooled vectors for particle ownership (PERFORMANCE)
         const particlePosition = ThreeObjectPools.vector3.acquire();
         const particleVelocity = ThreeObjectPools.vector3.acquire();
         const particleTangent = ThreeObjectPools.vector3.acquire();
@@ -260,7 +251,6 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
   isMobile = false,
   onEffectComplete,
 }) => {
-  // Particle systems for each effect
   const particleSystems = useMemo(() => {
     if (!enabled || effects.length === 0) return [];
 
@@ -271,7 +261,6 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
           : WAVE_CONSTANTS.PARTICLES_DESKTOP[effect.flowType]) *
         (effect.intensity ?? 1.0);
 
-      // Perfect counter multiplier
       if (effect.isPerfect) {
         particleCount = Math.round(particleCount * WAVE_CONSTANTS.PERFECT_MULTIPLIER);
       }
@@ -288,29 +277,21 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
     });
   }, [effects, enabled, isMobile]);
   
-  // PERFORMANCE: Reuse positions arrays instead of creating on every render
   const positionsRef = useRef<Map<string, Float32Array>>(new Map());
   
-  // CRITICAL FIX: Track active particles separately to avoid mutating memoized data
-  // Mutating system.particles violates React useMemo contract and causes stale references
   const activeParticlesRef = useRef<Map<string, WaterParticle[]>>(new Map());
   
-  // Initialize active particles tracking from memoized systems
   useEffect(() => {
     particleSystems.forEach((system) => {
-      // Copy particles array to separate tracking structure
       activeParticlesRef.current.set(system.effectId, [...system.particles]);
     });
   }, [particleSystems]);
   
-  // Cleanup pooled vectors on unmount or when effects change
   useEffect(() => {
-    // Capture ref values in closure to avoid accessing refs in cleanup
     const activeParticles = activeParticlesRef.current;
     const positions = positionsRef.current;
     
     return () => {
-      // Release all pooled vectors from active particle tracking
       activeParticles.forEach((particles) => {
         particles.forEach((particle) => {
           if (particle.isPooled) {
@@ -322,26 +303,22 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
         });
       });
       
-      // Clear all caches
       activeParticles.clear();
       positions.clear();
     };
   }, [particleSystems]);
 
-  // Physics update loop
   useFrame((_state, delta) => {
     if (!enabled) return;
 
     const safeDelta = Math.min(delta, WAVE_CONSTANTS.MAX_DELTA);
 
     particleSystems.forEach((system) => {
-      // Get active particles from tracking ref (not memoized data)
       const activeParticles = activeParticlesRef.current.get(system.effectId);
       if (!activeParticles) return;
       
       let allExpired = true;
       
-      // Track indices of expired particles for removal
       const expiredIndices: number[] = [];
 
       activeParticles.forEach((particle, index) => {
@@ -350,29 +327,22 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
         if (particle.age < particle.lifetime) {
           allExpired = false;
 
-          // Update curve parameter
           particle.curveT += safeDelta / particle.lifetime;
 
-          // Apply flowing curve to velocity
           const curveFactor = Math.sin(particle.curveT * Math.PI);
           particle.velocity.addScaledVector(
             particle.curveTangent,
             curveFactor * safeDelta * 2
           );
 
-          // Apply gravity
           particle.velocity.y += WAVE_CONSTANTS.GRAVITY * safeDelta;
 
-          // Update position
           particle.position.addScaledVector(particle.velocity, safeDelta);
         } else {
-          // Mark particle as expired (will be cleaned up later)
           expiredIndices.push(index);
         }
       });
       
-      // Release pooled vectors for expired particles and remove from ACTIVE array (not memoized)
-      // Do this in reverse order to avoid index shifting issues
       for (let i = expiredIndices.length - 1; i >= 0; i--) {
         const particle = activeParticles[expiredIndices[i]];
         if (particle.isPooled) {
@@ -384,30 +354,23 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
         activeParticles.splice(expiredIndices[i], 1); // Safe: mutating tracked copy, not memoized
       }
 
-      // Mark effect complete if all particles expired
       if (allExpired && onEffectComplete) {
         onEffectComplete(system.effectId);
       }
     });
     
-    // PERFORMANCE: Update positions arrays in useFrame instead of render
     particleSystems.forEach((system) => {
       const activeParticles = activeParticlesRef.current.get(system.effectId);
       if (!activeParticles) return;
       
-      // Use fixed-size array based on initial particle count, update only the used positions
-      // This avoids frequent reallocations when particles expire one by one
       let positions = positionsRef.current.get(system.effectId);
       
-      // Create positions array only on first initialization (based on max particles)
       if (!positions) {
         const maxParticles = system.particles.length; // Initial count is max
         positions = new Float32Array(maxParticles * 3);
         positionsRef.current.set(system.effectId, positions);
       }
       
-      // Update only active particle positions (rest remain at origin, won't be rendered)
-      // TypeScript knows positions is defined after the if (!positions) check above
       activeParticles.forEach((particle, i) => {
         const i3 = i * 3;
         positions[i3] = particle.position.x;
@@ -421,27 +384,17 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
     return null;
   }
 
-  // Three.js performance optimization: positions caching with refs
-  // We use refs to cache particle positions for performance.
-  // These refs are only written to in useFrame and read during render.
-  // This is safe because:
-  // 1. Positions are Float32Arrays that are mutated in place in useFrame
-  // 2. We never mutate positions during render, only read them
-  // 3. This is a standard pattern for Three.js + React (see @react-three/drei Points component)
-  // 4. The alternative (storing positions in state) would cause excessive re-renders
   return (
     <>
       {/* Reading ref during render for Three.js performance optimization - positions updated in useFrame */}
       {/* eslint-disable react-hooks/refs */}
       {particleSystems.map((system) => {
-        // Get positions from ref (updated in useFrame); create and store if missing
         let positions = positionsRef.current.get(system.effectId);
         if (!positions) {
           positions = new Float32Array(system.particles.length * 3);
           positionsRef.current.set(system.effectId, positions);
         }
         
-        // Get active particle count to set draw range
         const activeParticles = activeParticlesRef.current.get(system.effectId);
         const activeCount = activeParticles ? activeParticles.length : system.particles.length;
         

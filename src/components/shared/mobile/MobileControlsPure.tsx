@@ -17,7 +17,6 @@ import { KOREAN_COLORS, FONT_FAMILY } from "@/types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { triggerHaptic } from "../../../utils/haptics";
 
-// Re-export types from VirtualDPad for compatibility
 export type Direction =
   | "up"
   | "up-right"
@@ -119,8 +118,6 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
       const [attackPressed, setAttackPressed] = useState(false);
       const [blockPressed, setBlockPressed] = useState(false);
 
-      // D-Pad/action sizing scales down on narrow mobile screens while
-      // preserving WCAG touch target minimums.
       const controlLayout = useMemo(() => {
         const shortestSide = Math.min(viewportWidth, viewportHeight);
         const dpadSize = Math.round(
@@ -153,7 +150,6 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
         };
       }, [viewportHeight, viewportWidth]);
 
-      // Handle D-Pad press
       const handleDPadStart = useCallback(
         (e: React.TouchEvent | React.MouseEvent, direction: Direction) => {
           if (disabled) return;
@@ -166,7 +162,6 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
         [disabled, onMove],
       );
 
-      // Handle D-Pad release
       const handleDPadEnd = useCallback(
         (e: React.TouchEvent | React.MouseEvent) => {
           if (disabled) return;
@@ -178,7 +173,6 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
         [disabled, onMove],
       );
 
-      // Handle Attack press
       const handleAttackStart = useCallback(
         (e: React.TouchEvent | React.MouseEvent) => {
           if (disabled) return;
@@ -200,7 +194,6 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
         [],
       );
 
-      // Handle Block press/release
       const handleBlockStart = useCallback(
         (e: React.TouchEvent | React.MouseEvent) => {
           if (disabled) return;
@@ -223,7 +216,6 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
         [onBlock],
       );
 
-      // Common button styles
       const glowStyle = useMemo(
         () => ({
           boxShadow: `0 0 20px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}, inset 0 0 10px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.2)}`,

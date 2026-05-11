@@ -110,7 +110,6 @@ export function useTouchOptimizer(
   const isTouchingRef = useRef<boolean>(false);
   const pendingMoveRef = useRef<TouchPosition | null>(null);
   
-  // State for returning values (not using refs in return)
   const [rafId, setRafId] = useState<number | null>(null);
   const [isTouching, setIsTouching] = useState<boolean>(false);
 
@@ -136,7 +135,6 @@ export function useTouchOptimizer(
       setIsTouching(true);
 
       if (useRAF) {
-        // Schedule immediate visual update (next frame, <16ms)
         cancelPendingRAF();
         rafIdRef.current = requestAnimationFrame(() => {
           onTouchStart(x, y, timestamp);
@@ -145,7 +143,6 @@ export function useTouchOptimizer(
         });
         setRafId(rafIdRef.current);
       } else {
-        // Direct call (no RAF)
         onTouchStart(x, y, timestamp);
       }
     },
@@ -161,7 +158,6 @@ export function useTouchOptimizer(
       pendingMoveRef.current = { x, y, timestamp };
 
       if (useRAF && rafIdRef.current === null) {
-        // Schedule update for next frame
         rafIdRef.current = requestAnimationFrame(() => {
           if (pendingMoveRef.current) {
             const { x, y, timestamp } = pendingMoveRef.current;
@@ -173,7 +169,6 @@ export function useTouchOptimizer(
         });
         setRafId(rafIdRef.current);
       } else if (!useRAF) {
-        // Direct call (no RAF)
         onTouchMove(x, y, timestamp);
       }
     },
@@ -192,7 +187,6 @@ export function useTouchOptimizer(
       pendingMoveRef.current = null;
 
       if (useRAF) {
-        // Schedule immediate visual update (next frame, <16ms)
         cancelPendingRAF();
         rafIdRef.current = requestAnimationFrame(() => {
           onTouchEnd(x, y, timestamp);
@@ -201,7 +195,6 @@ export function useTouchOptimizer(
         });
         setRafId(rafIdRef.current);
       } else {
-        // Direct call (no RAF)
         onTouchEnd(x, y, timestamp);
       }
     },
@@ -213,7 +206,6 @@ export function useTouchOptimizer(
    */
   const handleTouchStart = useCallback(
     (e: TouchEvent) => {
-      // Prevent default to eliminate 300ms delay
       if (!usePassiveListeners) {
         e.preventDefault();
       }
@@ -233,29 +225,22 @@ export function useTouchOptimizer(
     (e: TouchEvent) => {
       if (!isTouchingRef.current) return;
 
-      // Get coalesced events for smooth tracking
       let events: readonly Touch[] = [e.touches[0]];
       
       if (enableCoalescing) {
-        // Feature detection: getCoalescedEvents() is experimental (Chrome 58+, Edge 79+)
-        // Not supported in Safari or Firefox as of 2024
-        // Fallback to single event if not supported
         const eventWithCoalescing = e as TouchEvent & { getCoalescedEvents?: () => TouchEvent[] };
         if (typeof eventWithCoalescing.getCoalescedEvents === 'function') {
           try {
             const coalesced = eventWithCoalescing.getCoalescedEvents();
             if (coalesced && coalesced.length > 0) {
-              // Use only the last N events to reduce overhead
               const recentEvents = coalesced.slice(-coalescingSampleRate);
               events = recentEvents.map((evt: TouchEvent) => evt.touches[0]).filter((touch): touch is Touch => touch !== undefined);
             }
           } catch {
-            // Fallback to single event if getCoalescedEvents fails (expected in Safari/Firefox)
           }
         }
       }
 
-      // Process only the last event (most recent position)
       const lastTouch = events[events.length - 1];
       if (lastTouch) {
         processTouchMove(lastTouch.clientX, lastTouch.clientY);
@@ -271,7 +256,6 @@ export function useTouchOptimizer(
     (e: TouchEvent) => {
       if (!isTouchingRef.current) return;
 
-      // Prevent default to eliminate delays
       if (!usePassiveListeners) {
         e.preventDefault();
       }
@@ -368,20 +352,17 @@ export function applyOptimizedUpdate(
   visualUpdate: (element: HTMLElement) => void,
   stateUpdate: () => void
 ): void {
-  // Immediate visual update (same frame)
   if (element) {
     requestAnimationFrame(() => {
       visualUpdate(element);
     });
   }
 
-  // Deferred state update (when idle)
   if (typeof (window as Window & typeof globalThis).requestIdleCallback === 'function') {
     (window as Window & typeof globalThis).requestIdleCallback(() => {
       stateUpdate();
     });
   } else {
-    // Fallback for browsers without requestIdleCallback
     setTimeout(stateUpdate, 0);
   }
 }

@@ -7,5 +7,4 @@
 export { EndScreen3D } from "./EndScreen3D";
 export type { EndScreen3DProps } from "./EndScreen3D";
 
-// Export all subcomponents for testing and extensibility (consistent with combat/training screens)
 export * from "./components";

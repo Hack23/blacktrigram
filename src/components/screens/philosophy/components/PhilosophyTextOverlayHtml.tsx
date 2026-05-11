@@ -44,14 +44,11 @@ export interface PhilosophyTextOverlayHtmlProps {
 export const PhilosophyTextOverlayHtml: React.FC<
   PhilosophyTextOverlayHtmlProps
 > = ({ selectedTrigram, onClose, isMobile = false }) => {
-  // Get trigram data first (hooks must be called unconditionally)
   const trigram = selectedTrigram ? TRIGRAM_DATA[selectedTrigram] : null;
 
-  // Memoize colors for performance (must be called before early return)
   const colors = useMemo(
     () => {
       if (!trigram) {
-        // Return default colors when no trigram is selected
         return {
           background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
           border: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
@@ -79,7 +76,6 @@ export const PhilosophyTextOverlayHtml: React.FC<
     [trigram]
   );
 
-  // Don't render if no trigram is selected (early return must be AFTER all hooks)
   if (!selectedTrigram || !trigram) return null;
 
   return (

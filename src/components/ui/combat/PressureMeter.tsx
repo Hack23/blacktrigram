@@ -44,13 +44,10 @@ const getPressureColor = (pressure: number, maxPressure: number): string => {
   const ratio = pressure / maxPressure;
   
   if (ratio >= 0.7) {
-    // High pressure (7-10 stacks) - Critical red
     return `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`;
   } else if (ratio >= 0.4) {
-    // Medium pressure (4-6 stacks) - Warning orange
     return `#${KOREAN_COLORS.WARNING_ORANGE.toString(16).padStart(6, "0")}`;
   } else {
-    // Low pressure (1-3 stacks) - Son wind green
     return `#${KOREAN_COLORS.TRIGRAM_SON_PRIMARY.toString(16).padStart(6, "0")}`;
   }
 };

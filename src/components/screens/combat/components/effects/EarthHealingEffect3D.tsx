@@ -67,9 +67,7 @@ export interface EarthHealingEffect3DProps {
  * Stores positions and velocities as number arrays to avoid Vector3 memory leaks
  */
 interface HealingParticle {
-  // Position stored as [x, y, z] array instead of Vector3
   position: [number, number, number];
-  // Velocity stored as [vx, vy, vz] array instead of Vector3
   velocity: [number, number, number];
   age: number;
   lifetime: number;
@@ -161,15 +159,12 @@ const generateHealingParticles = (
 
   try {
     tempOrigin.set(...effect.position);
-    // Start particles at ground level
     tempOrigin.y = HEALING_CONSTANTS.GROUND_Y;
 
     for (let i = 0; i < particleCount; i++) {
-      // Assign particle to a root tendril
       const rootIndex = i % tendrils.length;
       const tendril = tendrils[rootIndex];
 
-      // Position along tendril base
       const baseRadius = HEALING_CONSTANTS.ROOT_BASE_RADIUS * (0.3 + Math.random() * 0.7);
       tempPos.set(
         tempOrigin.x + Math.cos(tendril.baseAngle) * baseRadius,
@@ -177,7 +172,6 @@ const generateHealingParticles = (
         tempOrigin.z + Math.sin(tendril.baseAngle) * baseRadius
       );
 
-      // Upward velocity with spiral
       const upwardSpeed = 
         HEALING_CONSTANTS.VELOCITY_UP_MIN + 
         Math.random() * (HEALING_CONSTANTS.VELOCITY_UP_MAX - HEALING_CONSTANTS.VELOCITY_UP_MIN);
@@ -189,7 +183,6 @@ const generateHealingParticles = (
         Math.sin(spiralAngle) * HEALING_CONSTANTS.SPIRAL_STRENGTH
       );
 
-      // Store as number arrays instead of cloning Vector3 to avoid memory leaks
       particles.push({
         position: [tempPos.x, tempPos.y, tempPos.z],
         velocity: [tempVel.x, tempVel.y, tempVel.z],
@@ -251,7 +244,6 @@ export const EarthHealingEffect3D: React.FC<EarthHealingEffect3DProps> = ({
   const pointsRef = useRef<THREE.Points>(null);
   const completedEffectsRef = useRef<Set<string>>(new Set());
 
-  // Configuration based on device
   const config = useMemo(() => ({
     rootCount: isMobile 
       ? HEALING_CONSTANTS.ROOT_COUNT_MOBILE 
@@ -261,38 +253,31 @@ export const EarthHealingEffect3D: React.FC<EarthHealingEffect3DProps> = ({
       : HEALING_CONSTANTS.PARTICLES_PER_HP_DESKTOP,
   }), [isMobile]);
 
-  // Calculate max particles needed
   const maxParticles = useMemo(() => {
     return Math.ceil(6 * config.particlesPerHP); // Max 6 HP heal
   }, [config.particlesPerHP]);
 
-  // Healing colors - Warm earth glow with green growth energy
   const healingColor = useMemo(() => {
-    // Blend brown earth tone with green growth
     return new THREE.Color(KOREAN_COLORS.ACCENT_GREEN).lerp(
       new THREE.Color(KOREAN_COLORS.SECONDARY_BROWN_DARK),
       0.3
     );
   }, []);
 
-  // Initialize particles for new effects
   useEffect(() => {
     if (!enabled) return;
 
     effects.forEach((effect) => {
       if (!particlesRef.current.has(effect.id)) {
-        // Generate root tendrils
         const tendrils = generateRootTendrils(config.rootCount);
         tendrilsRef.current.set(effect.id, tendrils);
 
-        // Generate particles
         const particleCount = Math.ceil(effect.healAmount * config.particlesPerHP);
         const particles = generateHealingParticles(effect, particleCount, tendrils);
         particlesRef.current.set(effect.id, particles);
       }
     });
 
-    // Clean up removed effects
     const effectIds = new Set(effects.map((e) => e.id));
     particlesRef.current.forEach((_, id) => {
       if (!effectIds.has(id)) {
@@ -303,12 +288,10 @@ export const EarthHealingEffect3D: React.FC<EarthHealingEffect3DProps> = ({
     });
   }, [effects, enabled, config]);
 
-  // Initial positions for buffer (updated in useFrame)
   const initialPositions = useMemo(() => {
     return new Float32Array(maxParticles * 3);
   }, [maxParticles]);
 
-  // Physics update loop
   useFrame((_, delta) => {
     if (!enabled || !pointsRef.current) return;
 
@@ -318,7 +301,6 @@ export const EarthHealingEffect3D: React.FC<EarthHealingEffect3DProps> = ({
     const attr = pointsRef.current.geometry.attributes.position;
     const posArray = attr.array as Float32Array;
 
-    // Update all active healing particles
     particlesRef.current.forEach((particles, effectId) => {
       const tendrils = tendrilsRef.current.get(effectId);
       if (!tendrils) return;
@@ -332,12 +314,10 @@ export const EarthHealingEffect3D: React.FC<EarthHealingEffect3DProps> = ({
         if (p.age < p.lifetime) {
           hasActiveParticles = true;
 
-          // Update position - upward motion with spiral (using number arrays)
           p.position[0] += p.velocity[0] * safeDelta;
           p.position[1] += p.velocity[1] * safeDelta;
           p.position[2] += p.velocity[2] * safeDelta;
 
-          // Add spiral motion based on root tendril
           const tendril = tendrils[p.rootIndex];
           const spiralProgress = p.age / p.lifetime;
           const spiralRadius = HEALING_CONSTANTS.SPIRAL_STRENGTH * (1 - spiralProgress);
@@ -346,10 +326,8 @@ export const EarthHealingEffect3D: React.FC<EarthHealingEffect3DProps> = ({
           p.position[0] += Math.cos(spiralAngle) * spiralRadius * safeDelta;
           p.position[2] += Math.sin(spiralAngle) * spiralRadius * safeDelta;
 
-          // Slow down upward motion over time (settling effect)
           p.velocity[1] *= 0.985;
 
-          // Update render position
           if (totalParticleIndex < posArray.length / 3) {
             posArray[totalParticleIndex * 3] = p.position[0];
             posArray[totalParticleIndex * 3 + 1] = p.position[1];
@@ -359,7 +337,6 @@ export const EarthHealingEffect3D: React.FC<EarthHealingEffect3DProps> = ({
         }
       }
 
-      // Check if effect is complete
       if (!hasActiveParticles && !completedEffectsRef.current.has(effectId)) {
         completedEffectsRef.current.add(effectId);
         onEffectComplete?.(effectId);
@@ -369,7 +346,6 @@ export const EarthHealingEffect3D: React.FC<EarthHealingEffect3DProps> = ({
     attr.needsUpdate = true;
   });
 
-  // Don't render if disabled or no effects
   if (!enabled || effects.length === 0) {
     return null;
   }

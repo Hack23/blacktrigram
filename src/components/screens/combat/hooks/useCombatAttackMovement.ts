@@ -127,52 +127,41 @@ export function useCombatAttackMovement(
     animationDuration = 0.4,
   } = config;
 
-  // Per-player animation durations (fallback to shared default)
   const p1Duration = player1AnimationDuration ?? animationDuration;
   const p2Duration = player2AnimationDuration ?? animationDuration;
 
-  // Attack movement physics engines (separate instances for each player to avoid race conditions)
   const player1PhysicsRef = useRef(new AttackMovementPhysics());
   const player2PhysicsRef = useRef(new AttackMovementPhysics());
 
-  // Reusable Vector3 objects to avoid GC pressure (60fps allocation)
   const player1BasePosVectorRef = useRef(new THREE.Vector3());
   const player2BasePosVectorRef = useRef(new THREE.Vector3());
 
-  // Player 1 attack timing
   const player1AttackStartTimeRef = useRef<number | null>(null);
   const player1MovementResultRef = useRef<ReturnType<
     typeof player1PhysicsRef.current.calculateAttackMovement
   > | null>(null);
 
-  // Player 2 attack timing
   const player2AttackStartTimeRef = useRef<number | null>(null);
   const player2MovementResultRef = useRef<ReturnType<
     typeof player2PhysicsRef.current.calculateAttackMovement
   > | null>(null);
 
-  // Current positions
   const [player1Position, setPlayer1Position] =
     useState<[number, number, number]>(player1BasePosition);
   const [player2Position, setPlayer2Position] =
     useState<[number, number, number]>(player2BasePosition);
 
-  // Movement states
   const [player1IsLunging, setPlayer1IsLunging] = useState(false);
   const [player2IsLunging, setPlayer2IsLunging] = useState(false);
 
-  // Track previous attacking state for rising-edge detection
   const player1WasAttackingRef = useRef(false);
   const player2WasAttackingRef = useRef(false);
 
-  // Player 1 attack movement effect
   useEffect(() => {
     const wasAttacking = player1WasAttackingRef.current;
     player1WasAttackingRef.current = player1Attacking;
 
-    // Only initialize on transition from not-attacking → attacking (rising edge)
     if (player1Attacking && player1AnimationType && !wasAttacking) {
-      // Start attack - calculate movement result
       player1AttackStartTimeRef.current = Date.now();
 
       const direction = calculateAttackDirection(
@@ -190,7 +179,6 @@ export function useCombatAttackMovement(
 
       setPlayer1IsLunging(true);
 
-      // Setup animation frame loop
       let animationFrameId: number;
 
       const updatePosition = () => {
@@ -205,7 +193,6 @@ export function useCombatAttackMovement(
         const totalDuration = movementResult.totalDuration * 1000; // Convert to ms
 
         if (elapsed >= totalDuration) {
-          // Attack complete - return to base position
           setPlayer1Position(player1BasePosition);
           setPlayer1IsLunging(false);
           player1AttackStartTimeRef.current = null;
@@ -213,7 +200,6 @@ export function useCombatAttackMovement(
           return;
         }
 
-        // Calculate current position with attack movement
         const elapsedSeconds = elapsed / 1000;
         const basePos = player1BasePosVectorRef.current.set(
           ...player1BasePosition,
@@ -235,7 +221,6 @@ export function useCombatAttackMovement(
 
         setPlayer1Position(newPosition);
 
-        // Update lunging state (first half is lunge, second half is recovery)
         const totalProgress = elapsedSeconds / movementResult.totalDuration;
         setPlayer1IsLunging(totalProgress < 0.5);
 
@@ -250,7 +235,6 @@ export function useCombatAttackMovement(
         }
       };
     } else {
-      // Not attacking - reset to base position
       setPlayer1Position(player1BasePosition);
       setPlayer1IsLunging(false);
       player1AttackStartTimeRef.current = null;
@@ -265,12 +249,10 @@ export function useCombatAttackMovement(
     p1Duration,
   ]);
 
-  // Player 2 attack movement effect (same logic as player 1)
   useEffect(() => {
     const wasAttacking = player2WasAttackingRef.current;
     player2WasAttackingRef.current = player2Attacking;
 
-    // Only initialize on transition from not-attacking → attacking (rising edge)
     if (player2Attacking && player2AnimationType && !wasAttacking) {
       player2AttackStartTimeRef.current = Date.now();
 

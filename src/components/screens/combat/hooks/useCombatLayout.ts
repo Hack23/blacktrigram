@@ -79,43 +79,20 @@ export interface CombatLayout {
  * Optimized to reduce recalculations and improve 60fps performance
  */
 export function useCombatLayout(width: number, height: number): CombatLayout {
-  // Determine screen size category using centralized scaling system
   const screenSize = useMemo(() => getScreenSize(width), [width]);
 
-  // Portrait orientation detection. The hysteresis factor provides stability
-  // so viewports near 1:1 don't flap on every resize event.
-  // 세로 모드 감지
   const isPortrait = height > width * PORTRAIT_HYSTERESIS_FACTOR;
 
-  // Device detection has its own internal caching based on screen dimensions.
-  // In addition to its user-agent result we force the mobile branch for any
-  // narrow portrait viewport so that devtools emulation and real rotated
-  // phones both render the mobile-optimized layout.
-  // 모바일 레이아웃 강제: 세로 + 좁은 화면
   const isMobile =
     shouldUseMobileControls() ||
     (isPortrait && width < PORTRAIT_FORCE_MAX_WIDTH_PX);
 
-  // Centralized layout constants for easier tweaking
-  // Enhanced with tablet-specific values for better responsive support
-  // Updated mobile controls height for new sizing: D-Pad (140px), buttons (80px+70px)
-  // Uses centralized responsive helper for consistent scaling
-  // Now passes isMobile flag to ensure high-res mobile devices get mobile layouts
   const layoutConstants = useMemo<LayoutConstants>(
     () => getCombatLayoutConstants(width, isMobile),
     [width, isMobile],
   );
 
-  // Arena bounds calculation using physics-first aspect-ratio sizing
-  // Landscape mobile: 4:3 (width > height)
-  // Portrait mobile:  3:4 (height > width) — fits both fighters vertically
-  //                    without being occluded by bottom HUD + D-Pad
   const arenaBounds = useMemo<ArenaBounds>(() => {
-    // In portrait mobile we render a compact two-player status strip
-    // directly below the top HUD to replace the collapsed side HUDs.
-    // Reserve its height here so the arena is pushed below it instead of
-    // being drawn underneath. Use a tighter strip on extra-small phones
-    // (< 380 px wide) to preserve the playable arena area.
     const isExtraSmallWidth = width < 380;
     const portraitStatusStripHeight =
       isMobile && isPortrait
@@ -127,20 +104,13 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       portraitStatusStripHeight +
       layoutConstants.padding;
 
-    // Calculate world dimensions based on screen resolution (not device type)
-    // All arenas are SQUARE for consistent combat mechanics
     const worldDimensions = calculateArenaWorldDimensions(width);
 
-    // Mobile-specific arena sizing for better screen fit
     if (isMobile) {
       const isExtraSmall = isExtraSmallWidth;
       const minTopClearance =
         (isExtraSmall ? 75 : 80) + portraitStatusStripHeight;
 
-      // In portrait we must reserve space for the whole bottom band
-      // (technique bar + mobile controls + footer) or the arena ends up
-      // behind the D-Pad. See responsiveOrientationConstants.ts for the
-      // derivation of the mobile-controls reservation.
       const minBottomClearance = mobileControlsBottomClearance(
         layoutConstants.controlsHeight,
         layoutConstants.footerHeight,
@@ -158,11 +128,9 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
         isPortrait ? "portrait" : "landscape",
       );
 
-      // Mobile bounds already include world dimensions from resolution
       return mobileBounds;
     }
 
-    // Desktop arena sizing - create 4:3 aspect ratio arena
     const totalReservedHeight =
       layoutConstants.hudHeight +
       layoutConstants.controlsHeight +
@@ -171,18 +139,14 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
     const availableHeight = height - totalReservedHeight - totalPadding;
     const availableWidth = getDesktopArenaWidthBudget(width);
 
-    // Calculate arena dimensions with 4:3 aspect ratio (width > height)
-    // Start with available width, constrain by height if needed
     let arenaWidth = availableWidth;
     let arenaHeight = arenaWidth * (3 / 4); // 4:3 aspect ratio
 
-    // If height is constrained, recalculate from height
     if (arenaHeight > availableHeight) {
       arenaHeight = availableHeight;
       arenaWidth = arenaHeight * (4 / 3);
     }
 
-    // Calculate pixels-per-meter and scale
     const pixelsPerMeter = arenaWidth / worldDimensions.widthMeters;
     const referencePixelsPerMeter = 100;
     const scale = pixelsPerMeter / referencePixelsPerMeter;

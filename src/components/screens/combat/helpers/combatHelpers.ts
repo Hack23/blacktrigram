@@ -46,12 +46,9 @@ export const calculateAccuracy = (player: PlayerState): number => {
   const misses = player.misses ?? 0;
   const totalAttempts = hits + misses;
 
-  // If we have miss tracking, use proper accuracy formula
   if (totalAttempts > 0) {
     return (hits / totalAttempts) * 100;
   }
 
-  // Fallback: if no miss tracking and hits exist, show 100%
-  // Otherwise 0% (no combat activity)
   return hits > 0 ? 100 : 0;
 };

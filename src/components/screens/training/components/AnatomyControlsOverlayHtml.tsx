@@ -95,7 +95,6 @@ export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlP
     isMobile = false,
     width,
   }) => {
-  // State for hover effects
   const [hoveredLayer, setHoveredLayer] = useState<AnatomyLayer | null>(null);
 
   const handleToggle = useCallback(
@@ -108,7 +107,6 @@ export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlP
   const panelWidth = width ?? (isMobile ? 220 : 260);
   const padding = getResponsiveSpacing("md", isMobile);
 
-  // Enhanced panel styles with neon glow
   const panelStyle: React.CSSProperties = {
     ...getEnhancedKoreanOverlayStyles({
       opacity: 0.88,
@@ -159,7 +157,6 @@ export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlP
           const inactiveBackground = hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.6);
           const inactiveBorder = hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY, 0.2);
 
-          // Enhanced glow effect for active/hovered states
           const glowEffect = (isActive || isHovered) 
             ? getNeonGlowEffect(config.color, isActive ? "strong" : "medium", true)
             : undefined;
@@ -263,9 +260,6 @@ export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlP
   );
 },
 (prevProps, nextProps) => {
-  // Re-render when visible layers or callback changes
-  // Including callback prop prevents stale closures when parent provides
-  // a new function that captures updated state.
   return (
     prevProps.visibleLayers === nextProps.visibleLayers &&
     prevProps.isMobile === nextProps.isMobile &&

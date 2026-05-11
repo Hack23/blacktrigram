@@ -62,8 +62,6 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
     complete: '완료 | Complete',
   };
 
-  // Calculate progress value, undefined means indeterminate
-  // Handle NaN by treating it as indeterminate
   const progressValue = progress !== undefined && !Number.isNaN(progress)
     ? Math.min(100, Math.max(0, progress))
     : undefined;

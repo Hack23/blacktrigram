@@ -125,7 +125,6 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
   position: _position, // Currently unused - indicator always positioned bottom-right
   isMobile = false,
 }) => {
-  // Get guard configuration
   const config = useMemo(
     () => STANCE_GUARD_CONFIGS[currentStance],
     [currentStance],
@@ -151,7 +150,6 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
     [config.guardPose.weight],
   );
 
-  // Memoize responsive sizing
   const layout = useMemo(
     () => ({
       fontSize: isMobile ? 10 : 12,
@@ -163,7 +161,6 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
     [isMobile],
   );
 
-  // Container style - uses relative positioning for embedding in container HUDs
   const containerStyle = useMemo(
     () => ({
       position: "relative" as const,
@@ -182,7 +179,6 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
     [layout],
   );
 
-  // Don't render if not in guard state
   if (!isInGuard) return null;
 
   return (

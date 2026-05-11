@@ -129,18 +129,15 @@ const generateDustParticles = (
 ): DustParticle[] => {
   const particles: DustParticle[] = [];
   
-  // Pooled objects for calculations - PERFORMANCE: Eliminates particleCount * 3 allocations
   const tempOrigin = ThreeObjectPools.vector3.acquire();
   const tempOffset = ThreeObjectPools.vector3.acquire();
   const tempVelocity = ThreeObjectPools.vector3.acquire();
 
   try {
     tempOrigin.set(...effect.position);
-    // Ensure origin is at or near floor level for dust
     tempOrigin.y = Math.max(tempOrigin.y, DUST_CONSTANTS.FLOOR_Y + 0.1);
 
     for (let i = 0; i < particleCount; i++) {
-      // Random position in horizontal circle near origin
       const angle = Math.random() * Math.PI * 2;
       const radius = Math.random() * DUST_CONSTANTS.SPREAD_RADIUS * effect.intensity;
       tempOffset.set(
@@ -149,7 +146,6 @@ const generateDustParticles = (
         Math.sin(angle) * radius
       );
 
-      // Mostly horizontal velocity with slight upward component
       const velocityAngle = angle + (Math.random() - 0.5) * 0.3;
       const horizontalSpeed =
         DUST_CONSTANTS.VELOCITY_MIN +
@@ -175,7 +171,6 @@ const generateDustParticles = (
 
     return particles;
   } finally {
-    // Release all pooled objects back to pool
     ThreeObjectPools.vector3.release(tempOrigin);
     ThreeObjectPools.vector3.release(tempOffset);
     ThreeObjectPools.vector3.release(tempVelocity);
@@ -219,12 +214,10 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
   isMobile = false,
   onEffectComplete,
 }) => {
-  // Particle system state
   const particlesRef = useRef<Map<string, DustParticle[]>>(new Map());
   const pointsRef = useRef<THREE.Points>(null);
   const completedEffectsRef = useRef<Set<string>>(new Set());
 
-  // Calculate max particles needed
   const maxParticles = useMemo(() => {
     const maxCounts = isMobile
       ? DUST_CONSTANTS.PARTICLES_MOBILE
@@ -232,37 +225,25 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
     return Math.max(...Object.values(maxCounts));
   }, [isMobile]);
 
-  // Dust color - Korean earth tones with type-specific variants (황토색 for throw impacts)
   const getDustColor = (type: DustCloudEffect["type"]): number => {
     switch (type) {
       case "throw_impact":
-        // Earth-themed Gon techniques: darker brown earth tones (씨름 황토색)
         return KOREAN_COLORS.TRIGRAM_GAN_PRIMARY; // #8b4513 brown
       default:
-        // Neutral dust for general movement/impacts
         return KOREAN_COLORS.UI_STEEL_GRAY;
     }
   };
 
-  // Dust color selection based on currently active effects
-  // INTENTIONAL BEHAVIOR: Global earth tone tinting when any throw_impact is active
-  // This creates atmospheric cohesion for earth-themed Gon techniques.
-  // When earth power manifests (throw impacts), all dust particles take on earth tones
-  // to emphasize the ground-shattering nature and earth philosophy.
-  // This is a deliberate artistic choice for visual storytelling.
   const dustColor = useMemo(() => {
     if (effects.some((effect) => effect.type === "throw_impact")) {
       return getDustColor("throw_impact");
     }
-    // Fallback: neutral footfall-style dust
     return getDustColor("footfall");
   }, [effects]);
 
-  // Initialize particles for new effects
   useEffect(() => {
     if (!enabled) return;
 
-    // Performance configuration - moved inside useEffect to avoid dependency issues
     const getParticleCount = (effect: DustCloudEffect): number => {
       const counts = isMobile
         ? DUST_CONSTANTS.PARTICLES_MOBILE
@@ -278,7 +259,6 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
       }
     });
 
-    // Clean up removed effects
     const effectIds = new Set(effects.map((e) => e.id));
     particlesRef.current.forEach((_, id) => {
       if (!effectIds.has(id)) {
@@ -288,13 +268,11 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
     });
   }, [effects, enabled, isMobile]);
 
-  // Initial positions for buffer (updated in useFrame)
   const initialPositions = useMemo(() => {
     const positions = new Float32Array(maxParticles * 3);
     return positions;
   }, [maxParticles]);
 
-  // Physics update loop
   useFrame((_, delta) => {
     if (!enabled || !pointsRef.current) return;
 
@@ -304,7 +282,6 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
     const attr = pointsRef.current.geometry.attributes.position;
     const posArray = attr.array as Float32Array;
 
-    // Update all active dust particles
     particlesRef.current.forEach((particles, effectId) => {
       let hasActiveParticles = false;
 
@@ -315,16 +292,12 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
         if (p.age < p.lifetime) {
           hasActiveParticles = true;
 
-          // Apply gravity (lighter than other particles)
           p.velocity.y += DUST_CONSTANTS.GRAVITY * safeDelta;
 
-          // Apply air resistance
           p.velocity.multiplyScalar(DUST_CONSTANTS.AIR_RESISTANCE);
 
-          // Update position
           p.position.addScaledVector(p.velocity, safeDelta);
 
-          // Floor collision - settle on floor
           if (p.position.y <= DUST_CONSTANTS.FLOOR_Y) {
             p.position.y = DUST_CONSTANTS.FLOOR_Y;
             p.velocity.y = 0;
@@ -332,7 +305,6 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
             p.velocity.z *= 0.9;
           }
 
-          // Update render position
           if (totalParticleIndex < posArray.length / 3) {
             posArray[totalParticleIndex * 3] = p.position.x;
             posArray[totalParticleIndex * 3 + 1] = p.position.y;
@@ -342,7 +314,6 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
         }
       }
 
-      // Check if effect is complete
       if (!hasActiveParticles && !completedEffectsRef.current.has(effectId)) {
         completedEffectsRef.current.add(effectId);
         onEffectComplete?.(effectId);
@@ -352,7 +323,6 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
     attr.needsUpdate = true;
   });
 
-  // Don't render if disabled or no effects
   if (!enabled || effects.length === 0) {
     return null;
   }

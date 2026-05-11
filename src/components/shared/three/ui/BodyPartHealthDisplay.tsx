@@ -78,13 +78,11 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
 }) => {
   const isLeft = position === "left";
 
-  // Responsive sizing
   const barWidth = isMobile ? 100 : 140;
   const barHeight = isMobile ? 8 : 10;
   const fontSize = isMobile ? 9 : 10;
   const gap = isMobile ? "4px" : "5px";
 
-  // Group body parts for display
   const bodyPartGroups = useMemo(
     () => [
       {

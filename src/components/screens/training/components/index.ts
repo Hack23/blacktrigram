@@ -15,7 +15,6 @@ export { default as TrainingModeSelectorOverlayHtml } from "./TrainingModeSelect
 export { default as TrainingStatsOverlayHtml } from "./TrainingStatsOverlayHtml";
 export { default as VitalPointTrainingOverlayHtml } from "./VitalPointTrainingOverlayHtml";
 
-// HUD Components - Organized UI layout containers
 export * from "./hud";
 
 export type { AnatomyControlsOverlayHtmlProps } from "./AnatomyControlsOverlayHtml";

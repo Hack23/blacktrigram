@@ -60,15 +60,12 @@ const ParticleBurst: React.FC<{
   const groupRef = useRef<THREE.Group>(null);
   const particlesRef = useRef(particles);
   
-  // Keep particlesRef in sync with latest particles so useFrame animates current array
   useEffect(() => {
     particlesRef.current = particles;
   }, [particles]);
   
-  // Store particle count to avoid accessing ref during render
   const particleCount = particles.length;
   
-  // Create mesh refs array once
   const meshRefsArray = useMemo(
     () => particles.map(() => ({ current: null as THREE.Mesh | null })),
     [particles]
@@ -77,17 +74,13 @@ const ParticleBurst: React.FC<{
   useFrame((_, delta) => {
     if (!groupRef.current) return;
 
-    // Update each particle
     particlesRef.current.forEach((particle, i) => {
-      // Apply physics
       particle.velocity.y -= 9.8 * delta; // Gravity
       particle.velocity.multiplyScalar(0.98); // Air resistance
       particle.position.addScaledVector(particle.velocity, delta);
 
-      // Update life
       particle.life -= delta;
 
-      // Update mesh position and opacity via refs
       const mesh = meshRefsArray[i]?.current;
       if (mesh) {
         mesh.position.copy(particle.position);
@@ -167,7 +160,6 @@ const ExplosionFlash: React.FC<{
   useFrame(() => {
     if (meshRef.current) {
       const progress = progressRef.current;
-      // Quick expansion then fade
       const scale = progress < 0.2 ? 1 + progress * 2 : 1.4 - progress;
       meshRef.current.scale.setScalar(scale * intensity);
 
@@ -199,7 +191,6 @@ const DebrisParticles: React.FC<{
 }> = ({ position, intensity, color, active }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Generate random debris - regenerate when position/intensity changes or effect activates
   const [debris, setDebris] = useState<Array<{
     position: THREE.Vector3;
     velocity: THREE.Vector3;
@@ -253,7 +244,6 @@ const DebrisParticles: React.FC<{
     setDebris(debrisData);
   }, [position, intensity, active]);
 
-  // Recreate refs when debris changes
   const debrisRefs = useMemo(
     () => debris.map(() => React.createRef<THREE.Mesh>()),
     [debris]
@@ -264,21 +254,17 @@ const DebrisParticles: React.FC<{
       const mesh = debrisRefs[i].current;
       if (!mesh) return;
 
-      // Apply physics
       piece.velocity.y -= 9.8 * delta;
       piece.velocity.multiplyScalar(0.98);
       piece.position.addScaledVector(piece.velocity, delta);
 
-      // Update rotation
       piece.rotation.x += piece.rotationVel.x * delta;
       piece.rotation.y += piece.rotationVel.y * delta;
       piece.rotation.z += piece.rotationVel.z * delta;
 
-      // Update mesh
       mesh.position.copy(piece.position);
       mesh.rotation.copy(piece.rotation);
 
-      // Fade out
       const material = mesh.material as THREE.MeshBasicMaterial;
       material.opacity *= 0.97;
     });
@@ -309,26 +295,22 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
   active = true,
   color = KOREAN_COLORS.ACCENT_GOLD,
 }) => {
-  // Cap particle count for performance
   const cappedParticleCount = Math.min(particleCount, 50);
   
   const progressRef = useRef(0);
   const startTimeRef = useRef(0);
   const completedRef = useRef(false);
 
-  // Initialize startTimeRef in useEffect
   useEffect(() => {
     startTimeRef.current = Date.now();
   }, []);
 
-  // Generate particles - regenerate when position changes or effect activates
   const [particles, setParticles] = useState<ParticleData[]>([]);
 
   useEffect(() => {
     if (!active) return;
 
     const particleData: ParticleData[] = [];
-    // Generate particles in local space; ParticleBurst group will offset by position
     const center = new THREE.Vector3(0, 0, 0);
 
     for (let i = 0; i < cappedParticleCount; i++) {

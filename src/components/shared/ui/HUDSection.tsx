@@ -83,11 +83,9 @@ export const HUDSection: React.FC<HUDSectionProps> = ({
     isMobile,
   });
 
-  // Calculate responsive font size
   const fontSize = isMobile ? 11 : 12;
   const titleFontSize = isMobile ? 12 : 14;
 
-  // Determine border and background colors based on variant
   const borderColor = variant === 'primary'
     ? hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)
     : hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5);

@@ -84,7 +84,6 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
   const tierName = getTierName(tier);
   const tierColorValue = getTierColorValue(tier, theme);
 
-  // Memoize color calculations
   const tierColor = useMemo(
     () => hexColorToCSS(tierColorValue),
     [tierColorValue],
@@ -98,7 +97,6 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
     [tierColorValue],
   );
 
-  // Responsive sizing
   const fontSize = isMobile ? 11 : 13;
   const padding = isMobile ? "6px 10px" : "8px 12px";
 

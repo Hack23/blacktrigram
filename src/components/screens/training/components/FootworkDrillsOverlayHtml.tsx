@@ -123,7 +123,6 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
     currentDrill,
     onDrillChange,
     currentStep,
-    // onStepComplete, // TODO: Use this for drill pattern validation
     isActive,
     onToggleActive,
     isMobile,
@@ -131,7 +130,6 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
   const drillInfo = DRILL_INFO[currentDrill];
   const [showInstructions, setShowInstructions] = useState(true);
 
-  // Auto-hide instructions after 5 seconds when drill is active
   useEffect(() => {
     if (isActive && showInstructions) {
       const timer = setTimeout(() => setShowInstructions(false), 5000);
@@ -358,9 +356,6 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
   );
 },
 (prevProps, nextProps) => {
-  // Re-render when drill state, mobile state, or callbacks change
-  // Including callback props prevents stale closures when parent provides
-  // new functions that capture updated state.
   return (
     prevProps.currentDrill === nextProps.currentDrill &&
     prevProps.currentStep === nextProps.currentStep &&

@@ -34,13 +34,11 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
 }) => {
   const audio = useAudio();
 
-  // Local state to track values for UI (prevents issues if audio not ready)
   const [masterVolume, setMasterVolume] = useState(audio.masterVolume ?? 1.0);
   const [musicVolume, setMusicVolume] = useState(audio.musicVolume ?? 0.7);
   const [sfxVolume, setSfxVolume] = useState(audio.sfxVolume ?? 0.8);
   const [isMuted, setIsMuted] = useState(audio.muted ?? false);
 
-  // Sync local state with audio manager state changes
   React.useEffect(() => {
     setMasterVolume(audio.masterVolume ?? 1.0);
     setMusicVolume(audio.musicVolume ?? 0.7);
@@ -48,7 +46,6 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
     setIsMuted(audio.muted ?? false);
   }, [audio.masterVolume, audio.musicVolume, audio.sfxVolume, audio.muted]);
 
-  // Get position styles (memoized)
   const getPositionStyle = useMemo((): React.CSSProperties => {
     if (position === "custom") return {};
 

@@ -40,8 +40,6 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
 }) => {
   const spacing = isMobile ? 10 : isTablet ? 12 : 15;
   
-  // Determine button size based on screen width (resolution-based, not device detection)
-  // Small screens (<768px): sm, Medium/Large (>=768px): md
   const buttonSize = width < 768 ? "sm" : "md";
   const buttonMinWidth = width < 768 ? "200px" : "150px";
 

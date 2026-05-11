@@ -200,15 +200,10 @@ const SingleBone: React.FC<{
   physicalAttributes,
   archetype,
 }) => {
-  // Ref for the bone group to update rotation imperatively
   const groupRef = useRef<THREE.Group>(null);
 
-  // Sync bone rotation from animation system each frame
-  // This is necessary because bone.rotation is mutated in place by batchUpdateBones
-  // and React doesn't detect the mutation (no state/prop change)
   useFrame(() => {
     if (groupRef.current) {
-      // Apply current bone rotation and position from animation system
       groupRef.current.rotation.set(
         bone.rotation.x,
         bone.rotation.y,
@@ -222,42 +217,31 @@ const SingleBone: React.FC<{
     }
   });
 
-  // Calculate bone direction and length
   const boneTransform = useMemo(() => {
     const length = bone.length;
-    // CapsuleGeometry in Three.js is aligned along the Y-axis by default (0, 1, 0)
     const capsuleDefaultDirection = new THREE.Vector3(0, 1, 0);
 
-    // Calculate rotation to align with bone direction if parent exists
     let rotation = new THREE.Euler(0, 0, 0);
-    // Offset to position capsule between parent and this bone's position
-    // Capsules extend equally in both directions, so we offset by half length toward parent
     let offset = new THREE.Vector3(0, -length / 2, 0);
 
     if (bone.parent) {
-      // Use this bone's local position (parent → child vector) and normalize to get the direction
-      // Extract coordinates and manually normalize to avoid issues with Vector3 method availability
       const x = bone.position.x ?? 0;
       const y = bone.position.y ?? 0;
       const z = bone.position.z ?? 0;
 
       const positionLength = Math.sqrt(x * x + y * y + z * z);
       if (positionLength > 0.001) {
-        // Manually normalize to get a stable direction vector
         const targetX = x / positionLength;
         const targetY = y / positionLength;
         const targetZ = z / positionLength;
         const target = new THREE.Vector3(targetX, targetY, targetZ);
 
-        // Calculate quaternion rotation from capsule's default Y-axis to target direction
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
           capsuleDefaultDirection,
           target,
         );
         rotation = new THREE.Euler().setFromQuaternion(quaternion);
 
-        // Calculate offset in the direction toward parent (negative of bone direction)
-        // This positions the capsule to connect parent → this bone
         offset = new THREE.Vector3(
           (-targetX * length) / 2,
           (-targetY * length) / 2,
@@ -269,8 +253,6 @@ const SingleBone: React.FC<{
     return { length, rotation, offset };
   }, [bone]);
 
-  // Determine if muscles are being rendered - if so, hide bone geometry
-  // to prevent layer stacking that causes "bubble man" appearance
   const hasMuscles = muscleStates !== undefined && muscleStates.size > 0;
 
   return (
@@ -515,7 +497,6 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   isExhausted = false,
   archetype,
 }) => {
-  // Calculate bone thickness multiplier from physical attributes
   const boneThicknessMultiplier = useMemo(() => {
     if (!physicalAttributes) return 1.0;
     return calculateBoneThickness(

@@ -48,7 +48,6 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [focused, setFocused] = useState<boolean>(false);
 
-  // Enhanced overlay styles with neon glow and depth
   const enhancedOverlayStyles = useMemo(
     () =>
       getEnhancedKoreanOverlayStyles({
@@ -61,13 +60,11 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
     [focused],
   );
 
-  // Memoize title color
   const titleColor = useMemo(
     () => `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
     [],
   );
 
-  // Keyboard navigation - stops propagation to prevent conflicts with parent
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!onSelectedIndexChange) return;
@@ -112,7 +109,6 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
     onPlaySFX,
   ]);
 
-  // Focus ring for accessibility
   useEffect(() => {
     const handleFocus = () => setFocused(true);
     const handleBlur = () => setFocused(false);
@@ -124,7 +120,6 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
     };
   }, []);
 
-  // Use device detection from prop, with width-based fallback for sizing adjustments
   const isSmallScreen = width < 768; // Mobile-sized screens
 
   const containerPadding = isSmallScreen ? 16 : 12;
@@ -133,7 +128,6 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
     : 14;
   const sectionGap = isSmallScreen ? 8 : 6;
 
-  // Safe area support for notched devices (use isMobile for actual device detection)
   const safeAreaStyles = useMemo(
     () =>
       isMobile ? getSafeAreaPadding(["top", "bottom"], containerPadding) : {},
@@ -217,9 +211,6 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
   );
   },
   (prevProps, nextProps) => {
-    // Custom comparison for optimal re-render prevention
-    // Including callback props prevents stale closures when parent provides
-    // new functions that capture updated state.
     return (
       prevProps.selectedIndex === nextProps.selectedIndex &&
       prevProps.width === nextProps.width &&

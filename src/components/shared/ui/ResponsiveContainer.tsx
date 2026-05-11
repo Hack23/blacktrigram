@@ -81,7 +81,6 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
   const { width, height } = useWindowSize();
   const layout = useResponsiveLayout(width, height);
 
-  // Calculate padding based on density
   const getPadding = () => {
     switch (padding) {
       case 'none':
@@ -98,7 +97,6 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
 
   const paddingValue = getPadding();
 
-  // Container style with safe area insets and optional transitions
   const containerStyle: CSSProperties = {
     width: '100%',
     height: '100%',

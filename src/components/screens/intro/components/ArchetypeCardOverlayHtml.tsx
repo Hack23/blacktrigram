@@ -62,13 +62,11 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = React.memo(
       specialAbilities = [],
     } = data;
 
-    // Calculate responsive dimensions
     const cardWidth = isMobile ? Math.min(280, width) : width;
     const imageSize = isMobile ? 120 : 160;
     const padding = isMobile ? 16 : 24;
     const gap = isMobile ? 10 : 16;
 
-    // Memoize color calculations
     const colors = useMemo(
       () => ({
         background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
@@ -88,22 +86,18 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = React.memo(
       [color, isSelected]
     );
 
-    // Handle card click
     const handleCardClick = useCallback(() => {
       if (!isSelected) {
         onSelect();
       }
     }, [isSelected, onSelect]);
 
-    // Handle confirm button click
     const handleConfirmClick = useCallback(() => {
       onConfirm?.();
     }, [onConfirm]);
 
-    // Get archetype image path
     const imagePath = `/assets/visual/archetypes/${textureKey}.png`;
 
-    // Transform stats to StatBar format
     const statBars = useMemo(
       () => [
         {
@@ -316,9 +310,6 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = React.memo(
 
         {/* Select Button */}
         {isSelected && showSelectButton && onConfirm && (
-          // Note: Wrapper div with stopPropagation prevents card click when clicking button
-          // Future enhancement: Consider adding stopPropagation prop to BaseButtonOverlayHtml
-          // to eliminate this wrapper and make the component more self-contained
           <div 
             style={{ marginTop: `${gap}px` }}
             onClick={(e) => e.stopPropagation()}

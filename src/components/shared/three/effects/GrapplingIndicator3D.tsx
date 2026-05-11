@@ -159,15 +159,12 @@ const StruggleParticles: React.FC<{
 }> = ({ particleCount, color, intensity, position }) => {
   const pointsRef = useRef<THREE.Points>(null);
 
-  // Positions for initial geometry (useState to allow access during render)
   const [positions, setPositions] = useState<Float32Array>(
     () => new Float32Array(particleCount * 3)
   );
   
-  // Velocities are mutable and only accessed in useFrame (useRef is fine)
   const velocitiesRef = useRef<Float32Array>(new Float32Array(particleCount * 3));
 
-  // Initialize particle positions and velocities when count or intensity changes
   useEffect(() => {
     const pos = new Float32Array(particleCount * 3);
     const vel = new Float32Array(particleCount * 3);
@@ -178,12 +175,10 @@ const StruggleParticles: React.FC<{
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
 
-      // Spherical distribution around character
       pos[i3] = radius * Math.sin(phi) * Math.cos(theta);
       pos[i3 + 1] = 1.2 + radius * Math.cos(phi); // Center at chest height
       pos[i3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
 
-      // Outward velocities with some randomness
       vel[i3] = (Math.random() - 0.5) * intensity * 2;
       vel[i3 + 1] = Math.random() * intensity;
       vel[i3 + 2] = (Math.random() - 0.5) * intensity * 2;
@@ -192,7 +187,6 @@ const StruggleParticles: React.FC<{
     setPositions(pos);
     velocitiesRef.current = vel;
 
-    // Update geometry if it exists
     if (pointsRef.current) {
       const attr = pointsRef.current.geometry.attributes.position;
       (attr.array as Float32Array).set(pos);
@@ -200,14 +194,11 @@ const StruggleParticles: React.FC<{
     }
   }, [particleCount, intensity]);
 
-  // Cleanup geometry and material on unmount
   useEffect(() => {
     const points = pointsRef.current;
     return () => {
       if (points) {
-        // Dispose geometry
         points.geometry.dispose();
-        // Dispose material
         if (points.material instanceof THREE.Material) {
           points.material.dispose();
         }
@@ -215,7 +206,6 @@ const StruggleParticles: React.FC<{
     };
   }, []);
 
-  // Animate particles
   useFrame((_state, delta) => {
     if (!pointsRef.current) return;
 
@@ -226,15 +216,12 @@ const StruggleParticles: React.FC<{
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3;
 
-      // Update positions with velocities
       array[i3] += velocities[i3] * delta;
       array[i3 + 1] += velocities[i3 + 1] * delta;
       array[i3 + 2] += velocities[i3 + 2] * delta;
 
-      // Decay upward velocity (gravity simulation)
       velocities[i3 + 1] -= 2.0 * delta;
 
-      // Reset particles that fall too low or go too far
       const y = array[i3 + 1];
       const distFromCenter = Math.sqrt(
         array[i3] * array[i3] + array[i3 + 2] * array[i3 + 2]
@@ -374,13 +361,11 @@ export const GrapplingIndicator3D: React.FC<GrapplingIndicator3DProps> = ({
   isMobile = false,
   "data-testid": testId = "grappling-indicator-3d",
 }) => {
-  // Don't render if not grappling
   if (!grappleControl) return null;
 
   const { state, gripStrength } = grappleControl;
   const maxGripStrength = 100; // TODO: Get from config
 
-  // Get visual properties for current state
   const particleCount = isMobile
     ? Math.floor(PARTICLE_COUNT_MAP[state] * 0.6) // Reduce particles on mobile
     : PARTICLE_COUNT_MAP[state];
@@ -388,7 +373,6 @@ export const GrapplingIndicator3D: React.FC<GrapplingIndicator3DProps> = ({
   const color = getGrappleStateColor(state, isController);
   const stateText = getGrappleStateText(state, isController);
 
-  // Struggle intensity scales with grip strength and state
   const intensity = state === GrappleState.ESCAPING ? 1.5 : 0.8;
 
   return (

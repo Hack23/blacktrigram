@@ -149,17 +149,14 @@ export const BackgroundScene3D: React.FC<BackgroundScene3DProps> = ({
 }) => {
   const gridRef = useRef<THREE.GridHelper>(null);
 
-  // Get theme colors
   const themeColors = THEME_COLORS[theme];
 
-  // Use props or theme defaults
   const finalAmbientIntensity =
     ambientIntensity ?? themeColors.ambientIntensity;
   const finalDirectionalIntensity =
     directionalIntensity ?? themeColors.directionalIntensity;
   const finalPointIntensity = pointIntensity ?? themeColors.pointIntensity;
 
-  // Animate grid using useFrame for proper sync with render loop
   useFrame(() => {
     if (gridRef.current) {
       gridRef.current.rotation.y += gridRotationSpeed;

@@ -69,7 +69,6 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
   isInGuard,
   speedModifiers,
 }) => {
-  // Use shared HUD layout hook
   const layout = useHUDLayout(
     width,
     height,

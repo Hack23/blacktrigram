@@ -38,10 +38,8 @@ export const EnhancedArchetypeDisplay: React.FC<EnhancedArchetypeDisplayProps> =
         "compact",
       );
 
-      // Use width for layout sizing decisions
       const isSmallScreen = width < 768;
 
-      // Convert archetype data to card data format
       const cardData = useMemo(() => {
         return archetypes.map((archetype) => ({
           archetype: Object.values(PlayerArchetype).find(
@@ -59,7 +57,6 @@ export const EnhancedArchetypeDisplay: React.FC<EnhancedArchetypeDisplayProps> =
         }));
       }, [archetypes]);
 
-      // Get current archetype
       const currentArchetype = useMemo(() => {
         const archetype = archetypes[selectedIndex];
         return Object.values(PlayerArchetype).find(
@@ -67,13 +64,11 @@ export const EnhancedArchetypeDisplay: React.FC<EnhancedArchetypeDisplayProps> =
         ) as PlayerArchetype;
       }, [archetypes, selectedIndex]);
 
-      // Toggle view mode
       const handleToggleView = useCallback(() => {
         setViewMode((prev) => (prev === "compact" ? "detailed" : "compact"));
         onPlaySFX("menu_hover");
       }, [onPlaySFX]);
 
-      // Handle archetype change from card grid
       const handleArchetypeChangeFromGrid = useCallback(
         (archetype: PlayerArchetype) => {
           const index = archetypes.findIndex((a) => a.id === archetype);
@@ -84,7 +79,6 @@ export const EnhancedArchetypeDisplay: React.FC<EnhancedArchetypeDisplayProps> =
         [archetypes, onArchetypeChange],
       );
 
-      // Memoize height calculation for detailed view (minimum 600px or 2x compact height)
       const detailedHeight = useMemo(
         () => Math.max(height * 2, 600),
         [height],

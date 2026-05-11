@@ -49,18 +49,13 @@ const Eye: React.FC<EyeProps> = ({
   swelling,
   side,
 }) => {
-  // Calculate eye openness based on expression
   const eyeOpenness = useMemo(() => {
     return EYE_OPENNESS[expression];
   }, [expression]);
 
-  // Calculate pupil offset based on look direction
   const pupilOffset = useMemo(() => {
-    // Normalize look direction
     const normalized = lookDirection.clone().normalize();
 
-    // Convert to 2D offset (x, y in eye space)
-    // Limit pupil movement to realistic range
     const maxOffset = 0.015;
     const x = normalized.x * maxOffset;
     const y = -normalized.y * maxOffset * 0.5; // Less vertical movement
@@ -68,7 +63,6 @@ const Eye: React.FC<EyeProps> = ({
     return new THREE.Vector3(x, y, 0.03);
   }, [lookDirection]);
 
-  // Swelling color (purple bruise)
   const swellingColor = 0x663366;
 
   return (
@@ -122,12 +116,10 @@ const Eye: React.FC<EyeProps> = ({
  * @korean 입컴포넌트
  */
 const Mouth: React.FC<MouthProps> = ({ position, expression, bleeding }) => {
-  // Calculate mouth openness based on expression
   const mouthOpenness = useMemo(() => {
     return MOUTH_OPENNESS[expression];
   }, [expression]);
 
-  // Blood color
   const bloodColor = KOREAN_COLORS.ACCENT_RED;
 
   return (
@@ -191,7 +183,6 @@ const Nose: React.FC<{
 }> = ({ position, skinColor, bleeding }) => {
   const bloodColor = KOREAN_COLORS.ACCENT_RED;
 
-  // Memoize skin material for nose
   const noseMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
@@ -200,20 +191,17 @@ const Nose: React.FC<{
         metalness: 0,
         clearcoat: 0.3,
         clearcoatRoughness: 0.6,
-        // PBR skin properties
         transmission: 0,
         thickness: 0.05,
         ior: 1.4,
         sheen: 0.1,
         sheenRoughness: 0.8,
-        // Subtle emissive
         emissive: new THREE.Color(0xff6040),
         emissiveIntensity: 0.02,
       }),
     [skinColor]
   );
 
-  // Dispose nose material on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
       noseMaterial.dispose();
@@ -275,14 +263,11 @@ export const Face3D: React.FC<Face3DProps> = ({
   isMobile = false,
   skinColor = 0xffdbac, // Default skin tone
 }) => {
-  // Calculate eye direction toward opponent
   const eyeDirection = useMemo(() => {
     if (!enableEyeTracking) {
       return new THREE.Vector3(0, 0, 1); // Look forward
     }
 
-    // Validate opponent position - check for required THREE.Vector3 methods
-    // This is more robust than instanceof check in test environments
     if (
       !opponentPosition ||
       typeof opponentPosition.x !== "number" ||
@@ -297,9 +282,6 @@ export const Face3D: React.FC<Face3DProps> = ({
       return new THREE.Vector3(0, 0, 1);
     }
 
-    // Calculate direction from head to opponent using component subtraction
-    // to avoid prototype chain issues in test environments
-    // Use the same offset as the face position
     const headPos = new THREE.Vector3(0, HEAD_POSITION_OFFSET, 0);
     const dir = new THREE.Vector3(
       opponentPosition.x - headPos.x,
@@ -311,7 +293,6 @@ export const Face3D: React.FC<Face3DProps> = ({
     return dir;
   }, [opponentPosition, enableEyeTracking]);
 
-  // Calculate overall bruise color intensity
   const bruiseIntensity = useMemo(() => {
     if (!enableDamageVisuals) return 0;
 
@@ -324,20 +305,15 @@ export const Face3D: React.FC<Face3DProps> = ({
     return avgBruise;
   }, [damage, enableDamageVisuals]);
 
-  // Adjust head color for bruising using helper function
   const headColor = useMemo(() => {
     if (bruiseIntensity === 0) return skinColor;
 
-    // Mix skin color with purple bruise color
     const bruiseColor = 0x663366;
     return mixColors(skinColor, bruiseColor, bruiseIntensity * 0.3);
   }, [skinColor, bruiseIntensity]);
 
-  // NOTE: Damage visuals are currently handled via headColor bruise interpolation.
-  // In a future implementation, this could be replaced with a canvas-based texture.
   const damageTexture = null;
 
-  // Memoize head material to avoid recreating on every render
   const headMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
@@ -348,20 +324,17 @@ export const Face3D: React.FC<Face3DProps> = ({
         clearcoat: 0.3,
         clearcoatRoughness: 0.6,
         envMapIntensity: 0.5,
-        // PBR skin properties
         transmission: 0,
         thickness: 0.1,
         ior: 1.4, // Index of refraction for skin
         sheen: 0.15, // Facial skin has more sheen
         sheenRoughness: 0.7,
-        // Subtle emissive for alive appearance
         emissive: new THREE.Color(0xff6040),
         emissiveIntensity: 0.02,
       }),
     [headColor, damageTexture]
   );
 
-  // Memoize ear material to avoid recreating on every render
   const earMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
@@ -370,20 +343,17 @@ export const Face3D: React.FC<Face3DProps> = ({
         metalness: 0,
         clearcoat: 0.3,
         clearcoatRoughness: 0.6,
-        // PBR skin properties
         transmission: 0,
         thickness: 0.05,
         ior: 1.4,
         sheen: 0.1,
         sheenRoughness: 0.8,
-        // Subtle emissive
         emissive: new THREE.Color(0xff6040),
         emissiveIntensity: 0.02,
       }),
     [headColor]
   );
 
-  // Dispose materials on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
       headMaterial.dispose();

@@ -101,22 +101,18 @@ export const TechniqueNameDisplay: React.FC<TechniqueNameDisplayProps> = ({
 
   useEffect(() => {
     if (!visible || (!koreanName && !englishName)) {
-      // Ensure overlay is hidden when not visible or no names provided
       setIsVisible(false);
       setOpacity(0);
       return;
     }
 
-    // Fade in
     setIsVisible(true);
     setOpacity(1);
 
-    // Fade out after duration
     const fadeOutTimer = setTimeout(() => {
       setOpacity(0);
     }, duration - 500); // Start fading 500ms before end
 
-    // Hide completely after fade out
     const hideTimer = setTimeout(() => {
       setIsVisible(false);
     }, duration);
@@ -127,7 +123,6 @@ export const TechniqueNameDisplay: React.FC<TechniqueNameDisplayProps> = ({
     };
   }, [visible, koreanName, englishName, duration]);
 
-  // Memoize colors to avoid recalculating on every render
   const { textColor, glowColor } = useMemo(() => {
     if (isCritical) {
       return {

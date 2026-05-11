@@ -62,16 +62,12 @@ export interface InternalDamage3DProps {
   readonly onEffectComplete?: (id: string) => void;
 }
 
-// Physics constants for organ damage pulses
 const INTERNAL_DAMAGE_CONSTANTS = {
-  // Pulse expansion speeds
   PULSE_SPEED: 2.5, // m/s expansion rate
   
-  // Lifetimes
   PULSE_LIFETIME: 1.5, // seconds for pulse to complete
   RIPPLE_LIFETIME: 0.8, // seconds for tissue ripple
   
-  // Max radii by penetration depth
   MAX_RADIUS: {
     surface: 0.4,
     shallow: 0.7,
@@ -79,7 +75,6 @@ const INTERNAL_DAMAGE_CONSTANTS = {
     critical: 1.2,
   },
   
-  // Intensity multipliers
   INTENSITY: {
     surface: 0.5,
     shallow: 0.8,
@@ -87,15 +82,12 @@ const INTERNAL_DAMAGE_CONSTANTS = {
     critical: 1.5,
   },
   
-  // Particle counts (desktop)
   PULSE_PARTICLES: 60,
   RIPPLE_PARTICLES: 30,
   
-  // Colors
   ORGAN_COLOR: 0x8b0000, // Dark red for organs
   RIPPLE_COLOR: 0xdc143c, // Crimson for tissue ripples
   
-  // Emissive intensity
   EMISSIVE_INTENSITY: 0.8,
 } as const;
 
@@ -115,7 +107,6 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
   isMobile = false,
   onEffectComplete,
 }) => {
-  // Track active effect instances
   const [effectInstances, setEffectInstances] = React.useState<
     Map<
       string,
@@ -128,7 +119,6 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
     >
   >(new Map());
 
-  // Calculate particle counts based on mobile optimization
   const particleCounts = useMemo(() => {
     const pulseCount = isMobile
       ? Math.floor(INTERNAL_DAMAGE_CONSTANTS.PULSE_PARTICLES * 0.5)
@@ -139,7 +129,6 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
     return { pulseCount, rippleCount };
   }, [isMobile]);
 
-  // Create particle system for organ pulse
   const createPulseParticles = useMemo(
     () => (effect: InternalDamageEffect) => {
       const { pulseCount } = particleCounts;
@@ -148,35 +137,27 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
       const colors = new Float32Array(pulseCount * 3);
       const sizes = new Float32Array(pulseCount);
 
-      // Pooled color for calculations - PERFORMANCE: Eliminates pulseCount Color allocations
       const tempColor = ThreeObjectPools.color.acquire();
 
       try {
-        // Set color once from pool
         tempColor.set(INTERNAL_DAMAGE_CONSTANTS.ORGAN_COLOR);
 
-        // Create sphere distribution
         for (let i = 0; i < pulseCount; i++) {
-          // Fibonacci sphere distribution for phi/theta calculations
-          // (values calculated but not stored in positions yet - used later for expansion)
 
           positions[i * 3] = 0;
           positions[i * 3 + 1] = 0;
           positions[i * 3 + 2] = 0;
 
-          // Dark red color (reuse pooled color)
           colors[i * 3] = tempColor.r;
           colors[i * 3 + 1] = tempColor.g;
           colors[i * 3 + 2] = tempColor.b;
 
-          // Size based on penetration depth
           const baseSize = 0.03;
           const depthMultiplier =
             INTERNAL_DAMAGE_CONSTANTS.INTENSITY[effect.penetrationDepth];
           sizes[i] = baseSize * depthMultiplier;
         }
       } finally {
-        // Release pooled color back to pool
         ThreeObjectPools.color.release(tempColor);
       }
 
@@ -197,7 +178,6 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
       const points = new THREE.Points(geometry, material);
       points.position.set(...effect.position);
 
-      // Store phi/theta for sphere expansion
       (geometry as THREE.BufferGeometry & { sphereData: Record<string, number | Float32Array> }).sphereData = { positions: positions.slice() };
       for (let i = 0; i < pulseCount; i++) {
         const phi = Math.acos(1 - 2 * (i + 0.5) / pulseCount);
@@ -211,7 +191,6 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
     [particleCounts]
   );
 
-  // Create particle system for tissue ripples
   const createRippleParticles = useMemo(
     () => (effect: InternalDamageEffect) => {
       const { rippleCount } = particleCounts;
@@ -220,32 +199,26 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
       const colors = new Float32Array(rippleCount * 3);
       const sizes = new Float32Array(rippleCount);
 
-      // Pooled color for calculations - PERFORMANCE: Eliminates rippleCount Color allocations
       const tempColor = ThreeObjectPools.color.acquire();
 
       try {
-        // Set color once from pool
         tempColor.set(INTERNAL_DAMAGE_CONSTANTS.RIPPLE_COLOR);
 
-        // Create ring distribution
         for (let i = 0; i < rippleCount; i++) {
           const angle = (i / rippleCount) * Math.PI * 2;
           positions[i * 3] = 0;
           positions[i * 3 + 1] = 0;
           positions[i * 3 + 2] = 0;
 
-          // Crimson color for ripples (reuse pooled color)
           colors[i * 3] = tempColor.r;
           colors[i * 3 + 1] = tempColor.g;
           colors[i * 3 + 2] = tempColor.b;
 
           sizes[i] = 0.02;
 
-          // Store angle for ring expansion
           (geometry as THREE.BufferGeometry & { [key: string]: number })[`angle_${i}`] = angle;
         }
       } finally {
-        // Release pooled color back to pool
         ThreeObjectPools.color.release(tempColor);
       }
 
@@ -271,14 +244,12 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
     [particleCounts]
   );
 
-  // Update effect instances when effects prop changes
   useEffect(() => {
     if (!enabled) return;
 
     setEffectInstances((prev) => {
       const updated = new Map(prev);
 
-      // Add new effects
       effects.forEach((effect) => {
         if (!updated.has(effect.id)) {
           const pulseParticles = createPulseParticles(effect);
@@ -292,7 +263,6 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
         }
       });
 
-      // Remove completed effects
       const currentIds = new Set(effects.map((e) => e.id));
       Array.from(updated.keys()).forEach((id) => {
         if (!currentIds.has(id)) {
@@ -311,8 +281,6 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
     });
   }, [effects, enabled, createPulseParticles, createRippleParticles]);
 
-  // 자원 정리 | Resource cleanup - Dispose all particle systems on unmount
-  // Using a ref to track instances to avoid stale closure issues
   const effectInstancesRef = useRef<Map<
     string,
     {
@@ -342,7 +310,6 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
     };
   }, []); // Empty deps - cleanup on unmount only
 
-  // Animation loop
   useFrame(() => {
     if (!enabled || effectInstances.size === 0) return;
 
@@ -353,7 +320,6 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
       const elapsed = (now - instance.startTime) / 1000;
       const { effect } = instance;
 
-      // Pulse animation
       const pulseProgress = Math.min(
         elapsed / INTERNAL_DAMAGE_CONSTANTS.PULSE_LIFETIME,
         1.0
@@ -379,12 +345,10 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
 
         pulseGeometry.attributes.position.needsUpdate = true;
 
-        // Fade opacity
         const material = instance.pulseParticles.material as THREE.PointsMaterial;
         material.opacity = 1.0 - pulseProgress * 0.7;
       }
 
-      // Ripple animation
       const rippleProgress = Math.min(
         elapsed / INTERNAL_DAMAGE_CONSTANTS.RIPPLE_LIFETIME,
         1.0
@@ -405,13 +369,11 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
 
         rippleGeometry.attributes.position.needsUpdate = true;
 
-        // Fade opacity
         const material = instance.rippleParticles
           .material as THREE.PointsMaterial;
         material.opacity = 1.0 - rippleProgress;
       }
 
-      // Check completion
       if (
         elapsed >= INTERNAL_DAMAGE_CONSTANTS.PULSE_LIFETIME &&
         elapsed >= INTERNAL_DAMAGE_CONSTANTS.RIPPLE_LIFETIME
@@ -420,13 +382,11 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
       }
     });
 
-    // Notify completed effects
     completedIds.forEach((id) => {
       onEffectComplete?.(id);
     });
   });
 
-  // Render all active particle systems
   return (
     <>
       {Array.from(effectInstances.values()).map((instance) => (

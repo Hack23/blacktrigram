@@ -101,18 +101,12 @@ const calculateBodyThickness = (
   const referenceMuscle = 35; // Reference: athletic build
   const referenceFat = 12; // Reference: low body fat
 
-  // Linear scaling with limits (not square root which causes excessive inflation)
   const muscleRatio = muscleMass / referenceMuscle;
   const fatRatio = fatMass / referenceFat;
 
-  // Base 0.85, muscle adds up to +0.15, fat adds up to +0.20
-  // Thin character (28kg muscle, 10kg fat): 0.85 + (-0.030) + (-0.033) ≈ 0.787
-  // Average (35kg muscle, 12kg fat): 0.85 + 0 + 0 = 0.85
-  // Heavy (48kg muscle, 20kg fat): 0.85 + 0.056 + 0.133 ≈ 1.039
   const muscleContribution = (muscleRatio - 1.0) * 0.15;
   const fatContribution = (fatRatio - 1.0) * 0.2;
 
-  // Cap at 1.20x maximum to prevent "michelin man" effect
   return Math.max(
     0.75,
     Math.min(1.2, 0.85 + muscleContribution + fatContribution),
@@ -167,20 +161,16 @@ const getBodySurfaceForBone = (
     physicalAttributes.fatMass,
   );
 
-  // Get appropriate segment count based on distance
   const segmentCount = getLODSegmentCount(cameraDistance);
 
-  // Scaling factors for different body parts
   const torsoScale = physicalAttributes.torsoLength / 59; // Reference: 59cm torso
   const armScale = physicalAttributes.armLength / 77; // Reference: 77cm arms
   const legScale = physicalAttributes.legLength / 96; // Reference: 96cm legs
 
   switch (boneName) {
     case "neck": {
-      // Neck cylinder - smooth connection between head and torso with LOD
       const neckRadius = 0.06 * bodyThickness;
       const neckLength = 0.11 * bodyThickness;
-      // Main neck cylinder
       segments.push({
         geometry: new THREE.CylinderGeometry(
           neckRadius * 0.9, // Slightly narrower at top (under jaw)
@@ -191,7 +181,6 @@ const getBodySurfaceForBone = (
         localOffset: new THREE.Vector3(0, -neckLength * 0.4, 0),
         localRotation: new THREE.Euler(0, 0, 0),
       });
-      // Neck base flare - smooth transition to shoulders/torso
       segments.push({
         geometry: new THREE.CylinderGeometry(
           neckRadius * 1.2, // Match neck bottom
@@ -206,12 +195,9 @@ const getBodySurfaceForBone = (
     }
 
     case "head": {
-      // Head / skull sphere - Face3D renders features on top of this base
-      // Slightly elongated sphere for realistic cranium shape
       const headRadius = 0.095 * bodyThickness; // ~19cm head width
       const headHeight = headRadius * 1.15; // Slightly taller than wide
 
-      // Main cranium sphere
       segments.push({
         geometry: new THREE.SphereGeometry(
           headRadius,
@@ -221,7 +207,6 @@ const getBodySurfaceForBone = (
         localOffset: new THREE.Vector3(0, headHeight * 0.15, 0), // Slightly above bone origin
         localRotation: new THREE.Euler(0, 0, 0),
       });
-      // Jaw/chin area - smaller sphere below to fill out the jaw line
       segments.push({
         geometry: new THREE.SphereGeometry(
           headRadius * 0.7,
@@ -239,7 +224,6 @@ const getBodySurfaceForBone = (
     }
 
     case "spine_upper": {
-      // Upper torso / chest area - wider for shoulders
       const width =
         (physicalAttributes.shoulderWidth / 100) * bodyThickness * 0.9;
       const height = (physicalAttributes.torsoLength / 100) * torsoScale * 0.3;
@@ -261,15 +245,10 @@ const getBodySurfaceForBone = (
     }
 
     case "spine_middle": {
-      // Main torso - box covering chest and abs
       const width = (physicalAttributes.shoulderWidth / 100) * bodyThickness;
       const height = (physicalAttributes.torsoLength / 100) * torsoScale * 0.35;
       const depth = PECTORALS_RADIUS * 2 * bodyThickness; // Front to back depth
 
-      // Use LOD-aware segment counts (slightly higher than other regions) to keep torso shading smooth:
-      // - Torso is frequently closest to the camera and used for breathing / impact motion.
-      // - Vital point overlays and skin highlights rely on smoother curvature in this region.
-      // - We still respect the global LOD segmentCount so distant torsos reduce complexity consistently.
       const torsoSegmentsX = Math.max(2, Math.round(segmentCount * 0.2));
       const torsoSegmentsY = Math.max(3, Math.round(segmentCount * 0.3));
       const torsoSegmentsZ = Math.max(2, Math.round(segmentCount * 0.2));
@@ -290,14 +269,12 @@ const getBodySurfaceForBone = (
     }
 
     case "spine_lower": {
-      // Lower torso / lumbar area - tapers from chest to pelvis
       const widthTop =
         (physicalAttributes.shoulderWidth / 100) * bodyThickness * 0.95;
       const widthBottom =
         (physicalAttributes.shoulderWidth / 100) * bodyThickness * 0.85;
       const height = (physicalAttributes.torsoLength / 100) * torsoScale * 0.3;
 
-      // Use tapered cylinder for natural waist shape
       segments.push({
         geometry: new THREE.CylinderGeometry(
           widthTop * 0.5,
@@ -312,7 +289,6 @@ const getBodySurfaceForBone = (
     }
 
     case "pelvis": {
-      // Pelvis/hip area - wider for hip bones, connecting to legs
       const width =
         (physicalAttributes.shoulderWidth / 100) * 0.85 * bodyThickness;
       const height = 0.15;
@@ -328,7 +304,6 @@ const getBodySurfaceForBone = (
 
     case "shoulder_L":
     case "shoulder_R": {
-      // Shoulder joint - full sphere for smooth, rounded shoulder with LOD
       const shoulderRadius = BICEP_RADIUS * bodyThickness * 1.4;
 
       segments.push({
@@ -345,7 +320,6 @@ const getBodySurfaceForBone = (
 
     case "upper_arm_L":
     case "upper_arm_R": {
-      // Upper arm - tapered cylinder (bicep area) with LOD
       const radiusTop = BICEP_RADIUS * bodyThickness * 1.1; // Wider at shoulder
       const radiusBottom = BICEP_RADIUS * bodyThickness * 0.9; // Narrower at elbow
       const length = (physicalAttributes.armLength / 100) * armScale * 0.45;
@@ -365,7 +339,6 @@ const getBodySurfaceForBone = (
 
     case "forearm_L":
     case "forearm_R": {
-      // Forearm - tapered cylinder with LOD
       const radiusTop = FOREARM_RADIUS * bodyThickness * 1.0; // Wider at elbow
       const radiusBottom = FOREARM_RADIUS * bodyThickness * 0.8; // Less narrow - connects to wrist smoothly
       const length = (physicalAttributes.armLength / 100) * armScale * 0.4;
@@ -385,7 +358,6 @@ const getBodySurfaceForBone = (
 
     case "thigh_L":
     case "thigh_R": {
-      // Thigh - tapered cylinder (quad area) with LOD
       const radiusTop = QUAD_RADIUS * bodyThickness * 1.3; // Wider at hip for smooth connection
       const radiusBottom = QUAD_RADIUS * bodyThickness * 0.95; // Narrower at knee
       const length = (physicalAttributes.legLength / 100) * legScale * 0.45;
@@ -405,7 +377,6 @@ const getBodySurfaceForBone = (
 
     case "shin_L":
     case "shin_R": {
-      // Shin/calf - tapered cylinder with LOD
       const radiusTop = CALF_RADIUS * bodyThickness * 1.0; // Wider at knee
       const radiusBottom = CALF_RADIUS * bodyThickness * 0.8; // Less taper - connects to ankle
       const length = (physicalAttributes.legLength / 100) * legScale * 0.42;
@@ -425,7 +396,6 @@ const getBodySurfaceForBone = (
 
     case "elbow_L":
     case "elbow_R": {
-      // Elbow joint sphere - bridges upper arm and forearm
       const elbowRadius = BICEP_RADIUS * bodyThickness * 0.95;
       segments.push({
         geometry: new THREE.SphereGeometry(
@@ -441,8 +411,6 @@ const getBodySurfaceForBone = (
 
     case "wrist_L":
     case "wrist_R": {
-      // Wrist joint - tapered cylinder connecting forearm to hand
-      // No rotation needed - cylinder Y axis already aligns with forearm direction
       const wristRadiusTop = FOREARM_RADIUS * bodyThickness * 0.75;
       const wristRadiusBottom = FOREARM_RADIUS * bodyThickness * 0.6;
       const wristLength = 0.035 * bodyThickness;
@@ -461,7 +429,6 @@ const getBodySurfaceForBone = (
 
     case "hand_L":
     case "hand_R": {
-      // Wrist-to-hand bridge sphere - fills gap between wrist skin and Hand3D component
       const handBridgeRadius = FOREARM_RADIUS * bodyThickness * 0.55;
       segments.push({
         geometry: new THREE.SphereGeometry(
@@ -477,7 +444,6 @@ const getBodySurfaceForBone = (
 
     case "knee_L":
     case "knee_R": {
-      // Knee joint sphere - bridges thigh and shin
       const kneeRadius = QUAD_RADIUS * bodyThickness * 0.9;
       segments.push({
         geometry: new THREE.SphereGeometry(
@@ -488,7 +454,6 @@ const getBodySurfaceForBone = (
         localOffset: new THREE.Vector3(0, 0, 0),
         localRotation: new THREE.Euler(0, 0, 0),
       });
-      // Front kneecap bump
       const kneecapRadius = kneeRadius * 0.5;
       segments.push({
         geometry: new THREE.SphereGeometry(
@@ -504,7 +469,6 @@ const getBodySurfaceForBone = (
 
     case "hip_L":
     case "hip_R": {
-      // Hip joint sphere - connects pelvis to thigh smoothly
       const hipRadius = QUAD_RADIUS * bodyThickness * 1.1;
       segments.push({
         geometry: new THREE.SphereGeometry(
@@ -520,7 +484,6 @@ const getBodySurfaceForBone = (
 
     case "foot_L":
     case "foot_R": {
-      // Ankle bridge sphere - connects shin body surface to Foot3D component
       const ankleRadius = CALF_RADIUS * bodyThickness * 0.75;
       segments.push({
         geometry: new THREE.SphereGeometry(
@@ -534,10 +497,6 @@ const getBodySurfaceForBone = (
       break;
     }
 
-    // Shoulders already handled by shoulder_L/R cases
-    // Hand detail (fingers) uses specialized Hand3D component
-    // Foot detail (toes) uses specialized Foot3D component
-    // Head uses Face3D component
   }
 
   return segments;
@@ -566,7 +525,6 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
   physicalAttributes,
   cameraDistance = 10,
 }) => {
-  // Default physical attributes if not provided
   const attrs = useMemo(
     () =>
       physicalAttributes ?? {
@@ -580,13 +538,11 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
     [physicalAttributes],
   );
 
-  // Get body surface segments for this bone with LOD
   const segments = useMemo(
     () => getBodySurfaceForBone(boneName, attrs, cameraDistance),
     [boneName, attrs, cameraDistance],
   );
 
-  // Get archetype-specific skin tone
   const skinTone = useMemo(() => getArchetypeSkinTone(archetype), [archetype]);
 
   /**
@@ -620,24 +576,19 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
       roughness: 0.65, // Slightly rough for realistic skin
       metalness: 0.0, // Skin is not metallic
 
-      // Subsurface scattering for realistic skin translucency
       transmission: 0.08, // Small non-zero transmission for subtle skin translucency
       thickness: 0.5, // Moderate thickness for subsurface scattering
       ior: 1.4, // Index of refraction for human skin
 
-      // Clearcoat for natural skin sheen (subtle)
       clearcoat: 0.15,
       clearcoatRoughness: 0.8,
 
-      // Sheen for skin surface properties (consistent with Hand3D, Foot3D)
       sheen: 0.1,
       sheenRoughness: 0.8,
 
-      // Subtle emissive for alive appearance (consistent with other skin components)
       emissive: new THREE.Color(skinTone),
       emissiveIntensity: 0.02,
 
-      // Reflectivity for realistic appearance
       reflectivity: 0.1,
 
       side: THREE.DoubleSide, // Render both sides for complete body coverage and gap prevention
@@ -645,14 +596,12 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
     });
   }, [skinTone]);
 
-  // Cleanup material on unmount
   useEffect(() => {
     return () => {
       material.dispose();
     };
   }, [material]);
 
-  // Cleanup geometries when segments change or on unmount
   useEffect(() => {
     return () => {
       segments.forEach((segment) => {

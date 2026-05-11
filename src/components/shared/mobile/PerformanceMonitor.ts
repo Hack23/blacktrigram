@@ -136,53 +136,37 @@ export class PerformanceMonitor {
       return 'medium';
     }
 
-    // Check navigator.hardwareConcurrency (CPU cores)
     const cores = navigator.hardwareConcurrency ?? 4;
     
-    // Check device memory (if available)
     const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 4;
     
-    // Check if running on mobile
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    // Check if on iOS (typically good performance)
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    // Check connection type (if available).
-    // If the Network Information API is unavailable, we treat connection quality as unknown
-    // and do not add any connection-based bonus to avoid overestimating capabilities.
     const connection = (navigator as Navigator & { connection?: { effectiveType?: string } }).connection;
     const connectionType = connection?.effectiveType;
     
-    // Very low-spec devices are always treated as low tier regardless of platform
-    // This prevents old desktops from being rated above high-end mobile devices
     if (cores <= 2 && memory <= 2) {
       return 'low';
     }
     
-    // Heuristic scoring
     let score = 0;
     
-    // More cores = better performance
     if (cores >= 8) score += 3;
     else if (cores >= 6) score += 2;
     else if (cores >= 4) score += 1;
     
-    // More memory = better performance
     if (memory >= 8) score += 3;
     else if (memory >= 6) score += 2;
     else if (memory >= 4) score += 1;
     
-    // Desktop generally performs better (limited bonus to avoid over-rating old desktops)
     if (!isMobile) score += 1;
     
-    // iOS devices typically have good performance
     if (isIOS) score += 1;
     
-    // Better connection = better overall experience (only if API is available)
     if (connectionType === '4g' || connectionType === '5g') score += 1;
     
-    // Determine tier
     if (score >= 6) return 'high';
     if (score >= 3) return 'medium';
     return 'low';
@@ -232,31 +216,25 @@ export class PerformanceMonitor {
     const frameTime = now - this.lastFrameTime;
     this.lastFrameTime = now;
 
-    // Add frame time to sample window
     this.frameTimes.push(frameTime);
     if (this.frameTimes.length > this.sampleWindow) {
       this.frameTimes.shift();
     }
 
-    // Detect frame drops (frame time exceeds threshold)
     if (frameTime > this.frameDropThreshold) {
       this.frameDrops++;
     }
 
-    // Calculate metrics every sample window
     if (this.frameTimes.length === this.sampleWindow) {
       this.calculateMetrics();
       
-      // Reset frame drops counter
       this.frameDrops = 0;
     }
 
-    // Update memory usage
     if (this.enableMemoryMonitoring) {
       this.updateMemoryUsage();
     }
 
-    // Schedule next frame
     this.rafId = requestAnimationFrame(this.monitorFrame);
   };
 
@@ -268,11 +246,9 @@ export class PerformanceMonitor {
   private calculateMetrics(): void {
     if (this.frameTimes.length === 0) return;
 
-    // Calculate average frame time
     const sum = this.frameTimes.reduce((acc, time) => acc + time, 0);
     this.avgFrameTime = sum / this.frameTimes.length;
 
-    // Calculate FPS
     this.fps = 1000 / this.avgFrameTime;
   }
 
@@ -294,7 +270,6 @@ export class PerformanceMonitor {
     }).memory;
 
     if (memory?.usedJSHeapSize) {
-      // Convert bytes to MB
       this.memoryUsage = Math.round(memory.usedJSHeapSize / (1024 * 1024));
     }
   }

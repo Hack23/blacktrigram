@@ -153,9 +153,7 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      // Don't allow selecting the same stance
       if (stanceIndex === currentStance) {
-        // Collapse wheel if tapping current stance
         onToggle();
         triggerHaptic("light");
         return;
@@ -164,7 +162,6 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
       onStanceChange(stanceIndex);
       triggerHaptic("medium");
 
-      // Announce stance change to screen readers
       const stanceName = STANCE_KOREAN_NAMES[stanceIndex];
       const stanceSymbol = TRIGRAM_SYMBOLS[stanceIndex];
       announceToScreenReader({
@@ -175,8 +172,6 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
         politeness: "polite",
       });
 
-      // Auto-collapse after selection (optional)
-      // onToggle();
     },
     [disabled, currentStance, onStanceChange, onToggle],
   );
@@ -193,7 +188,6 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
       onToggle();
       triggerHaptic("light");
 
-      // Announce state change to screen readers using the toggled value
       const nextExpanded = !expanded;
       announceToScreenReader({
         message: createBilingualLabel(
@@ -225,7 +219,6 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
           onToggle();
         },
         onNavigate: (direction) => {
-          // Navigate between stances with arrow keys
           let newIndex = stanceIndex;
           if (direction === "left" || direction === "up") {
             newIndex = (stanceIndex - 1 + 8) % 8;
@@ -233,7 +226,6 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
             newIndex = (stanceIndex + 1) % 8;
           }
           setFocusedStance(newIndex);
-          // Focus the new stance button on the next animation frame
           requestAnimationFrame(() => {
             const button = document.querySelector(
               `[data-testid="stance-button-pure-${newIndex}"]`,
@@ -262,10 +254,8 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
     [disabled, onToggle],
   );
 
-  // Dynamic bottom position with safe area consideration
   const dynamicBottom = bottom ?? (expanded ? 100 : 34);
 
-  // Get RGB values for colors using shared utility
   const currentStanceColor = getColorRGB(
     getStanceColor(TRIGRAM_STANCES_ORDER[currentStance]),
   );
@@ -273,7 +263,6 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
   const primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
 
   if (expanded) {
-    // Expanded: Show full 8-segment wheel
     const wheelSize = 200;
     const segmentAngle = 360 / 8;
 
@@ -412,7 +401,6 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
     );
   }
 
-  // Collapsed: Show current stance indicator
   return (
     <div
       style={{

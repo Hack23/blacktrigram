@@ -96,9 +96,6 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   onStopFootworkDrill,
   onAdvanceFootworkStep,
 }) => {
-  // Use shared HUD layout hook with TrainingRightHUD-specific spacing
-  // TrainingRightHUD uses tighter spacing than TrainingLeftHUD for denser content
-  // Resolution-based gap: mobile 6px, tablet 7px, desktop 8px
   const gapOverride = getResponsiveSize(width, {
     mobile: 6,
     tablet: 7,

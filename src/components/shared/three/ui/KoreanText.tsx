@@ -16,7 +16,6 @@ import { BaseText, type BaseTextProps } from "../../base";
  * Extends BaseTextProps for consistency
  */
 export interface KoreanTextProps extends Omit<BaseTextProps, "isMobile"> {
-  // All props inherited from BaseText
 }
 
 /**
@@ -36,8 +35,6 @@ export interface KoreanTextProps extends Omit<BaseTextProps, "isMobile"> {
  * ```
  */
 export const KoreanText: React.FC<KoreanTextProps> = ({ testId, ...rest }) => {
-  // Simply delegate to BaseText - all logic is now centralized
-  // Default testId to "korean-text" for backward compatibility
   return <BaseText testId={testId ?? "korean-text"} {...rest} />;
 };
 

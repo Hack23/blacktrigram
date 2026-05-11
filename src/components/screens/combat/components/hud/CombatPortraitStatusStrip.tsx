@@ -61,8 +61,6 @@ const PlayerPill: React.FC<{
   readonly barHeight: number;
   readonly testId: string;
 }> = ({ player, side, fontSize, barHeight, testId }) => {
-  // Guard against non-positive maxima (0 or negative) which would
-  // otherwise yield Infinity/NaN percentages and render invalid widths.
   const healthPercent =
     player.maxHealth > 0
       ? Math.max(
@@ -187,8 +185,6 @@ export const CombatPortraitStatusStrip: React.FC<
   CombatPortraitStatusStripProps
 > = ({ width, height, player1, player2, positionScale, topOffset }) => {
   const layout = useMemo(() => {
-    // Tighter strip on extra-small phones (<380 px) so the arena retains
-    // usable vertical space.
     const isExtraSmall = width < 380;
     const minStripHeight = isExtraSmall ? 28 : 36;
     const stripHeight = Math.max(
@@ -202,7 +198,6 @@ export const CombatPortraitStatusStrip: React.FC<
         positionScale *
         FONT_SIZE_MULTIPLIERS.bodySmall,
     );
-    // Reserve a narrow center gap between the two pills.
     const centerGap = Math.max(6, padding);
     const barHeight = Math.max(6, Math.floor(stripHeight * 0.28));
 

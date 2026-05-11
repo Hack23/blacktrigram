@@ -43,7 +43,6 @@ export const WinnerDisplay: React.FC<WinnerDisplayProps> = ({
     ? { korean: "승리!", english: "Victory!" }
     : { korean: "패배", english: "Defeat" };
 
-  // Get archetype asset info
   const archetypeKey =
     winner.archetype.toLowerCase() as keyof typeof ARCHETYPE_ASSETS;
   const archetypeAsset =

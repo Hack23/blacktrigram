@@ -71,7 +71,6 @@ export const PerformanceDebugOverlayHtml = React.memo(() => {
   });
 
   useEffect(() => {
-    // Update metrics every second
     const interval = setInterval(() => {
       const newMetrics = performanceMonitor.getMetrics();
       setMetrics({
@@ -86,12 +85,10 @@ export const PerformanceDebugOverlayHtml = React.memo(() => {
     return () => clearInterval(interval);
   }, []);
 
-  // Only show in development
   if (import.meta.env.PROD) {
     return null;
   }
 
-  // Color coding for frame times using KOREAN_COLORS
   const frameTimeColor =
     metrics.avgFrameTime < 5
       ? hexColorToCSS(KOREAN_COLORS.POSITIVE_GREEN) // Green: Target met

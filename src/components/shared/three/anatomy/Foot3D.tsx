@@ -79,20 +79,15 @@ export const Foot3D: React.FC<Foot3DProps> = ({
   scale = 1.0,
   isHighlighted = false,
 }) => {
-  // Anatomically correct foot dimensions for average male (180cm height)
-  // These scale with archetype physical attributes
   const footDimensions = useMemo(() => {
-    // Average male foot: 26-29cm length, ~10cm width, ~8cm height
     const footLength = 0.26 * scale; // 26cm base length
     const footWidth = 0.1 * scale; // 10cm width
     const footHeight = 0.08 * scale; // 8cm height at ankle
 
-    // Toe area dimensions (front 30% of foot)
     const toeLength = footLength * 0.3;
     const toeWidth = footWidth * 0.9; // Slightly narrower than heel
     const toeHeight = footHeight * 0.6; // Lower profile
 
-    // Heel area dimensions (back 70% of foot)
     const heelLength = footLength * 0.7;
 
     return {
@@ -106,7 +101,6 @@ export const Foot3D: React.FC<Foot3DProps> = ({
     };
   }, [scale]);
 
-  // Foot color (highlight during kicks with brighter color)
   const footColor = useMemo(() => {
     if (isHighlighted) {
       return KOREAN_COLORS.ACCENT_GOLD;
@@ -114,7 +108,6 @@ export const Foot3D: React.FC<Foot3DProps> = ({
     return skinColor;
   }, [isHighlighted, skinColor]);
 
-  // Memoize shared skin material for all foot parts
   const skinMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
@@ -123,20 +116,17 @@ export const Foot3D: React.FC<Foot3DProps> = ({
         roughness: 0.8,
         clearcoat: 0.3,
         clearcoatRoughness: 0.5,
-        // PBR skin properties
         transmission: 0,
         thickness: 0.1,
         ior: 1.4, // Index of refraction for skin
         sheen: 0.1, // Subtle skin sheen
         sheenRoughness: 0.8,
-        // Subtle emissive for alive appearance
         emissive: new THREE.Color(footColor),
         emissiveIntensity: isHighlighted ? 0.3 : 0.02,
       }),
     [footColor, isHighlighted],
   );
 
-  // Dispose skin material on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
       skinMaterial.dispose();

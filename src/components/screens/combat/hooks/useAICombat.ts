@@ -76,7 +76,6 @@ import { STANCE_REACH_MODIFIERS } from "@/types/physics";
 import { getBalanceState } from "@/utils/player3DHelpers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-// Performance monitoring constants
 const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
 const WARNING_THROTTLE_MS = 5000; // Throttle performance warnings to every 5 seconds
 
@@ -115,76 +114,56 @@ function getViableTechniques(
   archetype: PlayerState["archetype"],
   recentTechniques: string[] = [],
 ): readonly KoreanTechnique[] {
-  // Get all available techniques for stance and archetype
   const stanceTechniques = KoreanTechniquesSystem.getAllAvailableTechniques(
     stance,
     archetype,
   );
 
-  // Early return if no techniques available
   if (stanceTechniques.length === 0) {
     return [];
   }
 
-  // Filter techniques that are viable for current situation
   const viableTechniques = stanceTechniques.filter((tech) => {
-    // Calculate technique effective range using Physical ReachCalculator
-    // Get AI player's physical attributes
     const physicalAttributes = getArchetypePhysicalAttributes(archetype);
 
-    // Calculate maximum reach for this technique
-    // Use animationType if available, otherwise derive from reachConfig
     const animType = tech.animationType;
     let maxReach: number;
 
     if (animType) {
-      // Use PhysicalReachCalculator with animation timing
       maxReach = physicalReachCalculator.calculateMaxReach(
         physicalAttributes,
         animType,
         stance,
       );
     } else {
-      // Fallback: Calculate reach directly from reachConfig
-      // This ensures consistency with technique definitions when no animation type
       const limbLength =
         tech.reachConfig.bodyPart === "leg"
           ? physicalAttributes.legLength
           : physicalAttributes.armLength;
 
-      // Apply body pivot/offset based on technique type (matching PhysicalReachCalculator logic)
-      // Kicks: hip rotation + torso lean = 0.25m
-      // Punches: shoulder offset + torso rotation = shoulderWidth/2 + 0.1m
       let bodyPivot: number;
       if (tech.reachConfig.bodyPart === "leg") {
         bodyPivot = 0.25; // meters for kicks
       } else {
-        // Arm-based: shoulder offset + torso rotation
         const shoulderOffset = physicalAttributes.shoulderWidth / 2 / 100;
         const torsoRotation = 0.1;
         bodyPivot = shoulderOffset + torsoRotation;
       }
 
-      // Apply stance modifier using actual stance-specific modifiers
       const stanceModifier = STANCE_REACH_MODIFIERS[stance];
-      // Convert cm to meters, add body pivot, and apply modifiers
       maxReach =
         (limbLength / 100 + bodyPivot) *
         tech.reachConfig.baseExtension *
         stanceModifier;
     }
 
-    // All distances are in METERS - no pixel conversion needed
-    // Check if opponent is within technique range
     const inRange = distance <= maxReach;
 
-    // Check if player has sufficient stamina
     const hasStamina = stamina >= tech.staminaCost;
 
     return inRange && hasStamina;
   });
 
-  // Pre-compute recent use counts for efficiency (avoid O(n²×m) in sort)
   const recentUseCounts = new Map<string, number>();
   for (const tech of viableTechniques) {
     recentUseCounts.set(
@@ -193,17 +172,13 @@ function getViableTechniques(
     );
   }
 
-  // Sort by effectiveness with variation bias
   return viableTechniques.sort((a, b) => {
-    // Base effectiveness: damage × accuracy
     const baseEffectivenessA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
     const baseEffectivenessB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
 
-    // Apply penalty for recently used techniques (avoid repetition)
     const recentUsesA = recentUseCounts.get(a.id) ?? 0;
     const recentUsesB = recentUseCounts.get(b.id) ?? 0;
 
-    // Penalty: 20% reduction per recent use (max 60% penalty for 3+ uses)
     const penaltyA = Math.min(0.6, recentUsesA * 0.2);
     const penaltyB = Math.min(0.6, recentUsesB * 0.2);
 
@@ -235,21 +210,17 @@ function selectOptimalVitalPoint(
   difficultyLevel: number,
   archetype: PlayerState["archetype"],
 ): string | null {
-  // Guard: Ensure vital points are available
   if (KOREAN_VITAL_POINTS.length === 0) {
     return null;
   }
 
-  // Get archetype behavior for vital point priority
   const behavior = getArchetypeBehavior(archetype);
 
-  // Filter vital points effective for current stance
   const effectivePoints = KOREAN_VITAL_POINTS.filter((point) =>
     point.effectiveStances?.includes(stance),
   );
 
   if (effectivePoints.length === 0) {
-    // Fallback: select any vital point if no stance-specific ones available
     const fallbackPoint =
       KOREAN_VITAL_POINTS[
         Math.floor(Math.random() * KOREAN_VITAL_POINTS.length)
@@ -257,10 +228,8 @@ function selectOptimalVitalPoint(
     return fallbackPoint?.id ?? null;
   }
 
-  // Damage threshold for high-priority targets
   const HIGH_DAMAGE_THRESHOLD = 25;
 
-  // Filter by damage threshold (prefer high-damage vital points)
   const highDamagePoints = effectivePoints.filter(
     (point) => (point.baseDamage ?? 0) > HIGH_DAMAGE_THRESHOLD,
   );
@@ -268,9 +237,7 @@ function selectOptimalVitalPoint(
   const targetPoints =
     highDamagePoints.length > 0 ? highDamagePoints : effectivePoints;
 
-  // Sort by targeting suitability based on AI difficulty AND archetype priority
   const sortedPoints = [...targetPoints].sort((a, b) => {
-    // Calculate base suitability score
     const baseSuitabilityA =
       (a.baseDamage ?? 0) *
       (1 - Math.abs(difficultyLevel - a.targetingDifficulty));
@@ -278,7 +245,6 @@ function selectOptimalVitalPoint(
       (b.baseDamage ?? 0) *
       (1 - Math.abs(difficultyLevel - b.targetingDifficulty));
 
-    // Apply archetype priority multiplier
     const priorityMultiplierA = getVitalPointPriorityScore(
       a,
       behavior.vitalTargetPriority,
@@ -294,7 +260,6 @@ function selectOptimalVitalPoint(
     return finalSuitabilityB - finalSuitabilityA;
   });
 
-  // Select top-rated target
   return sortedPoints[0]?.id ?? null;
 }
 
@@ -311,17 +276,13 @@ function getVitalPointPriorityScore(
   vitalPoint: (typeof KOREAN_VITAL_POINTS)[0],
   priority: import("@/systems/ai/AIPersonality").VitalTargetPriority,
 ): number {
-  // Import effect types to check vital point effects
   const effects = vitalPoint.effects ?? [];
 
   switch (priority) {
     case "health":
-      // Jojik - prioritize high base damage
       return (vitalPoint.baseDamage ?? 0) > 30 ? 1.5 : 1.0;
 
     case "pain":
-      // Jeongbo - prioritize pain-inducing effects
-      // Check if effects include pain or disorientation
       const hasPainEffect = effects.some(
         (e) =>
           String(e).toLowerCase().includes("pain") ||
@@ -330,8 +291,6 @@ function getVitalPointPriorityScore(
       return hasPainEffect ? 1.5 : 1.0;
 
     case "consciousness":
-      // Amsalja - prioritize consciousness-affecting strikes
-      // Check if effects include unconsciousness, stun, or breathlessness
       const hasConsciousnessEffect = effects.some(
         (e) =>
           String(e).toLowerCase().includes("unconscious") ||
@@ -342,7 +301,6 @@ function getVitalPointPriorityScore(
 
     case "balanced":
     default:
-      // Musa, Hacker - balanced approach
       return 1.0;
   }
 }
@@ -372,7 +330,6 @@ function isSignatureTechnique(
 
   switch (archetype) {
     case PlayerArchetype.MUSA:
-      // Musa: Joint manipulation (JOINT damage) and bone strikes (CRUSHING/BLUNT)
       return (
         damageType === DamageType.JOINT ||
         damageType === DamageType.CRUSHING ||
@@ -380,7 +337,6 @@ function isSignatureTechnique(
       );
 
     case PlayerArchetype.AMSALJA:
-      // Amsalja: Nerve strikes (NERVE damage) and silent takedowns (pressure points)
       return (
         damageType === DamageType.NERVE ||
         damageType === DamageType.PRESSURE ||
@@ -389,7 +345,6 @@ function isSignatureTechnique(
       );
 
     case PlayerArchetype.HACKER:
-      // Hacker: Anatomical analysis (INTERNAL/NERVE) and calculated strikes
       return (
         damageType === DamageType.INTERNAL ||
         damageType === DamageType.NERVE ||
@@ -397,7 +352,6 @@ function isSignatureTechnique(
       );
 
     case PlayerArchetype.JEONGBO_YOWON:
-      // Jeongbo: Psychological pressure (PRESSURE) and submission techniques (JOINT)
       return (
         damageType === DamageType.PRESSURE ||
         damageType === DamageType.JOINT ||
@@ -405,7 +359,6 @@ function isSignatureTechnique(
       );
 
     case PlayerArchetype.JOJIK_POKRYEOKBAE:
-      // Jojik: Dirty techniques (any high-damage strike) and environmental usage
       return (
         (technique.damage ?? 0) >= 30 || // High raw damage
         damageType === DamageType.SLASHING || // Brutal cutting
@@ -437,24 +390,18 @@ function updateTechniqueRotation(
   rotationQueue: TechniqueRotationQueue,
   archetypeTechniqueIds: Set<string>,
 ): void {
-  // Update frequency counter
   const current = rotationQueue.frequency.get(techniqueId) ?? 0;
   rotationQueue.frequency.set(techniqueId, current + 1);
 
-  // Increment total attacks
   rotationQueue.totalAttacks++;
 
-  // Add to recent queue (last 5)
   rotationQueue.used.push(techniqueId);
   if (rotationQueue.used.length > 5) {
     rotationQueue.used.shift(); // Keep only last 5
   }
 
-  // Mark as used in this match
   rotationQueue.allUsed.add(techniqueId);
 
-  // Reset "all used" if all archetype techniques have been used
-  // This ensures AI cycles through full arsenal repeatedly
   let allTechniquesUsed = true;
   for (const techId of archetypeTechniqueIds) {
     if (!rotationQueue.allUsed.has(techId)) {
@@ -517,26 +464,21 @@ function selectTechniqueWithRotation(
     return undefined;
   }
 
-  // Filter out overused techniques (>40% threshold)
   const balancedTechniques = viableTechniques.filter(
     (t) => !isOverused(t.id, rotationQueue),
   );
 
-  // If all techniques overused (rare), reset frequency tracking and use any
   const candidates =
     balancedTechniques.length > 0 ? balancedTechniques : viableTechniques;
 
   if (balancedTechniques.length === 0 && rotationQueue.totalAttacks > 0) {
-    // Reset frequency to allow reuse and realign total count
     rotationQueue.frequency.clear();
     rotationQueue.totalAttacks = 0;
   }
 
-  // Priority 1: Never used in this match
   const neverUsed = candidates.filter((t) => !rotationQueue.allUsed.has(t.id));
 
   if (neverUsed.length > 0) {
-    // Sort by effectiveness within never-used tier
     return [...neverUsed].sort((a, b) => {
       const effA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
       const effB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
@@ -544,13 +486,11 @@ function selectTechniqueWithRotation(
     })[0];
   }
 
-  // Priority 2: Not in last 5 techniques
   const unusedRecently = candidates.filter(
     (t) => !rotationQueue.used.includes(t.id),
   );
 
   if (unusedRecently.length > 0) {
-    // Sort by effectiveness within unused-recently tier
     return [...unusedRecently].sort((a, b) => {
       const effA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
       const effB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
@@ -558,8 +498,6 @@ function selectTechniqueWithRotation(
     })[0];
   }
 
-  // Priority 3: Any viable technique (all used recently)
-  // Sort by effectiveness
   return [...candidates].sort((a, b) => {
     const effA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
     const effB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
@@ -607,8 +545,6 @@ function filterByCooldown(
 function getAllArchetypeTechniques(
   archetype: PlayerState["archetype"],
 ): readonly KoreanTechnique[] {
-  // Use KoreanTechniquesSystem to efficiently get all techniques for archetype
-  // This avoids iterating through all 8 stances
   return KoreanTechniquesSystem.getTechniquesByArchetype(archetype);
 }
 
@@ -644,7 +580,6 @@ function applyCrossStanceDamageModifier(
     return technique;
   }
 
-  // Create modified copy with 80% damage
   return {
     ...technique,
     damage: Math.floor(technique.damage * 0.8),
@@ -683,8 +618,6 @@ function selectTechniqueForAction(
   actionType: string;
   isCrossStance?: boolean;
 } {
-  // Check for signature move condition (Issue #enforce-distinct-combat-philosophies)
-  // This provides archetype-specific finishing moves under specific conditions
   if (shouldExecuteSignatureMove(player.archetype, context)) {
     const signatureMoveId = getSignatureMove(player.archetype);
     const allTechniques = getAllArchetypeTechniques(player.archetype);
@@ -693,12 +626,9 @@ function selectTechniqueForAction(
     );
 
     if (signatureTechnique) {
-      // Check if signature move is off cooldown
       const now = Date.now();
       const lastUsed = cooldownMap.get(signatureMoveId) ?? 0;
 
-      // Use consistent cooldown calculation (same as filterByCooldown)
-      // Cooldown = recoveryTime + executionTime for KoreanTechnique
       const techniqueCooldown =
         (signatureTechnique.recoveryTime ?? 0) +
         (signatureTechnique.executionTime ?? 0);
@@ -707,7 +637,6 @@ function selectTechniqueForAction(
         techniqueCooldown - (now - lastUsed),
       );
 
-      // Only execute signature if off cooldown and have resources
       if (
         cooldownRemaining === 0 &&
         player.stamina >= signatureTechnique.staminaCost &&
@@ -735,7 +664,6 @@ function selectTechniqueForAction(
     }
   }
 
-  // Get viable techniques for current stance
   const viableTechniques = getViableTechniques(
     context.distanceToOpponent,
     player.currentStance,
@@ -744,14 +672,11 @@ function selectTechniqueForAction(
     rotationQueue.used, // Pass recent techniques for penalty
   );
 
-  // Filter by cooldown availability
   const readyTechniques = filterByCooldown(viableTechniques, cooldownMap);
 
-  // Use ready techniques if available, otherwise check cooldowns
   let candidates =
     readyTechniques.length > 0 ? readyTechniques : viableTechniques;
 
-  // Filter for special techniques if requested
   if (isSpecialTechnique) {
     const specialCandidates = candidates.filter(
       (tech) => tech.kiCost >= 10 || tech.staminaCost >= 15,
@@ -759,20 +684,17 @@ function selectTechniqueForAction(
     candidates = specialCandidates.length > 0 ? specialCandidates : candidates;
   }
 
-  // If no viable techniques for current stance, try cross-stance techniques
   let isCrossStance = false;
   if (candidates.length === 0) {
     const allTechniques = getAllArchetypeTechniques(player.archetype);
     const crossStanceTechniques = allTechniques.filter(
       (t) =>
         t.stance !== player.currentStance &&
-        // Physics-first: Compare meters to meters
         context.distanceToOpponent <= (t.reachConfig?.baseExtension ?? 1.0) &&
         player.stamina >= t.staminaCost &&
         !isOverused(t.id, rotationQueue), // Apply rotation diversity to cross-stance
     );
 
-    // Filter by cooldown for cross-stance techniques too
     const readyCrossStance = filterByCooldown(
       crossStanceTechniques,
       cooldownMap,
@@ -783,13 +705,10 @@ function selectTechniqueForAction(
   }
 
   if (candidates.length > 0) {
-    // Filter signature techniques once for efficiency
     const signatureTechniques = candidates.filter((tech) =>
       isSignatureTechnique(tech, player.archetype),
     );
 
-    // Apply 60% bias toward signature techniques
-    // Determine category first, then select best technique within category
     const useSignature = signatureTechniques.length > 0 && Math.random() < 0.6;
 
     const selectedCandidates = useSignature ? signatureTechniques : candidates;
@@ -807,7 +726,6 @@ function selectTechniqueForAction(
           player.archetype,
         ) ?? undefined;
 
-      // Apply cross-stance damage modifier if needed
       const finalTechnique = applyCrossStanceDamageModifier(
         technique,
         isCrossStance,
@@ -853,7 +771,6 @@ function shouldAISwitchLaterality(
   lastSwitchTime: number,
   currentTime: number,
 ): boolean {
-  // Cooldown: Don't switch more than once per 3 seconds
   const LATERALITY_COOLDOWN = 3000;
   if (currentTime - lastSwitchTime < LATERALITY_COOLDOWN) {
     return false;
@@ -861,27 +778,21 @@ function shouldAISwitchLaterality(
 
   const isMatched = aiLaterality === opponentLaterality;
 
-  // Aggressive AI: Prefer matched stances (offensive advantage)
-  // Defensive AI: Prefer mismatched stances (defensive protection)
   const aggressionFactor = personality.aggressionLevel;
   const defenseFactor = personality.defensePreference;
 
-  // Health-based modifier: Lower health increases defensive behavior
   const healthFactor = aiHealth / 100;
   const effectiveAggression = aggressionFactor * Math.max(0.3, healthFactor);
   const effectiveDefense = defenseFactor * (1.2 - healthFactor * 0.2);
 
-  // Aggressive AI wants matched stances
   if (effectiveAggression > 0.6 && !isMatched) {
     return Math.random() < 0.3; // 30% chance to switch to matched
   }
 
-  // Defensive AI wants mismatched stances
   if (effectiveDefense > 0.6 && isMatched) {
     return Math.random() < 0.25; // 25% chance to switch to mismatched
   }
 
-  // Low health emergency: Switch to defensive mismatch
   if (aiHealth < 30 && isMatched) {
     return Math.random() < 0.4; // 40% chance when critically low health
   }
@@ -1002,29 +913,23 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     opponentLaterality,
   } = config;
 
-  // Initialize AI systems (persist across renders)
   const comboSystem = useMemo(() => new AIComboSystem(), []);
   const decisionTree = useMemo(() => new AIDecisionTree(), []);
 
-  // Adjust personality based on player skill
   const adjustedPersonality = useMemo(
     () => adaptiveDifficulty.adjustAIPersonality(personality),
     [adaptiveDifficulty, personality],
   );
 
-  // Update AI difficulty level based on adaptive difficulty (only when skill level meaningfully changes)
   const lastSkillLevelRef = useRef(0.5);
   useEffect(() => {
     const newSkillLevel = adaptiveDifficulty.calculatePlayerSkill();
-    // Only update if skill level changed by more than 1%
     if (Math.abs(newSkillLevel - lastSkillLevelRef.current) > 0.01) {
       lastSkillLevelRef.current = newSkillLevel;
       decisionTree.setDifficultyLevel(newSkillLevel);
     }
   }, [adaptiveDifficulty, decisionTree]);
 
-  // Difficulty parameters with smooth interpolation
-  // Using useState with lazy initializer instead of useMemo since it only runs once
   const [currentParams, setCurrentParams] = useState<DifficultyParameters>(() =>
     adaptiveDifficulty.getDifficultyParameters(),
   );
@@ -1035,7 +940,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   const transitionStartTimeRef = useRef<number>(0);
   const transitionDurationMs = 10000; // 10 seconds for smooth transition
 
-  // AI state - use useState lazy initializer for Date.now()
   const [aiState, setAiState] = useState<AIState>(() => {
     const now = Date.now();
     return {
@@ -1051,7 +955,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     };
   });
 
-  // Performance tracking - use useState lazy initializer for refs that need Date.now()
   const lastDecisionTimeRef = useRef(0);
   const [initialMatchTime] = useState(() => Date.now());
   const matchStartTimeRef = useRef(initialMatchTime);
@@ -1061,8 +964,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   const lastWarningTimeRef = useRef(0);
   const lastLateralitySwitchRef = useRef(0); // Track last laterality switch for cooldown
 
-  // Technique rotation queue and cooldown tracking (Issue #expand-technique-selection-diversity)
-  // Enforce technique variety: all 4 techniques used, no technique >40% usage
   const techniqueRotationQueueRef = useRef<TechniqueRotationQueue>({
     used: [],
     allUsed: new Set(),
@@ -1072,24 +973,17 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
 
   const techniqueCooldownMapRef = useRef<TechniqueCooldownMap>(new Map());
 
-  // Get all technique IDs for current archetype (for reset detection)
   const archetypeTechniqueIds = useMemo(() => {
     const allTechs = getAllArchetypeTechniques(player.archetype);
     return new Set(allTechs.map((t) => t.id));
   }, [player.archetype]);
 
-  // Stance fatigue tracking (Issue #dynamic-ai-stance-rotation Phase 4)
-  // Tracks how long AI has been in current stance to encourage dynamic switching
-  // Use useState lazy initializer for Date.now() to avoid impure function call during render
   const [initialStanceFatigue] = useState(() => ({
     currentStance: player.currentStance,
     lastSwitchTime: Date.now(),
   }));
   const stanceFatigueRef = useRef(initialStanceFatigue);
 
-  // Initialize previousDamageRef when round starts (issue #2529728007)
-  // player.currentStance and player.totalDamageReceived are intentionally excluded -
-  // this effect only initializes refs when a new round starts, not on every state change
   useEffect(() => {
     if (roundStarted) {
       matchStartTimeRef.current = Date.now();
@@ -1097,13 +991,11 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       decisionTree.reset();
       comboSystem.resetCombo();
 
-      // Reset stance fatigue tracking on round start
       stanceFatigueRef.current = {
         currentStance: player.currentStance,
         lastSwitchTime: Date.now(),
       };
 
-      // Reset technique rotation queue on round start (Issue #expand-technique-selection-diversity)
       techniqueRotationQueueRef.current = {
         used: [],
         allUsed: new Set(),
@@ -1111,20 +1003,16 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         totalAttacks: 0,
       };
 
-      // Reset technique cooldown tracking on round start
       techniqueCooldownMapRef.current.clear();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roundStarted, decisionTree, comboSystem]);
 
-  // Monitor stance changes and update fatigue tracking (Issue #dynamic-ai-stance-rotation Phase 4)
-  // Detects when AI changes stance and resets fatigue timer
   useEffect(() => {
     if (!roundStarted || roundEnded || isPaused) {
       return;
     }
 
-    // Detect stance change and reset fatigue timer
     if (player.currentStance !== stanceFatigueRef.current.currentStance) {
       stanceFatigueRef.current = {
         currentStance: player.currentStance,
@@ -1133,7 +1021,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     }
   }, [player.currentStance, roundStarted, roundEnded, isPaused]);
 
-  // Smooth interpolation of difficulty parameters using requestAnimationFrame
   useEffect(() => {
     if (isPaused || !roundStarted || roundEnded) {
       return;
@@ -1150,7 +1037,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       const progress = Math.min(1.0, elapsed / transitionDurationMs);
 
       if (progress < 1.0) {
-        // Still interpolating from captured start params to target
         const interpolated = interpolateDifficultyParameters(
           startParamsRef.current,
           targetParams,
@@ -1159,7 +1045,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         setCurrentParams(interpolated);
         animationFrameId = requestAnimationFrame(animate);
       } else {
-        // Transition complete - snap to target and stop
         setCurrentParams(targetParams);
         isComplete = true;
       }
@@ -1174,7 +1059,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     };
   }, [isPaused, roundStarted, roundEnded, targetParams, transitionDurationMs]);
 
-  // Pass current difficulty parameters to DecisionTree
   useEffect(() => {
     decisionTree.setDifficultyParameters(currentParams);
   }, [decisionTree, currentParams]);
@@ -1206,7 +1090,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
    */
   const updateDifficultyTarget = useCallback(
     (newParams: DifficultyParameters) => {
-      // Capture current params as start point for smooth transition
       startParamsRef.current = currentParams;
       transitionStartTimeRef.current = Date.now();
       setTargetParams(newParams);
@@ -1225,19 +1108,14 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   const buildCombatContext = useCallback((): CombatContext => {
     const dx = player.position.x - opponent.position.x;
     const dy = player.position.y - opponent.position.y;
-    // Physics-first: positions are in meters, so distance is directly in meters
     const distanceInMeters = Math.sqrt(dx * dx + dy * dy);
 
-    // Calculate recent damage taken (fix for issue #2529467021)
     const recentDamageTaken = Math.max(
       0,
       player.totalDamageReceived - previousDamageRef.current,
     );
     previousDamageRef.current = player.totalDamageReceived;
 
-    // Convert opponent balance number to balance state for kill mode detection
-    // Uses getBalanceState() from player3DHelpers.ts to ensure consistency
-    // Thresholds: >=80 READY, >=50 SHAKEN, >=20 VULNERABLE, <20 HELPLESS
     const opponentBalance = getBalanceState(opponent.balance);
 
     return {
@@ -1262,7 +1140,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       opponentKi: opponent.ki, // Added for vulnerability exploitation (Issue #enhance-intelligence-operative-ai)
       opponentMaxKi: opponent.maxKi, // Added for vulnerability exploitation
       stanceFatigue: {
-        // Compute time in stance on-demand instead of polling with setInterval
         timeInStance: Date.now() - stanceFatigueRef.current.lastSwitchTime,
       },
       arenaBounds,
@@ -1280,30 +1157,24 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     const aiInterval = setInterval(() => {
       const now = Date.now();
 
-      // Respect next action time using ref (prevents stale closure)
       if (now < nextActionRef.current) {
         return;
       }
 
-      // Performance: track decision time
       const decisionStart = performance.now();
 
-      // Build combat context
       const context = buildCombatContext();
 
-      // Make strategic decision
       const decision = decisionTree.makeDecision(
         context,
         adjustedPersonality,
         comboSystem,
       );
 
-      // Performance: warn if decision took too long with time-based throttle (issue #2529466997, #2529728019)
       const decisionTime = performance.now() - decisionStart;
       if (decisionTime > AI_DECISION_THRESHOLD_MS) {
         const now = Date.now();
         if (now - lastWarningTimeRef.current > WARNING_THROTTLE_MS) {
-          // Only warn every 5 seconds
           console.warn(
             `AI decisions running slow: ${decisionTime.toFixed(2)}ms`,
           );
@@ -1312,7 +1183,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       }
       lastDecisionTimeRef.current = decisionTime;
 
-      // Execute decision with technique and vital point selection
       let actionType = "idle";
       let newTargetPosition = aiState.targetPosition;
       let newConsecutiveAttacks = aiState.consecutiveAttacks;
@@ -1334,8 +1204,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
             targetVitalPoint = result.vitalPoint;
             actionType = result.actionType;
 
-            // Update rotation queue and cooldown tracking if technique selected
-            // Note: Cross-stance damage modifier already applied in selectTechniqueForAction()
             if (selectedTechnique) {
               updateTechniqueRotation(
                 selectedTechnique.id,
@@ -1343,22 +1211,17 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
                 archetypeTechniqueIds,
               );
 
-              // Record cooldown start time
               techniqueCooldownMapRef.current.set(
                 selectedTechnique.id,
                 Date.now(),
               );
 
-              // Check for signature combo continuation (Issue #expand-technique-selection-diversity)
               const nextComboTechnique = getNextComboTechnique(
                 selectedTechnique.id,
                 player.archetype,
               );
 
-              // If this technique starts a combo, store next technique for consideration
               if (nextComboTechnique) {
-                // Store combo hint for next decision (combo system can use this)
-                // The decision tree will naturally consider this in the next cycle
                 comboSystem.startCombo(player, opponent, adjustedPersonality);
               }
             }
@@ -1383,8 +1246,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
             targetVitalPoint = result.vitalPoint;
             actionType = result.actionType;
 
-            // Update rotation queue and cooldown tracking if technique selected
-            // Note: Cross-stance damage modifier already applied in selectTechniqueForAction()
             if (selectedTechnique) {
               updateTechniqueRotation(
                 selectedTechnique.id,
@@ -1392,21 +1253,17 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
                 archetypeTechniqueIds,
               );
 
-              // Record cooldown start time
               techniqueCooldownMapRef.current.set(
                 selectedTechnique.id,
                 Date.now(),
               );
 
-              // Check for signature combo continuation (Issue #expand-technique-selection-diversity)
               const nextComboTechnique = getNextComboTechnique(
                 selectedTechnique.id,
                 player.archetype,
               );
 
-              // If this technique starts a combo, store next technique for consideration
               if (nextComboTechnique) {
-                // Store combo hint for next decision (combo system can use this)
                 comboSystem.startCombo(player, opponent, adjustedPersonality);
               }
             }
@@ -1418,7 +1275,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
           break;
 
         case AIActionType.COMBO:
-          // Start or continue combo
           if (!comboSystem.isComboActive()) {
             comboSystem.startCombo(player, opponent, adjustedPersonality);
           }
@@ -1487,8 +1343,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
           break;
       }
 
-      // Check for strategic laterality switch (Phase 8)
-      // AI decides whether to switch stance side based on personality and tactical situation
       if (onLateralityChange && playerLaterality && opponentLaterality) {
         const shouldSwitch = shouldAISwitchLaterality(
           opponentLaterality, // Laterality for player index 1 (AI-controlled in this hook)
@@ -1505,24 +1359,17 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         }
       }
 
-      // Calculate next action cooldown - expert fighters attack rapidly
-      // Attack/technique: 200-350ms for fast-paced combat (was 600-800ms)
-      // Other actions: 150-300ms for quick repositioning (was 400-600ms)
       const actionCooldown =
         actionType === "attack" || actionType === "technique"
           ? 200 + Math.random() * 150 // 200-350ms for attacks
           : 150 + Math.random() * 150; // 150-300ms for movement/defense
 
-      // Update next action time using ref (prevents stale closure)
       nextActionRef.current = now + actionCooldown;
 
-      // Use functional state update to avoid stale closure issues with recentTechniques
       setAiState((prevState) => {
-        // Update recent techniques tracking with functional update
         let updatedRecentTechniques = [...prevState.recentTechniques];
         if (selectedTechnique) {
           updatedRecentTechniques.push(selectedTechnique.id);
-          // Keep only last 5 techniques
           if (updatedRecentTechniques.length > 5) {
             updatedRecentTechniques = updatedRecentTechniques.slice(-5);
           }
@@ -1541,7 +1388,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         };
       });
 
-      // Execute action - pass technique and vital point directly to avoid async state issues
       executeAIAction(actionType, newTargetPosition, selectedTechnique, targetVitalPoint);
     }, 50); // 50ms loop for responsive AI
 

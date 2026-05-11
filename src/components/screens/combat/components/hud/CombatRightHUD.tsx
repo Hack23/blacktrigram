@@ -69,7 +69,6 @@ export const CombatRightHUD: React.FC<CombatRightHUDProps> = ({
   difficultyTier,
   speedModifiers,
 }) => {
-  // Use shared HUD layout hook
   const layout = useHUDLayout(
     width,
     height,

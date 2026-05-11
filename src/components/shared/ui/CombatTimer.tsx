@@ -19,11 +19,9 @@ import { hexColorToCSS } from "../../../utils/colorUtils";
 import { TimerWarningLevel } from "../../../hooks/useCombatTimer";
 import "../three/ui/HUDAnimations.css";
 
-// Define CSS animation once at module level to avoid re-insertion
 const PULSE_ANIMATION_ID = "combat-timer-pulse-animation";
 
 const injectPulseAnimation = () => {
-  // Check if style already exists in DOM instead of using module-level flag
   if (document.getElementById(PULSE_ANIMATION_ID)) return;
 
   const style = document.createElement("style");
@@ -116,22 +114,18 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
   isMobile,
   style = {},
 }) => {
-  // Inject CSS animation once on mount
   useEffect(() => {
     injectPulseAnimation();
   }, []);
 
-  // Get timer color
   const timerColor = getTimerColor(warningLevel, isTimeUp);
   const timerColorCSS = useMemo(() => hexColorToCSS(timerColor), [timerColor]);
 
-  // Background color with opacity
   const bgColor = useMemo(
     () => hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
     [],
   );
 
-  // Border color based on warning level
   const borderColor = useMemo(() => {
     if (isTimeUp) return hexColorToCSS(KOREAN_COLORS.NEGATIVE_RED);
     if (warningLevel === "urgent")
@@ -141,14 +135,11 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
     return hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN);
   }, [warningLevel, isTimeUp]);
 
-  // Should flash when urgent or time is up
   const shouldFlash = warningLevel === "urgent" || isTimeUp;
 
-  // Font sizes based on screen size
   const fontSize = isMobile ? "32px" : "48px";
   const labelFontSize = isMobile ? "12px" : "14px";
 
-  // Display text
   const displayText = isTimeUp ? "시간 종료 | Time's Up!" : formattedTime;
 
   return (

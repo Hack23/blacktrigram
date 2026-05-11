@@ -73,7 +73,6 @@ export function usePhilosophyState() {
    */
   const setTopic = useCallback((newTopic: PhilosophyTopic) => {
     setTopicInternal(newTopic);
-    // Clear selection when changing topics
     setSelectedTrigram(null);
   }, []);
 

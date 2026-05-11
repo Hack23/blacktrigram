@@ -64,26 +64,22 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
   const lastWarningTimeRef = useRef(0);
   const initializedRef = useRef(false);
   
-  // Initialize performance.now() after mount to avoid impure function call during render
   useEffect(() => {
     lastTimeRef.current = performance.now();
     initializedRef.current = true;
   }, []);
 
   const updateFPS = useCallback(() => {
-    // Skip FPS calculation until properly initialized
     if (!initializedRef.current) return;
     
     frameCountRef.current++;
     const currentTime = performance.now();
     const deltaTime = currentTime - lastTimeRef.current;
 
-    // Update FPS every second
     if (deltaTime >= 1000) {
       const currentFps = Math.round((frameCountRef.current * 1000) / deltaTime);
       setFps(currentFps);
       
-      // Trigger warning callback if FPS drops (max once per 3 seconds)
       if (onFPSDrop && currentFps < warningThreshold) {
         const timeSinceLastWarning = currentTime - lastWarningTimeRef.current;
         if (timeSinceLastWarning >= 3000) {
@@ -103,10 +99,6 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
     }
   });
 
-  // Calculate color as hex string based on FPS (memoized to avoid repeated conversions)
-  // Note: Returns a 24-bit RGB hex color with no alpha channel.
-  // The conversion below is intentionally hex-only; if alpha support is added
-  // in the future, this logic will need to be updated accordingly.
   const colorHex = useMemo(() => {
     let color: number;
     if (fps >= 60) {

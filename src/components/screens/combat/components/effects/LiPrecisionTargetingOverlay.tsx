@@ -89,11 +89,9 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
       onVitalPointSelect,
       isMobile,
     }) => {
-      // Inject keyframe animation once globally (persists across component instances)
       useEffect(() => {
         const styleId = "li-precision-targeting-keyframes";
         
-        // Check if already injected globally - if so, don't remove on unmount
         const alreadyExists = document.getElementById(styleId);
         if (alreadyExists) return;
         
@@ -113,11 +111,8 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
         `;
         document.head.appendChild(style);
         
-        // Don't remove on unmount - leave it for other instances
-        // Style persists globally to avoid re-injection
       }, []);
       
-      // Filter vital points in range (hooks must be called unconditionally)
       const vitalPointsInRange = useMemo(() => {
         if (!isLiStance) return [];
         
@@ -126,7 +121,6 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
           return distance <= maxRange;
         })
           .sort((a, b) => {
-            // Sort by distance (closest first)
             const distA = calculateDistance(playerPosition, a.position);
             const distB = calculateDistance(playerPosition, b.position);
             return distA - distB;
@@ -134,14 +128,11 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
           .slice(0, isMobile ? 3 : 5); // Limit to 3 on mobile, 5 on desktop
       }, [isLiStance, playerPosition, maxRange, isMobile]);
 
-      // Only show when in Li stance
       if (!isLiStance) return null;
 
-      // Accuracy percentage
       const accuracyPercent = Math.round(accuracy * 100);
       const accuracyColor = getAccuracyColor(accuracy);
 
-      // Container styles
       const containerStyle: React.CSSProperties = {
         position: "absolute",
         top: 0,
@@ -157,7 +148,6 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
         gap: SPACING.md,
       };
 
-      // Targeting reticle styles
       const reticleContainerStyle: React.CSSProperties = {
         position: "relative",
         width: isMobile ? "120px" : "150px",
@@ -210,7 +200,6 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
         boxShadow: getNeonGlowEffect(KOREAN_COLORS.TRIGRAM_LI_PRIMARY, "strong", true),
       };
 
-      // Accuracy meter styles
       const accuracyMeterStyle: React.CSSProperties = {
         ...getEnhancedKoreanOverlayStyles({
           opacity: 0.85,
@@ -250,7 +239,6 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
         letterSpacing: "1px",
       };
 
-      // Vital points list styles
       const vitalPointsListStyle: React.CSSProperties = {
         ...getEnhancedKoreanOverlayStyles({
           opacity: 0.85,

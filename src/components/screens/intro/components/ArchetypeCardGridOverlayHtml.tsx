@@ -30,25 +30,20 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
     height = 600,
     isMobile: _isMobile = false, // Kept for interface compatibility, layout uses width
   }) => {
-    // Note: _isMobile intentionally unused - layout sizing uses width-based checks
     void _isMobile;
 
-    // Use width for layout sizing decisions
     const isSmallScreen = width < 768;
 
-    // Find selected archetype index
     const selectedIndex = useMemo(() => {
       return archetypes.findIndex((a) => a.archetype === selectedArchetype);
     }, [archetypes, selectedArchetype]);
 
-    // Calculate card dimensions based on container and screen size
     const cardWidth = useMemo(() => {
       if (isSmallScreen) return Math.min(280, width - 40);
       const isLargeContainer = width >= 1100;
       return isLargeContainer ? 340 : 380;
     }, [isSmallScreen, width]);
 
-    // Memoize colors
     const colors = useMemo(
       () => ({
         background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
@@ -58,7 +53,6 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
       [],
     );
 
-    // Handle card selection
     const handleCardSelect = useCallback(
       (archetype: PlayerArchetype) => {
         onArchetypeChange(archetype);
@@ -67,7 +61,6 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
       [onArchetypeChange, onPlaySFX],
     );
 
-    // Handle card confirmation
     const handleCardConfirm = useCallback(
       (archetype: PlayerArchetype) => {
         onArchetypeConfirm?.(archetype);
@@ -76,7 +69,6 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
       [onArchetypeConfirm, onPlaySFX],
     );
 
-    // Handle keyboard navigation (scoped to container)
     const handleKeyDown = useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
@@ -107,11 +99,9 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
       ],
     );
 
-    // Calculate grid layout
     const columnsCount = isSmallScreen ? 1 : width >= 1400 ? 3 : 2;
     const gap = isSmallScreen ? 16 : 20;
 
-    // Custom focus style for keyboard navigation
     const [isFocused, setIsFocused] = React.useState(false);
 
     return (

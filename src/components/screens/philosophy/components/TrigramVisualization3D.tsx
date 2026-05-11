@@ -50,7 +50,6 @@ export const TrigramVisualization3D: React.FC<
     null
   );
 
-  // Memoize trigram positions in circular formation
   const trigramPositions = useMemo(() => {
     const radius = 4.5;
 
@@ -58,8 +57,6 @@ export const TrigramVisualization3D: React.FC<
       const angle = (index / TRIGRAM_STANCES_ORDER.length) * Math.PI * 2;
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
-      // Add vertical variation using double frequency for visual depth effect
-      // This creates a wave pattern that rises and falls twice as fast as the circle
       const y = Math.sin(angle * 2) * 0.5;
 
       return {
