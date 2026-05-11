@@ -110,7 +110,7 @@ export function calculateExpectedLegLength(height: number): number {
  *
  * @param height - Total height in cm
  * @returns Expected torso length in cm
- * @korean 예상몸통길이계산
+ * @korean 예상맸통길이계산
  */
 export function calculateExpectedTorsoLength(height: number): number {
   return height * ANATOMICAL_RANGES.TORSO_LENGTH_RATIO.typical;
@@ -203,7 +203,6 @@ export function validatePhysicalAttributes(
 ): ValidationResult {
   const validations: AttributeValidation[] = [];
 
-  // Validate arm length
   validations.push(
     validateProportion(
       "armLength",
@@ -213,7 +212,6 @@ export function validatePhysicalAttributes(
     ),
   );
 
-  // Validate leg length
   validations.push(
     validateProportion(
       "legLength",
@@ -223,7 +221,6 @@ export function validatePhysicalAttributes(
     ),
   );
 
-  // Validate torso length
   validations.push(
     validateProportion(
       "torsoLength",
@@ -233,7 +230,6 @@ export function validatePhysicalAttributes(
     ),
   );
 
-  // Validate shoulder width
   validations.push(
     validateProportion(
       "shoulderWidth",
@@ -243,7 +239,6 @@ export function validatePhysicalAttributes(
     ),
   );
 
-  // Validate head size
   validations.push(
     validateProportion(
       "headSize",
@@ -253,7 +248,6 @@ export function validatePhysicalAttributes(
     ),
   );
 
-  // Validate neck length
   validations.push(
     validateProportion(
       "neckLength",
@@ -263,7 +257,6 @@ export function validatePhysicalAttributes(
     ),
   );
 
-  // Validate muscle mass
   validations.push(
     validateProportion(
       "muscleMass",
@@ -273,7 +266,6 @@ export function validatePhysicalAttributes(
     ),
   );
 
-  // Validate fat mass
   validations.push(
     validateProportion(
       "fatMass",
@@ -283,7 +275,6 @@ export function validatePhysicalAttributes(
     ),
   );
 
-  // Calculate and validate BMI
   const bmi = calculateBMI(attrs.totalHeight, attrs.weight);
   const bmiValid =
     bmi >= ANATOMICAL_RANGES.BMI.min && bmi <= ANATOMICAL_RANGES.BMI.max;
@@ -303,7 +294,6 @@ export function validatePhysicalAttributes(
       : `BMI ${bmi.toFixed(1)} outside healthy range`,
   });
 
-  // Validate soft tissue ratio (muscle + fat)
   const softTissueRatio = (attrs.muscleMass + attrs.fatMass) / attrs.weight;
   const softTissueValid =
     softTissueRatio >= ANATOMICAL_RANGES.SOFT_TISSUE_RATIO.min &&
@@ -358,14 +348,11 @@ export function suggestCorrectedAttributes(
 ): Partial<PhysicalAttributes> {
   const suggestions: MutablePhysicalAttributes = {};
 
-  // Calculate expected values based on height and weight
   const expectedArm = calculateExpectedArmLength(attrs.totalHeight);
   const expectedLeg = calculateExpectedLegLength(attrs.totalHeight);
   const expectedTorso = calculateExpectedTorsoLength(attrs.totalHeight);
   const expectedShoulder = calculateExpectedShoulderWidth(attrs.totalHeight);
   const expectedMuscle = calculateExpectedMuscleMass(attrs.weight);
-
-  // Only suggest if significantly off (>10% deviation)
   if (Math.abs(attrs.armLength - expectedArm) / expectedArm > 0.1) {
     suggestions.armLength = Math.round(expectedArm);
   }
