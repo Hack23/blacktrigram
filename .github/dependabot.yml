@@ -11,6 +11,11 @@ updates:
     commit-message:
       prefix: "chore(deps)"
 
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: daily
+
   # npm dependency updates with grouping
   - package-ecosystem: npm
     directory: /
