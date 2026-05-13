@@ -442,14 +442,7 @@
 <a name='L377'></a><a href='#L377'>377</a>
 <a name='L378'></a><a href='#L378'>378</a>
 <a name='L379'></a><a href='#L379'>379</a>
-<a name='L380'></a><a href='#L380'>380</a>
-<a name='L381'></a><a href='#L381'>381</a>
-<a name='L382'></a><a href='#L382'>382</a>
-<a name='L383'></a><a href='#L383'>383</a>
-<a name='L384'></a><a href='#L384'>384</a>
-<a name='L385'></a><a href='#L385'>385</a>
-<a name='L386'></a><a href='#L386'>386</a>
-<a name='L387'></a><a href='#L387'>387</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L380'></a><a href='#L380'>380</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -518,7 +511,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -733,7 +725,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -743,16 +734,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -905,7 +891,6 @@ const <span class="fstat-no" title="function not covered" >MobileHealthBar: Reac
   const healthPercent = (<span class="cstat-no" title="statement not covered" >player.health / player.maxHealth) * 100;</span>
   const isLowHealth = <span class="cstat-no" title="statement not covered" >healthPercent &lt; 30;</span>
 &nbsp;
-  // Validate touch target
   const <span class="cstat-no" title="statement not covered" >isValidTouch = isValidTouchTarget(barSize.width, barSize.height);</span>
   const actualHeight = <span class="cstat-no" title="statement not covered" >Math.max(barSize.height, 44);</span> // Ensure minimum
 &nbsp;
@@ -1117,7 +1102,6 @@ const <span class="fstat-no" title="function not covered" >MobileTimer: React.FC
  * /&gt;
  * ```
  *
- * @public
  * @korean 모바일HUD레이아웃
  */
 export const <span class="fstat-no" title="function not covered" >MobileHUDLayout: React.FC&lt;MobileHUDLayoutProps&gt; = ({</span>
@@ -1126,23 +1110,18 @@ export const <span class="fstat-no" title="function not covered" >MobileHUDLayou
   timeRemaining,
   currentRound,
   maxRounds,
-  // roundsWon - reserved for future round indicator dots
   isPaused = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
   testId = <span class="branch-0 cbranch-no" title="branch not covered" >"mobile-hud-layout",</span>
 }) =&gt; {
   const { width, <span class="cstat-no" title="statement not covered" >height } = useWindowSize();</span>
   const <span class="cstat-no" title="statement not covered" >layout = useResponsiveLayout(width, height);</span>
 &nbsp;
-  // Note: roundsWon parameter is available for future round indicator dots UI
-  // Currently, round info is shown in timer component
 &nbsp;
-  // Calculate optimal HUD dimensions
   const <span class="cstat-no" title="statement not covered" >hudHeight = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span></span>
     () =&gt; calculateHUDHeight(width, layout.isLandscape),
     [width, layout.isLandscape],
   );
 &nbsp;
-  // Calculate progress bar sizes
   const <span class="cstat-no" title="statement not covered" >healthBarSize = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span></span>
     () =&gt; calculateProgressBarSize(layout.isMobile, "health"),
     [layout.isMobile],
@@ -1228,7 +1207,7 @@ MobileHUDLayout.displayName = "MobileHUDLayout";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

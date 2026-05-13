@@ -273,15 +273,7 @@
 <a name='L208'></a><a href='#L208'>208</a>
 <a name='L209'></a><a href='#L209'>209</a>
 <a name='L210'></a><a href='#L210'>210</a>
-<a name='L211'></a><a href='#L211'>211</a>
-<a name='L212'></a><a href='#L212'>212</a>
-<a name='L213'></a><a href='#L213'>213</a>
-<a name='L214'></a><a href='#L214'>214</a>
-<a name='L215'></a><a href='#L215'>215</a>
-<a name='L216'></a><a href='#L216'>216</a>
-<a name='L217'></a><a href='#L217'>217</a>
-<a name='L218'></a><a href='#L218'>218</a>
-<a name='L219'></a><a href='#L219'>219</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L211'></a><a href='#L211'>211</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -378,9 +370,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -402,20 +392,16 @@
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -433,7 +419,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -464,7 +449,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -596,13 +580,11 @@ const BaseTextComponent: React.FC&lt;BaseTextProps&gt; = ({
   ariaLabel,
   ariaLive = "off",
 }) =&gt; {
-  // Use Korean theme hook for consistent text sizing
   const { textSize, koreanTypography } = useKoreanTheme({
     size,
     isMobile,
   });
 &nbsp;
-  // Track screen width for responsive distance factor updates on resize
   const [screenWidth, setScreenWidth] = useState(() =&gt;
     typeof window !== "undefined"
       ? window.innerWidth
@@ -620,17 +602,14 @@ const BaseTextComponent: React.FC&lt;BaseTextProps&gt; = ({
     return () =&gt; window.removeEventListener("resize", handleResize);
   }, []);
 &nbsp;
-  // Calculate optimal distance factor for text
   const distanceFactor = useMemo(() =&gt; {
     return calculateDistanceFactor(screenWidth, "text", isMobile);
   }, [screenWidth, isMobile]);
 &nbsp;
-  // Apply Html overlay styles with proper z-index
   const overlayStyle = useMemo(() =&gt; {
     return applyHtmlOverlayStyles(layer, false, distanceFactor, true, occlude);
   }, [layer, distanceFactor, occlude]);
 &nbsp;
-  // Memoize text styles for performance with Korean typography optimization
   const textStyle = useMemo&lt;React.CSSProperties&gt;(
     () =&gt; ({
       color: hexToRgbaString(color),
@@ -640,7 +619,6 @@ const BaseTextComponent: React.FC&lt;BaseTextProps&gt; = ({
       textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
       userSelect: "none",
       WebkitUserSelect: "none",
-      // Korean typography optimization
       lineHeight: koreanTypography.lineHeight,
       letterSpacing: koreanTypography.letterSpacing,
       wordBreak: koreanTypography.wordBreak,
@@ -655,7 +633,6 @@ const BaseTextComponent: React.FC&lt;BaseTextProps&gt; = ({
       flexDirection: layout === "vertical" ? "column" : "row",
       alignItems: "center",
       gap: layout === "vertical" ? "4px" : "8px",
-      // Apply GPU acceleration from overlay style
       transform: overlayStyle.transform,
       pointerEvents: overlayStyle.pointerEvents,
       zIndex: overlayStyle.zIndex,
@@ -713,7 +690,6 @@ const BaseTextComponent: React.FC&lt;BaseTextProps&gt; = ({
   );
 };
 &nbsp;
-// Export memoized component for performance optimization
 export const BaseText = React.memo(BaseTextComponent);
 &nbsp;
 BaseText.displayName = "BaseText";
@@ -724,7 +700,7 @@ BaseText.displayName = "BaseText";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -187,19 +187,7 @@
 <a name='L122'></a><a href='#L122'>122</a>
 <a name='L123'></a><a href='#L123'>123</a>
 <a name='L124'></a><a href='#L124'>124</a>
-<a name='L125'></a><a href='#L125'>125</a>
-<a name='L126'></a><a href='#L126'>126</a>
-<a name='L127'></a><a href='#L127'>127</a>
-<a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a>
-<a name='L130'></a><a href='#L130'>130</a>
-<a name='L131'></a><a href='#L131'>131</a>
-<a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a>
-<a name='L136'></a><a href='#L136'>136</a>
-<a name='L137'></a><a href='#L137'>137</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L125'></a><a href='#L125'>125</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -265,36 +253,24 @@
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -401,32 +377,21 @@ export const StaminaWarning: React.FC&lt;StaminaWarningProps&gt; = ({
   const theme = useKoreanTheme({ variant: "danger", size: "md", isMobile });
   
   const warningStyle = useMemo(() =&gt; {
-    // Only show when stamina is critically low
     const criticalThreshold = 20;
     <span class="missing-if-branch" title="else path not taken" >E</span>if (stamina &gt;= criticalThreshold) {
       return null;
     }
 &nbsp;
-    // Clamp stamina to 0-20 range for intensity calculation
     const clampedStamina = <span class="cstat-no" title="statement not covered" >Math.max(0, Math.min(criticalThreshold, stamina));</span>
 &nbsp;
-    // Calculate urgency based on how low stamina is (20-0% -&gt; 0-1)
     const <span class="cstat-no" title="statement not covered" >urgency = (criticalThreshold - clampedStamina) / criticalThreshold;</span>
 &nbsp;
-    // Attenuation (e.g. 0.5 on portrait mobile). Applied to the glow and
-    // a separate `borderColor` alpha, but the border itself always renders
-    // at full opacity so the warning frame stays visible.
     const safeScale = <span class="cstat-no" title="statement not covered" >Math.max(0, Math.min(1, intensityScale));</span>
 &nbsp;
-    // Mobile uses thinner border
     const borderWidth = <span class="cstat-no" title="statement not covered" >isMobile ? "4px" : "6px";</span>
 &nbsp;
-    // Border stays at full alpha so the warning outline is always visible,
-    // regardless of `intensityScale`.
     const borderColor = hexToRgbaString(theme.colors.WARNING_YELLOW, 1);
-    // Glow is attenuated so the overall flash is subtler when requested.
     const glowColor = hexToRgbaString(theme.colors.WARNING_YELLOW, safeScale);
-    // Animation speed increases with urgency
     const animationDuration = Math.max(0.6, 1.2 - urgency * 0.6);
 &nbsp;
     return {
@@ -441,7 +406,6 @@ export const StaminaWarning: React.FC&lt;StaminaWarningProps&gt; = ({
     };
   }, [stamina, isMobile, intensityScale, theme.colors.WARNING_YELLOW]);
 &nbsp;
-  // Don't render if stamina is not critical
   <span class="missing-if-branch" title="else path not taken" >E</span>if (stamina &gt;= 20 || <span class="branch-1 cbranch-no" title="branch not covered" >!warningStyle) {</span>
     return null;
   }
@@ -478,7 +442,7 @@ StaminaWarning.displayName = "StaminaWarning";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

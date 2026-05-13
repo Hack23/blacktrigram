@@ -230,17 +230,7 @@
 <a name='L165'></a><a href='#L165'>165</a>
 <a name='L166'></a><a href='#L166'>166</a>
 <a name='L167'></a><a href='#L167'>167</a>
-<a name='L168'></a><a href='#L168'>168</a>
-<a name='L169'></a><a href='#L169'>169</a>
-<a name='L170'></a><a href='#L170'>170</a>
-<a name='L171'></a><a href='#L171'>171</a>
-<a name='L172'></a><a href='#L172'>172</a>
-<a name='L173'></a><a href='#L173'>173</a>
-<a name='L174'></a><a href='#L174'>174</a>
-<a name='L175'></a><a href='#L175'>175</a>
-<a name='L176'></a><a href='#L176'>176</a>
-<a name='L177'></a><a href='#L177'>177</a>
-<a name='L178'></a><a href='#L178'>178</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L168'></a><a href='#L168'>168</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -285,11 +275,9 @@
 <span class="cline-any cline-yes">3531x</span>
 <span class="cline-any cline-yes">3531x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3531x</span>
 <span class="cline-any cline-yes">3531x</span>
 <span class="cline-any cline-yes">3531x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3531x</span>
 <span class="cline-any cline-yes">1649x</span>
@@ -298,20 +286,15 @@
 <span class="cline-any cline-yes">1649x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3531x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3531x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3531x</span>
@@ -338,15 +321,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3531x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3531x</span>
 <span class="cline-any cline-yes">1608x</span>
 <span class="cline-any cline-yes">1608x</span>
 <span class="cline-any cline-yes">1608x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -462,12 +442,10 @@ export const Key3D: React.FC&lt;Key3DProps&gt; = ({ keyData, isPressed }) =&gt; 
   const meshRef = useRef&lt;THREE.Mesh&gt;(null);
   const targetScale = useRef(new THREE.Vector3(1, 1, 1));
 &nbsp;
-  // Key dimensions
   const keyWidth = (keyData.width ?? 1) * 0.6; // 0.6 units per key width
   const keyHeight = 0.6;
   const keyDepth = 0.2;
 &nbsp;
-  // Calculate position based on row and column
   const position = useMemo&lt;[number, number, number]&gt;(() =&gt; {
     const x = keyData.col * 0.6 + (keyWidth / 2) - 3.0; // Center around origin
     const y = -keyData.row * 0.6;
@@ -475,22 +453,17 @@ export const Key3D: React.FC&lt;Key3DProps&gt; = ({ keyData, isPressed }) =&gt; 
     return [x, y, z];
   }, [keyData.col, keyData.row, keyWidth, isPressed]);
 &nbsp;
-  // Get category color
   const categoryColor = useMemo(() =&gt; getKeyCategoryColor(keyData.category), [keyData.category]);
 &nbsp;
-  // Animate scale when pressed
 <span class="fstat-no" title="function not covered" >  useFrame(() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!meshRef.current) <span class="cstat-no" title="statement not covered" >return;</span></span>
 &nbsp;
-    // Target scale: smaller when pressed
     const targetScaleValue = <span class="cstat-no" title="statement not covered" >isPressed ? 0.9 : 1.0;</span>
 <span class="cstat-no" title="statement not covered" >    targetScale.current.set(targetScaleValue, targetScaleValue, 1.0);</span>
 &nbsp;
-    // Smooth interpolation
 <span class="cstat-no" title="statement not covered" >    meshRef.current.scale.lerp(targetScale.current, 0.2);</span>
   });
 &nbsp;
-  // Create materials once (unpressed and pressed states)
   const materials = useMemo(
     () =&gt; ({
       unpressed: new THREE.MeshStandardMaterial({
@@ -515,10 +488,8 @@ export const Key3D: React.FC&lt;Key3DProps&gt; = ({ keyData, isPressed }) =&gt; 
     [categoryColor]
   );
 &nbsp;
-  // Select material based on pressed state
   const keyMaterial = isPressed ? materials.pressed : materials.unpressed;
 &nbsp;
-  // Dispose materials on unmount
   useEffect(() =&gt; {
     return () =&gt; {
       materials.unpressed.dispose();
@@ -526,7 +497,6 @@ export const Key3D: React.FC&lt;Key3DProps&gt; = ({ keyData, isPressed }) =&gt; 
     };
   }, [materials]);
 &nbsp;
-  // Label style for Html overlay
   const labelStyle = useMemo(() =&gt; ({
     fontFamily: FONT_FAMILY.KOREAN,
     fontSize: keyData.width &amp;&amp; keyData.width &gt; 2 ? '11px' : '13px',
@@ -601,7 +571,7 @@ export default Key3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

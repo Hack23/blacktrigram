@@ -292,16 +292,7 @@
 <a name='L227'></a><a href='#L227'>227</a>
 <a name='L228'></a><a href='#L228'>228</a>
 <a name='L229'></a><a href='#L229'>229</a>
-<a name='L230'></a><a href='#L230'>230</a>
-<a name='L231'></a><a href='#L231'>231</a>
-<a name='L232'></a><a href='#L232'>232</a>
-<a name='L233'></a><a href='#L233'>233</a>
-<a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a>
-<a name='L237'></a><a href='#L237'>237</a>
-<a name='L238'></a><a href='#L238'>238</a>
-<a name='L239'></a><a href='#L239'>239</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L230'></a><a href='#L230'>230</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -351,9 +342,7 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -367,7 +356,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -415,7 +403,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -427,7 +414,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -436,7 +422,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -444,9 +429,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -589,7 +571,6 @@ export const MenuSectionOverlayHtml = React.memo&lt;MenuSectionOverlayHtmlProps&
   const [hoveredItem, setHoveredItem] = useState&lt;number | null&gt;(null);
   const [focused, setFocused] = useState&lt;boolean&gt;(false);
 &nbsp;
-  // Enhanced overlay styles with neon glow and depth
   const enhancedOverlayStyles = useMemo(
     () =&gt;
       getEnhancedKoreanOverlayStyles({
@@ -602,13 +583,11 @@ export const MenuSectionOverlayHtml = React.memo&lt;MenuSectionOverlayHtmlProps&
     [focused],
   );
 &nbsp;
-  // Memoize title color
   const titleColor = useMemo(
     () =&gt; `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
     [],
   );
 &nbsp;
-  // Keyboard navigation - stops propagation to prevent conflicts with parent
   useEffect(() =&gt; {
     const <span class="fstat-no" title="function not covered" >handleKeyDown = (e</span>vent: KeyboardEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (!onSelectedIndexChange) <span class="cstat-no" title="statement not covered" >return;</span></span>
@@ -653,7 +632,6 @@ export const MenuSectionOverlayHtml = React.memo&lt;MenuSectionOverlayHtmlProps&
     onPlaySFX,
   ]);
 &nbsp;
-  // Focus ring for accessibility
   useEffect(() =&gt; {
     const <span class="fstat-no" title="function not covered" >handleFocus = () =&gt; <span class="cstat-no" title="statement not covered" >s</span>etFocused(true);</span>
     const <span class="fstat-no" title="function not covered" >handleBlur = () =&gt; <span class="cstat-no" title="statement not covered" >s</span>etFocused(false);</span>
@@ -665,7 +643,6 @@ export const MenuSectionOverlayHtml = React.memo&lt;MenuSectionOverlayHtmlProps&
     };
   }, []);
 &nbsp;
-  // Use device detection from prop, with width-based fallback for sizing adjustments
   const isSmallScreen = width &lt; 768; // Mobile-sized screens
 &nbsp;
   const containerPadding = isSmallScreen ? 16 : <span class="branch-1 cbranch-no" title="branch not covered" >12;</span>
@@ -674,7 +651,6 @@ export const MenuSectionOverlayHtml = React.memo&lt;MenuSectionOverlayHtmlProps&
     : <span class="branch-1 cbranch-no" title="branch not covered" >14;</span>
   const sectionGap = isSmallScreen ? 8 : <span class="branch-1 cbranch-no" title="branch not covered" >6;</span>
 &nbsp;
-  // Safe area support for notched devices (use isMobile for actual device detection)
   const safeAreaStyles = useMemo(
     () =&gt;
       isMobile ? getSafeAreaPadding(["top", "bottom"], containerPadding) : <span class="branch-1 cbranch-no" title="branch not covered" >{},</span>
@@ -758,9 +734,6 @@ export const MenuSectionOverlayHtml = React.memo&lt;MenuSectionOverlayHtmlProps&
   );
   },
   (<span class="fstat-no" title="function not covered" >prevProps, n</span>extProps) =&gt; {
-    // Custom comparison for optimal re-render prevention
-    // Including callback props prevents stale closures when parent provides
-    // new functions that capture updated state.
 <span class="cstat-no" title="statement not covered" >    return (</span>
       prevProps.selectedIndex === nextProps.selectedIndex &amp;&amp;
       prevProps.width === nextProps.width &amp;&amp;
@@ -784,7 +757,7 @@ export default MenuSectionOverlayHtml;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

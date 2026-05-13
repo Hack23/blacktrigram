@@ -431,17 +431,7 @@
 <a name='L366'></a><a href='#L366'>366</a>
 <a name='L367'></a><a href='#L367'>367</a>
 <a name='L368'></a><a href='#L368'>368</a>
-<a name='L369'></a><a href='#L369'>369</a>
-<a name='L370'></a><a href='#L370'>370</a>
-<a name='L371'></a><a href='#L371'>371</a>
-<a name='L372'></a><a href='#L372'>372</a>
-<a name='L373'></a><a href='#L373'>373</a>
-<a name='L374'></a><a href='#L374'>374</a>
-<a name='L375'></a><a href='#L375'>375</a>
-<a name='L376'></a><a href='#L376'>376</a>
-<a name='L377'></a><a href='#L377'>377</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L369'></a><a href='#L369'>369</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -642,7 +632,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1023x</span>
 <span class="cline-any cline-yes">1023x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -696,7 +685,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -722,14 +710,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -785,7 +771,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1018x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -802,7 +787,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1018x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -885,7 +869,6 @@ import {
  * const actualSpeed = baseSpeed * penalty.speedMultiplier;
  * ```
  * 
- * @public
  * @category Body Part System
  */
 export class MovementPenaltySystem {
@@ -903,7 +886,6 @@ export class MovementPenaltySystem {
    * @param currentTime - Current timestamp for instant penalty expiry check
    * @returns Movement penalty with all modifiers
    * 
-   * @public
    */
   calculateMovementPenalty(
     health: BodyPartHealth,
@@ -1012,7 +994,6 @@ export class MovementPenaltySystem {
    * @param movementDirection - Direction of movement (positive = right, negative = left)
    * @returns Additional speed multiplier for asymmetric penalty
    * 
-   * @public
    */
   calculateAsymmetricPenalty(
     health: BodyPartHealth,
@@ -1067,7 +1048,6 @@ export class MovementPenaltySystem {
    * @param currentTime - Timestamp when strike occurred
    * @returns Instant movement penalty configuration
    * 
-   * @public
    */
   createInstantPenalty(
     affectedPart: BodyPart.LEG_LEFT | BodyPart.LEG_RIGHT,
@@ -1093,7 +1073,6 @@ export class MovementPenaltySystem {
    * @param maxHealth - Maximum health values
    * @returns True if player should enter vulnerable state
    * 
-   * @public
    */
   shouldEnterVulnerableState(
     health: BodyPartHealth,
@@ -1119,7 +1098,6 @@ export class MovementPenaltySystem {
    * @param maxHealth - Maximum health values
    * @returns True if player should enter helpless state
    * 
-   * @public
    */
   shouldEnterHelplessState(
     health: BodyPartHealth,
@@ -1151,7 +1129,6 @@ export class MovementPenaltySystem {
    * @param currentTime - Current timestamp
    * @returns Final movement speed with all penalties applied
    * 
-   * @public
    */
   calculateModifiedSpeed(
     baseSpeed: number,
@@ -1188,7 +1165,6 @@ export class MovementPenaltySystem {
  * 
  * Provides global access to the movement penalty system throughout the game.
  * 
- * @public
  */
 export const movementPenaltySystem = new MovementPenaltySystem();
 &nbsp;</pre></td></tr></table></pre>
@@ -1198,7 +1174,7 @@ export const movementPenaltySystem = new MovementPenaltySystem();
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -421,19 +421,7 @@
 <a name='L356'></a><a href='#L356'>356</a>
 <a name='L357'></a><a href='#L357'>357</a>
 <a name='L358'></a><a href='#L358'>358</a>
-<a name='L359'></a><a href='#L359'>359</a>
-<a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a>
-<a name='L362'></a><a href='#L362'>362</a>
-<a name='L363'></a><a href='#L363'>363</a>
-<a name='L364'></a><a href='#L364'>364</a>
-<a name='L365'></a><a href='#L365'>365</a>
-<a name='L366'></a><a href='#L366'>366</a>
-<a name='L367'></a><a href='#L367'>367</a>
-<a name='L368'></a><a href='#L368'>368</a>
-<a name='L369'></a><a href='#L369'>369</a>
-<a name='L370'></a><a href='#L370'>370</a>
-<a name='L371'></a><a href='#L371'>371</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L359'></a><a href='#L359'>359</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -524,10 +512,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
@@ -547,9 +533,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -561,7 +544,6 @@
 <span class="cline-any cline-yes">1960x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -569,16 +551,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -645,7 +623,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -671,7 +648,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -894,11 +870,9 @@ export const LiPrecisionTargetingOverlay: React.FC&lt;LiPrecisionTargetingOverla
       onVitalPointSelect,
       isMobile,
     }) =&gt; {
-      // Inject keyframe animation once globally (persists across component instances)
       useEffect(() =&gt; {
         const styleId = "li-precision-targeting-keyframes";
         
-        // Check if already injected globally - if so, don't remove on unmount
         const alreadyExists = document.getElementById(styleId);
         if (alreadyExists) return;
         
@@ -918,11 +892,8 @@ export const LiPrecisionTargetingOverlay: React.FC&lt;LiPrecisionTargetingOverla
         `;
         document.head.appendChild(style);
         
-        // Don't remove on unmount - leave it for other instances
-        // Style persists globally to avoid re-injection
       }, []);
       
-      // Filter vital points in range (hooks must be called unconditionally)
       const vitalPointsInRange = useMemo(() =&gt; {
         if (!isLiStance) return [];
         
@@ -931,7 +902,6 @@ export const LiPrecisionTargetingOverlay: React.FC&lt;LiPrecisionTargetingOverla
           return distance &lt;= maxRange;
         })
           .<span class="fstat-no" title="function not covered" >sort((a</span>, b) =&gt; {
-            // Sort by distance (closest first)
             const distA = <span class="cstat-no" title="statement not covered" >calculateDistance(playerPosition, a.position);</span>
             const distB = <span class="cstat-no" title="statement not covered" >calculateDistance(playerPosition, b.position);</span>
 <span class="cstat-no" title="statement not covered" >            return distA - distB;</span>
@@ -939,14 +909,11 @@ export const LiPrecisionTargetingOverlay: React.FC&lt;LiPrecisionTargetingOverla
           .slice(0, isMobile ? 3 : 5); // Limit to 3 on mobile, 5 on desktop
       }, [isLiStance, playerPosition, maxRange, isMobile]);
 &nbsp;
-      // Only show when in Li stance
       if (!isLiStance) return null;
 &nbsp;
-      // Accuracy percentage
       const accuracyPercent = Math.round(accuracy * 100);
       const accuracyColor = getAccuracyColor(accuracy);
 &nbsp;
-      // Container styles
       const containerStyle: React.CSSProperties = {
         position: "absolute",
         top: 0,
@@ -962,7 +929,6 @@ export const LiPrecisionTargetingOverlay: React.FC&lt;LiPrecisionTargetingOverla
         gap: SPACING.md,
       };
 &nbsp;
-      // Targeting reticle styles
       const reticleContainerStyle: React.CSSProperties = {
         position: "relative",
         width: isMobile ? "120px" : "150px",
@@ -1015,7 +981,6 @@ export const LiPrecisionTargetingOverlay: React.FC&lt;LiPrecisionTargetingOverla
         boxShadow: getNeonGlowEffect(KOREAN_COLORS.TRIGRAM_LI_PRIMARY, "strong", true),
       };
 &nbsp;
-      // Accuracy meter styles
       const accuracyMeterStyle: React.CSSProperties = {
         ...getEnhancedKoreanOverlayStyles({
           opacity: 0.85,
@@ -1055,7 +1020,6 @@ export const LiPrecisionTargetingOverlay: React.FC&lt;LiPrecisionTargetingOverla
         letterSpacing: "1px",
       };
 &nbsp;
-      // Vital points list styles
       const vitalPointsListStyle: React.CSSProperties = {
         ...getEnhancedKoreanOverlayStyles({
           opacity: 0.85,
@@ -1180,7 +1144,7 @@ LiPrecisionTargetingOverlay.displayName = "LiPrecisionTargetingOverlay";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

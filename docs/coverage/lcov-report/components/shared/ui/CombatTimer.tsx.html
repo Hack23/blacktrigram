@@ -264,17 +264,7 @@
 <a name='L199'></a><a href='#L199'>199</a>
 <a name='L200'></a><a href='#L200'>200</a>
 <a name='L201'></a><a href='#L201'>201</a>
-<a name='L202'></a><a href='#L202'>202</a>
-<a name='L203'></a><a href='#L203'>203</a>
-<a name='L204'></a><a href='#L204'>204</a>
-<a name='L205'></a><a href='#L205'>205</a>
-<a name='L206'></a><a href='#L206'>206</a>
-<a name='L207'></a><a href='#L207'>207</a>
-<a name='L208'></a><a href='#L208'>208</a>
-<a name='L209'></a><a href='#L209'>209</a>
-<a name='L210'></a><a href='#L210'>210</a>
-<a name='L211'></a><a href='#L211'>211</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L202'></a><a href='#L202'>202</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -298,7 +288,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">52x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -391,18 +380,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">58x</span>
 <span class="cline-any cline-yes">52x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">58x</span>
 <span class="cline-any cline-yes">58x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -416,13 +401,10 @@
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">58x</span>
 <span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">58x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -504,11 +486,9 @@ import { hexColorToCSS } from "../../../utils/colorUtils";
 import { TimerWarningLevel } from "../../../hooks/useCombatTimer";
 import "../three/ui/HUDAnimations.css";
 &nbsp;
-// Define CSS animation once at module level to avoid re-insertion
 const PULSE_ANIMATION_ID = "combat-timer-pulse-animation";
 &nbsp;
 const injectPulseAnimation = () =&gt; {
-  // Check if style already exists in DOM instead of using module-level flag
   if (document.getElementById(PULSE_ANIMATION_ID)) return;
 &nbsp;
   const style = document.createElement("style");
@@ -601,22 +581,18 @@ export const CombatTimer: React.FC&lt;CombatTimerProps&gt; = ({
   isMobile,
   style = {},
 }) =&gt; {
-  // Inject CSS animation once on mount
   useEffect(() =&gt; {
     injectPulseAnimation();
   }, []);
 &nbsp;
-  // Get timer color
   const timerColor = getTimerColor(warningLevel, isTimeUp);
   const timerColorCSS = useMemo(() =&gt; hexColorToCSS(timerColor), [timerColor]);
 &nbsp;
-  // Background color with opacity
   const bgColor = useMemo(
     () =&gt; hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
     [],
   );
 &nbsp;
-  // Border color based on warning level
   const borderColor = useMemo(() =&gt; {
     if (isTimeUp) return hexColorToCSS(KOREAN_COLORS.NEGATIVE_RED);
     if (warningLevel === "urgent")
@@ -626,14 +602,11 @@ export const CombatTimer: React.FC&lt;CombatTimerProps&gt; = ({
     return hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN);
   }, [warningLevel, isTimeUp]);
 &nbsp;
-  // Should flash when urgent or time is up
   const shouldFlash = warningLevel === "urgent" || isTimeUp;
 &nbsp;
-  // Font sizes based on screen size
   const fontSize = isMobile ? "32px" : "48px";
   const labelFontSize = isMobile ? "12px" : "14px";
 &nbsp;
-  // Display text
   const displayText = isTimeUp ? "시간 종료 | Time's Up!" : formattedTime;
 &nbsp;
   return (
@@ -700,7 +673,7 @@ export default CombatTimer;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

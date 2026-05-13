@@ -603,17 +603,7 @@
 <a name='L538'></a><a href='#L538'>538</a>
 <a name='L539'></a><a href='#L539'>539</a>
 <a name='L540'></a><a href='#L540'>540</a>
-<a name='L541'></a><a href='#L541'>541</a>
-<a name='L542'></a><a href='#L542'>542</a>
-<a name='L543'></a><a href='#L543'>543</a>
-<a name='L544'></a><a href='#L544'>544</a>
-<a name='L545'></a><a href='#L545'>545</a>
-<a name='L546'></a><a href='#L546'>546</a>
-<a name='L547'></a><a href='#L547'>547</a>
-<a name='L548'></a><a href='#L548'>548</a>
-<a name='L549'></a><a href='#L549'>549</a>
-<a name='L550'></a><a href='#L550'>550</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L541'></a><a href='#L541'>541</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -789,7 +779,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">70x</span>
 <span class="cline-any cline-yes">70x</span>
 <span class="cline-any cline-yes">70x</span>
@@ -818,7 +807,6 @@
 <span class="cline-any cline-yes">70x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">70x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -937,10 +925,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -968,7 +954,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1072,7 +1057,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1080,7 +1064,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1112,7 +1095,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1221,7 +1203,6 @@ import {
  * Defines how physical attributes map to skeleton bone scaling.
  * Each factor is a multiplier applied to the base bone length.
  *
- * @public
  * @korean 뼈크기비율
  */
 export interface BoneScalingFactors {
@@ -1332,7 +1313,6 @@ const REFERENCE_ATTRIBUTES: PhysicalAttributes = {
  * // Amsalja has smaller head: factors.head ~= 0.90 (amplified from ~0.95)
  * ```
  *
- * @public
  * @korean 뼈크기비율계산
  */
 export function calculateBoneScalingFactors(
@@ -1397,7 +1377,6 @@ export function calculateBoneScalingFactors(
  * // Jojik has larger head: returns ~23cm (base 20cm * 1.15)
  * ```
  *
- * @public
  * @korean 크기조정된뼈길이
  */
 export function getScaledBoneLength(
@@ -1479,7 +1458,6 @@ export function getScaledBoneLength(
  * // Left shoulder at -31cm, right shoulder at +31cm
  * ```
  *
- * @public
  * @korean 어깨오프셋계산
  */
 export function calculateShoulderOffset(
@@ -1508,7 +1486,6 @@ export function calculateShoulderOffset(
  * // Amsalja is tall and lean: {width: 40, height: 182, depth: 25}
  * ```
  *
- * @public
  * @korean 히트박스크기계산
  */
 export function calculateHitboxDimensions(attributes: PhysicalAttributes): {
@@ -1542,7 +1519,6 @@ export function calculateHitboxDimensions(attributes: PhysicalAttributes): {
  * // Returns offset based on head size and torso height
  * ```
  *
- * @public
  * @korean 급소위치조정
  */
 export function calculateVitalPointAdjustment(
@@ -1615,7 +1591,6 @@ export function calculateVitalPointAdjustment(
  * // Jojik has shorter, thicker neck: returns ~0.9 (10% more resistant)
  * ```
  *
- * @public
  * @korean 목조르기효과계산
  */
 export function calculateChokeEffectiveness(
@@ -1649,7 +1624,6 @@ export function calculateChokeEffectiveness(
  * // Jojik has larger head: returns ~0.95 (5% more resistant)
  * ```
  *
- * @public
  * @korean 머리타격취약성계산
  */
 export function calculateHeadStrikeVulnerability(
@@ -1696,7 +1670,6 @@ export function calculateHeadStrikeVulnerability(
  * // Hacker is lean (43cm shoulders): returns 0.215m
  * ```
  *
- * @public
  * @korean 몸체반경계산
  */
 export function calculateBodyRadius(attributes: PhysicalAttributes): number {
@@ -1717,7 +1690,7 @@ export function calculateBodyRadius(attributes: PhysicalAttributes): number {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../prettify.js"></script>
         <script>

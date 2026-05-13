@@ -484,16 +484,7 @@
 <a name='L419'></a><a href='#L419'>419</a>
 <a name='L420'></a><a href='#L420'>420</a>
 <a name='L421'></a><a href='#L421'>421</a>
-<a name='L422'></a><a href='#L422'>422</a>
-<a name='L423'></a><a href='#L423'>423</a>
-<a name='L424'></a><a href='#L424'>424</a>
-<a name='L425'></a><a href='#L425'>425</a>
-<a name='L426'></a><a href='#L426'>426</a>
-<a name='L427'></a><a href='#L427'>427</a>
-<a name='L428'></a><a href='#L428'>428</a>
-<a name='L429'></a><a href='#L429'>429</a>
-<a name='L430'></a><a href='#L430'>430</a>
-<a name='L431'></a><a href='#L431'>431</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L422'></a><a href='#L422'>422</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -627,11 +618,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -642,8 +631,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -738,7 +725,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -754,7 +740,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -801,7 +786,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -812,10 +796,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1057,12 +1039,10 @@ const DPadButton = React.<span class="fstat-no" title="function not covered" >me
     radius,
     buttonSize,
   }) =&gt; {
-    // Calculate position using polar coordinates
     const <span class="cstat-no" title="statement not covered" >radian = (config.angle - 90) * (Math.PI / 180); // -90 to start from top</span>
     const x = <span class="cstat-no" title="statement not covered" >Math.cos(radian) * radius;</span>
     const y = <span class="cstat-no" title="statement not covered" >Math.sin(radian) * radius;</span>
 &nbsp;
-    // Extract RGB colors using shared utility
     const <span class="cstat-no" title="statement not covered" >goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);</span>
     const <span class="cstat-no" title="statement not covered" >primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);</span>
 &nbsp;
@@ -1122,8 +1102,6 @@ const DPadButton = React.<span class="fstat-no" title="function not covered" >me
     );
   },
   (<span class="fstat-no" title="function not covered" >prevProps, n</span>extProps) =&gt; {
-    // Only re-render if active or focused state changes
-    // config.direction comparison removed as config is a stable reference
 <span class="cstat-no" title="statement not covered" >    return (</span>
       prevProps.active === nextProps.active &amp;&amp;
       prevProps.focused === nextProps.focused
@@ -1166,7 +1144,6 @@ DPadButton.displayName = "DPadButton";
  * /&gt;
  * ```
  *
- * @public
  * @korean 가상방향패드
  */
 const <span class="fstat-no" title="function not covered" >VirtualDPadComponent: React.FC&lt;VirtualDPadProps&gt; = ({</span>
@@ -1184,7 +1161,6 @@ const <span class="fstat-no" title="function not covered" >VirtualDPadComponent:
     null,
   );
 &nbsp;
-  // Throttle onMove callbacks to ~60fps for performance
   const <span class="cstat-no" title="statement not covered" >throttledOnMove = useThrottle(onMove, 16);</span>
 &nbsp;
   /**
@@ -1231,7 +1207,6 @@ const <span class="fstat-no" title="function not covered" >VirtualDPadComponent:
 <span class="cstat-no" title="statement not covered" >          setActiveDirection(direction);</span>
 <span class="cstat-no" title="statement not covered" >          throttledOnMove(direction, "start");</span>
 <span class="cstat-no" title="statement not covered" >          triggerHaptic("light");</span>
-          // Release after brief delay
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >          setTimeout(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >            setActiveDirection(null);</span>
 <span class="cstat-no" title="statement not covered" >            throttledOnMove(null, "end");</span>
@@ -1242,7 +1217,6 @@ const <span class="fstat-no" title="function not covered" >VirtualDPadComponent:
     [disabled, throttledOnMove],
   );
 &nbsp;
-  // Memoize calculated dimensions to avoid recalculation
   const <span class="cstat-no" title="statement not covered" >dimensions = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       buttonSize: Math.max(48, size * 0.3),
@@ -1251,7 +1225,6 @@ const <span class="fstat-no" title="function not covered" >VirtualDPadComponent:
     [size],
   );
 &nbsp;
-  // Memoize color values
   const <span class="cstat-no" title="statement not covered" >colors = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       primary: getColorRGB(KOREAN_COLORS.PRIMARY_CYAN),
@@ -1360,7 +1333,7 @@ VirtualDPad.displayName = "VirtualDPad";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -455,20 +455,7 @@
 <a name='L390'></a><a href='#L390'>390</a>
 <a name='L391'></a><a href='#L391'>391</a>
 <a name='L392'></a><a href='#L392'>392</a>
-<a name='L393'></a><a href='#L393'>393</a>
-<a name='L394'></a><a href='#L394'>394</a>
-<a name='L395'></a><a href='#L395'>395</a>
-<a name='L396'></a><a href='#L396'>396</a>
-<a name='L397'></a><a href='#L397'>397</a>
-<a name='L398'></a><a href='#L398'>398</a>
-<a name='L399'></a><a href='#L399'>399</a>
-<a name='L400'></a><a href='#L400'>400</a>
-<a name='L401'></a><a href='#L401'>401</a>
-<a name='L402'></a><a href='#L402'>402</a>
-<a name='L403'></a><a href='#L403'>403</a>
-<a name='L404'></a><a href='#L404'>404</a>
-<a name='L405'></a><a href='#L405'>405</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L393'></a><a href='#L393'>393</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -521,9 +508,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -532,7 +517,6 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -594,7 +578,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -631,7 +614,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -663,9 +645,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -819,9 +799,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -853,9 +831,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -916,7 +892,6 @@ import { applyEffectStacking, MAX_CONCURRENT_EFFECTS } from "./EffectCalculator"
  * );
  * ```
  * 
- * @public
  * @korean 효과추가
  */
 export function addEffectsToPlayer(
@@ -925,14 +900,12 @@ export function addEffectsToPlayer(
 ): PlayerState {
   const currentTime = Date.now();
 &nbsp;
-  // Apply stacking logic
   const updatedEffects = applyEffectStacking(
     player.statusEffects,
     effects,
     currentTime
   );
 &nbsp;
-  // Update activeEffects array with effect IDs
   const activeEffectIds = updatedEffects.map((effect) =&gt; effect.id);
 &nbsp;
   return {
@@ -958,7 +931,6 @@ export function addEffectsToPlayer(
  * const updatedPlayer = removeExpiredEffects(player, Date.now());
  * ```
  * 
- * @public
  * @korean 만료효과제거
  */
 export function removeExpiredEffects(
@@ -992,7 +964,6 @@ export function removeExpiredEffects(
  * const updatedPlayer = removeEffectById(player, "stun_12345");
  * ```
  * 
- * @public
  * @korean 효과제거
  */
 export function removeEffectById(
@@ -1029,7 +1000,6 @@ export function removeEffectById(
  * );
  * ```
  * 
- * @public
  * @korean 유형별효과제거
  */
 export function removeEffectsByType(
@@ -1064,7 +1034,6 @@ export function removeEffectsByType(
  * const clearedPlayer = clearAllEffects(player);
  * ```
  * 
- * @public
  * @korean 전체효과제거
  */
 export function clearAllEffects(player: PlayerState): PlayerState {
@@ -1092,7 +1061,6 @@ export function clearAllEffects(player: PlayerState): PlayerState {
  * const effectiveSpeed = baseSpeed * modifiers.speed;
  * ```
  * 
- * @public
  * @korean 효과배율계산
  */
 export function getEffectModifiers(player: PlayerState): {
@@ -1217,7 +1185,6 @@ export function getEffectModifiers(player: PlayerState): {
  * }
  * ```
  * 
- * @public
  * @korean 효과확인
  */
 export function hasEffect(
@@ -1236,7 +1203,6 @@ export function hasEffect(
  * @param effectType - Type to retrieve
  * @returns Array of matching effects
  * 
- * @public
  * @korean 유형별효과조회
  */
 export function getEffectsByType(
@@ -1254,7 +1220,6 @@ export function getEffectsByType(
  * @param player - Current player state
  * @returns Number of active effects
  * 
- * @public
  * @korean 효과개수조회
  */
 export function getActiveEffectCount(player: PlayerState): number {
@@ -1269,7 +1234,6 @@ export function getActiveEffectCount(player: PlayerState): number {
  * @param player - Current player state
  * @returns True if under MAX_CONCURRENT_EFFECTS limit
  * 
- * @public
  * @korean 효과추가가능확인
  */
 export function canAddMoreEffects(player: PlayerState): boolean {
@@ -1282,7 +1246,7 @@ export function canAddMoreEffects(player: PlayerState): boolean {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../prettify.js"></script>
         <script>

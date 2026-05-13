@@ -471,18 +471,7 @@
 <a name='L406'></a><a href='#L406'>406</a>
 <a name='L407'></a><a href='#L407'>407</a>
 <a name='L408'></a><a href='#L408'>408</a>
-<a name='L409'></a><a href='#L409'>409</a>
-<a name='L410'></a><a href='#L410'>410</a>
-<a name='L411'></a><a href='#L411'>411</a>
-<a name='L412'></a><a href='#L412'>412</a>
-<a name='L413'></a><a href='#L413'>413</a>
-<a name='L414'></a><a href='#L414'>414</a>
-<a name='L415'></a><a href='#L415'>415</a>
-<a name='L416'></a><a href='#L416'>416</a>
-<a name='L417'></a><a href='#L417'>417</a>
-<a name='L418'></a><a href='#L418'>418</a>
-<a name='L419'></a><a href='#L419'>419</a>
-<a name='L420'></a><a href='#L420'>420</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L409'></a><a href='#L409'>409</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -569,21 +558,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -592,7 +577,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
@@ -607,16 +591,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -634,8 +615,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -839,7 +818,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">210x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -988,24 +966,20 @@ export const TrainingStatsOverlayHtml =
       distanceToDummy,
       effectiveReach = 0.7, // Default punch reach
     }) =&gt; {
-      // Use full width of container (passed from parent HUD)
       const panelWidth = width &gt; 10 ? width : <span class="branch-1 cbranch-no" title="branch not covered" >isMobile ? 180 : 200;</span>
       const padding = getResponsiveSpacing("sm", isMobile);
       const gap = getResponsiveSpacing("xs", isMobile);
 &nbsp;
-      // Safe area support for notched devices
       const safeAreaStyles = useMemo(
         () =&gt; (isMobile ? getSafeAreaPadding(["top"], padding) : {}),
         [isMobile, padding],
       );
 &nbsp;
-      // Format accuracy with memoization
       const formattedAccuracy = useMemo(
         () =&gt; stats.accuracy.toFixed(1),
         [stats.accuracy],
       );
 &nbsp;
-      // Format session duration
       const formattedDuration = useMemo(() =&gt; {
         <span class="missing-if-branch" title="else path not taken" >E</span>if (!stats.sessionDuration) return "00:00";
         const minutes = <span class="cstat-no" title="statement not covered" >Math.floor(stats.sessionDuration / 60);</span>
@@ -1013,7 +987,6 @@ export const TrainingStatsOverlayHtml =
 <span class="cstat-no" title="statement not covered" >        return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;</span>
       }, [stats.sessionDuration]);
 &nbsp;
-      // Format distance to dummy and check if in range
       const distanceInfo = useMemo(() =&gt; {
         if (distanceToDummy === undefined) return null;
         const isInRange = distanceToDummy &lt;= effectiveReach;
@@ -1026,14 +999,12 @@ export const TrainingStatsOverlayHtml =
         };
       }, [distanceToDummy, effectiveReach]);
 &nbsp;
-      // Calculate perfect strike rate
       const perfectRate = useMemo(() =&gt; {
         const totalAttempts = stats.hits + stats.misses;
         <span class="missing-if-branch" title="else path not taken" >E</span>if (totalAttempts === 0 || !stats.perfectStrikes) return "0";
 <span class="cstat-no" title="statement not covered" >        return ((stats.perfectStrikes / totalAttempts) * 100).toFixed(1);</span>
       }, [stats.hits, stats.misses, stats.perfectStrikes]);
 &nbsp;
-      // Enhanced panel styles with neon glow and safe area support
       const panelStyle: React.CSSProperties = {
         ...getEnhancedKoreanOverlayStyles({
           opacity: 0.92,
@@ -1047,7 +1018,6 @@ export const TrainingStatsOverlayHtml =
         padding: `${padding}px`,
       };
 &nbsp;
-      // Header title styles with improved mobile font size (16px+ for Korean)
       const titleFontSize = isMobile
         ? getMobileKoreanFontSize("SMALL", width ?? <span class="branch-1 cbranch-no" title="branch not covered" >375) </span>// 16px minimum
         : 18;
@@ -1219,8 +1189,6 @@ export const TrainingStatsOverlayHtml =
       );
     },
     (prevProps, nextProps) =&gt; {
-      // Custom comparison for optimal re-render prevention
-      // Only re-render if stats values actually changed
       return (
         prevProps.stats.score === nextProps.stats.score &amp;&amp;
         prevProps.stats.combo === nextProps.stats.combo &amp;&amp;
@@ -1258,7 +1226,6 @@ const StatRow = React.memo&lt;{
   isMobile: boolean;
   width: number; // Width for Super HD font scaling
 }&gt;(({ korean, english, value, color, isMobile, width }) =&gt; {
-  // Improved font sizes for mobile readability (min 16px for Korean body text)
   const labelFontSize = isMobile
     ? getMobileKoreanFontSize("SMALL", width) // 16px minimum
     : 14;
@@ -1327,7 +1294,7 @@ export default TrainingStatsOverlayHtml;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

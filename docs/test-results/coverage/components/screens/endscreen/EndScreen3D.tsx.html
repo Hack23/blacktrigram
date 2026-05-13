@@ -511,19 +511,7 @@
 <a name='L446'></a><a href='#L446'>446</a>
 <a name='L447'></a><a href='#L447'>447</a>
 <a name='L448'></a><a href='#L448'>448</a>
-<a name='L449'></a><a href='#L449'>449</a>
-<a name='L450'></a><a href='#L450'>450</a>
-<a name='L451'></a><a href='#L451'>451</a>
-<a name='L452'></a><a href='#L452'>452</a>
-<a name='L453'></a><a href='#L453'>453</a>
-<a name='L454'></a><a href='#L454'>454</a>
-<a name='L455'></a><a href='#L455'>455</a>
-<a name='L456'></a><a href='#L456'>456</a>
-<a name='L457'></a><a href='#L457'>457</a>
-<a name='L458'></a><a href='#L458'>458</a>
-<a name='L459'></a><a href='#L459'>459</a>
-<a name='L460'></a><a href='#L460'>460</a>
-<a name='L461'></a><a href='#L461'>461</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L449'></a><a href='#L449'>449</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -577,7 +565,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
@@ -610,7 +597,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -725,7 +711,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -737,18 +722,12 @@
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
@@ -779,9 +758,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -816,7 +793,6 @@
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
@@ -1037,7 +1013,6 @@ const toCssColor = (hex: number): string =&gt; hexToRgbaString(hex, 1);
 const BackgroundParticles3D: React.FC&lt;{ color: number }&gt; = ({ color }) =&gt; {
   const pointsRef = useRef&lt;THREE.Points&gt;(null);
 &nbsp;
-  // Use useState with lazy initializer for random values - this is only called once
   const [particleData] = useState(() =&gt; {
     const count = 100;
     const pos = new Float32Array(count * 3);
@@ -1071,7 +1046,6 @@ const BackgroundParticles3D: React.FC&lt;{ color: number }&gt; = ({ color }) =&g
 <span class="cstat-no" title="statement not covered" >      array[i3 + 1] += velocities[i3 + 1] * delta;</span>
 <span class="cstat-no" title="statement not covered" >      array[i3 + 2] += velocities[i3 + 2] * delta;</span>
 &nbsp;
-      // Wrap around
 <span class="cstat-no" title="statement not covered" >      if (array[i3 + 1] &gt; 15) {</span>
 <span class="cstat-no" title="statement not covered" >        array[i3 + 1] = -15;</span>
       }
@@ -1185,7 +1159,6 @@ export const EndScreen3D: React.FC&lt;EndScreen3DProps&gt; = ({
   width: propWidth,
   height: propHeight,
 }) =&gt; {
-  // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
 <span class="fstat-no" title="function not covered" >    onContextLost: () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      console.warn("⚠️ WebGL context lost in EndScreen");</span>
@@ -1197,19 +1170,13 @@ export const EndScreen3D: React.FC&lt;EndScreen3DProps&gt; = ({
   const [showStats, setShowStats] = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(false);
 &nbsp;
-  // Use window size for responsive layout with resize support
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const screenWidth = propWidth ?? windowWidth;
-  // Note: windowHeight available but not currently used - screenWidth sufficient for current responsive logic
   void (propHeight ?? windowHeight); // Consumed but not stored
 &nbsp;
-  // Determine if this is a victory screen (winner is player 0 by convention - extracted from id)
   const winnerId = winner.id;
   const isVictory = winnerId === "player-0" || winnerId.endsWith("-0");
 &nbsp;
-  // Responsive layout with proper device detection
-  // Uses user-agent detection for mobile controls (supports high-res phones)
-  // User-agent doesn't change during session, so no dependencies needed
   const isMobile = useMemo(() =&gt; shouldUseMobileControls(), []);
   const platform = useMemo(() =&gt; detectPlatform(), []);
   const isTablet = useMemo(() =&gt; platform.isTablet, [platform]);
@@ -1239,14 +1206,12 @@ export const EndScreen3D: React.FC&lt;EndScreen3DProps&gt; = ({
     [isMobile, isTablet, isLargeDesktop],
   );
 &nbsp;
-  // Use Korean theme hook for consistent theming
   const theme = useKoreanTheme({
     variant: "primary",
     size: "md",
     isMobile,
   });
 &nbsp;
-  // Play victory/defeat audio on mount
   useEffect(() =&gt; {
     <span class="missing-if-branch" title="if path not taken" >I</span>if (isVictory) {
 <span class="cstat-no" title="statement not covered" >      audio.playSFX?.("victory_fanfare");</span>
@@ -1278,7 +1243,6 @@ export const EndScreen3D: React.FC&lt;EndScreen3DProps&gt; = ({
     setShowBreakdown((prev) =&gt; !prev);
   }, [audio]);
 &nbsp;
-  // Audio callbacks for NavigationButtons (inside Html portal which doesn't have AudioProvider context)
   const handlePlaySelectSound = <span class="fstat-no" title="function not covered" >useCallback(() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    audio.playSFX?.("menu_select");</span>
   }, [audio]);
@@ -1450,7 +1414,7 @@ export const EndScreen3D: React.FC&lt;EndScreen3DProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

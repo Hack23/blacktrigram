@@ -571,14 +571,7 @@
 <a name='L506'></a><a href='#L506'>506</a>
 <a name='L507'></a><a href='#L507'>507</a>
 <a name='L508'></a><a href='#L508'>508</a>
-<a name='L509'></a><a href='#L509'>509</a>
-<a name='L510'></a><a href='#L510'>510</a>
-<a name='L511'></a><a href='#L511'>511</a>
-<a name='L512'></a><a href='#L512'>512</a>
-<a name='L513'></a><a href='#L513'>513</a>
-<a name='L514'></a><a href='#L514'>514</a>
-<a name='L515'></a><a href='#L515'>515</a>
-<a name='L516'></a><a href='#L516'>516</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L509'></a><a href='#L509'>509</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -635,7 +628,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -765,7 +757,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -801,7 +792,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -859,7 +849,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -918,7 +907,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -985,7 +973,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1026,7 +1013,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1163,7 +1149,6 @@ const MAX_COUNTER_RANGE_METERS = 1.0;
  * @param currentTime - Current time in technique execution (ms)
  * @returns Counter opportunity if one exists, undefined otherwise
  *
- * @public
  * @korean 반격기회계산
  */
 export function calculateCounterOpportunity(
@@ -1274,7 +1259,6 @@ function getRecommendedCounters(
  * @param currentTime - Current time in technique execution (ms)
  * @returns Vulnerability multiplier (1.0 = normal, &gt;1.0 = more vulnerable)
  *
- * @public
  * @korean 취약성배수계산
  */
 export function calculateVulnerabilityMultiplier(
@@ -1330,7 +1314,6 @@ export function calculateVulnerabilityMultiplier(
  * @param isLeftSided - Whether the technique uses the left side
  * @returns The exposed limb type
  *
- * @public
  * @korean 노출사지결정
  */
 export function determineExposedLimb(
@@ -1388,7 +1371,6 @@ export function determineExposedLimb(
  * @param exposedLimb - The exposed limb
  * @returns The breaking target joint/bone
  *
- * @public
  * @korean 파쇄목표매핑
  */
 export function mapLimbToBreakingTarget(
@@ -1424,7 +1406,6 @@ export function mapLimbToBreakingTarget(
  * extensibility. It may be used to apply technique-specific modifiers or
  * validate technique compatibility with the breaking target.
  *
- * @public
  * @korean 파쇄기술효과계산
  */
 export function calculateBreakingResult(
@@ -1522,7 +1503,6 @@ export function calculateBreakingResult(
  * @param distance - Distance between attacker and defender (meters)
  * @returns Whether the counter can be executed
  *
- * @public
  * @korean 반격실행가능확인
  */
 export function canExecuteCounter(
@@ -1555,7 +1535,6 @@ export function canExecuteCounter(
  * @param technique - The technique to generate exposure for
  * @returns Generated limb exposure window
  *
- * @public
  * @korean 사지노출시간생성
  */
 export function generateLimbExposureWindow(
@@ -1615,7 +1594,7 @@ export default {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

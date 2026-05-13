@@ -532,21 +532,7 @@
 <a name='L467'></a><a href='#L467'>467</a>
 <a name='L468'></a><a href='#L468'>468</a>
 <a name='L469'></a><a href='#L469'>469</a>
-<a name='L470'></a><a href='#L470'>470</a>
-<a name='L471'></a><a href='#L471'>471</a>
-<a name='L472'></a><a href='#L472'>472</a>
-<a name='L473'></a><a href='#L473'>473</a>
-<a name='L474'></a><a href='#L474'>474</a>
-<a name='L475'></a><a href='#L475'>475</a>
-<a name='L476'></a><a href='#L476'>476</a>
-<a name='L477'></a><a href='#L477'>477</a>
-<a name='L478'></a><a href='#L478'>478</a>
-<a name='L479'></a><a href='#L479'>479</a>
-<a name='L480'></a><a href='#L480'>480</a>
-<a name='L481'></a><a href='#L481'>481</a>
-<a name='L482'></a><a href='#L482'>482</a>
-<a name='L483'></a><a href='#L483'>483</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L470'></a><a href='#L470'>470</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -840,13 +826,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -874,9 +853,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">85x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -918,9 +895,6 @@
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">85x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1070,7 +1044,6 @@ import { KoreanText } from "@/types";
  * const health = player.bodyPartHealth[bodyPart]; // 0-100
  * ```
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위
  */
@@ -1124,7 +1097,6 @@ export enum BodyPart {
  * };
  * ```
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위체력
  */
@@ -1155,7 +1127,6 @@ export interface BodyPartHealth {
  * Defines the maximum HP capacity for each body part. Can be modified by
  * archetype, equipment, or training bonuses.
  * 
- * @public
  * @category Body Part System
  * @korean 최대신체부위체력
  */
@@ -1204,7 +1175,6 @@ export interface BodyPartMaxHealth {
  * };
  * ```
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위효과
  */
@@ -1243,7 +1213,6 @@ export interface BodyPartEffects {
  * };
  * ```
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위피해분배
  */
@@ -1268,7 +1237,6 @@ export interface BodyPartDamageDistribution {
  * Provides UI-friendly data about body part health status including
  * color coding, status text, and icon information.
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위상태
  */
@@ -1299,7 +1267,6 @@ export interface BodyPartStatus {
  * Defines thresholds, multipliers, and constants used by the body part
  * health system for damage calculation and effect application.
  * 
- * @public
  * @category Body Part System
  * @korean 신체부위설정
  */
@@ -1326,7 +1293,6 @@ export interface BodyPartHealthConfig {
 /**
  * Default configuration values for body part health system.
  * 
- * @public
  * @category Body Part System
  */
 export const DEFAULT_BODY_PART_CONFIG: BodyPartHealthConfig = {
@@ -1354,7 +1320,6 @@ export const DEFAULT_BODY_PART_CONFIG: BodyPartHealthConfig = {
  * - Arms &lt;50%: Attack damage -30%
  * - Legs &lt;50%: Movement speed -40%
  * 
- * @public
  * @category Body Part System
  */
 export const BODY_PART_EFFECT_CONSTANTS = {
@@ -1387,7 +1352,6 @@ export const BODY_PART_EFFECT_CONSTANTS = {
  * 
  * Defines movement impairment states based on leg health percentage.
  * 
- * @public
  * @category Body Part System
  * @korean 다리부상정도
  */
@@ -1410,7 +1374,6 @@ export enum LegInjuryState {
  * Describes the current movement impairment including speed reduction,
  * stance change penalties, and balance effects.
  * 
- * @public
  * @category Body Part System
  * @korean 이동패널티
  */
@@ -1441,7 +1404,6 @@ export interface MovementPenalty {
  * Applied immediately upon striking knee or ankle vital points,
  * causing temporary severe movement impairment.
  * 
- * @public
  * @category Body Part System
  * @korean 순간이동패널티
  */
@@ -1467,7 +1429,6 @@ export interface InstantMovementPenalty {
  * - 49-30%: Severe limp (-40% speed)
  * - &lt;30%: Hobbled (-60% speed, cannot run)
  * 
- * @public
  * @category Body Part System
  */
 export const MOVEMENT_PENALTY_CONSTANTS = {
@@ -1516,7 +1477,7 @@ export const MOVEMENT_PENALTY_CONSTANTS = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

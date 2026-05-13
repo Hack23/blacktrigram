@@ -316,14 +316,7 @@
 <a name='L251'></a><a href='#L251'>251</a>
 <a name='L252'></a><a href='#L252'>252</a>
 <a name='L253'></a><a href='#L253'>253</a>
-<a name='L254'></a><a href='#L254'>254</a>
-<a name='L255'></a><a href='#L255'>255</a>
-<a name='L256'></a><a href='#L256'>256</a>
-<a name='L257'></a><a href='#L257'>257</a>
-<a name='L258'></a><a href='#L258'>258</a>
-<a name='L259'></a><a href='#L259'>259</a>
-<a name='L260'></a><a href='#L260'>260</a>
-<a name='L261'></a><a href='#L261'>261</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L254'></a><a href='#L254'>254</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -384,18 +377,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -411,6 +393,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -420,9 +409,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -456,7 +443,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -644,7 +630,6 @@ function <span class="fstat-no" title="function not covered" >getPatternPosition
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  switch (pattern) {</span>
     case "circular_left":
-      // 4 positions in a circle (left rotation)
 <span class="cstat-no" title="statement not covered" >      return [</span>
         { position: [cx + radius, cy, cz], label: "1" },
         { position: [cx, cy, cz - radius], label: "2" },
@@ -653,7 +638,6 @@ function <span class="fstat-no" title="function not covered" >getPatternPosition
       ];
 &nbsp;
     case "circular_right":
-      // 4 positions in a circle (right rotation)
 <span class="cstat-no" title="statement not covered" >      return [</span>
         { position: [cx + radius, cy, cz], label: "1" },
         { position: [cx, cy, cz + radius], label: "2" },
@@ -662,7 +646,6 @@ function <span class="fstat-no" title="function not covered" >getPatternPosition
       ];
 &nbsp;
     case "pivot_combo":
-      // Pivot left and right positions
 <span class="cstat-no" title="statement not covered" >      return [</span>
         { position: [cx, cy, cz], label: "Start" },
         { position: [cx - 0.5, cy, cz + 0.5], label: "Pivot L" },
@@ -671,7 +654,6 @@ function <span class="fstat-no" title="function not covered" >getPatternPosition
       ];
 &nbsp;
     case "triangle_step":
-      // Triangle stepping pattern
 <span class="cstat-no" title="statement not covered" >      return [</span>
         { position: [cx, cy, cz], label: "Start" },
         { position: [cx, cy, cz - stepDist * 2], label: "Forward" },
@@ -680,7 +662,6 @@ function <span class="fstat-no" title="function not covered" >getPatternPosition
       ];
 &nbsp;
     case "slide_drill":
-      // Four-direction slide pattern (cross shape)
 <span class="cstat-no" title="statement not covered" >      return [</span>
         { position: [cx, cy, cz], label: "Center" },
         { position: [cx, cy, cz - stepDist], label: "Forward" },
@@ -690,7 +671,6 @@ function <span class="fstat-no" title="function not covered" >getPatternPosition
       ];
 &nbsp;
     case "shuffle_practice":
-      // Quick forward shuffles
 <span class="cstat-no" title="statement not covered" >      return [</span>
         { position: [cx, cy, cz], label: "Start" },
         { position: [cx, cy, cz - 0.15], label: "Shuffle 1" },
@@ -717,7 +697,6 @@ const <span class="fstat-no" title="function not covered" >FootMarker: React.FC&
   const <span class="cstat-no" title="statement not covered" >meshRef = useRef&lt;THREE.Mesh&gt;(null);</span>
   const <span class="cstat-no" title="statement not covered" >ringRef = useRef&lt;THREE.Mesh&gt;(null);</span>
 &nbsp;
-  // Pulsing animation for active marker
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useFrame((s</span>tate) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!animated) <span class="cstat-no" title="statement not covered" >return;</span></span>
     
@@ -850,7 +829,7 @@ export default FootPlacementMarkers3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

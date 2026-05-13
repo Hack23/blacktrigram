@@ -420,16 +420,7 @@
 <a name='L355'></a><a href='#L355'>355</a>
 <a name='L356'></a><a href='#L356'>356</a>
 <a name='L357'></a><a href='#L357'>357</a>
-<a name='L358'></a><a href='#L358'>358</a>
-<a name='L359'></a><a href='#L359'>359</a>
-<a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a>
-<a name='L362'></a><a href='#L362'>362</a>
-<a name='L363'></a><a href='#L363'>363</a>
-<a name='L364'></a><a href='#L364'>364</a>
-<a name='L365'></a><a href='#L365'>365</a>
-<a name='L366'></a><a href='#L366'>366</a>
-<a name='L367'></a><a href='#L367'>367</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L358'></a><a href='#L358'>358</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -525,23 +516,18 @@
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
@@ -556,7 +542,6 @@
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -566,14 +551,12 @@
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -587,7 +570,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -891,25 +873,20 @@ export const RoundAnnouncement: React.FC&lt;RoundAnnouncementProps&gt; = ({
   const [isVisible, setIsVisible] = useState(false);
   const hasCompletedRef = useRef(false);
 &nbsp;
-  // Use ref to stabilize callback - prevents timer reset on re-renders
   const onCountdownCompleteRef = useRef(onCountdownComplete);
   useEffect(() =&gt; {
     onCountdownCompleteRef.current = onCountdownComplete;
   }, [onCountdownComplete]);
 &nbsp;
-  // Stable callback that reads from ref
   const handleCountdownComplete = useCallback(() =&gt; {
     onCountdownCompleteRef.current();
   }, []);
 &nbsp;
-  // Fade in animation on mount
   useEffect(() =&gt; {
-    // Trigger fade in after a small delay
     const timer = setTimeout(() =&gt; setIsVisible(true), 50);
     return () =&gt; clearTimeout(timer);
   }, []);
 &nbsp;
-  // Countdown logic with proper cleanup - uses stable callback
   useEffect(() =&gt; {
     if (countdown &lt;= 0) {
       <span class="missing-if-branch" title="else path not taken" >E</span>if (!hasCompletedRef.current) {
@@ -922,7 +899,6 @@ export const RoundAnnouncement: React.FC&lt;RoundAnnouncementProps&gt; = ({
     const timer = setInterval(() =&gt; {
       setCountdown((prev) =&gt; {
         if (prev &lt;= 1) {
-          // Countdown complete, callback will be handled by effect
           return 0;
         }
         return prev - 1;
@@ -932,14 +908,12 @@ export const RoundAnnouncement: React.FC&lt;RoundAnnouncementProps&gt; = ({
     return () =&gt; clearInterval(timer);
   }, [countdown, handleCountdownComplete]);
 &nbsp;
-  // Determine if this is match point
   const isMatchPoint = useMemo(() =&gt; {
     const maxScore = Math.max(currentScore.player1, currentScore.player2);
     const roundsToWin = Math.ceil(totalRounds / 2);
     return maxScore === roundsToWin - 1;
   }, [currentScore, totalRounds]);
 &nbsp;
-  // Convert hex colors to CSS - memoized for performance using theme
   const goldColor = useMemo(
     () =&gt; hexColorToCSS(theme.colors.ACCENT_GOLD),
     [theme.colors.ACCENT_GOLD]
@@ -957,7 +931,6 @@ export const RoundAnnouncement: React.FC&lt;RoundAnnouncementProps&gt; = ({
     [theme.colors.TEXT_SECONDARY]
   );
 &nbsp;
-  // Memoize container style for performance
   const containerStyle = useMemo(
     () =&gt; ({
       position: "fixed" as const,
@@ -1168,7 +1141,7 @@ export default RoundAnnouncement;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

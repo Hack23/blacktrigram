@@ -373,19 +373,7 @@
 <a name='L308'></a><a href='#L308'>308</a>
 <a name='L309'></a><a href='#L309'>309</a>
 <a name='L310'></a><a href='#L310'>310</a>
-<a name='L311'></a><a href='#L311'>311</a>
-<a name='L312'></a><a href='#L312'>312</a>
-<a name='L313'></a><a href='#L313'>313</a>
-<a name='L314'></a><a href='#L314'>314</a>
-<a name='L315'></a><a href='#L315'>315</a>
-<a name='L316'></a><a href='#L316'>316</a>
-<a name='L317'></a><a href='#L317'>317</a>
-<a name='L318'></a><a href='#L318'>318</a>
-<a name='L319'></a><a href='#L319'>319</a>
-<a name='L320'></a><a href='#L320'>320</a>
-<a name='L321'></a><a href='#L321'>321</a>
-<a name='L322'></a><a href='#L322'>322</a>
-<a name='L323'></a><a href='#L323'>323</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L311'></a><a href='#L311'>311</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -493,9 +481,7 @@
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -506,7 +492,6 @@
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-yes">42x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -527,10 +512,8 @@
 <span class="cline-any cline-yes">42x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-yes">42x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
@@ -574,7 +557,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -584,10 +566,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -646,11 +626,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -815,7 +791,6 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
   const [isFocused, setIsFocused] = useState(false);
   const buttonRef = useRef&lt;HTMLButtonElement&gt;(null);
 &nbsp;
-  // Use Korean theme hook for consistent styling
   const { buttonVariant, buttonSize, fontFamily, accessibility } =
     useKoreanTheme({
       variant,
@@ -824,14 +799,12 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
       isMobile,
     });
 &nbsp;
-  // Auto-focus on mount if requested
   useEffect(() =&gt; {
     if (autoFocus &amp;&amp; buttonRef.current) {
       buttonRef.current.focus();
     }
   }, [autoFocus]);
 &nbsp;
-  // Track screen width for responsive distance factor updates on resize
   const [screenWidth, setScreenWidth] = useState(() =&gt;
     typeof window !== "undefined"
       ? window.innerWidth
@@ -849,12 +822,10 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
     return () =&gt; window.removeEventListener("resize", handleResize);
   }, []);
 &nbsp;
-  // Calculate optimal distance factor for button
   const distanceFactor = useMemo(() =&gt; {
     return calculateDistanceFactor(screenWidth, "button", isMobile);
   }, [screenWidth, isMobile]);
 &nbsp;
-  // Apply Html overlay styles with proper z-index
   const overlayStyle = useMemo(() =&gt; {
     return applyHtmlOverlayStyles(layer, true, distanceFactor, true, occlude);
   }, [layer, distanceFactor, occlude]);
@@ -896,7 +867,6 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
 &nbsp;
   const handleKeyDown = <span class="fstat-no" title="function not covered" >useCallback(</span>
     (e: React.KeyboardEvent&lt;HTMLButtonElement&gt;) =&gt; {
-      // Set pressed state for visual feedback on keyboard activation
 <span class="cstat-no" title="statement not covered" >      if ((e.key === "Enter" || e.key === " ") &amp;&amp; !disabled) {</span>
 <span class="cstat-no" title="statement not covered" >        setIsPressed(true);</span>
       }
@@ -906,7 +876,6 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
 &nbsp;
   const handleKeyUp = <span class="fstat-no" title="function not covered" >useCallback(</span>
     (e: React.KeyboardEvent&lt;HTMLButtonElement&gt;) =&gt; {
-      // Clear pressed state - native button behavior will trigger onClick
 <span class="cstat-no" title="statement not covered" >      if ((e.key === "Enter" || e.key === " ") &amp;&amp; !disabled) {</span>
 <span class="cstat-no" title="statement not covered" >        setIsPressed(false);</span>
       }
@@ -914,7 +883,6 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
     [disabled],
   );
 &nbsp;
-  // Memoize button styles for performance
   const buttonStyle = useMemo&lt;React.CSSProperties&gt;(() =&gt; {
     let background = hexToRgbaString(buttonVariant.background, 0.9);
 &nbsp;
@@ -940,7 +908,6 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
       userSelect: "none",
       WebkitUserSelect: "none",
       width: fullWidth ? "100%" : "auto",
-      // Ensure minimum touch target size on mobile (WCAG 2.1 AA)
       minWidth: isMobile ? accessibility.minTouchTarget : "auto",
       minHeight: isMobile ? accessibility.minTouchTarget : "auto",
       boxShadow:
@@ -949,10 +916,8 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
           : "none",
       transform: isPressed &amp;&amp; !disabled ? "scale(0.98)" : "scale(1)",
       textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
-      // Apply GPU acceleration from overlay style
       WebkitTransform: overlayStyle.transform,
       zIndex: overlayStyle.zIndex,
-      // WCAG 2.1 AA compliant focus indicator
       outline: isFocused &amp;&amp; !disabled ? accessibility.focusOutline : "none",
       outlineOffset:
         isFocused &amp;&amp; !disabled ? accessibility.focusOutlineOffset : "0",
@@ -1025,7 +990,6 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
   );
 };
 &nbsp;
-// Export memoized component for performance optimization
 export const BaseButton = React.memo(BaseButtonComponent);
 &nbsp;
 BaseButton.displayName = "BaseButton";
@@ -1036,7 +1000,7 @@ BaseButton.displayName = "BaseButton";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

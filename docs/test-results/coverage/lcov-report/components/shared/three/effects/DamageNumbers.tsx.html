@@ -302,21 +302,7 @@
 <a name='L237'></a><a href='#L237'>237</a>
 <a name='L238'></a><a href='#L238'>238</a>
 <a name='L239'></a><a href='#L239'>239</a>
-<a name='L240'></a><a href='#L240'>240</a>
-<a name='L241'></a><a href='#L241'>241</a>
-<a name='L242'></a><a href='#L242'>242</a>
-<a name='L243'></a><a href='#L243'>243</a>
-<a name='L244'></a><a href='#L244'>244</a>
-<a name='L245'></a><a href='#L245'>245</a>
-<a name='L246'></a><a href='#L246'>246</a>
-<a name='L247'></a><a href='#L247'>247</a>
-<a name='L248'></a><a href='#L248'>248</a>
-<a name='L249'></a><a href='#L249'>249</a>
-<a name='L250'></a><a href='#L250'>250</a>
-<a name='L251'></a><a href='#L251'>251</a>
-<a name='L252'></a><a href='#L252'>252</a>
-<a name='L253'></a><a href='#L253'>253</a>
-<a name='L254'></a><a href='#L254'>254</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L240'></a><a href='#L240'>240</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -403,23 +389,16 @@
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -427,13 +406,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">23x</span>
@@ -473,7 +450,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -512,7 +488,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -542,16 +517,13 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -656,37 +628,28 @@ const SingleDamageNumber = React.memo&lt;SingleDamageNumberProps&gt;(({
   const [progress, setProgress] = useState(0);
   const startTimeRef = useRef(damage.timestamp);
 &nbsp;
-  // Calculate 3D position from meter-based coordinates (physics-first architecture)
-  // Position is in meters relative to arena center (0, 0)
-  // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
-  // So we use meter coordinates directly too for alignment
   const halfWidth = arenaBounds.worldWidthMeters / 2;
   const halfDepth = arenaBounds.worldDepthMeters / 2;
   
-  // Clamp position to arena boundaries in meters
   const clampedX = Math.min(halfWidth, Math.max(-halfWidth, damage.position.x));
   const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, damage.position.y));
   
-  // Use clamped meter coordinates directly in 3D space (no remapping)
   const x = clampedX; // Meter position X
   const y = 2 + progress * 2; // Float upward
   const z = clampedZ; // Meter position Z (depth)
   const position3D: [number, number, number] = [x, y, z];
 &nbsp;
-  // Update progress using useFrame
 <span class="fstat-no" title="function not covered" >  useFrame(() =&gt; {</span>
     const elapsed = <span class="cstat-no" title="statement not covered" >Date.now() - startTimeRef.current;</span>
     const newProgress = <span class="cstat-no" title="statement not covered" >Math.min(elapsed / animationDuration, 1);</span>
 <span class="cstat-no" title="statement not covered" >    setProgress(newProgress);</span>
   });
 &nbsp;
-  // Don't render if expired
   <span class="missing-if-branch" title="if path not taken" >I</span>if (progress &gt;= 1) <span class="cstat-no" title="statement not covered" >return null;</span>
 &nbsp;
   const opacity = 1 - progress;
   const scale = 1 + progress * 0.3; // Slight scale up during animation
   const fontSize = isMobile ? 20 : 28;
-  // Calculate critical bonus based on damage type
   const getCriticalBonus = (): number =&gt; {
     if (damage.type === "critical") return 8;
     if (damage.type === "vital") return 4;
@@ -726,7 +689,6 @@ const SingleDamageNumber = React.memo&lt;SingleDamageNumberProps&gt;(({
     &lt;/Html&gt;
   );
 }, (<span class="fstat-no" title="function not covered" >prevProps, n</span>extProps) =&gt; {
-  // Custom comparison: re-render only when props that affect rendering change
   const prevArena = <span class="cstat-no" title="statement not covered" >prevProps.arenaBounds;</span>
   const nextArena = <span class="cstat-no" title="statement not covered" >nextProps.arenaBounds;</span>
 &nbsp;
@@ -770,7 +732,6 @@ const DamageNumbersComponent: React.FC&lt;DamageNumbersProps&gt; = ({
   arenaBounds = DEFAULT_PHYSICS_ARENA_BOUNDS,
   animationDuration = 1500,
 }) =&gt; {
-  // Derive visible damages from props - no need for state sync
   const visibleDamages = useMemo(() =&gt; [...damages], [damages]);
 &nbsp;
   return (
@@ -795,19 +756,16 @@ const DamageNumbersComponent: React.FC&lt;DamageNumbersProps&gt; = ({
 export const DamageNumbers = React.memo(
   DamageNumbersComponent,
   (prevProps, nextProps) =&gt; {
-    // Compare damages array length and contents
     <span class="missing-if-branch" title="if path not taken" >I</span>if (prevProps.damages.length !== nextProps.damages.length) {
 <span class="cstat-no" title="statement not covered" >      return false;</span>
     }
     
-    // Check if array contents changed (compare IDs)
     for (let i = 0; i &lt; prevProps.damages.length; i++) {
 <span class="cstat-no" title="statement not covered" >      if (prevProps.damages[i].id !== nextProps.damages[i].id) {</span>
 <span class="cstat-no" title="statement not covered" >        return false;</span>
       }
     }
     
-    // Check other props
     return (
       prevProps.isMobile === nextProps.isMobile &amp;&amp;
       prevProps.animationDuration === nextProps.animationDuration &amp;&amp;
@@ -829,7 +787,7 @@ export default DamageNumbers;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

@@ -269,17 +269,7 @@
 <a name='L204'></a><a href='#L204'>204</a>
 <a name='L205'></a><a href='#L205'>205</a>
 <a name='L206'></a><a href='#L206'>206</a>
-<a name='L207'></a><a href='#L207'>207</a>
-<a name='L208'></a><a href='#L208'>208</a>
-<a name='L209'></a><a href='#L209'>209</a>
-<a name='L210'></a><a href='#L210'>210</a>
-<a name='L211'></a><a href='#L211'>211</a>
-<a name='L212'></a><a href='#L212'>212</a>
-<a name='L213'></a><a href='#L213'>213</a>
-<a name='L214'></a><a href='#L214'>214</a>
-<a name='L215'></a><a href='#L215'>215</a>
-<a name='L216'></a><a href='#L216'>216</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L207'></a><a href='#L207'>207</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -345,7 +335,6 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -359,7 +348,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
@@ -368,8 +356,6 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -386,13 +372,10 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -401,7 +384,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -543,7 +525,6 @@ export interface TrigramSymbol3DProps {
  * /&gt;
  * ```
  * 
- * @public
  * @category Philosophy Components
  */
 export const TrigramSymbol3D: React.FC&lt;TrigramSymbol3DProps&gt; = ({
@@ -560,7 +541,6 @@ export const TrigramSymbol3D: React.FC&lt;TrigramSymbol3DProps&gt; = ({
   const meshRef = useRef&lt;THREE.Mesh&gt;(null);
   const glowRef = useRef&lt;THREE.Mesh&gt;(null);
 &nbsp;
-  // Memoize target scales to avoid recreation in useFrame
   const targetScaleSelected = useMemo(
     () =&gt; new THREE.Vector3(1.5 * scale, 1.5 * scale, 1.5 * scale),
     [scale]
@@ -574,7 +554,6 @@ export const TrigramSymbol3D: React.FC&lt;TrigramSymbol3DProps&gt; = ({
     [scale]
   );
 &nbsp;
-  // Memoize material properties and color strings
   const materialConfig = useMemo(() =&gt; {
     const baseColor = trigram.theme.primary;
     const emissiveColor = isSelected
@@ -588,7 +567,6 @@ export const TrigramSymbol3D: React.FC&lt;TrigramSymbol3DProps&gt; = ({
       emissiveIntensity,
       metalness: 0.7,
       roughness: 0.3,
-      // Pre-calculate color strings for Html overlay
       symbolColor: `#${baseColor.toString(16).padStart(6, "0")}`,
       glowColor: isSelected
         ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`
@@ -597,18 +575,14 @@ export const TrigramSymbol3D: React.FC&lt;TrigramSymbol3DProps&gt; = ({
     };
   }, [trigram.theme.primary, isSelected, isHovered]);
 &nbsp;
-  // 60fps animation loop
 <span class="fstat-no" title="function not covered" >  useFrame((s</span>tate, delta) =&gt; {
 <span class="cstat-no" title="statement not covered" >    if (!meshRef.current || !glowRef.current) <span class="cstat-no" title="statement not covered" >return;</span></span>
 &nbsp;
-    // Smooth rotation
 <span class="cstat-no" title="statement not covered" >    meshRef.current.rotation.y += delta * 0.5;</span>
 <span class="cstat-no" title="statement not covered" >    meshRef.current.rotation.x += delta * 0.2;</span>
 &nbsp;
-    // Glow rotation in opposite direction
 <span class="cstat-no" title="statement not covered" >    glowRef.current.rotation.y -= delta * 0.3;</span>
 &nbsp;
-    // Scale animation with lerp for smooth transitions
     let targetScale = <span class="cstat-no" title="statement not covered" >targetScaleNormal;</span>
 <span class="cstat-no" title="statement not covered" >    if (isSelected) {</span>
 <span class="cstat-no" title="statement not covered" >      targetScale = targetScaleSelected;</span>
@@ -617,7 +591,6 @@ export const TrigramSymbol3D: React.FC&lt;TrigramSymbol3DProps&gt; = ({
     }
 <span class="cstat-no" title="statement not covered" >    meshRef.current.scale.lerp(targetScale, 0.1);</span>
 &nbsp;
-    // Pulsing glow effect, scaled relative to the main mesh
     const pulseFactor = <span class="cstat-no" title="statement not covered" >Math.sin(state.clock.elapsedTime * 2) * 0.1 + 1;</span>
     const baseScale = <span class="cstat-no" title="statement not covered" >meshRef.current.scale.x;</span>
     const glowBaseScale = <span class="cstat-no" title="statement not covered" >1.3 * baseScale;</span>
@@ -715,7 +688,7 @@ export default TrigramSymbol3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

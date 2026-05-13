@@ -327,14 +327,7 @@
 <a name='L262'></a><a href='#L262'>262</a>
 <a name='L263'></a><a href='#L263'>263</a>
 <a name='L264'></a><a href='#L264'>264</a>
-<a name='L265'></a><a href='#L265'>265</a>
-<a name='L266'></a><a href='#L266'>266</a>
-<a name='L267'></a><a href='#L267'>267</a>
-<a name='L268'></a><a href='#L268'>268</a>
-<a name='L269'></a><a href='#L269'>269</a>
-<a name='L270'></a><a href='#L270'>270</a>
-<a name='L271'></a><a href='#L271'>271</a>
-<a name='L272'></a><a href='#L272'>272</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L265'></a><a href='#L265'>265</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -405,7 +398,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-yes">46x</span>
@@ -417,7 +409,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -425,7 +416,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -471,7 +461,6 @@
 <span class="cline-any cline-yes">270x</span>
 <span class="cline-any cline-yes">270x</span>
 <span class="cline-any cline-yes">270x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">270x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -481,9 +470,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -677,7 +663,6 @@ const getDifficultyStars = (difficulty: number): string =&gt; {
 export const VitalPointTrainingOverlayHtml =
   React.memo&lt;VitalPointTrainingOverlayHtmlProps&gt;(
     ({ selectedVitalPoint, onVitalPointSelect, isMobile }) =&gt; {
-      // Use first 6 vital points for training panel (compact)
       const availableVitalPoints = useMemo(
         () =&gt; KOREAN_VITAL_POINTS.slice(0, isMobile ? 4 : 6),
         [isMobile],
@@ -688,7 +673,6 @@ export const VitalPointTrainingOverlayHtml =
         [availableVitalPoints, selectedVitalPoint],
       );
 &nbsp;
-      // Memoize glow effect for selected vital points to avoid repeated calculations
       const selectedVitalPointGlow = React.useMemo(
         () =&gt; getNeonGlowEffect(KOREAN_COLORS.ACCENT_GOLD, "strong", true),
         [],
@@ -697,7 +681,6 @@ export const VitalPointTrainingOverlayHtml =
       const panelWidth = isMobile ? 200 : 240;
       const padding = getResponsiveSpacing("sm", isMobile);
 &nbsp;
-      // Compact panel styles
       const panelStyle: React.CSSProperties = {
         ...getEnhancedKoreanOverlayStyles({
           opacity: 0.88,
@@ -743,7 +726,6 @@ export const VitalPointTrainingOverlayHtml =
               const severityColor = getSeverityColor(point.severity);
               const severityColorRgba = hexToRgbaString(severityColor);
 &nbsp;
-              // Enhanced glow effect for selected vital points (memoized to avoid recalculation)
               const glowEffect = isSelected
                 ? selectedVitalPointGlow
                 : undefined;
@@ -862,9 +844,6 @@ export const VitalPointTrainingOverlayHtml =
       );
     },
     (prevProps, nextProps) =&gt; {
-      // Re-render when vital point selection, mobile state, or callback changes
-      // Including callback prop prevents stale closures when parent provides
-      // a new function that captures updated state.
       return (
         prevProps.selectedVitalPoint === nextProps.selectedVitalPoint &amp;&amp;
         prevProps.isMobile === nextProps.isMobile &amp;&amp;
@@ -883,7 +862,7 @@ export default VitalPointTrainingOverlayHtml;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

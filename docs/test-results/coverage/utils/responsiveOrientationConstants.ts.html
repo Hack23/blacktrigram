@@ -221,15 +221,7 @@
 <a name='L156'></a><a href='#L156'>156</a>
 <a name='L157'></a><a href='#L157'>157</a>
 <a name='L158'></a><a href='#L158'>158</a>
-<a name='L159'></a><a href='#L159'>159</a>
-<a name='L160'></a><a href='#L160'>160</a>
-<a name='L161'></a><a href='#L161'>161</a>
-<a name='L162'></a><a href='#L162'>162</a>
-<a name='L163'></a><a href='#L163'>163</a>
-<a name='L164'></a><a href='#L164'>164</a>
-<a name='L165'></a><a href='#L165'>165</a>
-<a name='L166'></a><a href='#L166'>166</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L159'></a><a href='#L159'>159</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -261,7 +253,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -278,9 +269,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -300,7 +289,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -337,7 +325,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -358,7 +345,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -413,7 +399,6 @@
  * factor is &lt; 1.0 so near-square viewports (e.g. `1024×1000`) settle into
  * one orientation and don't flap on every pixel of resize.
  *
- * @public
  */
 export const PORTRAIT_HYSTERESIS_FACTOR = 0.9;
 &nbsp;
@@ -425,7 +410,6 @@ export const PORTRAIT_HYSTERESIS_FACTOR = 0.9;
  * This makes devtools emulation of a rotated phone/tablet behave identically
  * to a real device.
  *
- * @public
  */
 export const PORTRAIT_FORCE_MAX_WIDTH_PX = 1024;
 &nbsp;
@@ -442,7 +426,6 @@ export const PORTRAIT_FORCE_MAX_WIDTH_PX = 1024;
  * D-Pad + action buttons + the persistent technique bar. Training uses
  * the smaller 180/140 band because its on-screen controls are lighter.
  *
- * @public
  */
 export const MOBILE_CONTROLS_RESERVED_HEIGHT_PX = {
   /** D-Pad + action buttons + technique bar on combat (standard phones) */
@@ -462,7 +445,6 @@ export const MOBILE_CONTROLS_RESERVED_HEIGHT_PX = {
  * compact values reserve only the visible bottom technique/control band while
  * still keeping the 3D arena above touch controls.
  *
- * @public
  */
 export const LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX = {
   /** Combat bottom band on landscape phones */
@@ -484,7 +466,6 @@ export const LANDSCAPE_MOBILE_CONTROLS_BOTTOM_CLEARANCE_PX = {
  * @param isExtraSmall - true when the viewport is &lt; 380px wide
  * @param variant - "combat" or "training" (differs in control band size)
  *
- * @public
  */
 export function portraitMobileControlsBottomBand(
   controlsHeight: number,
@@ -510,7 +491,6 @@ export function portraitMobileControlsBottomBand(
  * @param isExtraSmall - true when the viewport is &lt; 380px wide
  * @param variant - "combat" or "training"
  *
- * @public
  */
 export function landscapeMobileControlsBottomClearance(
   isExtraSmall: boolean,
@@ -540,7 +520,6 @@ export function landscapeMobileControlsBottomClearance(
  * @param isPortrait - true for portrait orientation
  * @param variant - "combat" or "training"
  *
- * @public
  */
 export function mobileControlsBottomClearance(
   controlsHeight: number,
@@ -565,7 +544,7 @@ export function mobileControlsBottomClearance(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../prettify.js"></script>
         <script>

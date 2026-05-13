@@ -497,16 +497,7 @@
 <a name='L432'></a><a href='#L432'>432</a>
 <a name='L433'></a><a href='#L433'>433</a>
 <a name='L434'></a><a href='#L434'>434</a>
-<a name='L435'></a><a href='#L435'>435</a>
-<a name='L436'></a><a href='#L436'>436</a>
-<a name='L437'></a><a href='#L437'>437</a>
-<a name='L438'></a><a href='#L438'>438</a>
-<a name='L439'></a><a href='#L439'>439</a>
-<a name='L440'></a><a href='#L440'>440</a>
-<a name='L441'></a><a href='#L441'>441</a>
-<a name='L442'></a><a href='#L442'>442</a>
-<a name='L443'></a><a href='#L443'>443</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L435'></a><a href='#L435'>435</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -565,10 +556,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
@@ -602,7 +591,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
@@ -633,7 +621,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -657,10 +644,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -731,7 +716,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -962,7 +946,6 @@ import {
 } from "../../../../utils/visualEffects";
 import { StatBar } from "./StatBarOverlayHtml";
 &nbsp;
-// Enhanced shape matching PLAYER_ARCHETYPES_DATA entries
 export interface ArchetypeDataShape {
   readonly id: string;
   readonly korean: string;
@@ -1007,11 +990,9 @@ export const ArchetypeDisplayOverlayHtml: React.FC&lt;ArchetypeDisplayOverlayHtm
       height = 300,
       isMobile: _isMobile = false, // Kept for interface compatibility, layout uses width
     }) =&gt; {
-      // Note: _isMobile intentionally unused - layout sizing uses width-based checks
       void _isMobile;
       const selectedArchetype = archetypes[selectedIndex];
 &nbsp;
-      // Responsive sizing with large desktop support - use width for layout
       const isSmallScreen = width &lt; 768;
       const isLargeContainer = width &gt;= 1100;
       const archImageWidth = isSmallScreen ? 140 : isLargeContainer ? <span class="branch-0 cbranch-no" title="branch not covered" >120 : 1</span>80;
@@ -1044,7 +1025,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC&lt;ArchetypeDisplayOverlayHtm
         onPlaySFX("menu_hover");
       }, [selectedIndex, archetypes.length, onArchetypeChange, onPlaySFX]);
 &nbsp;
-      // Convert real stats to 0-1 scale for visualization
       const combatStats = useMemo(() =&gt; {
         const maxStatValue = 100;
         return [
@@ -1075,7 +1055,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC&lt;ArchetypeDisplayOverlayHtm
         ];
       }, [selectedArchetype.stats]);
 &nbsp;
-      // Memoize RGBA color calculations and enhanced styles
       const colors = useMemo(
         () =&gt; ({
           archetypeColor: `#${selectedArchetype.color
@@ -1099,7 +1078,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC&lt;ArchetypeDisplayOverlayHtm
         [selectedArchetype.color],
       );
 &nbsp;
-      // Enhanced overlay styles
       const containerStyle = useMemo(
         () =&gt; ({
           ...getEnhancedKoreanOverlayStyles({
@@ -1124,7 +1102,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC&lt;ArchetypeDisplayOverlayHtm
         [width, height, contentGap, containerPadding, colors.archetypeColor],
       );
 &nbsp;
-      // Get archetype image path
       const archetypeImagePath = useMemo(() =&gt; {
         return `/assets/visual/archetypes/${selectedArchetype.textureKey}.png`;
       }, [selectedArchetype.textureKey]);
@@ -1180,7 +1157,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC&lt;ArchetypeDisplayOverlayHtm
                 aria-label={`${selectedArchetype.korean} ${selectedArchetype.english} - Click or press Enter to cycle to next archetype`}
                 data-testid="archetype-image"
 <span class="fstat-no" title="function not covered" >                onError={(e</span>) =&gt; {
-                  // Fallback if image doesn't load: use Black Trigram logo, prevent infinite loop
                   const target = <span class="cstat-no" title="statement not covered" >e.currentTarget as HTMLImageElement;</span>
 <span class="cstat-no" title="statement not covered" >                  if (!target.src.endsWith(FALLBACK_ARCHETYPE_IMAGE)) {</span>
 <span class="cstat-no" title="statement not covered" >                    target.src = FALLBACK_ARCHETYPE_IMAGE;</span>
@@ -1396,7 +1372,7 @@ export default ArchetypeDisplayOverlayHtml;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

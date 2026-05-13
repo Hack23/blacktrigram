@@ -567,16 +567,7 @@
 <a name='L502'></a><a href='#L502'>502</a>
 <a name='L503'></a><a href='#L503'>503</a>
 <a name='L504'></a><a href='#L504'>504</a>
-<a name='L505'></a><a href='#L505'>505</a>
-<a name='L506'></a><a href='#L506'>506</a>
-<a name='L507'></a><a href='#L507'>507</a>
-<a name='L508'></a><a href='#L508'>508</a>
-<a name='L509'></a><a href='#L509'>509</a>
-<a name='L510'></a><a href='#L510'>510</a>
-<a name='L511'></a><a href='#L511'>511</a>
-<a name='L512'></a><a href='#L512'>512</a>
-<a name='L513'></a><a href='#L513'>513</a>
-<a name='L514'></a><a href='#L514'>514</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L505'></a><a href='#L505'>505</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -613,7 +604,6 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -678,7 +668,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">56x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -856,7 +845,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -885,11 +873,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -928,7 +914,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1032,14 +1017,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1059,7 +1042,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1177,7 +1159,6 @@ interface StateCapability {
  * const modifiedDamage = baseDamage * capability.accuracyModifier;
  * ```
  * 
- * @public
  * @korean 전투상태시스템
  */
 export class CombatStateSystem {
@@ -1255,7 +1236,6 @@ export class CombatStateSystem {
    * }
    * ```
    * 
-   * @public
    * @korean 상태결정
    */
   determineState(player: PlayerState, currentTime?: number): CombatReadinessState {
@@ -1366,7 +1346,6 @@ export class CombatStateSystem {
    * }
    * ```
    * 
-   * @public
    * @korean 능력조회
    */
   getCapability(state: CombatReadinessState): StateCapability {
@@ -1392,7 +1371,6 @@ export class CombatStateSystem {
    * );
    * ```
    * 
-   * @public
    * @korean 상태적용
    */
   applyStateModifiers(
@@ -1417,7 +1395,6 @@ export class CombatStateSystem {
    * @param state - Combat readiness state
    * @returns Korean and English state names
    * 
-   * @public
    * @korean 상태이름
    */
   getStateName(state: CombatReadinessState): { korean: string; english: string } {
@@ -1449,7 +1426,6 @@ export class CombatStateSystem {
    * @param state - Combat readiness state
    * @returns Emoji representing the state
    * 
-   * @public
    * @korean 상태아이콘
    */
   getStateEmoji(state: CombatReadinessState): string {
@@ -1542,7 +1518,6 @@ export class CombatStateSystem {
    * @param currentTime - Timestamp of the hit
    * @returns Updated player state with recorded hit
    * 
-   * @public
    * @korean 타격기록
    */
   recordHit(player: PlayerState, currentTime: number): PlayerState {
@@ -1567,7 +1542,6 @@ export class CombatStateSystem {
    * @param currentTime - Timestamp when entering helpless state
    * @returns Updated player state
    * 
-   * @public
    * @korean 무력상태기록
    */
   enterHelplessState(player: PlayerState, currentTime: number): PlayerState {
@@ -1586,7 +1560,6 @@ export class CombatStateSystem {
    * @param currentTime - Current timestamp
    * @returns True if recovery is possible
    * 
-   * @public
    * @korean 회복가능확인
    */
   canRecoverFromHelpless(player: PlayerState, currentTime: number): boolean {
@@ -1609,7 +1582,7 @@ export default CombatStateSystem;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

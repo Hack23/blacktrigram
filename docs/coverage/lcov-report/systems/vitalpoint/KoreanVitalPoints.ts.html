@@ -231,16 +231,7 @@
 <a name='L166'></a><a href='#L166'>166</a>
 <a name='L167'></a><a href='#L167'>167</a>
 <a name='L168'></a><a href='#L168'>168</a>
-<a name='L169'></a><a href='#L169'>169</a>
-<a name='L170'></a><a href='#L170'>170</a>
-<a name='L171'></a><a href='#L171'>171</a>
-<a name='L172'></a><a href='#L172'>172</a>
-<a name='L173'></a><a href='#L173'>173</a>
-<a name='L174'></a><a href='#L174'>174</a>
-<a name='L175'></a><a href='#L175'>175</a>
-<a name='L176'></a><a href='#L176'>176</a>
-<a name='L177'></a><a href='#L177'>177</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L169'></a><a href='#L169'>169</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -283,7 +274,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -307,7 +297,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-yes">840x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -320,10 +309,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">11630x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11076x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -337,7 +324,6 @@
 <span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">700x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -369,12 +355,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6510x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -455,7 +439,6 @@ import { VITAL_POINTS_DATA } from "./VitalPointsData";
  * - MODERATE (16 points): Moderate effectiveness
  * - MINOR (4 points): Low damage points
  *
- * @public
  * @korean 급소시스템
  */
 export const KOREAN_VITAL_POINTS: readonly VitalPoint[] = VITAL_POINTS_DATA;
@@ -466,7 +449,6 @@ export const KOREAN_VITAL_POINTS: readonly VitalPoint[] = VITAL_POINTS_DATA;
  * @param category - The vital point category to filter by
  * @returns Array of vital points in that category
  *
- * @public
  * @korean 범주별급소
  */
 export const getVitalPointsByCategory = (
@@ -481,7 +463,6 @@ export const getVitalPointsByCategory = (
  * @param regionPrefix - Region prefix to filter by (e.g., "head_", "torso_")
  * @returns Array of vital points in that region
  *
- * @public
  * @korean 부위별급소
  */
 export const getVitalPointsByRegion = (regionPrefix: string): VitalPoint[] =&gt; {
@@ -494,7 +475,6 @@ export const getVitalPointsByRegion = (regionPrefix: string): VitalPoint[] =&gt;
  * @param id - Unique vital point identifier
  * @returns The vital point or undefined if not found
  *
- * @public
  * @korean 급소검색
  */
 export const getVitalPointById = (id: string): VitalPoint | undefined =&gt; {
@@ -507,7 +487,6 @@ export const getVitalPointById = (id: string): VitalPoint | undefined =&gt; {
  * @param stance - Trigram stance to check effectiveness for
  * @returns Array of vital points effective for that stance
  *
- * @public
  * @korean 자세별급소
  */
 export const getVitalPointsByStance = (stance: TrigramStance): VitalPoint[] =&gt; {
@@ -523,7 +502,6 @@ export const getVitalPointsByStance = (stance: TrigramStance): VitalPoint[] =&gt
  * @param maxDifficulty - Maximum difficulty (0.0 to 1.0)
  * @returns Array of vital points within difficulty range
  *
- * @public
  * @korean 난이도별급소
  */
 export const getVitalPointsByDifficulty = (
@@ -543,7 +521,6 @@ export const getVitalPointsByDifficulty = (
  * @param severity - Severity level to filter by
  * @returns Array of vital points at that severity
  *
- * @public
  * @korean 심각도별급소
  */
 export const getVitalPointsBySeverity = (
@@ -557,7 +534,6 @@ export const getVitalPointsBySeverity = (
  *
  * @returns Statistics about the vital points system
  *
- * @public
  * @korean 급소통계
  */
 export const getVitalPointsStats = () =&gt; {
@@ -598,7 +574,7 @@ export default KOREAN_VITAL_POINTS;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

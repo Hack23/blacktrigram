@@ -288,7 +288,41 @@
 <a name='L223'></a><a href='#L223'>223</a>
 <a name='L224'></a><a href='#L224'>224</a>
 <a name='L225'></a><a href='#L225'>225</a>
-<a name='L226'></a><a href='#L226'>226</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a>
+<a name='L229'></a><a href='#L229'>229</a>
+<a name='L230'></a><a href='#L230'>230</a>
+<a name='L231'></a><a href='#L231'>231</a>
+<a name='L232'></a><a href='#L232'>232</a>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -443,7 +477,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">253x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -514,18 +560,29 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
- * Color palette for Black Trigram Korean martial arts game
- * Cyberpunk aesthetic with Korean traditional influences
- * 
+ * Color palette for Black Trigram Korean martial arts game.
+ *
+ * Cyberpunk aesthetic with Korean traditional influences.
+ *
  * WCAG 2.1 Level AA Compliance:
  * - Text colors meet 4.5:1 contrast ratio on dark backgrounds
  * - UI elements meet 3:1 contrast ratio
  * - Focus indicators use 2px borders with high contrast
- * 
+ *
  * @see https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html
+ *
+ * @module types/constants/colors
+ * @category Color Constants
+ * @korean 색상팔레트
  */
 &nbsp;
-// Primary color palette
+/**
+ * Primary Korean cyberpunk color palette with WCAG 2.1 AA compliance.
+ *
+ * @constant
+ * @category Color Constants
+ * @korean 한국색상
+ */
 export const KOREAN_COLORS = {
   // Primary colors (Cyberpunk neon) - WCAG AA compliant on dark backgrounds
   PRIMARY_CYAN: 0x00e6e6, // Increased brightness for better contrast (was 0x00ffff)
@@ -667,9 +724,15 @@ export const KOREAN_COLORS = {
   NEON_PINK: 0xff1493,
 } as const;
 &nbsp;
-// Cyberpunk color palette
+/**
+ * Cyberpunk-themed color palette for UI elements and effects.
+ *
+ * @constant
+ * @category Color Constants
+ * @korean 사이버팡크색상
+ */
 export const CYBERPUNK_COLORS = {
-  // Primary neon colors - 사이버펑크 네온 색상
+  // Primary neon colors - 사이버팡크 네온 색상
   NEON_CYAN: 0x00ffff, // 네온 시안 - Primary UI
   NEON_PURPLE: 0xff00ff, // 네온 보라 - Secondary accents
   NEON_GREEN: 0x00ff00, // 네온 초록 - Success states
@@ -706,7 +769,13 @@ export const CYBERPUNK_COLORS = {
   HIGHLIGHT: 0xffff80, // 하이라이트 - Selection highlight
 } as const;
 &nbsp;
-// Color utility functions
+/**
+ * Color utility functions for hex color manipulation.
+ *
+ * @constant
+ * @category Color Constants
+ * @korean 색상유틸리티
+ */
 export const colorUtils = {
   /**
    * Convert hex color to RGB components
@@ -745,7 +814,7 @@ export const colorUtils = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

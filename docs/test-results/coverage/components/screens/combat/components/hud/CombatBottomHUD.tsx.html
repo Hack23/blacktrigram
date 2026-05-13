@@ -325,18 +325,7 @@
 <a name='L260'></a><a href='#L260'>260</a>
 <a name='L261'></a><a href='#L261'>261</a>
 <a name='L262'></a><a href='#L262'>262</a>
-<a name='L263'></a><a href='#L263'>263</a>
-<a name='L264'></a><a href='#L264'>264</a>
-<a name='L265'></a><a href='#L265'>265</a>
-<a name='L266'></a><a href='#L266'>266</a>
-<a name='L267'></a><a href='#L267'>267</a>
-<a name='L268'></a><a href='#L268'>268</a>
-<a name='L269'></a><a href='#L269'>269</a>
-<a name='L270'></a><a href='#L270'>270</a>
-<a name='L271'></a><a href='#L271'>271</a>
-<a name='L272'></a><a href='#L272'>272</a>
-<a name='L273'></a><a href='#L273'>273</a>
-<a name='L274'></a><a href='#L274'>274</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L263'></a><a href='#L263'>263</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -418,10 +407,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">71x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -430,26 +425,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -468,7 +447,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -691,22 +669,17 @@ export const CombatBottomHUD: React.FC&lt;CombatBottomHUDProps&gt; = ({
   onTechniqueSelect,
   combatMessages = [],
 }) =&gt; {
-  // isMobile only used for mobile controls visibility
   const showMobileControls = shouldShowMobileControls(width, isMobile);
 &nbsp;
   const layout = React.useMemo(() =&gt; {
-    // Resolution-based HUD height (10% of screen height, 40-120px range)
     const hudHeight = getHUDHeight(height, 0.1) * positionScale;
     
-    // Resolution-based padding
     const padding = getResponsivePadding(width) * positionScale;
     
-    // Resolution-based font sizes (using design system as minimum)
     const baseFontSize = getResponsiveFontSize(width);
     const titleFontSize = Math.max(TYPOGRAPHY_NUMERIC.nano, baseFontSize * FONT_SIZE_MULTIPLIERS.titleSmall);
     const messageFontSize = Math.max(TYPOGRAPHY_NUMERIC.caption, baseFontSize * FONT_SIZE_MULTIPLIERS.messageSmall);
     
-    // Resolution-based widths (using design system constants as reference)
     const minMessageWidth = width &lt; BREAKPOINTS.mobile 
       ? COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinMobile
       : COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinDesktop;
@@ -717,15 +690,10 @@ export const CombatBottomHUD: React.FC&lt;CombatBottomHUDProps&gt; = ({
       ? COMBAT_UI_DIMENSIONS.techniqueBarWidthMobile 
       : COMBAT_UI_DIMENSIONS.techniqueBarWidthDesktop;
     
-    // Resolution-based message padding (using design system spacing)
     const messagePadding = width &lt; BREAKPOINTS.mobile 
       ? `${SPACING_ADJUSTMENTS.compact} ${SPACING.sm}` 
       : `${SPACING.xs} ${SPACING.md}`;
 &nbsp;
-    // Actual pixel width available to TechniqueBar.
-    // The wrapper applies maxWidth ("100%" mobile / "70%" desktop) and
-    // marginRight (volume control reserve). Pre-computing a numeric value here
-    // ensures TechniqueBar's scale/scroll decision matches the real layout.
     const usableWidth = width - padding * 2;
     const maxBarWidthPx = usableWidth * parsePercentageToRatio(maxTechniqueBarWidth);
     const volumeReserve = showMobileControls
@@ -754,7 +722,6 @@ export const CombatBottomHUD: React.FC&lt;CombatBottomHUDProps&gt; = ({
     };
   }, [width, height, positionScale, showMobileControls]);
 &nbsp;
-  // Only show last 3 combat messages
   const recentMessages = combatMessages.slice(-3);
 &nbsp;
   return (
@@ -889,7 +856,7 @@ export default CombatBottomHUD;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

@@ -172,13 +172,7 @@
 <a name='L107'></a><a href='#L107'>107</a>
 <a name='L108'></a><a href='#L108'>108</a>
 <a name='L109'></a><a href='#L109'>109</a>
-<a name='L110'></a><a href='#L110'>110</a>
-<a name='L111'></a><a href='#L111'>111</a>
-<a name='L112'></a><a href='#L112'>112</a>
-<a name='L113'></a><a href='#L113'>113</a>
-<a name='L114'></a><a href='#L114'>114</a>
-<a name='L115'></a><a href='#L115'>115</a>
-<a name='L116'></a><a href='#L116'>116</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L110'></a><a href='#L110'>110</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -222,9 +216,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,9 +226,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -250,10 +240,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -336,7 +324,6 @@ export const <span class="fstat-no" title="function not covered" >DamageNumber3D
   const <span class="cstat-no" title="statement not covered" >divRef = useRef&lt;HTMLDivElement&gt;(null);</span>
   const <span class="cstat-no" title="statement not covered" >completedRef = useRef(false);</span>
 &nbsp;
-  // Get color based on type
   const color =
 <span class="cstat-no" title="statement not covered" >    type === "critical"</span>
       ? "#ff0000"
@@ -344,14 +331,11 @@ export const <span class="fstat-no" title="function not covered" >DamageNumber3D
       ? "#ffd700"
       : "#ffffff";
 &nbsp;
-  // Apply Html overlay styles for damage numbers (effects layer)
   const <span class="cstat-no" title="statement not covered" >overlayStyle = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    return applyHtmlOverlayStyles("effects", false, 10, true, false);</span>
   }, []);
 &nbsp;
-  // Animate floating and fading using refs to avoid unnecessary re-renders
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useFrame(() =&gt; {</span></span>
-    // Lazy initialize start time on first frame
 <span class="cstat-no" title="statement not covered" >    startTimeRef.current ??= performance.now();</span>
 &nbsp;
     const <span class="cstat-no" title="statement not covered" >elapsed = (performance.now() - startTimeRef.current) / 1000;</span>
@@ -365,11 +349,9 @@ export const <span class="fstat-no" title="function not covered" >DamageNumber3D
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (completedRef.current) <span class="cstat-no" title="statement not covered" >return; // Stop processing after completion</span></span>
 &nbsp;
-    // Float upward with easing - use CSS transform for position animation
     const floatDistance = <span class="cstat-no" title="statement not covered" >1.5;</span>
     const yOffset = <span class="cstat-no" title="statement not covered" >floatDistance * progress;</span>
 &nbsp;
-    // Update DOM directly to avoid React re-renders
 <span class="cstat-no" title="statement not covered" >    if (divRef.current) {</span>
 <span class="cstat-no" title="statement not covered" >      divRef.current.style.transform = `translateY(-${yOffset * 30}px)`; // Scale to pixels</span>
 <span class="cstat-no" title="statement not covered" >      divRef.current.style.opacity = String(1 - progress);</span>
@@ -415,7 +397,7 @@ export default DamageNumber3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

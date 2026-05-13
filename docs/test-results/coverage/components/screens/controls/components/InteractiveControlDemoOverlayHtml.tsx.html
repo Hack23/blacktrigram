@@ -354,18 +354,7 @@
 <a name='L289'></a><a href='#L289'>289</a>
 <a name='L290'></a><a href='#L290'>290</a>
 <a name='L291'></a><a href='#L291'>291</a>
-<a name='L292'></a><a href='#L292'>292</a>
-<a name='L293'></a><a href='#L293'>293</a>
-<a name='L294'></a><a href='#L294'>294</a>
-<a name='L295'></a><a href='#L295'>295</a>
-<a name='L296'></a><a href='#L296'>296</a>
-<a name='L297'></a><a href='#L297'>297</a>
-<a name='L298'></a><a href='#L298'>298</a>
-<a name='L299'></a><a href='#L299'>299</a>
-<a name='L300'></a><a href='#L300'>300</a>
-<a name='L301'></a><a href='#L301'>301</a>
-<a name='L302'></a><a href='#L302'>302</a>
-<a name='L303'></a><a href='#L303'>303</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L292'></a><a href='#L292'>292</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -416,7 +405,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -516,7 +504,6 @@
 <span class="cline-any cline-yes">251x</span>
 <span class="cline-any cline-yes">251x</span>
 <span class="cline-any cline-yes">251x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">251x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -533,9 +520,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">251x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">131x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">131x</span>
@@ -548,13 +533,11 @@
 <span class="cline-any cline-yes">76x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">76x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">76x</span>
 <span class="cline-any cline-yes">150x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">76x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1285x</span>
 <span class="cline-any cline-yes">70x</span>
 <span class="cline-any cline-yes">60x</span>
@@ -567,7 +550,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">76x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -576,23 +558,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">251x</span>
 <span class="cline-any cline-yes">61x</span>
 <span class="cline-any cline-yes">61x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">251x</span>
 <span class="cline-any cline-yes">308x</span>
 <span class="cline-any cline-yes">308x</span>
 <span class="cline-any cline-yes">308x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">251x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -724,7 +702,6 @@ const KeyPressEntryDisplay = React.memo&lt;KeyPressEntryDisplayProps&gt;(({
   isMobile,
   theme,
 }) =&gt; {
-  // Memoize styles based on props
   const containerStyle = useMemo(() =&gt; ({
     display: 'flex',
     alignItems: 'center',
@@ -819,7 +796,6 @@ export const InteractiveControlDemo: React.FC&lt;InteractiveControlDemoProps&gt;
   const [keyPresses, setKeyPresses] = useState&lt;KeyPressEntry[]&gt;([]);
   const [currentTime, setCurrentTime] = useState(() =&gt; Date.now());
 &nbsp;
-  // Update current time for opacity calculations using requestAnimationFrame
   useEffect(() =&gt; {
     let frameId: number;
 &nbsp;
@@ -835,9 +811,7 @@ export const InteractiveControlDemo: React.FC&lt;InteractiveControlDemoProps&gt;
     };
   }, []);
 &nbsp;
-  // Track pressed keys and add to history
   useEffect(() =&gt; {
-    // Find newly pressed keys
     const currentCodes = Array.from(pressedKeys);
 &nbsp;
     if (currentCodes.length === 0) {
@@ -850,13 +824,11 @@ export const InteractiveControlDemo: React.FC&lt;InteractiveControlDemoProps&gt;
       let updated = prev;
 &nbsp;
       currentCodes.forEach((code) =&gt; {
-        // Check if key is not already in the recent list
         const alreadyRecorded = updated.some(
           (entry) =&gt; entry.keyData.code === code &amp;&amp; now - entry.timestamp &lt; 100
         );
 &nbsp;
         if (!alreadyRecorded) {
-          // Find key data
           const keyData = KEYBOARD_LAYOUT.find((k) =&gt; k.code === code);
           if (keyData) {
             const newEntry: KeyPressEntry = {
@@ -869,7 +841,6 @@ export const InteractiveControlDemo: React.FC&lt;InteractiveControlDemoProps&gt;
         }
       });
 &nbsp;
-      // Keep only last 5 entries
       if (updated.length &gt; 5) {
         updated = updated.slice(0, 5);
       }
@@ -878,21 +849,18 @@ export const InteractiveControlDemo: React.FC&lt;InteractiveControlDemoProps&gt;
     });
   }, [pressedKeys]);
 &nbsp;
-  // Auto-remove entries after 2 seconds
   useEffect(() =&gt; {
     setKeyPresses((prev) =&gt;
       prev.filter((entry) =&gt; currentTime - entry.timestamp &lt; 2000)
     );
   }, [currentTime]);
 &nbsp;
-  // Calculate opacity based on age
   const getOpacity = (timestamp: number): number =&gt; {
     const age = currentTime - timestamp;
     const maxAge = 2000;
     return Math.max(0, 1 - age / maxAge);
   };
 &nbsp;
-  // Container style
   const containerStyle = useMemo(() =&gt; ({
     position: 'fixed' as const,
     bottom: isMobile ? '15px' : '20px',
@@ -915,7 +883,6 @@ export const InteractiveControlDemo: React.FC&lt;InteractiveControlDemoProps&gt;
     zIndex: 1000,
   }), [isMobile, theme]);
 &nbsp;
-  // Title style
   const titleStyle = useMemo(() =&gt; ({
     fontFamily: FONT_FAMILY.KOREAN,
     fontSize: isMobile ? '12px' : '13px',
@@ -976,7 +943,7 @@ export default InteractiveControlDemo;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

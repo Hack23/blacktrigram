@@ -264,19 +264,7 @@
 <a name='L199'></a><a href='#L199'>199</a>
 <a name='L200'></a><a href='#L200'>200</a>
 <a name='L201'></a><a href='#L201'>201</a>
-<a name='L202'></a><a href='#L202'>202</a>
-<a name='L203'></a><a href='#L203'>203</a>
-<a name='L204'></a><a href='#L204'>204</a>
-<a name='L205'></a><a href='#L205'>205</a>
-<a name='L206'></a><a href='#L206'>206</a>
-<a name='L207'></a><a href='#L207'>207</a>
-<a name='L208'></a><a href='#L208'>208</a>
-<a name='L209'></a><a href='#L209'>209</a>
-<a name='L210'></a><a href='#L210'>210</a>
-<a name='L211'></a><a href='#L211'>211</a>
-<a name='L212'></a><a href='#L212'>212</a>
-<a name='L213'></a><a href='#L213'>213</a>
-<a name='L214'></a><a href='#L214'>214</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L202'></a><a href='#L202'>202</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -335,9 +323,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">120x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -345,12 +331,7 @@
 <span class="cline-any cline-yes">120x</span>
 <span class="cline-any cline-yes">120x</span>
 <span class="cline-any cline-yes">236x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">232x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -366,10 +347,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">120x</span>
 <span class="cline-any cline-yes">120x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -423,10 +402,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">236x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -548,27 +524,20 @@ export interface AbilityListProps {
  */
 export const AbilityList: React.FC&lt;AbilityListProps&gt; = React.memo(
   ({ abilities, maxAbilities = 3, color = KOREAN_COLORS.ACCENT_GOLD, isMobile = false }) =&gt; {
-    // Use Korean theme hook for consistent styling
     const { koreanTypography, calculateResponsiveSize, fontFamily } = useKoreanTheme({
       size: "small",
       isMobile,
     });
 &nbsp;
-    // Normalize abilities to consistent format
     const normalizedAbilities = useMemo(() =&gt; {
       return abilities.slice(0, maxAbilities).map((ability, index) =&gt; {
         if (typeof ability === "string") {
-          // TEMPORARY: This fallback violates PRIO 2 bilingual support guidelines.
-          // All abilities should use the object format with Korean/English fields.
-          // See: src/systems/types.ts PLAYER_ARCHETYPES_DATA for correct format.
-          // Replace with proper bilingual objects as soon as translations are available.
           return {
             id: `ability-${index}`,
             english: ability,
             korean: ability, // TEMPORARY: English used as Korean fallback
           };
         } else {
-          // Object format with Korean/English
           return {
             id: `ability-${index}`,
             english: ability.english,
@@ -579,7 +548,6 @@ export const AbilityList: React.FC&lt;AbilityListProps&gt; = React.memo(
       });
     }, [abilities, maxAbilities]);
 &nbsp;
-    // Memoize color calculations with Korean theme
     const colors = useMemo(
       () =&gt; ({
         abilityBorder: hexToRgbaString(color, 0.5),
@@ -593,7 +561,6 @@ export const AbilityList: React.FC&lt;AbilityListProps&gt; = React.memo(
       [color]
     );
 &nbsp;
-    // Responsive sizing using Korean theme utilities
     const fontSize = calculateResponsiveSize(isMobile ? 10 : 12);
     const descFontSize = calculateResponsiveSize(isMobile ? 8 : 10);
     const padding = isMobile ? `${calculateResponsiveSize(6)}px ${calculateResponsiveSize(10)}px` : `${calculateResponsiveSize(8)}px ${calculateResponsiveSize(12)}px`;
@@ -619,7 +586,6 @@ export const AbilityList: React.FC&lt;AbilityListProps&gt; = React.memo(
             fontWeight: "bold",
             fontFamily: fontFamily.KOREAN,
             color: colors.abilityText,
-            // Apply Korean typography optimization
             lineHeight: koreanTypography.lineHeight,
             letterSpacing: koreanTypography.letterSpacing,
           }}
@@ -657,7 +623,6 @@ export const AbilityList: React.FC&lt;AbilityListProps&gt; = React.memo(
                   fontWeight: "bold",
                   fontFamily: fontFamily.KOREAN,
                   color: colors.abilityText,
-                  // Apply Korean typography optimization
                   lineHeight: koreanTypography.lineHeight,
                   letterSpacing: koreanTypography.letterSpacing,
                   wordBreak: koreanTypography.wordBreak,
@@ -675,7 +640,6 @@ export const AbilityList: React.FC&lt;AbilityListProps&gt; = React.memo(
                     fontStyle: "italic",
                     fontFamily: fontFamily.KOREAN,
                     color: colors.descriptionText,
-                    // Apply Korean typography optimization
                     lineHeight: koreanTypography.lineHeight,
                     letterSpacing: koreanTypography.letterSpacing,
                     wordBreak: koreanTypography.wordBreak,
@@ -709,7 +673,7 @@ export default AbilityList;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

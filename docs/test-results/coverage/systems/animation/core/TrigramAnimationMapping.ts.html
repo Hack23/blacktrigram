@@ -544,19 +544,7 @@
 <a name='L479'></a><a href='#L479'>479</a>
 <a name='L480'></a><a href='#L480'>480</a>
 <a name='L481'></a><a href='#L481'>481</a>
-<a name='L482'></a><a href='#L482'>482</a>
-<a name='L483'></a><a href='#L483'>483</a>
-<a name='L484'></a><a href='#L484'>484</a>
-<a name='L485'></a><a href='#L485'>485</a>
-<a name='L486'></a><a href='#L486'>486</a>
-<a name='L487'></a><a href='#L487'>487</a>
-<a name='L488'></a><a href='#L488'>488</a>
-<a name='L489'></a><a href='#L489'>489</a>
-<a name='L490'></a><a href='#L490'>490</a>
-<a name='L491'></a><a href='#L491'>491</a>
-<a name='L492'></a><a href='#L492'>492</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L482'></a><a href='#L482'>482</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -753,7 +741,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
@@ -791,7 +778,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -823,7 +809,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -842,7 +827,6 @@
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -915,7 +899,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -963,7 +946,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -980,8 +962,6 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1101,7 +1081,6 @@ import { applyLaterality } from "./LateralityTransform";
  *
  * Contains all animation types for a specific stance with laterality.
  *
- * @public
  * @category Animation Mapping
  * @korean 자세애니메이션모음
  */
@@ -1153,7 +1132,6 @@ export interface StanceAnimationCollection {
  * // tae.attacks are left-handed versions
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 자세애니메이션가져오기
  */
@@ -1237,7 +1215,6 @@ export function getAnimationsForStance(
  * const gan = getGuardPoseForStanceWithSide("gan"); // Defaults to right
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 자세방어포즈가져오기
  */
@@ -1278,7 +1255,6 @@ export function getGuardPoseForStanceWithSide(
  * console.log(allPoses.size); // 16 (8 stances × 2 laterality)
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 모든방어포즈가져오기
  */
@@ -1307,7 +1283,6 @@ export function getAllGuardPoses(): Map&lt;string, StanceGuardPose&gt; {
  * // Returns 3 right-handed Lake stance attacks (default)
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 공격애니메이션가져오기
  */
@@ -1353,7 +1328,6 @@ export function getAttackAnimations(
  * // Returns 2 left-handed Water stance defensive moves
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 방어애니메이션가져오기
  */
@@ -1399,7 +1373,6 @@ export function getDefensiveAnimations(
  * const taeWalk = getWalkAnimation("tae"); // Defaults to right
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 걷기애니메이션가져오기
  */
@@ -1447,7 +1420,6 @@ export function getWalkAnimation(
  * const ganRun = getRunAnimation("gan"); // Defaults to right
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 달리기애니메이션가져오기
  */
@@ -1482,7 +1454,6 @@ export function getRunAnimation(
  *
  * **Korean**: 매핑 통계
  *
- * @public
  * @category Animation Mapping
  * @korean 매핑통계
  */
@@ -1518,7 +1489,6 @@ export interface AnimationMappingStats {
  * console.log(`Total attacks: ${stats.totalAttacks}`); // 8 × 5 × 2 = 80
  * ```
  *
- * @public
  * @category Animation Mapping
  * @korean 매핑통계가져오기
  */
@@ -1543,7 +1513,7 @@ export function getAnimationMappingStats(): AnimationMappingStats {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

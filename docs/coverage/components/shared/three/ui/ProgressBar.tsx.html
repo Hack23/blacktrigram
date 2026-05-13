@@ -298,15 +298,7 @@
 <a name='L233'></a><a href='#L233'>233</a>
 <a name='L234'></a><a href='#L234'>234</a>
 <a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a>
-<a name='L237'></a><a href='#L237'>237</a>
-<a name='L238'></a><a href='#L238'>238</a>
-<a name='L239'></a><a href='#L239'>239</a>
-<a name='L240'></a><a href='#L240'>240</a>
-<a name='L241'></a><a href='#L241'>241</a>
-<a name='L242'></a><a href='#L242'>242</a>
-<a name='L243'></a><a href='#L243'>243</a>
-<a name='L244'></a><a href='#L244'>244</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L236'></a><a href='#L236'>236</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -368,10 +360,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -418,25 +408,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -472,10 +445,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -611,13 +595,11 @@ export const ProgressBar: React.FC&lt;ProgressBarProps&gt; = ({
   animated = true,
   testId,
 }) =&gt; {
-  // Calculate percentage safely
   const percentage = useMemo(
     () =&gt; Math.max(0, Math.min(1, max &gt; 0 ? current / max : <span class="branch-1 cbranch-no" title="branch not covered" >0))</span>,
     [current, max]
   );
 &nbsp;
-  // Get colors based on type and percentage
   const colors = useMemo(() =&gt; {
     switch (type) {
       case "health":
@@ -661,7 +643,6 @@ export const ProgressBar: React.FC&lt;ProgressBarProps&gt; = ({
     }
   }, [type, percentage]);
 &nbsp;
-  // Memoize container styles for performance
   const containerStyle = useMemo&lt;React.CSSProperties&gt;(
     () =&gt; ({
       width: `${width}px`,
@@ -672,7 +653,6 @@ export const ProgressBar: React.FC&lt;ProgressBarProps&gt; = ({
     [width]
   );
 &nbsp;
-  // Memoize label styles for performance
   const labelStyle = useMemo&lt;React.CSSProperties&gt;(
     () =&gt; ({
       fontFamily: FONT_FAMILY.KOREAN,
@@ -687,7 +667,6 @@ export const ProgressBar: React.FC&lt;ProgressBarProps&gt; = ({
     []
   );
 &nbsp;
-  // Memoize bar container styles for performance
   const barContainerStyle = useMemo&lt;React.CSSProperties&gt;(
     () =&gt; ({
       width: "100%",
@@ -701,7 +680,6 @@ export const ProgressBar: React.FC&lt;ProgressBarProps&gt; = ({
     [height]
   );
 &nbsp;
-  // Memoize fill styles for performance
   const fillStyle = useMemo&lt;React.CSSProperties&gt;(() =&gt; {
     return {
       width: `${percentage * 100}%`,
@@ -715,7 +693,6 @@ export const ProgressBar: React.FC&lt;ProgressBarProps&gt; = ({
     };
   }, [percentage, colors, animated]);
 &nbsp;
-  // Memoize shine effect styles for performance
   const shineStyle = useMemo&lt;React.CSSProperties&gt;(
     () =&gt; ({
       position: "absolute",
@@ -730,7 +707,6 @@ export const ProgressBar: React.FC&lt;ProgressBarProps&gt; = ({
     []
   );
 &nbsp;
-  // Memoize text styles for performance
   const textStyle = useMemo&lt;React.CSSProperties&gt;(
     () =&gt; ({
       position: "absolute",
@@ -799,7 +775,7 @@ ProgressBar.displayName = "ProgressBar";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

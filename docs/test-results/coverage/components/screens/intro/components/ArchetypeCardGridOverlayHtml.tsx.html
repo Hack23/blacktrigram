@@ -290,17 +290,7 @@
 <a name='L225'></a><a href='#L225'>225</a>
 <a name='L226'></a><a href='#L226'>226</a>
 <a name='L227'></a><a href='#L227'>227</a>
-<a name='L228'></a><a href='#L228'>228</a>
-<a name='L229'></a><a href='#L229'>229</a>
-<a name='L230'></a><a href='#L230'>230</a>
-<a name='L231'></a><a href='#L231'>231</a>
-<a name='L232'></a><a href='#L232'>232</a>
-<a name='L233'></a><a href='#L233'>233</a>
-<a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a>
-<a name='L237'></a><a href='#L237'>237</a>
-<a name='L238'></a><a href='#L238'>238</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L228'></a><a href='#L228'>228</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -332,28 +322,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -369,12 +353,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -409,10 +391,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -569,25 +549,20 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
     height = 600,
     isMobile: _isMobile = false, // Kept for interface compatibility, layout uses width
   }) =&gt; {
-    // Note: _isMobile intentionally unused - layout sizing uses width-based checks
     void _isMobile;
 &nbsp;
-    // Use width for layout sizing decisions
     const isSmallScreen = width &lt; 768;
 &nbsp;
-    // Find selected archetype index
     const selectedIndex = useMemo(() =&gt; {
       return archetypes.findIndex((a) =&gt; a.archetype === selectedArchetype);
     }, [archetypes, selectedArchetype]);
 &nbsp;
-    // Calculate card dimensions based on container and screen size
     const cardWidth = useMemo(() =&gt; {
       if (isSmallScreen) return Math.min(280, width - 40);
       const isLargeContainer = width &gt;= 1100;
       return isLargeContainer ? 340 : 380;
     }, [isSmallScreen, width]);
 &nbsp;
-    // Memoize colors
     const colors = useMemo(
       () =&gt; ({
         background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
@@ -597,7 +572,6 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
       [],
     );
 &nbsp;
-    // Handle card selection
     const handleCardSelect = useCallback(
       (archetype: PlayerArchetype) =&gt; {
         onArchetypeChange(archetype);
@@ -606,7 +580,6 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
       [onArchetypeChange, onPlaySFX],
     );
 &nbsp;
-    // Handle card confirmation
     const handleCardConfirm = useCallback(
       (archetype: PlayerArchetype) =&gt; {
         onArchetypeConfirm?.(archetype);
@@ -615,7 +588,6 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
       [onArchetypeConfirm, onPlaySFX],
     );
 &nbsp;
-    // Handle keyboard navigation (scoped to container)
     const handleKeyDown = useCallback(
       (event: React.KeyboardEvent&lt;HTMLDivElement&gt;) =&gt; {
         if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
@@ -646,11 +618,9 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
       ],
     );
 &nbsp;
-    // Calculate grid layout
     const columnsCount = isSmallScreen ? 1 : width &gt;= 1400 ? 3 : 2;
     const gap = isSmallScreen ? 16 : 20;
 &nbsp;
-    // Custom focus style for keyboard navigation
     const [isFocused, setIsFocused] = React.useState(false);
 &nbsp;
     return (
@@ -781,7 +751,7 @@ export default ArchetypeCardGrid;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

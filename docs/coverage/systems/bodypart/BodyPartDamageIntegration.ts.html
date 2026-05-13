@@ -445,15 +445,7 @@
 <a name='L380'></a><a href='#L380'>380</a>
 <a name='L381'></a><a href='#L381'>381</a>
 <a name='L382'></a><a href='#L382'>382</a>
-<a name='L383'></a><a href='#L383'>383</a>
-<a name='L384'></a><a href='#L384'>384</a>
-<a name='L385'></a><a href='#L385'>385</a>
-<a name='L386'></a><a href='#L386'>386</a>
-<a name='L387'></a><a href='#L387'>387</a>
-<a name='L388'></a><a href='#L388'>388</a>
-<a name='L389'></a><a href='#L389'>389</a>
-<a name='L390'></a><a href='#L390'>390</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L383'></a><a href='#L383'>383</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -622,7 +614,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
@@ -641,7 +632,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -668,7 +658,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -733,13 +722,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -769,7 +756,6 @@
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -880,7 +866,6 @@ export interface BodyPartDamageTarget {
  * @param vitalPoint - Vital point that was struck
  * @returns Corresponding body region
  *
- * @public
  */
 export function getBodyRegionFromVitalPoint(
   vitalPoint: VitalPoint
@@ -1003,7 +988,6 @@ export function getBodyRegionFromVitalPoint(
  * @param bodyRegion - Body region that was hit
  * @returns Updated player state with body part damage applied
  *
- * @public
  */
 export function applyDamageToBodyParts&lt;T extends BodyPartDamageTarget&gt;(
   player: T,
@@ -1050,7 +1034,6 @@ export function applyDamageToBodyParts&lt;T extends BodyPartDamageTarget&gt;(
  * @param vitalPoint - Vital point that was struck
  * @returns Updated player state with vital point damage applied
  *
- * @public
  */
 export function applyVitalPointDamageToBodyParts&lt;
   T extends BodyPartDamageTarget
@@ -1083,7 +1066,6 @@ export function applyVitalPointDamageToBodyParts&lt;
  * const actualSpeed = baseSpeed * effects.movementSpeedModifier;
  * ```
  *
- * @public
  */
 export function getBodyPartCombatEffects(player: BodyPartDamageTarget) {
   // If no body part health, return no effects
@@ -1118,7 +1100,6 @@ export function getBodyPartCombatEffects(player: BodyPartDamageTarget) {
  * @param player - Player state to check
  * @returns Whether player is incapacitated
  *
- * @public
  */
 export function isPlayerIncapacitatedByBodyDamage(
   player: BodyPartDamageTarget
@@ -1142,7 +1123,6 @@ export function isPlayerIncapacitatedByBodyDamage(
  * @param maxHealthPerPart - Optional custom max health per part
  * @returns Player state with body part health initialized
  *
- * @public
  */
 export function initializeBodyPartHealthForPlayer&lt;
   T extends BodyPartDamageTarget
@@ -1177,7 +1157,6 @@ export function initializeBodyPartHealthForPlayer&lt;
  * @param totalHealAmount - Total healing to distribute
  * @returns Updated player state with healing applied
  *
- * @public
  */
 export function healBodyPartsProportionally&lt;T extends BodyPartDamageTarget&gt;(
   player: T,
@@ -1237,7 +1216,7 @@ export function healBodyPartsProportionally&lt;T extends BodyPartDamageTarget&gt
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:32.918Z
+                at 2026-05-13T12:11:53.651Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

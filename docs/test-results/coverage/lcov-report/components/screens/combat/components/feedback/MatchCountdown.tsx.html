@@ -376,19 +376,7 @@
 <a name='L311'></a><a href='#L311'>311</a>
 <a name='L312'></a><a href='#L312'>312</a>
 <a name='L313'></a><a href='#L313'>313</a>
-<a name='L314'></a><a href='#L314'>314</a>
-<a name='L315'></a><a href='#L315'>315</a>
-<a name='L316'></a><a href='#L316'>316</a>
-<a name='L317'></a><a href='#L317'>317</a>
-<a name='L318'></a><a href='#L318'>318</a>
-<a name='L319'></a><a href='#L319'>319</a>
-<a name='L320'></a><a href='#L320'>320</a>
-<a name='L321'></a><a href='#L321'>321</a>
-<a name='L322'></a><a href='#L322'>322</a>
-<a name='L323'></a><a href='#L323'>323</a>
-<a name='L324'></a><a href='#L324'>324</a>
-<a name='L325'></a><a href='#L325'>325</a>
-<a name='L326'></a><a href='#L326'>326</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L314'></a><a href='#L314'>314</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -463,7 +451,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -480,13 +467,10 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -495,17 +479,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -514,9 +494,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -535,14 +513,12 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -788,7 +764,6 @@ function getDisplayText(
  *
  * Korean: 매치 시작 카운트다운 컴포넌트
  */
-// Static config outside component to prevent re-creation on each render
 const COUNTDOWN_CONFIG = {
   readyDuration: 1,
   countdownInterval: 1,
@@ -805,14 +780,11 @@ export const MatchCountdown: React.FC&lt;MatchCountdownProps&gt; = ({
   const audio = useAudio();
   const theme = useKoreanTheme({ variant: "primary", size: "xlarge", isMobile });
 &nbsp;
-  // Use match countdown hook with stable config reference
   const { state, currentNumber, startCountdown, skipCountdown, isActive } =
     useMatchCountdown(COUNTDOWN_CONFIG, onComplete);
 &nbsp;
-  // Track if we've started to avoid double-start in Strict Mode
   const hasStartedRef = useRef(false);
 &nbsp;
-  // Auto-start countdown on mount (only once)
   useEffect(() =&gt; {
     <span class="missing-if-branch" title="else path not taken" >E</span>if (!hasStartedRef.current) {
       hasStartedRef.current = true;
@@ -820,29 +792,23 @@ export const MatchCountdown: React.FC&lt;MatchCountdownProps&gt; = ({
     }
   }, [startCountdown]);
 &nbsp;
-  // Play audio cues based on state transitions
   useEffect(() =&gt; {
     <span class="missing-if-branch" title="if path not taken" >I</span>if (!audio.isAudioReady) <span class="cstat-no" title="statement not covered" >return;</span>
 &nbsp;
     if (state === "counting" &amp;&amp; currentNumber &gt; 0) {
-      // Play beep for each countdown number
       audio.playSFX("attack_light"); // Using placeholder - will be countdown_beep
     } else if (state === "fight") {
-      // Play fight announcement
       audio.playSFX("attack_heavy"); // Using placeholder - will be fight_start
     }
   }, [state, currentNumber, audio]);
 &nbsp;
-  // Handle skip
   const <span class="fstat-no" title="function not covered" >handleSkip = () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    skipCountdown();</span>
 <span class="cstat-no" title="statement not covered" >    onSkip?.();</span>
   };
 &nbsp;
-  // Get display text
   const displayText = getDisplayText(state, currentNumber);
 &nbsp;
-  // Calculate responsive font sizes - extracted to avoid nested ternaries
   const getMainFontSize = (): string =&gt; {
     if (isMobile) {
       return state === "fight" ? <span class="branch-0 cbranch-no" title="branch not covered" >"72px" : "</span>64px";
@@ -860,7 +826,6 @@ export const MatchCountdown: React.FC&lt;MatchCountdownProps&gt; = ({
   const mainFontSize = getMainFontSize();
   const subFontSize = getSubFontSize();
 &nbsp;
-  // Memoize colors for performance using theme
   const goldColor = useMemo(() =&gt; hexColorToCSS(theme.colors.ACCENT_GOLD), [theme.colors.ACCENT_GOLD]);
   const cyanColor = useMemo(
     () =&gt; hexColorToCSS(theme.colors.PRIMARY_CYAN),
@@ -871,7 +836,6 @@ export const MatchCountdown: React.FC&lt;MatchCountdownProps&gt; = ({
     [theme.colors.UI_BACKGROUND_DARK]
   );
 &nbsp;
-  // Don't render if countdown not active or complete
   if (!isActive || !displayText) {
     return null;
   }
@@ -1045,7 +1009,7 @@ export default MatchCountdown;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-11T17:14:33.295Z
+                at 2026-05-13T12:11:53.948Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
