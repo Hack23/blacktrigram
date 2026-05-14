@@ -28,6 +28,7 @@ import {
   getCategoryDefaultAnimation,
   hasAnimationId,
 } from "./AnimationRegistry";
+import { DEFAULT_TECHNIQUE_DURATION_SECONDS } from "./types";
 
 describe("AnimationRegistry", () => {
   // ═══════════════════════════════════════════════════════════════════════════
@@ -355,8 +356,12 @@ describe("AnimationRegistry", () => {
     });
 
     it("should return shared fallback duration for missing animation metadata", () => {
-      expect(getAnimationDurationOrFallback("missing_animation")).toBe(0.55);
-      expect(getAnimationDurationOrFallback()).toBe(0.55);
+      expect(getAnimationDurationOrFallback("missing_animation")).toBe(
+        DEFAULT_TECHNIQUE_DURATION_SECONDS,
+      );
+      expect(getAnimationDurationOrFallback()).toBe(
+        DEFAULT_TECHNIQUE_DURATION_SECONDS,
+      );
     });
   });
 

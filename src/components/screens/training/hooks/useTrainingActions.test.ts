@@ -10,6 +10,7 @@ import { renderHook, act } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { useTrainingActions, UseTrainingActionsConfig } from "./useTrainingActions";
 import { AnimationType } from "../../../../systems/animation";
+import { DEFAULT_TECHNIQUE_DURATION_SECONDS } from "../../../../systems/animation/core/types";
 import { PlayerArchetype, TrigramStance } from "../../../../types/common";
 import { KoreanTechniquesSystem } from "../../../../systems/trigram/KoreanTechniques";
 
@@ -376,7 +377,9 @@ describe("useTrainingActions", () => {
       });
 
       // Animation should always be triggered with a technique-aware duration.
-      expect(mockPlayerAnimation.transitionToAttack).toHaveBeenCalledWith(0.55);
+      expect(mockPlayerAnimation.transitionToAttack).toHaveBeenCalledWith(
+        DEFAULT_TECHNIQUE_DURATION_SECONDS,
+      );
     });
   });
 

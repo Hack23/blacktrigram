@@ -40,11 +40,12 @@ describe("Stance Animation Path Integration", () => {
       }
     });
 
-    it("should map stance side switch to dedicated side-switch animation", () => {
+    it("should map stance side switch to a renderable stance-change animation", () => {
       const result = animationStateToPlayerAnimation(
         AnimationState.STANCE_SIDE_SWITCH
       );
-      expect(result).toBe("stance_side_switch");
+      expect(result).toBe("stance_change");
+      expect(getAnimationByName("idle_stance")).toBeDefined();
     });
   });
 

@@ -1594,6 +1594,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             break;
 
           case "stance_side_switch":
+            player1Animation.transitionTo(AnimationState.STANCE_SIDE_SWITCH);
             handleStanceSideSwitch(PLAYER_ONE_INDEX);
             break;
 

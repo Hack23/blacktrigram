@@ -588,11 +588,16 @@ export const ANIMATION_ID_REGISTRY: ReadonlyMap<string, SkeletalAnimation> =
     ["geon_heavenly_fist", JAB_ANIMATION_ENHANCED],
     ["geon_high_block", GEON_HIGH_BLOCK],
     ["geon_palm_strike", PALM_STRIKE_ANIMATION],
-    ["gon_ankle_pick", SWEEP_ANIMATION],
-    ["gon_earth_embrace", EARTH_EMBRACE_ANIMATION],
-    ["gon_ground_pound", SLAM_ANIMATION],
-    ["gon_leg_sweep", SWEEP_ANIMATION],
-    ["gon_ssireum_throw", HIP_THROW_ANIMATION],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- dedicated Gon technique animation is registered
+    ["gon_ankle_pick", GON_TECHNIQUE_ANIMATIONS.get("gon_ankle_pick")!],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- dedicated Gon technique animation is registered
+    ["gon_earth_embrace", GON_TECHNIQUE_ANIMATIONS.get("gon_earth_embrace")!],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- dedicated Gon technique animation is registered
+    ["gon_ground_pound", GON_TECHNIQUE_ANIMATIONS.get("gon_ground_pound")!],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- dedicated Gon technique animation is registered
+    ["gon_leg_sweep", GON_TECHNIQUE_ANIMATIONS.get("gon_leg_sweep")!],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- dedicated Gon technique animation is registered
+    ["gon_ssireum_throw", GON_TECHNIQUE_ANIMATIONS.get("gon_ssireum_throw")!],
     ["hacker_data_strike", PALM_STRIKE_ANIMATION],
     ["hacker_system_crash", HAMMER_FIST_ANIMATION],
     ["jin_back_kick", BACK_KICK_ANIMATION],
