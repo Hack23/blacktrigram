@@ -139,6 +139,8 @@ import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
 
+const FALLBACK_ATTACK_DURATION_SECONDS = 0.55; // Median short technique duration when skeletal metadata is unavailable.
+
 /**
  * Props for the CombatScreen3D component.
  * Provides all state and callbacks required for the 3D combat screen.
@@ -1459,7 +1461,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     }
 
     const skeletalAnim = getAnimation(animationName);
-    const attackDuration = skeletalAnim?.duration ?? 0.55;
+    const attackDuration =
+      skeletalAnim?.duration ?? FALLBACK_ATTACK_DURATION_SECONDS;
     setPlayer1AttackDuration(attackDuration);
     const success = player1Animation.transitionToAttack(attackDuration);
     if (success) {

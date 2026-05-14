@@ -13,6 +13,8 @@ import { useFrame } from "@react-three/fiber";
 import React from "react";
 import { usePlayerAnimation } from "../../../../hooks/usePlayerAnimation";
 
+const MAX_ANIMATION_DELTA_SECONDS = 1 / 30; // Match SkeletalPlayer3D clamping to avoid state-machine jumps on slow frames.
+
 /**
  * Props for AnimationUpdater component
  */
@@ -42,7 +44,7 @@ export const AnimationUpdater: React.FC<AnimationUpdaterProps> = ({
   player2Animation,
 }) => {
   useFrame((_state, delta) => {
-    const safeDelta = Math.min(delta, 1 / 30);
+    const safeDelta = Math.min(delta, MAX_ANIMATION_DELTA_SECONDS);
     player1Animation.update(safeDelta);
     player2Animation.update(safeDelta);
   });

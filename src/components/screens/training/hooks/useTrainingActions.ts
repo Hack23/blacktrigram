@@ -103,6 +103,8 @@ export interface UseTrainingActionsReturn {
   readonly handleAttack: () => void;
 }
 
+const FALLBACK_ATTACK_DURATION_SECONDS = 0.55; // Median short technique duration when skeletal metadata is unavailable.
+
 /**
  * Get the best default technique for an archetype based on current stance.
  *
@@ -455,9 +457,11 @@ export function useTrainingActions(
       const animationName = getAnimationForTechnique(techniqueId);
       setAttackAnimation(animationName);
       const animation = getAnimation(animationName);
-      playerAnimation.transitionToAttack(animation?.duration ?? 0.55);
+      playerAnimation.transitionToAttack(
+        animation?.duration ?? FALLBACK_ATTACK_DURATION_SECONDS,
+      );
     } else {
-      playerAnimation.transitionToAttack(0.55);
+      playerAnimation.transitionToAttack(FALLBACK_ATTACK_DURATION_SECONDS);
     }
 
     if (!techniqueToUse && selectedTechniqueId) {

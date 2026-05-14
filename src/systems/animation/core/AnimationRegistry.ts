@@ -821,6 +821,10 @@ export function getCategoryDefaultAnimation(
  * @param name - Animation name (e.g., "front_kick")
  * @returns Skeletal animation or undefined
  *
+ * Checks {@link ALL_ANIMATIONS} first because it owns renderable skeletal
+ * animation names, then {@link ANIMATION_ID_REGISTRY} for technique animation
+ * IDs that intentionally alias existing skeletal animation objects.
+ *
  * @korean 이름으로애니메이션조회
  */
 export function getAnimationByName(
@@ -837,6 +841,10 @@ export function getAnimationByName(
  * - KICK_ANIMATIONS, PUNCH_ANIMATIONS, etc.
  * - STANCE_ANIMATIONS, MOVEMENT_ANIMATIONS
  * - ALL_ATTACK_ANIMATIONS (stance-specific attacks)
+ *
+ * Falls back to {@link ANIMATION_ID_REGISTRY} so technique IDs resolved from
+ * combat data can still retrieve aliased animations without dropping to generic
+ * jab/strike fallbacks.
  *
  * @param name - Animation name (e.g., "idle", "front_kick", "walk")
  * @returns Skeletal animation or undefined
