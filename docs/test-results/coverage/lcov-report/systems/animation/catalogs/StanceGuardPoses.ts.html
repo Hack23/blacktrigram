@@ -1715,7 +1715,7 @@ import type { StanceLaterality } from "../../trigram/types";
  * - 앞서기 (Ap Seogi): Classic forward stance for aggressive advance
  * - Front leg bent ~70°, back leg extended ~160° for explosive forward power
  * - 70/30 weight distribution forward for constant pressure
- * - High chamber position (높은 준비) ready for 돌려차기 (Dollyo Chagi - roundhouse kick)
+ * - High chamber position (높은 준비) ready for 돌려차기 (Dollyeo Chagi - roundhouse kick)
  * - Hands at chin level in Juchum Seogi guard (주춤서기 방어)
  * - Tight elbows protect floating ribs (늑골 보호)
  *
@@ -1726,9 +1726,9 @@ import type { StanceLaterality } from "../../trigram/types";
  * - Hip rotation ~30° creates torque for bone-breaking punches (골절타격)
  *
  * **Combat Applications**:
- * - 정권지르기 (Jeongwon Jireugi): Straight punch to solar plexus
+ * - 정권지르기 (Jeongkwon Jireugi): Straight punch to solar plexus
  * - 앞차기 (Ap Chagi): Front snap kick to abdomen/chin
- * - 돌려차기 (Dollyo Chagi): Roundhouse kick from high chamber
+ * - 돌려차기 (Dollyeo Chagi): Roundhouse kick from high chamber
  * - Direct frontal bone-breaking strikes (+10% damage to skeletal targets)
  * - High mobility (+15% movement speed for aggressive advance)
  *
@@ -1737,15 +1737,15 @@ import type { StanceLaterality } from "../../trigram/types";
 export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Lead arm (왼팔) - Jab position with tight defense
-    shoulder: new THREE.Euler(-0.9, 0.3, 0.6), // Shoulder raised to chin level, slight forward
-    elbow: new THREE.Euler(0, 0, -2.3), // TIGHT elbow ~135° protects ribs (늑골 방어)
-    wrist: new THREE.Euler(0.2, 0.15, 0), // Fist at chin height (턱높이), vertical fist
+    shoulder: new THREE.Euler(-0.95, 0.32, 0.55), // Shoulder raised to chin level, slight forward
+    elbow: new THREE.Euler(0, 0, -2.05), // Tight elbow ~117° within MAX_BEND_GUARD (2.09)
+    wrist: new THREE.Euler(0.15, 0.12, 0), // Vertical fist (세로주먹) at chin height
   },
   rightArm: {
     // Rear power hand (오른팔) - Chambered for devastating strike
-    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Rear hand protecting jaw line
-    elbow: new THREE.Euler(0, 0, 2.4), // VERY TIGHT elbow ~130° maximum rib protection
-    wrist: new THREE.Euler(0.3, -0.1, 0), // Rear fist at cheekbone (광대뼈)
+    shoulder: new THREE.Euler(-1.05, -0.22, -0.48), // Rear hand protecting jaw line
+    elbow: new THREE.Euler(0, 0, 2.08), // Tight elbow ~119° within anatomical guard limit
+    wrist: new THREE.Euler(0.22, -0.1, 0), // Rear fist at cheekbone (광대뼈)
   },
   torso: new THREE.Euler(0.12, -0.35, 0.05), // Forward lean 12° + 20° rotation for bladed profile
 &nbsp;
@@ -1757,13 +1757,13 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
     knee: new THREE.Euler(0.35, 0, 0), // 160° extension = 0.35 rad flexion (약간 굽힘)
     ankle: new THREE.Euler(-0.08, 0.05, 0), // Heel firmly planted (발뒤꿈치 고정)
   },
+  // Front leg (앞다리) - Bent for spring-loaded power
   rightLeg: {
-    // Front leg (앞다리) - Bent for spring-loaded power
     hip: new THREE.Euler(0.55, -0.18, -0.05), // Front hip flexed 70° forward
-    knee: new THREE.Euler(1.22, 0, 0), // 70° flexion = 1.22 rad (깊은 굽힘)
+    knee: new THREE.Euler(1.31, 0, 0), // 75° flexion = 1.31 rad - deep but sustainable
     ankle: new THREE.Euler(-0.12, -0.05, 0), // Dorsiflexion for stable power base
   },
-  pelvis: new THREE.Euler(0.18, -0.45, 0.03), // Forward tilt 18° + 25° rotation toward opponent
+  pelvis: new THREE.Euler(0.14, -0.48, 0.03), // Forward tilt 8° + 27° rotation toward opponent
   stanceWidth: 0.55, // 1.3x shoulder width (~55cm) for stable power base
   stanceDepth: 0.65, // Deep forward/back split for maximum reach
   pelvisHeight: -0.14, // Lowered center of gravity (hipHeight ~0.86m)
@@ -1870,7 +1870,7 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
  * **Combat Applications**:
  * - 혈도공격 (Hyeoldo Gonggyeok): Precise vital point strikes
  * - 급소타격 (Geupso Tagyeok): Pressure point penetration
- * - 관자놀이 타격 (Gwanjari Tagyeok): Temple strike from peek
+ * - 관자놀이 타격 (Gwanjanori Tagyeok): Temple strike from peek
  * - Precision nerve strikes (+15% critical hit chance)
  * - Vital point targeting accuracy (+10% vital point damage)
  *
@@ -1879,15 +1879,15 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
 export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Left fist (왼주먹) - Peekaboo high guard glued to left temple
-    shoulder: new THREE.Euler(-1.65, 0.25, 1.0), // VERY HIGH shoulder, elbow flared wide
-    elbow: new THREE.Euler(0, 0, -2.5), // MAXIMUM flexion ~145° (극한 굽힘) - fist to temple
-    wrist: new THREE.Euler(0.45, 0.2, 0.05), // Vertical fist pressed to left temple (관자놀이)
+    shoulder: new THREE.Euler(-1.55, 0.22, 0.95), // High shoulder, elbow flared wide for face shield
+    elbow: new THREE.Euler(0, 0, -2.10), // Tight ~120° flexion (관자놀이 보호) within MAX_BEND_GUARD
+    wrist: new THREE.Euler(0.35, 0.18, 0.05), // Vertical fist near left temple (관자놀이)
   },
   rightArm: {
     // Right fist (오른주먹) - Mirror peekaboo protecting right temple
-    shoulder: new THREE.Euler(-1.65, -0.25, -1.0), // VERY HIGH shoulder, elbow flared wide
-    elbow: new THREE.Euler(0, 0, 2.5), // MAXIMUM flexion ~145° (극한 굽힘) - fist to temple
-    wrist: new THREE.Euler(0.45, -0.2, -0.05), // Vertical fist pressed to right temple (관자놀이)
+    shoulder: new THREE.Euler(-1.55, -0.22, -0.95), // Mirror high shoulder
+    elbow: new THREE.Euler(0, 0, 2.10), // Tight ~120° flexion within anatomical guard limit
+    wrist: new THREE.Euler(0.35, -0.18, -0.05), // Vertical fist near right temple (관자놀이)
   },
   torso: new THREE.Euler(0.18, 0, 0), // Forward lean 18°, SQUARE facing (정면) - no rotation
 &nbsp;
@@ -1950,30 +1950,30 @@ export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
 export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Lead arm (왼팔) - Extended but chambered, ready to strike
-    shoulder: new THREE.Euler(-0.55, 0.25, 0.65), // Lead shoulder raised, tight to body
-    elbow: new THREE.Euler(0, 0, -2.3), // TIGHT elbow ~135° guarding left ribs
-    wrist: new THREE.Euler(0.35, 0.12, 0), // Chambered fist at mid-level (중단)
+    shoulder: new THREE.Euler(-0.6, 0.25, 0.6), // Lead shoulder raised, ready to strike from hip
+    elbow: new THREE.Euler(0, 0, -2.05), // Tight elbow ~117° guarding left ribs (anatomical limit)
+    wrist: new THREE.Euler(0.32, 0.12, 0), // Chambered fist at mid-level (중단)
   },
   rightArm: {
     // Rear power fist (오른주먹) - Chambered at ribs for devastating strike
-    shoulder: new THREE.Euler(-0.65, -0.18, -0.4), // Rear shoulder coiled at ribs
-    elbow: new THREE.Euler(0, 0, 2.45), // VERY TIGHT ~140° maximum chamber (극한 준비)
-    wrist: new THREE.Euler(0.4, -0.08, 0), // Rear fist touching ribs (갈비뼈) - explosive potential
+    shoulder: new THREE.Euler(-0.7, -0.2, -0.42), // Rear shoulder coiled, fist at ribs
+    elbow: new THREE.Euler(0, 0, 2.10), // Tight ~120° maximum chamber within anatomical limits
+    wrist: new THREE.Euler(0.38, -0.08, 0), // Rear fist touching ribs (갈비뼈) - explosive potential
   },
   torso: new THREE.Euler(-0.05, -0.38, 0.06), // Slight back lean (coiled) + rotation
 &nbsp;
   // Juchum Seogi (주춤서기) - Horse Riding Stance
-  // Authentic Taekwondo horse stance: 90° both knees, 50/50 weight, VERY WIDE
+  // Authentic Taekwondo horse stance: ~100° both knees (sustainable), 50/50 weight, WIDE
   leftLeg: {
     // Left leg (왼다리) - Wide spread, deep bend, explosive coil
     hip: new THREE.Euler(0.32, 0.52, 0.35), // Wide external rotation, abducted
-    knee: new THREE.Euler(1.57, 0, 0), // FULL 90° bend = 1.57 rad (π/2) - thigh horizontal
+    knee: new THREE.Euler(1.40, 0, 0), // 100° bend = 1.40 rad (sustainable below MAX_FLEXION 1.57)
     ankle: new THREE.Euler(-0.28, 0.22, 0), // Deep dorsiflexion, toes out for stability
   },
   rightLeg: {
     // Right leg (오른다리) - Mirror wide horse stance
     hip: new THREE.Euler(0.32, -0.52, -0.35), // Mirror external rotation
-    knee: new THREE.Euler(1.57, 0, 0), // FULL 90° bend = 1.57 rad - thigh horizontal
+    knee: new THREE.Euler(1.40, 0, 0), // 100° bend = 1.40 rad (sustainable horse stance)
     ankle: new THREE.Euler(-0.28, -0.22, 0), // Deep dorsiflexion, toes out
   },
   pelvis: new THREE.Euler(0.08, 0, 0), // Minimal forward tilt, SQUARE facing (정면)
@@ -2000,7 +2000,7 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
  * - Standing leg nearly straight (170°) with perfect balance
  * - Raised leg bent deeply (knee at waist level, 45° thigh angle)
  * - 100% weight on standing leg - ready to kick with raised leg instantly
- * - Arms in flowing 품밟기 (Pumbalbgi) motion - continuous circular movement
+ * - Arms in flowing 품밟기 (Pumbalpgi) motion - continuous circular movement
  * - Lead knife hand extended for 손날막기 (Sonnal Makgi - knife hand block)
  *
  * **Biomechanical Analysis**:
@@ -2011,7 +2011,7 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
  *
  * **Combat Applications**:
  * - 연속발차기 (Yeonsok Balchagi): Continuous kicking combinations
- * - 품밟기 리듬 (Pumbalbgi Rhythm): Rhythmic pressure sequences
+ * - 품밟기 리듬 (Pumbalpgi Rhythm): Rhythmic pressure sequences
  * - 발걸이 (Balgeori): Sweeping techniques from raised leg
  * - Continuous pressure strikes (+10% chaining speed)
  * - Lateral movement advantage (+10% lateral mobility)
@@ -2038,8 +2038,8 @@ export const SON_WIND_GUARD_POSE: StanceGuardPose = {
   leftLeg: {
     // Raised leg (든 다리) - LEFT knee at waist level, ready to kick
     hip: new THREE.Euler(1.3, 0.35, 0.25), // Thigh raised to 45° (high chamber)
-    knee: new THREE.Euler(2.1, 0, 0), // Knee deeply bent ~120° flexion (발 접힘)
-    ankle: new THREE.Euler(-0.45, 0.28, 0), // Foot hanging naturally, toes pointed down
+    knee: new THREE.Euler(2.05, 0, 0), // Knee deeply bent ~117° flexion within MAX_BEND (2.27)
+    ankle: new THREE.Euler(-0.42, 0.25, 0), // Foot pointed down within MAX_DORSIFLEXION (0.44)
   },
   rightLeg: {
     // Standing leg (딛는 다리) - RIGHT leg bearing all weight
@@ -2163,15 +2163,15 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
 export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Left forearm (왼팔뚝) - Crossed in front of face for X-block
-    shoulder: new THREE.Euler(-1.85, 0.12, 1.05), // Very high shoulder, arm crossed
-    elbow: new THREE.Euler(0, 0, -2.5), // MAXIMUM flexion ~145° (극한 굽힘)
-    wrist: new THREE.Euler(0.52, 0.42, 0.35), // Left fist at RIGHT shoulder (교차)
+    shoulder: new THREE.Euler(-1.78, 0.12, 0.98), // High shoulder, arm crossed
+    elbow: new THREE.Euler(0, 0, -2.10), // Tight ~120° flexion within MAX_BEND_GUARD (2.09)
+    wrist: new THREE.Euler(0.48, 0.4, 0.32), // Left fist at RIGHT shoulder (교차)
   },
   rightArm: {
     // Right forearm (오른팔뚝) - Crossed over left creating X-shield
-    shoulder: new THREE.Euler(-1.85, -0.12, -1.05), // Mirror high position
-    elbow: new THREE.Euler(0, 0, 2.5), // MAXIMUM flexion ~145° (극한 굽힘)
-    wrist: new THREE.Euler(0.52, -0.42, -0.35), // Right fist at LEFT shoulder (교차)
+    shoulder: new THREE.Euler(-1.78, -0.12, -0.98), // Mirror high position
+    elbow: new THREE.Euler(0, 0, 2.10), // Tight ~120° flexion within anatomical guard limit
+    wrist: new THREE.Euler(0.48, -0.4, -0.32), // Right fist at LEFT shoulder (교차)
   },
   torso: new THREE.Euler(0.16, 0, 0), // Forward lean 16° chin down, SQUARE facing (정면)
 &nbsp;
@@ -2485,7 +2485,7 @@ export function getAllStanceGuardPoses(): Map&lt;string, StanceGuardPose&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-14T09:52:27.324Z
+                at 2026-05-14T14:44:05.527Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

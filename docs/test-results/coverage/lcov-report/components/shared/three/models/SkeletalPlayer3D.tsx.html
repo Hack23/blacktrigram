@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.78% </span>
+                <span class="strong">59.13% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>55/92</span>
+                <span class='fraction'>55/93</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.53% </span>
+                <span class="strong">57.83% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>48/82</span>
+                <span class='fraction'>48/83</span>
             </div>
         
             
@@ -557,7 +557,10 @@
 <a name='L492'></a><a href='#L492'>492</a>
 <a name='L493'></a><a href='#L493'>493</a>
 <a name='L494'></a><a href='#L494'>494</a>
-<a name='L495'></a><a href='#L495'>495</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L495'></a><a href='#L495'>495</a>
+<a name='L496'></a><a href='#L496'>496</a>
+<a name='L497'></a><a href='#L497'>497</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -838,6 +841,7 @@
 <span class="cline-any cline-yes">264x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1074,6 +1078,7 @@ import { useSkeletalAnimation } from "../../../../hooks/useSkeletalAnimation";
 import {
   createDefaultFacialDamage,
   createScaledHumanoidRig,
+  MAX_VISUAL_FRAME_DELTA_SECONDS,
   getExpressionFromCombatState,
   getHeadAngleRadians,
   lockFacing,
@@ -1260,7 +1265,7 @@ export const SkeletalPlayer3D: React.FC&lt;
 &nbsp;
     <span class="missing-if-branch" title="if path not taken" >I</span>if (health &lt; lastHealthRef.current) {
 <span class="cstat-no" title="statement not covered" >      setJustHit(true);</span>
-<span class="cstat-no" title="statement not covered" >      timeoutId = <span class="fstat-no" title="function not covered" >setTimeout(() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etJustHit(false),</span> 1000); // Clear after 1 second</span>
+<span class="cstat-no" title="statement not covered" >      timeoutId = <span class="fstat-no" title="function not covered" >setTimeout(() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etJustHit(false), 1</span>000); // Clear after 1 second</span>
     }
 &nbsp;
     lastHealthRef.current = health;
@@ -1277,7 +1282,7 @@ export const SkeletalPlayer3D: React.FC&lt;
 &nbsp;
     <span class="missing-if-branch" title="if path not taken" >I</span>if (currentAnimation === "attack") {
 <span class="cstat-no" title="statement not covered" >      setJustLanded(true);</span>
-<span class="cstat-no" title="statement not covered" >      timeoutId = <span class="fstat-no" title="function not covered" >setTimeout(() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etJustLanded(false),</span> 500); // Clear after 0.5 seconds</span>
+<span class="cstat-no" title="statement not covered" >      timeoutId = <span class="fstat-no" title="function not covered" >setTimeout(() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etJustLanded(false), 5</span>00); // Clear after 0.5 seconds</span>
     }
 &nbsp;
     return () =&gt; {
@@ -1332,6 +1337,7 @@ export const SkeletalPlayer3D: React.FC&lt;
   const frameCounter = useRef(0);
 &nbsp;
 <span class="fstat-no" title="function not covered" >  useFrame((_</span>state, delta) =&gt; {
+    const safeDelta = <span class="cstat-no" title="statement not covered" >Math.min(delta, MAX_VISUAL_FRAME_DELTA_SECONDS);</span>
     const isWalkingAnimation =
 <span class="cstat-no" title="statement not covered" >      currentAnimation === "walk" ||</span>
       (typeof currentAnimation === "string" &amp;&amp;
@@ -1372,7 +1378,7 @@ export const SkeletalPlayer3D: React.FC&lt;
           updatedFacing,
           playerPos,
           opponentPos,
-          delta,
+          safeDelta,
           Date.now(),
         );
       }
@@ -1385,13 +1391,13 @@ export const SkeletalPlayer3D: React.FC&lt;
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    frameCounter.current = (frameCounter.current + 1) % 10;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    updateRigAnimation(rig, delta);</span>
+<span class="cstat-no" title="statement not covered" >    updateRigAnimation(rig, safeDelta);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    updateHandAnimations(delta);</span>
+<span class="cstat-no" title="statement not covered" >    updateHandAnimations(safeDelta);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    updateBalanceAnimations(delta, frameCounter.current);</span>
+<span class="cstat-no" title="statement not covered" >    updateBalanceAnimations(safeDelta, frameCounter.current);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    updateMuscleActivations(delta, frameCounter.current);</span>
+<span class="cstat-no" title="statement not covered" >    updateMuscleActivations(safeDelta, frameCounter.current);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (bodyFacing) {</span>
       const head = <span class="cstat-no" title="statement not covered" >rig.bones.get("head");</span>
@@ -1552,7 +1558,7 @@ export default SkeletalPlayer3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-14T09:52:27.324Z
+                at 2026-05-14T14:44:05.527Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

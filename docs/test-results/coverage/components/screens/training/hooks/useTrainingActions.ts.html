@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">23.83% </span>
+                <span class="strong">23.69% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>41/172</span>
+                <span class='fraction'>41/173</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">27.97% </span>
+                <span class="strong">27.77% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>40/143</span>
+                <span class='fraction'>40/144</span>
             </div>
         
             
@@ -565,7 +565,14 @@
 <a name='L500'></a><a href='#L500'>500</a>
 <a name='L501'></a><a href='#L501'>501</a>
 <a name='L502'></a><a href='#L502'>502</a>
-<a name='L503'></a><a href='#L503'>503</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L503'></a><a href='#L503'>503</a>
+<a name='L504'></a><a href='#L504'>504</a>
+<a name='L505'></a><a href='#L505'>505</a>
+<a name='L506'></a><a href='#L506'>506</a>
+<a name='L507'></a><a href='#L507'>507</a>
+<a name='L508'></a><a href='#L508'>508</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1019,9 +1026,12 @@
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">9x</span>
@@ -1086,6 +1096,7 @@ import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysic
 import {
   AnimationState,
   AnimationType,
+  getAnimationDurationOrFallback,
   getAnimationForTechnique,
 } from "../../../../systems/animation";
 import { physicalReachCalculator } from "../../../../systems/physics";
@@ -1138,6 +1149,7 @@ export interface UseTrainingActionsConfig {
   }) =&gt; void;
   readonly playerAnimation: {
     readonly transitionTo: (state: AnimationState) =&gt; boolean;
+    readonly transitionToAttack: (durationSeconds: number) =&gt; boolean;
     readonly transitionToStanceGuard: (stance: TrigramStance) =&gt; boolean;
     readonly currentState: string;
   };
@@ -1243,7 +1255,7 @@ function getDefaultTechniqueForArchetype(
 <span class="cstat-no" title="statement not covered" >    return { technique: tech, score };</span>
   });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  scoredTechniques.<span class="fstat-no" title="function not covered" >sort((a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >b.score - a.score);</span></span>
+<span class="cstat-no" title="statement not covered" >  scoredTechniques.<span class="fstat-no" title="function not covered" >sort((a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >b.score - a.score)</span>;</span>
 <span class="cstat-no" title="statement not covered" >  return scoredTechniques[0]?.technique;</span>
 }
 &nbsp;
@@ -1397,7 +1409,7 @@ export function useTrainingActions(
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      if (accuracy &gt; 0.5) {</span>
         const points = <span class="cstat-no" title="statement not covered" >Math.round(accuracy * 100);</span>
-        const damage = <span class="cstat-no" title="statement not covered" >Math.round(accuracy * 15);</span> // 0-15 damage based on accuracy
+        const damage = <span class="cstat-no" title="statement not covered" >Math.round(accuracy * 15); // 0-15 damage based on accuracy</span>
         const isPerfect = <span class="cstat-no" title="statement not covered" >accuracy &gt; 0.9;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        if (state.isTraining) {</span>
@@ -1521,9 +1533,12 @@ export function useTrainingActions(
     <span class="missing-if-branch" title="if path not taken" >I</span>if (setAttackAnimation &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >techniqueId) {</span>
       const <span class="cstat-no" title="statement not covered" >animationName = getAnimationForTechnique(techniqueId);</span>
 <span class="cstat-no" title="statement not covered" >      setAttackAnimation(animationName);</span>
+<span class="cstat-no" title="statement not covered" >      playerAnimation.transitionToAttack(</span>
+        getAnimationDurationOrFallback(animationName),
+      );
+    } else {
+      playerAnimation.transitionToAttack(getAnimationDurationOrFallback());
     }
-&nbsp;
-    playerAnimation.transitionTo(AnimationState.ATTACK);
 &nbsp;
     if (!techniqueToUse &amp;&amp; selectedTechniqueId) {
       techniqueToUse = KoreanTechniquesSystem.getTechniqueById(selectedTechniqueId);
@@ -1576,7 +1591,7 @@ export default useTrainingActions;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-14T09:52:26.960Z
+                at 2026-05-14T14:44:05.151Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
