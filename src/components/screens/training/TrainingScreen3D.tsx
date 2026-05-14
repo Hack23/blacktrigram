@@ -620,6 +620,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     },
     playerAnimation: {
       transitionTo: playerAnimation.transitionTo,
+      transitionToAttack: playerAnimation.transitionToAttack,
       transitionToStanceGuard: playerAnimation.transitionToStanceGuard,
       currentState: playerAnimation.currentState,
     },

@@ -39,6 +39,14 @@ describe("Stance Animation Path Integration", () => {
         expect(result, `${state} should map to ${expected}`).toBe(expected);
       }
     });
+
+    it("should map stance side switch to a renderable stance-change animation", () => {
+      const result = animationStateToPlayerAnimation(
+        AnimationState.STANCE_SIDE_SWITCH
+      );
+      expect(result).toBe("stance_change");
+      expect(getAnimationByName(result)?.name).toBe(result);
+    });
   });
 
   describe("Step 2: getAnimationByName retrieves correct animation", () => {

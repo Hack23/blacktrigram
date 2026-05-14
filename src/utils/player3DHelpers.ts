@@ -39,7 +39,7 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   defend_recovery: "defend",
   hit: "hit",
   stance_change: "stance_change",
-  stance_side_switch: "stance_change", // Map to stance_change animation (mirroring guard)
+  stance_side_switch: "stance_change", // Reuse renderable stance-change visuals for foot-forward switch
   ko: "death", // Map ko to death
   // Stance guard animations map to stance-specific idle animations with proper biomechanics
   stance_guard_geon: "stance_geon",

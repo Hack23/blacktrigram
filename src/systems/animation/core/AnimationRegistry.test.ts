@@ -16,6 +16,7 @@ import {
   ANIMATION_REGISTRY,
   CATEGORY_DEFAULT_ANIMATIONS,
   getAnimation,
+  getAnimationDurationOrFallback,
   getAnimationById,
   getAnimationByIdWithFallback,
   getAnimationByName,
@@ -27,6 +28,7 @@ import {
   getCategoryDefaultAnimation,
   hasAnimationId,
 } from "./AnimationRegistry";
+import { DEFAULT_TECHNIQUE_DURATION_SECONDS } from "./types";
 
 describe("AnimationRegistry", () => {
   // ═══════════════════════════════════════════════════════════════════════════
@@ -99,6 +101,13 @@ describe("AnimationRegistry", () => {
     it("should contain stance-specific animations", () => {
       // Should contain trigram-specific animations
       expect(ALL_ANIMATIONS.size).toBeGreaterThan(50); // Many animations
+    });
+
+    it("should contain dedicated Li, Gam, and Gon trigram animations", () => {
+      expect(ALL_ANIMATIONS.has("li_fire_spear_animation")).toBe(true);
+      expect(ALL_ANIMATIONS.has("gam_water_flow_counter")).toBe(true);
+      expect(ALL_ANIMATIONS.has("gon_earth_embrace")).toBe(true);
+      expect(ALL_ANIMATIONS.has("gon_leg_sweep")).toBe(true);
     });
 
     it("should return valid SkeletalAnimation objects", () => {
@@ -335,6 +344,46 @@ describe("AnimationRegistry", () => {
         expect(animation?.name).toBeDefined();
         expect(animation?.duration).toBeGreaterThan(0);
         expect(animation?.keyframes).toBeInstanceOf(Array);
+      }
+    });
+  });
+
+  describe("getAnimationDurationOrFallback", () => {
+    it("should return registered animation duration when metadata exists", () => {
+      expect(getAnimationDurationOrFallback("gon_earth_embrace")).toBe(
+        getAnimation("gon_earth_embrace")?.duration,
+      );
+    });
+
+    it("should return shared fallback duration for missing animation metadata", () => {
+      expect(getAnimationDurationOrFallback("missing_animation")).toBe(
+        DEFAULT_TECHNIQUE_DURATION_SECONDS,
+      );
+      expect(getAnimationDurationOrFallback()).toBe(
+        DEFAULT_TECHNIQUE_DURATION_SECONDS,
+      );
+    });
+  });
+
+  describe("resolveTechniqueAnimation", () => {
+    it("should resolve animationId entries before generic name fallback", () => {
+      const result = getAnimationForTechnique("gon_earth_embrace");
+      expect(result).toBe("gon_earth_embrace");
+      expect(getAnimation(result)?.name).toBe("gon_earth_embrace");
+    });
+
+    it("should keep Gon ID lookups aligned with dedicated Gon clips", () => {
+      const gonAnimationIds = [
+        "gon_ankle_pick",
+        "gon_earth_embrace",
+        "gon_ground_pound",
+        "gon_leg_sweep",
+        "gon_ssireum_throw",
+      ] as const;
+
+      for (const animationId of gonAnimationIds) {
+        expect(getAnimationById(animationId)).toBe(getAnimation(animationId));
+        expect(getAnimationById(animationId)?.name).toBe(animationId);
       }
     });
   });

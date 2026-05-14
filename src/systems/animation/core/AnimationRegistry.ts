@@ -32,6 +32,7 @@
 
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { AnimationType } from "../builders/MartialArtsAnimationBuilder";
+import { DEFAULT_TECHNIQUE_DURATION_SECONDS } from "./types";
 import {
   BACKWARD_RETREAT_ANIMATION,
   FORWARD_DASH_ANIMATION,
@@ -141,13 +142,19 @@ import { TRIGRAM_IDLE_ANIMATIONS_BY_NAME } from "../catalogs/StanceIdleAnimation
 import { STANCE_LOCOMOTION_ANIMATIONS } from "../catalogs/StanceLocomotionAnimations";
 
 // Trigram-specific stance and technique animation maps
-import { GAM_WATER_FLOW_COUNTER_ANIMATION } from "../catalogs/GamTechniqueAnimations";
+import { GAM_STANCE_ANIMATIONS } from "../catalogs/GamStanceAnimations";
+import {
+  GAM_TECHNIQUE_ANIMATIONS,
+  GAM_WATER_FLOW_COUNTER_ANIMATION,
+} from "../catalogs/GamTechniqueAnimations";
 import { GAN_ROCK_DEFENSE_ANIMATION } from "../catalogs/GanTechniqueAnimations";
 import { GAN_STANCE_ANIMATIONS } from "../catalogs/GanStanceAnimations";
 import { GAN_TECHNIQUE_ANIMATIONS } from "../catalogs/GanTechniqueAnimations";
 import { GEON_ANIMATIONS } from "../catalogs/GeonStanceAnimations";
+import { GON_TECHNIQUE_ANIMATIONS } from "../catalogs/GonTechniqueAnimations";
 import { JIN_ANIMATIONS } from "../catalogs/JinStanceAnimations";
 import { JIN_TECHNIQUE_ANIMATIONS } from "../catalogs/JinTechniqueAnimations";
+import { LI_STANCE_ANIMATIONS } from "../catalogs/LiStanceAnimations";
 import { SON_STANCE_ANIMATIONS } from "../catalogs/SonStanceAnimations";
 import { SON_TECHNIQUE_ANIMATIONS } from "../catalogs/SonTechniqueAnimations";
 import { TAE_STANCE_ANIMATIONS } from "../catalogs/TaeStanceAnimations";
@@ -217,6 +224,13 @@ import {
   SPECIALIZED_PUNCH_ANIMATIONS,
   THROAT_STRIKE_ANIMATION,
 } from "../catalogs/SpecializedPunchAnimations";
+
+const STANCE_TRANSITION_ANIMATION: SkeletalAnimation = {
+  ...IDLE_STANCE_ANIMATION,
+  name: "stance_change",
+  koreanName: "자세전환",
+  loop: false,
+};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MASTER ANIMATION REGISTRY
@@ -511,14 +525,24 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   // Each trigram has unique movement patterns and combat techniques
   ...GEON_ANIMATIONS, // ☰ Heaven: Direct force, power strikes
   ...TAE_STANCE_ANIMATIONS, // ☱ Lake: Fluid joint manipulation
+  ...LI_STANCE_ANIMATIONS, // ☲ Fire: Precision targeting and spear-hand strikes
   ...JIN_ANIMATIONS, // ☳ Thunder: Explosive power
   ...JIN_TECHNIQUE_ANIMATIONS, // ☳ Thunder techniques
   ...SON_STANCE_ANIMATIONS, // ☴ Wind: Continuous pressure
   ...SON_TECHNIQUE_ANIMATIONS, // ☴ Wind techniques
+  ["gam_idle_flowing", GAM_STANCE_ANIMATIONS.idle],
+  ["gam_yielding_sidestep", GAM_STANCE_ANIMATIONS.movement.yieldingSidestep],
+  ["gam_flowing_retreat_step", GAM_STANCE_ANIMATIONS.movement.flowingRetreat],
+  ["gam_water_flow_counter", GAM_STANCE_ANIMATIONS.techniques.waterFlowCounter],
+  ["gam_flowing_takedown", GAM_STANCE_ANIMATIONS.techniques.flowingTakedown],
+  ["gam_counter", GAM_TECHNIQUE_ANIMATIONS.counter],
+  ["gam_takedown", GAM_TECHNIQUE_ANIMATIONS.takedown],
   ...GAN_STANCE_ANIMATIONS, // ☶ Mountain: Defensive mastery
   ...GAN_TECHNIQUE_ANIMATIONS, // ☶ Mountain techniques
+  ...GON_TECHNIQUE_ANIMATIONS, // ☷ Earth: Ssireum throws and ground control
   // Additional animations from AttackAnimations not in other maps
   ["idle_stance", IDLE_STANCE_ANIMATION],
+  ["stance_change", STANCE_TRANSITION_ANIMATION],
   ["forward_dash", FORWARD_DASH_ANIMATION],
   ["backward_retreat", BACKWARD_RETREAT_ANIMATION],
   ["side_step", SIDE_STEP_ANIMATION],
@@ -572,11 +596,7 @@ export const ANIMATION_ID_REGISTRY: ReadonlyMap<string, SkeletalAnimation> =
     ["geon_heavenly_fist", JAB_ANIMATION_ENHANCED],
     ["geon_high_block", GEON_HIGH_BLOCK],
     ["geon_palm_strike", PALM_STRIKE_ANIMATION],
-    ["gon_ankle_pick", SWEEP_ANIMATION],
-    ["gon_earth_embrace", EARTH_EMBRACE_ANIMATION],
-    ["gon_ground_pound", SLAM_ANIMATION],
-    ["gon_leg_sweep", SWEEP_ANIMATION],
-    ["gon_ssireum_throw", HIP_THROW_ANIMATION],
+    ...GON_TECHNIQUE_ANIMATIONS,
     ["hacker_data_strike", PALM_STRIKE_ANIMATION],
     ["hacker_system_crash", HAMMER_FIST_ANIMATION],
     ["jin_back_kick", BACK_KICK_ANIMATION],
@@ -803,19 +823,34 @@ export function getCategoryDefaultAnimation(
 /**
  * Get animation by name (legacy support)
  *
+ * Legacy semantic alias for callers that specifically receive a skeletal
+ * animation name from UI/rendering code.
+ *
  * @param name - Animation name (e.g., "front_kick")
  * @returns Skeletal animation or undefined
+ *
+ * Checks {@link ALL_ANIMATIONS} first because it owns renderable skeletal
+ * animation names, then {@link ANIMATION_ID_REGISTRY} for technique animation
+ * IDs that intentionally alias existing skeletal animation objects.
  *
  * @korean 이름으로애니메이션조회
  */
 export function getAnimationByName(
   name: string,
 ): SkeletalAnimation | undefined {
-  return ALL_ANIMATIONS.get(name);
+  // ALL_ANIMATIONS contains concrete authored keyframe clips and takes
+  // precedence; ANIMATION_ID_REGISTRY contains technique-data aliases that may
+  // intentionally point at those same clips. Example: a technique animationId
+  // can exist only as an alias when "musa_dragon_fist" maps to the existing
+  // CROSS_ANIMATION_ENHANCED clip rather than a separately named keyframe clip.
+  return ALL_ANIMATIONS.get(name) ?? ANIMATION_ID_REGISTRY.get(name);
 }
 
 /**
  * Get animation by name - unified lookup across all animation registries
+ *
+ * Preferred general-purpose lookup for gameplay systems that may pass either a
+ * concrete skeletal animation name or a technique animation ID.
  *
  * Searches ALL_ANIMATIONS which includes:
  * - BASIC_ANIMATIONS (idle, walk, run, fall)
@@ -823,13 +858,37 @@ export function getAnimationByName(
  * - STANCE_ANIMATIONS, MOVEMENT_ANIMATIONS
  * - ALL_ATTACK_ANIMATIONS (stance-specific attacks)
  *
+ * Falls back to {@link ANIMATION_ID_REGISTRY} so technique IDs resolved from
+ * combat data can still retrieve aliased animations without dropping to generic
+ * jab/strike fallbacks.
+ *
  * @param name - Animation name (e.g., "idle", "front_kick", "walk")
  * @returns Skeletal animation or undefined
  *
  * @korean 애니메이션가져오기
  */
 export function getAnimation(name: string): SkeletalAnimation | undefined {
-  return ALL_ANIMATIONS.get(name);
+  // Preserve authored clip keys before falling back to technique ID aliases.
+  return ALL_ANIMATIONS.get(name) ?? ANIMATION_ID_REGISTRY.get(name);
+}
+
+/**
+ * Get a skeletal animation duration or the shared short-technique fallback.
+ *
+ * @param name - Animation name or technique animation ID. Empty or omitted
+ * returns {@link DEFAULT_TECHNIQUE_DURATION_SECONDS}.
+ * @returns Duration in seconds.
+ *
+ * @example
+ * ```typescript
+ * getAnimationDurationOrFallback("gon_earth_embrace"); // registered duration
+ * getAnimationDurationOrFallback(); // DEFAULT_TECHNIQUE_DURATION_SECONDS
+ * ```
+ *
+ * @korean 애니메이션지속시간조회
+ */
+export function getAnimationDurationOrFallback(name = ""): number {
+  return getAnimation(name)?.duration ?? DEFAULT_TECHNIQUE_DURATION_SECONDS;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -943,6 +1002,10 @@ export function getAnimationForTechnique(techniqueNameOrId: string): string {
     return techniqueNameOrId;
   }
 
+  if (ANIMATION_ID_REGISTRY.has(techniqueNameOrId)) {
+    return techniqueNameOrId;
+  }
+
   // 2. Try a normalized form: "Thunder Strike" → "thunder_strike".
   //    This lets us catch techniques whose English name happens to match
   //    an animation key exactly once spaces are collapsed.
@@ -952,6 +1015,10 @@ export function getAnimationForTechnique(techniqueNameOrId: string): string {
     .replace(/[\s-]+/g, "_")
     .replace(/[^a-z0-9_]/g, "");
   if (normalized && ALL_ANIMATIONS.has(normalized)) {
+    return normalized;
+  }
+
+  if (normalized && ANIMATION_ID_REGISTRY.has(normalized)) {
     return normalized;
   }
 
@@ -1005,12 +1072,19 @@ export function resolveTechniqueAnimation(
   if (!technique) return "jab";
 
   // 1. Prefer animationId (authoritative 1-1 mapping on KoreanTechnique).
-  if (technique.animationId && ALL_ANIMATIONS.has(technique.animationId)) {
+  if (
+    technique.animationId &&
+    (ALL_ANIMATIONS.has(technique.animationId) ||
+      ANIMATION_ID_REGISTRY.has(technique.animationId))
+  ) {
     return technique.animationId;
   }
 
   // 2. technique.id (Technique objects preserve stance-prefixed ids here).
-  if (technique.id && ALL_ANIMATIONS.has(technique.id)) {
+  if (
+    technique.id &&
+    (ALL_ANIMATIONS.has(technique.id) || ANIMATION_ID_REGISTRY.has(technique.id))
+  ) {
     return technique.id;
   }
 

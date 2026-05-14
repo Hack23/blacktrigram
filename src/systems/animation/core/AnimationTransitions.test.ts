@@ -48,6 +48,12 @@ describe("AnimationTransitions", () => {
       expect(
         isTransitionAllowed(AnimationState.IDLE, AnimationState.STANCE_CHANGE),
       ).toBe(true);
+      expect(
+        isTransitionAllowed(
+          AnimationState.IDLE,
+          AnimationState.STANCE_SIDE_SWITCH,
+        ),
+      ).toBe(true);
       expect(isTransitionAllowed(AnimationState.IDLE, AnimationState.HIT)).toBe(
         true,
       );
@@ -71,6 +77,12 @@ describe("AnimationTransitions", () => {
       ).toBe(true);
       expect(
         isTransitionAllowed(AnimationState.WALK, AnimationState.STANCE_CHANGE),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(
+          AnimationState.WALK,
+          AnimationState.STANCE_SIDE_SWITCH,
+        ),
       ).toBe(true);
       expect(isTransitionAllowed(AnimationState.WALK, AnimationState.HIT)).toBe(
         true,
@@ -163,6 +175,33 @@ describe("AnimationTransitions", () => {
         isTransitionAllowed(AnimationState.STANCE_CHANGE, AnimationState.KO),
       ).toBe(true);
     });
+
+    it("should allow stance side switch from locomotion and back to idle", () => {
+      expect(
+        isTransitionAllowed(
+          AnimationState.IDLE,
+          AnimationState.STANCE_SIDE_SWITCH,
+        ),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(
+          AnimationState.WALK,
+          AnimationState.STANCE_SIDE_SWITCH,
+        ),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(
+          AnimationState.RUN,
+          AnimationState.STANCE_SIDE_SWITCH,
+        ),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(
+          AnimationState.STANCE_SIDE_SWITCH,
+          AnimationState.IDLE,
+        ),
+      ).toBe(true);
+    });
   });
 
   describe("getValidTransitions", () => {
@@ -173,6 +212,7 @@ describe("AnimationTransitions", () => {
       expect(valid).toContain(AnimationState.ATTACK);
       expect(valid).toContain(AnimationState.DEFEND);
       expect(valid).toContain(AnimationState.STANCE_CHANGE);
+      expect(valid).toContain(AnimationState.STANCE_SIDE_SWITCH);
       expect(valid).toContain(AnimationState.HIT);
       expect(valid).toContain(AnimationState.KO);
       expect(valid.length).toBeGreaterThan(0);

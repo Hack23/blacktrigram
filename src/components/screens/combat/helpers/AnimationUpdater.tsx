@@ -12,6 +12,7 @@
 import { useFrame } from "@react-three/fiber";
 import React from "react";
 import { usePlayerAnimation } from "../../../../hooks/usePlayerAnimation";
+import { MAX_VISUAL_FRAME_DELTA_SECONDS } from "../../../../systems/animation";
 
 /**
  * Props for AnimationUpdater component
@@ -42,8 +43,9 @@ export const AnimationUpdater: React.FC<AnimationUpdaterProps> = ({
   player2Animation,
 }) => {
   useFrame((_state, delta) => {
-    player1Animation.update(delta);
-    player2Animation.update(delta);
+    const safeDelta = Math.min(delta, MAX_VISUAL_FRAME_DELTA_SECONDS);
+    player1Animation.update(safeDelta);
+    player2Animation.update(safeDelta);
   });
 
   return null; // Component only updates animation state, renders no visual elements

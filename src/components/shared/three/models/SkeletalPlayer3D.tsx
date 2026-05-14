@@ -21,6 +21,7 @@ import { useSkeletalAnimation } from "../../../../hooks/useSkeletalAnimation";
 import {
   createDefaultFacialDamage,
   createScaledHumanoidRig,
+  MAX_VISUAL_FRAME_DELTA_SECONDS,
   getExpressionFromCombatState,
   getHeadAngleRadians,
   lockFacing,
@@ -279,6 +280,7 @@ export const SkeletalPlayer3D: React.FC<
   const frameCounter = useRef(0);
 
   useFrame((_state, delta) => {
+    const safeDelta = Math.min(delta, MAX_VISUAL_FRAME_DELTA_SECONDS);
     const isWalkingAnimation =
       currentAnimation === "walk" ||
       (typeof currentAnimation === "string" &&
@@ -319,7 +321,7 @@ export const SkeletalPlayer3D: React.FC<
           updatedFacing,
           playerPos,
           opponentPos,
-          delta,
+          safeDelta,
           Date.now(),
         );
       }
@@ -332,13 +334,13 @@ export const SkeletalPlayer3D: React.FC<
 
     frameCounter.current = (frameCounter.current + 1) % 10;
 
-    updateRigAnimation(rig, delta);
+    updateRigAnimation(rig, safeDelta);
 
-    updateHandAnimations(delta);
+    updateHandAnimations(safeDelta);
 
-    updateBalanceAnimations(delta, frameCounter.current);
+    updateBalanceAnimations(safeDelta, frameCounter.current);
 
-    updateMuscleActivations(delta, frameCounter.current);
+    updateMuscleActivations(safeDelta, frameCounter.current);
 
     if (bodyFacing) {
       const head = rig.bones.get("head");

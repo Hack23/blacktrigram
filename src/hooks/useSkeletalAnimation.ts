@@ -205,7 +205,8 @@ export function useSkeletalAnimation(
       playbackSpeed = 1.0;
     } else if (currentAnimation === "stance_change") {
       // Stance change animation
-      selectedAnim = getAnimation("idle_stance") ?? null;
+      selectedAnim =
+        getAnimation("stance_change") ?? getAnimation("idle_stance") ?? null;
       playbackSpeed = 1.2; // Slightly faster for responsiveness
     } else if (currentAnimation === "hit") {
       // Hit reaction - stop animation

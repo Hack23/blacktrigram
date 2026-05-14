@@ -313,6 +313,7 @@ function generateStanceGuardTransitions(): TransitionRule[] {
       { from: guardState, to: AnimationState.ATTACK, allowed: true },
       { from: guardState, to: AnimationState.DEFEND, allowed: true },
       { from: guardState, to: AnimationState.STANCE_CHANGE, allowed: true },
+      { from: guardState, to: AnimationState.STANCE_SIDE_SWITCH, allowed: true },
     );
 
     // Guard can transition to tactical steps (guard maintained during step)
@@ -366,6 +367,11 @@ export const DEFAULT_TRANSITIONS: readonly TransitionRule[] = [
     to: AnimationState.STANCE_CHANGE,
     allowed: true,
   },
+  {
+    from: AnimationState.IDLE,
+    to: AnimationState.STANCE_SIDE_SWITCH,
+    allowed: true,
+  },
   { from: AnimationState.IDLE, to: AnimationState.HIT, allowed: true },
   { from: AnimationState.IDLE, to: AnimationState.KO, allowed: true },
 
@@ -379,6 +385,11 @@ export const DEFAULT_TRANSITIONS: readonly TransitionRule[] = [
     to: AnimationState.STANCE_CHANGE,
     allowed: true,
   },
+  {
+    from: AnimationState.WALK,
+    to: AnimationState.STANCE_SIDE_SWITCH,
+    allowed: true,
+  },
   { from: AnimationState.WALK, to: AnimationState.HIT, allowed: true },
   { from: AnimationState.WALK, to: AnimationState.KO, allowed: true },
 
@@ -388,6 +399,7 @@ export const DEFAULT_TRANSITIONS: readonly TransitionRule[] = [
   { from: AnimationState.RUN, to: AnimationState.ATTACK, allowed: true },
   { from: AnimationState.RUN, to: AnimationState.DEFEND, allowed: true },
   { from: AnimationState.RUN, to: AnimationState.STANCE_CHANGE, allowed: true },
+  { from: AnimationState.RUN, to: AnimationState.STANCE_SIDE_SWITCH, allowed: true },
   { from: AnimationState.RUN, to: AnimationState.HIT, allowed: true },
   { from: AnimationState.RUN, to: AnimationState.KO, allowed: true },
 
@@ -415,6 +427,23 @@ export const DEFAULT_TRANSITIONS: readonly TransitionRule[] = [
   },
   { from: AnimationState.STANCE_CHANGE, to: AnimationState.HIT, allowed: true }, // Can be interrupted by hit
   { from: AnimationState.STANCE_CHANGE, to: AnimationState.KO, allowed: true },
+
+  // Stance side switch transitions (left↔right foot forward, returns to guard/idle)
+  {
+    from: AnimationState.STANCE_SIDE_SWITCH,
+    to: AnimationState.IDLE,
+    allowed: true,
+  },
+  {
+    from: AnimationState.STANCE_SIDE_SWITCH,
+    to: AnimationState.HIT,
+    allowed: true,
+  },
+  {
+    from: AnimationState.STANCE_SIDE_SWITCH,
+    to: AnimationState.KO,
+    allowed: true,
+  },
 
   // Tactical step transitions (non-interruptible, returns to idle/guard after completion)
   // Steps can be initiated from idle, walk, or guard states
