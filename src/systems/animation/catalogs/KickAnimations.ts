@@ -151,7 +151,7 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation =
  * Roundhouse Kick - 돌려차기 (Dollyeo Chagi)
  *
  * THE signature Taekwondo kick - most practiced, most versatile, most devastating.
- * Instep (발등 - Baldeung) or shin (정강이 - Jeonggangyi) strikes in circular arc.
+ * Instep (발등 - Baldeung) or shin (정강이 - Jeonggangi) strikes in circular arc.
  *
  * **Korean Martial Arts Biomechanics** (한국 무술 생체역학):
  *
@@ -281,7 +281,7 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation =
  * **Breathing Pattern** (호흡 패턴):
  * - Chamber: Deep inhale (깊이 들이마시기)
  * - Rotation: Hold/control breath (호흡 유지)
- - Extension: Begin exhale (내쉬기 시작)
+ * - Extension: Begin exhale (내쉬기 시작)
  * - Impact: Explosive 기합 (Kihap) "차!" or "터억!"
  * - Recovery: Controlled recovery breath
  *

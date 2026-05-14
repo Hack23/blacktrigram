@@ -427,7 +427,7 @@ export type KickPhaseName = keyof typeof KICK_PHASES;
  *
  * Based on traditional Korean martial arts principles:
  * - 정권지르기 (Jeongkwon Jireugi) - Straight punch with fist rotation
- * - 역권지르기 (Yeokwon Jireugi) - Reverse punch with full hip drive
+ * - 역권지르기 (Yeokkwon Jireugi) - Reverse punch with full hip drive
  * - 당기기 (Dangigi) - Pulling hand (hikite) for power generation
  * - 엉덩이회전 (Eongdeongi Hoejeon) - Hip rotation for maximum power
  * - 어깨비틀기 (Eokkae Biteulgi) - Shoulder torque coordination

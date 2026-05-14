@@ -40,7 +40,7 @@ import type { StanceLaterality } from "../../trigram/types";
  * - 앞서기 (Ap Seogi): Classic forward stance for aggressive advance
  * - Front leg bent ~70°, back leg extended ~160° for explosive forward power
  * - 70/30 weight distribution forward for constant pressure
- * - High chamber position (높은 준비) ready for 돌려차기 (Dollyo Chagi - roundhouse kick)
+ * - High chamber position (높은 준비) ready for 돌려차기 (Dollyeo Chagi - roundhouse kick)
  * - Hands at chin level in Juchum Seogi guard (주춤서기 방어)
  * - Tight elbows protect floating ribs (늑골 보호)
  *
@@ -51,9 +51,9 @@ import type { StanceLaterality } from "../../trigram/types";
  * - Hip rotation ~30° creates torque for bone-breaking punches (골절타격)
  *
  * **Combat Applications**:
- * - 정권지르기 (Jeongwon Jireugi): Straight punch to solar plexus
+ * - 정권지르기 (Jeongkwon Jireugi): Straight punch to solar plexus
  * - 앞차기 (Ap Chagi): Front snap kick to abdomen/chin
- * - 돌려차기 (Dollyo Chagi): Roundhouse kick from high chamber
+ * - 돌려차기 (Dollyeo Chagi): Roundhouse kick from high chamber
  * - Direct frontal bone-breaking strikes (+10% damage to skeletal targets)
  * - High mobility (+15% movement speed for aggressive advance)
  *
@@ -195,7 +195,7 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
  * **Combat Applications**:
  * - 혈도공격 (Hyeoldo Gonggyeok): Precise vital point strikes
  * - 급소타격 (Geupso Tagyeok): Pressure point penetration
- * - 관자놀이 타격 (Gwanjari Tagyeok): Temple strike from peek
+ * - 관자놀이 타격 (Gwanjanori Tagyeok): Temple strike from peek
  * - Precision nerve strikes (+15% critical hit chance)
  * - Vital point targeting accuracy (+10% vital point damage)
  *
@@ -325,7 +325,7 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
  * - Standing leg nearly straight (170°) with perfect balance
  * - Raised leg bent deeply (knee at waist level, 45° thigh angle)
  * - 100% weight on standing leg - ready to kick with raised leg instantly
- * - Arms in flowing 품밟기 (Pumbalbgi) motion - continuous circular movement
+ * - Arms in flowing 품밟기 (Pumbalpgi) motion - continuous circular movement
  * - Lead knife hand extended for 손날막기 (Sonnal Makgi - knife hand block)
  *
  * **Biomechanical Analysis**:
@@ -336,7 +336,7 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
  *
  * **Combat Applications**:
  * - 연속발차기 (Yeonsok Balchagi): Continuous kicking combinations
- * - 품밟기 리듬 (Pumbalbgi Rhythm): Rhythmic pressure sequences
+ * - 품밟기 리듬 (Pumbalpgi Rhythm): Rhythmic pressure sequences
  * - 발걸이 (Balgeori): Sweeping techniques from raised leg
  * - Continuous pressure strikes (+10% chaining speed)
  * - Lateral movement advantage (+10% lateral mobility)

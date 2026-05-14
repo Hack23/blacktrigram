@@ -604,7 +604,9 @@ export class MartialArtsAnimationBuilder {
       // Full extension with rotation
       kf.rotate(BoneName.HIP_R, 1.2, 0, 1.6);
       kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
-      kf.rotate(BoneName.FOOT_R, 0.4, 0, 0.3);
+      // Ankle PLANTARFLEXED (negative X) so toes point and 발등 (instep) leads
+      // the strike — see KickAnimations docs §Chamber. Z rotation for instep angle.
+      kf.rotate(BoneName.FOOT_R, -0.3, 0, 0.3);
       kf.rotate(BoneName.PELVIS, 0, -1.5, 0);
 
       // Apply compensatory torso lean for balance (12° away from kick)
@@ -857,7 +859,7 @@ export class MartialArtsAnimationBuilder {
    * - Body completes 180° rotation (pelvis -3.14 rad = π)
    * - Hip extends backward (0.5 rad flex maintained)
    * - Knee extends fully (-0.2 rad) driving heel back
-   * - Foot dorsiflexes (-0.4 rad) presenting heel
+   * - Foot dorsiflexes (+0.4 rad) presenting heel
    * - Foot position extends backward (0 forward, 0 up, -0.8 back)
    * - Head maintains target visual (1.0 rad look-back)
    * - Spine fully rotated with body
@@ -882,7 +884,9 @@ export class MartialArtsAnimationBuilder {
       // Full leg extension backward
       kf.rotate(BoneName.HIP_R, 0.5, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
-      kf.rotate(BoneName.FOOT_R, -0.4, 0, 0);
+      // Ankle DORSIFLEXED (positive X) - toes pull back so 뒤꿈치 (heel) leads
+      // the thrust. This is the signature heel-strike geometry of 뒤차기.
+      kf.rotate(BoneName.FOOT_R, 0.4, 0, 0);
 
       // Foot drives backward
       kf.position(BoneName.FOOT_R, 0, 0, -0.8);
