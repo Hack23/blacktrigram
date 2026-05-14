@@ -106,7 +106,7 @@ export const JAB_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Cross - 크로스 (정권지르기 - Jeongwon Jireugi)
+ * Cross - 크로스 (정권지르기 - Jeongkwon Jireugi)
  *
  * Powerful straight punch with rear hand using full Korean martial arts biomechanics.
  * The quintessential power punch - generates maximum force through complete body chain.

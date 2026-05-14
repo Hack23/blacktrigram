@@ -105,7 +105,7 @@ const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
  *
  * Biomechanics:
  * - Shoulders raised (~15° abduction)
- * - Elbows bent ~110° (tight guard)
+ * - Elbows bent ~120° (tight guard)
  * - Fists at temple level
  * - Forearms vertical for deflection
  *
@@ -156,7 +156,7 @@ export const HIGH_GUARD: GuardPosition = {
  *
  * Biomechanics:
  * - Shoulders neutral (~10° forward)
- * - Elbows bent ~90° (classic guard)
+ * - Elbows bent ~100° (classic guard)
  * - Fists at chest/chin level
  * - Ready to attack or defend
  *
@@ -213,8 +213,8 @@ export const MIDDLE_GUARD: GuardPosition = {
  * - Defense against low attacks
  *
  * Biomechanics:
- * - Shoulders forward (~20° flexion)
- * - Elbows bent ~70° (wider guard)
+ * - Shoulders forward (~15° flexion)
+ * - Elbows bent ~75° (wider guard)
  * - Fists at abdomen/hip level
  * - Ready to sprawl or clinch
  *

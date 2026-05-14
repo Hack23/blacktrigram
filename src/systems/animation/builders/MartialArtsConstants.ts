@@ -31,28 +31,36 @@
 export const HAND_POSES = {
   /**
    * Closed Fist - Standard punch (주먹)
-   * Fingers curled tight, thumb outside
+   * Fingers curled tight, thumb wrapped outside over index/middle PIPs.
+   *
+   * Korean martial arts (Taekwondo / Tang Soo Do / Hapkido) fist:
+   * - MCP (prox) flexed ~90° (1.57 rad)
+   * - PIP (inter) flexed ~90° (1.57 rad)
+   * - DIP (dist) flexed ~63° (1.1 rad) — fingertips pressed firmly into the
+   *   distal palmar crease so the striking surface is the front of the
+   *   second-row knuckles (정권). Previous value of 0.8 rad (~46°) left
+   *   the fingertips visibly slack and reduced impact-surface integrity.
    */
   FIST: {
     thumb_meta: [0.3, 0.5, 0.2] as const,
     thumb_prox: [0.4, 0, 0] as const,
     thumb_dist: [0.3, 0, 0] as const,
     index_meta: [0, 0, 0] as const,
-    index_prox: [1.57, 0, 0] as const, // 90° curl
-    index_inter: [1.57, 0, 0] as const,
-    index_dist: [0.8, 0, 0] as const,
+    index_prox: [1.57, 0, 0] as const, // 90° curl (MCP)
+    index_inter: [1.57, 0, 0] as const, // 90° curl (PIP)
+    index_dist: [1.1, 0, 0] as const, // ~63° curl (DIP) — tip into palm
     middle_meta: [0, 0, 0] as const,
     middle_prox: [1.57, 0, 0] as const,
     middle_inter: [1.57, 0, 0] as const,
-    middle_dist: [0.8, 0, 0] as const,
+    middle_dist: [1.1, 0, 0] as const,
     ring_meta: [0, 0, 0] as const,
     ring_prox: [1.57, 0, 0] as const,
     ring_inter: [1.57, 0, 0] as const,
-    ring_dist: [0.8, 0, 0] as const,
+    ring_dist: [1.1, 0, 0] as const,
     pinky_meta: [0, 0, 0] as const,
     pinky_prox: [1.57, 0, 0] as const,
     pinky_inter: [1.57, 0, 0] as const,
-    pinky_dist: [0.8, 0, 0] as const,
+    pinky_dist: [1.1, 0, 0] as const,
   },
 
   /**
@@ -108,34 +116,50 @@ export const HAND_POSES = {
   },
 
   /**
-   * Knife Hand - Ridge hand strikes (수도)
-   * Fingers together, thumb tucked
+   * Knife Hand - Ridge hand strikes (수도, Sudo)
+   *
+   * Korean 수도치기 (Sudo Chigi): all four fingers fully extended and
+   * pressed tightly together so the medial edge of the hand (pinky-side
+   * fascia overlying the fifth metacarpal) forms a rigid striking ridge.
+   * The thumb is firmly adducted and flexed across the palm so it cannot
+   * be hooked or broken by the target.
+   *
+   * Previous values held the fingers at a slight 0.1 rad bend, which
+   * softens the ridge and is anatomically incorrect for 수도. Fingers are
+   * now strictly 0 rad (fully straight); thumb wrap is unchanged.
    */
   KNIFE_HAND: {
     thumb_meta: [0.5, 0.8, 0.4] as const,
     thumb_prox: [0.4, 0, 0] as const,
     thumb_dist: [0.2, 0, 0] as const,
     index_meta: [0, 0, 0] as const,
-    index_prox: [0.1, 0, 0] as const,
-    index_inter: [0.05, 0, 0] as const,
+    index_prox: [0, 0, 0] as const, // Fully extended (rigid ridge)
+    index_inter: [0, 0, 0] as const,
     index_dist: [0, 0, 0] as const,
     middle_meta: [0, 0, 0] as const,
-    middle_prox: [0.1, 0, 0] as const,
-    middle_inter: [0.05, 0, 0] as const,
+    middle_prox: [0, 0, 0] as const,
+    middle_inter: [0, 0, 0] as const,
     middle_dist: [0, 0, 0] as const,
     ring_meta: [0, 0, 0] as const,
-    ring_prox: [0.1, 0, 0] as const,
-    ring_inter: [0.05, 0, 0] as const,
+    ring_prox: [0, 0, 0] as const,
+    ring_inter: [0, 0, 0] as const,
     ring_dist: [0, 0, 0] as const,
     pinky_meta: [0, 0, 0] as const,
-    pinky_prox: [0.1, 0, 0] as const,
-    pinky_inter: [0.05, 0, 0] as const,
+    pinky_prox: [0, 0, 0] as const,
+    pinky_inter: [0, 0, 0] as const,
     pinky_dist: [0, 0, 0] as const,
   },
 
   /**
-   * Hammer Fist - Bottom fist strikes (철퇴)
-   * Tight fist for hammer blow
+   * Hammer Fist - Bottom fist strikes (철퇴, Cheoltoe)
+   *
+   * Korean martial arts hammer-fist (망치주먹): the fist is clenched
+   * tighter than a standard punching fist because the striking surface is
+   * the bottom (ulnar-side) of the rolled fingers, which must be a hard,
+   * compact mass with no give. PIP/MCP are at the upper end of voluntary
+   * flexion (~97° / 1.7 rad) and DIP is now ~69° (1.2 rad) so the
+   * fingertips bury deep into the palmar crease and present a single,
+   * rounded striking ridge along the pinky side.
    */
   HAMMER_FIST: {
     thumb_meta: [0.4, 0.6, 0.3] as const,
@@ -144,45 +168,51 @@ export const HAND_POSES = {
     index_meta: [0, 0, 0] as const,
     index_prox: [1.7, 0, 0] as const,
     index_inter: [1.7, 0, 0] as const,
-    index_dist: [1.0, 0, 0] as const,
+    index_dist: [1.2, 0, 0] as const, // Tip pressed firmly into palm
     middle_meta: [0, 0, 0] as const,
     middle_prox: [1.7, 0, 0] as const,
     middle_inter: [1.7, 0, 0] as const,
-    middle_dist: [1.0, 0, 0] as const,
+    middle_dist: [1.2, 0, 0] as const,
     ring_meta: [0, 0, 0] as const,
     ring_prox: [1.7, 0, 0] as const,
     ring_inter: [1.7, 0, 0] as const,
-    ring_dist: [1.0, 0, 0] as const,
+    ring_dist: [1.2, 0, 0] as const,
     pinky_meta: [0, 0, 0] as const,
     pinky_prox: [1.7, 0, 0] as const,
     pinky_inter: [1.7, 0, 0] as const,
-    pinky_dist: [1.0, 0, 0] as const,
+    pinky_dist: [1.2, 0, 0] as const,
   },
 
   /**
-   * Backfist - Knuckle strikes (등주먹)
-   * Fist with wrist extended back
+   * Backfist - Knuckle strikes (등주먹, Deungjumeok)
+   *
+   * Korean 등주먹치기 (Deungjumeok Chigi): the fist is closed exactly as
+   * for a forward punch — only the wrist orientation changes so that the
+   * dorsal surface of the second-row knuckles is the impact face. The
+   * previous values left the fist noticeably loose (1.4 / 1.4 / 0.7),
+   * which is biomechanically inconsistent with a 등주먹 strike where the
+   * fist must be a single rigid mass on impact. Now matches FIST tightness.
    */
   BACKFIST: {
     thumb_meta: [0.3, 0.5, 0.2] as const,
     thumb_prox: [0.3, 0, 0] as const,
     thumb_dist: [0.2, 0, 0] as const,
     index_meta: [0, 0, 0] as const,
-    index_prox: [1.4, 0, 0] as const,
-    index_inter: [1.4, 0, 0] as const,
-    index_dist: [0.7, 0, 0] as const,
+    index_prox: [1.55, 0, 0] as const,
+    index_inter: [1.55, 0, 0] as const,
+    index_dist: [1.05, 0, 0] as const,
     middle_meta: [0, 0, 0] as const,
-    middle_prox: [1.4, 0, 0] as const,
-    middle_inter: [1.4, 0, 0] as const,
-    middle_dist: [0.7, 0, 0] as const,
+    middle_prox: [1.55, 0, 0] as const,
+    middle_inter: [1.55, 0, 0] as const,
+    middle_dist: [1.05, 0, 0] as const,
     ring_meta: [0, 0, 0] as const,
-    ring_prox: [1.4, 0, 0] as const,
-    ring_inter: [1.4, 0, 0] as const,
-    ring_dist: [0.7, 0, 0] as const,
+    ring_prox: [1.55, 0, 0] as const,
+    ring_inter: [1.55, 0, 0] as const,
+    ring_dist: [1.05, 0, 0] as const,
     pinky_meta: [0, 0, 0] as const,
-    pinky_prox: [1.4, 0, 0] as const,
-    pinky_inter: [1.4, 0, 0] as const,
-    pinky_dist: [0.7, 0, 0] as const,
+    pinky_prox: [1.55, 0, 0] as const,
+    pinky_inter: [1.55, 0, 0] as const,
+    pinky_dist: [1.05, 0, 0] as const,
   },
 
   /**
@@ -357,10 +387,10 @@ export const KICK_PHASES = {
    * Chamber Position (준비자세) - Knee lifted, tight
    */
   CHAMBER: {
-    hip: [1.57, 0, 0] as const, // 90° hip flexion
-    knee: [-2.0, 0, 0] as const, // Tight chamber
+    hip: [1.57, 0, 0] as const, // 90° hip flexion (thigh parallel to ground)
+    knee: [-2.15, 0, 0] as const, // Tight chamber - heel toward buttock (within MAX_BEND 2.27)
     ankle: [0, 0, 0] as const,
-    supportKnee: [-0.25, 0, 0] as const,
+    supportKnee: [-0.45, 0, 0] as const, // Deeper support bend for stability
     pelvis: [-0.1, 0, 0] as const,
   },
 
@@ -370,44 +400,52 @@ export const KICK_PHASES = {
    * Enhanced with proper hip Y-rotation for power generation (골반회전)
    */
   EXTENSION: {
-    hip: [1.7, 0, 0] as const,
-    knee: [-0.05, 0, 0] as const, // Nearly full extension (slight bend prevents hyperextension)
-    ankle: [0.5, 0, 0] as const, // Dorsiflexion
-    supportKnee: [-0.35, 0, 0] as const,
+    hip: [1.7, 0, 0] as const, // ~97° hip flexion at impact
+    knee: [-0.12, 0, 0] as const, // Nearly full extension with slight protective flex (~173°)
+    ankle: [0.4, 0, 0] as const, // Dorsiflexion for ball-of-foot strike (앞차기) within MAX 0.44
+    supportKnee: [-0.45, 0, 0] as const, // Deep support bend - critical for stability
     pelvis: [0.15, 0, 0] as const, // X-axis tilt
     pelvisY: -0.6, // Hip Y-rotation for power (골반회전) ~34°
   },
 
   /**
    * High Axe Kick Peak (높은차기) - Leg nearly vertical
+   *
+   * Hip flexion clamped to MAX_FLEXION (1.92 rad ~110°) - the previous
+   * 2.5 rad exceeded human anatomical range.
    */
   HIGH_PEAK: {
-    hip: [2.5, 0, 0] as const, // >140° hip flexion
-    knee: [-0.1, 0, 0] as const,
-    ankle: [0.6, 0, 0] as const,
-    supportKnee: [-0.35, 0, 0] as const,
-    pelvis: [-0.25, 0, 0] as const,
+    hip: [1.92, 0, 0] as const, // MAX hip flexion (clamped from 2.5 to anatomical limit)
+    knee: [-0.1, 0, 0] as const, // Near-full extension for axe drop
+    ankle: [0.42, 0, 0] as const, // Heel-down dorsiflexion for axe kick (내려차기)
+    supportKnee: [-0.45, 0, 0] as const, // Deep support bend - critical for high kicks
+    pelvis: [-0.32, 0, 0] as const, // More back-lean to allow leg height (counter-balance)
   },
 
   /**
    * Roundhouse Chamber (돌려차기준비) - Hip rotated out
+   *
+   * Strong support-foot pivot (pelvisY=-0.78) for authentic Korean
+   * dollyeochagi (돌려차기) hip-driven power generation.
    */
   ROUNDHOUSE_CHAMBER: {
-    hip: [1.2, 0, 0.8] as const,
-    knee: [-1.5, 0, 0] as const,
-    pelvisY: -0.5,
-    spineY: 0.3,
+    hip: [1.2, 0, 0.8] as const, // Hip flexed + abducted for horizontal arc
+    knee: [-1.7, 0, 0] as const, // Tight chamber, heel near buttock
+    pelvisY: -0.78, // Deep pivot of support foot - core of roundhouse power (~45°)
+    spineY: 0.4, // Torso rotates with hips
   },
 
   /**
    * Side Kick Lateral (옆차기) - Turned sideways
+   *
+   * Body fully bladed: pelvis 90°, spine counter-rotated for foot-edge strike.
    */
   SIDE_CHAMBER: {
-    hip: [1.3, 0, 0.3] as const,
-    knee: [-1.6, 0, 0] as const,
-    pelvisY: -1.57, // 90° turn
-    spineY: -1.2,
-    spineLean: 0.2,
+    hip: [1.3, 0, 0.3] as const, // Hip flexed with slight external rotation
+    knee: [-1.7, 0, 0] as const, // Tight chamber for explosive extension
+    pelvisY: -1.57, // 90° turn - body fully bladed to target
+    spineY: -1.0, // Counter-rotated for shoulder alignment (clamped from -1.2)
+    spineLean: 0.2, // Slight lean away from kicking leg
   },
 } as const;
 
@@ -427,7 +465,7 @@ export type KickPhaseName = keyof typeof KICK_PHASES;
  *
  * Based on traditional Korean martial arts principles:
  * - 정권지르기 (Jeongkwon Jireugi) - Straight punch with fist rotation
- * - 역권지르기 (Yeokwon Jireugi) - Reverse punch with full hip drive
+ * - 역권지르기 (Yeokkwon Jireugi) - Reverse punch with full hip drive
  * - 당기기 (Dangigi) - Pulling hand (hikite) for power generation
  * - 엉덩이회전 (Eongdeongi Hoejeon) - Hip rotation for maximum power
  * - 어깨비틀기 (Eokkae Biteulgi) - Shoulder torque coordination
@@ -448,16 +486,16 @@ export const PUNCH_PHASES = {
   CHAMBER: {
     // Punching arm chamber - elbow bent, fist at hip
     shoulder: [-0.15, 0, -0.2] as const, // Shoulder slightly back and down
-    elbow: [0, 0, -1.57] as const, // Elbow bent 90° inward (-π/2)
-    wrist: [0, 0, 0] as const, // Wrist neutral, fist vertical
+    elbow: [0, 0, -1.65] as const, // Elbow bent ~95° (slightly tighter than 90° to seat fist on hip)
+    wrist: [0, 0, 0] as const, // Wrist neutral, fist vertical (세로주먹)
 
-    // Opposite arm guard position
-    oppositeShoulder: [-0.1, 0, 0.2] as const, // Guard up
-    oppositeElbow: [0, 0, 1.4] as const, // Elbow bent for guard
+    // Opposite arm guard position - high at chin (중단막기)
+    oppositeShoulder: [-0.5, 0, 0.3] as const, // Guard raised to chin level for proper protection
+    oppositeElbow: [0, 0, 1.6] as const, // Elbow tight ~92° to keep fist at chin/cheek
 
-    // Body position - neutral or slightly turned away
-    spineY: -0.1, // Slight counter-rotation
-    pelvisY: -0.1, // Hip slightly turned away from punch direction
+    // Body position - counter-coiled for explosive uncoil
+    spineY: -0.2, // Counter-rotation to load shoulders (~11°)
+    pelvisY: -0.25, // Hip pre-loaded away from target for explosive drive (~14°)
   },
 
   /**
@@ -465,12 +503,15 @@ export const PUNCH_PHASES = {
    *
    * Minimal wind-up for fast punches like jab.
    * More pronounced for power punches like cross.
+   *
+   * Elbow z is NEGATIVE in LEFT-arm convention (= flexion). Previous value
+   * of +1.8 was a sign bug that would over-extend the elbow at windup.
    */
   WINDUP: {
-    shoulder: [0.3, 0, -0.3] as const,
-    elbow: [0, 0, 1.8] as const,
-    spineY: -0.15,
-    pelvisY: -0.1,
+    shoulder: [-0.1, 0, -0.3] as const, // Shoulder slightly more pulled back
+    elbow: [0, 0, -1.75] as const, // Slightly tighter coil than CHAMBER (~100°)
+    spineY: -0.28, // Deeper counter-coil before release
+    pelvisY: -0.22, // Hips wound up for full release
   },
 
   /**
@@ -478,25 +519,25 @@ export const PUNCH_PHASES = {
    *
    * Korean martial arts extension mechanics:
    * - Fist rotates from vertical to pronated (palm-down)
-   * - Hip drives forward and rotates (엉덩이회전)
+   * - Hip drives forward and rotates (엉덩이회전) ~25-30°
    * - Shoulder rotates with punch (어깨비틀기)
-   * - Opposite arm pulls back to hip (당기기/hikite)
+   * - Opposite arm pulls back fully to hip (당기기/hikite)
    * - Elbow nearly straight at impact (~170-175°)
    */
   EXTENSION: {
     // Punching arm full extension
     shoulder: [0.25, 0, 0.15] as const, // Shoulder forward and slightly up
     elbow: [0, 0, -0.09] as const, // Elbow nearly straight (~175° = 180° - 5°)
-    wrist: [0, 0, 0.2] as const, // Fist pronated (palm-down rotation)
+    wrist: [0, 0, 0.4] as const, // Fist fully pronated (palm-down corkscrew at impact)
 
-    // Opposite arm hikite - pulls back for power
+    // Opposite arm hikite - fully retracted to hip for power
     // RIGHT-arm convention: positive Z = flexion for right elbow
-    oppositeShoulder: [-0.2, 0, -0.3] as const, // Pulled back to hip
-    oppositeElbow: [0, 0, 1.1] as const, // Elbow bent, fist at hip (hikite)
+    oppositeShoulder: [-0.2, 0, -0.35] as const, // Pulled back hard to hip
+    oppositeElbow: [0, 0, 1.55] as const, // Deep hikite, fist firmly pinned to hip
 
-    // Body rotation - hip and shoulder drive
-    spineY: 0.4, // Shoulder rotation into punch
-    pelvisY: 0.25, // Hip rotation for power generation
+    // Body rotation - full hip and shoulder drive (~26° hip rotation, within test envelope)
+    spineY: 0.48, // Shoulder rotation into punch (~27°)
+    pelvisY: 0.45, // Strong hip rotation for Korean power generation (~26°)
   },
 
   /**
@@ -510,16 +551,16 @@ export const PUNCH_PHASES = {
     // Maximum extension - slightly more extended than EXTENSION phase
     shoulder: [0.25, 0, 0.15] as const,
     elbow: [0, 0, -0.05] as const, // Even closer to straight (~177° = 180° - 3°)
-    wrist: [0, 0, 0.2] as const, // Fully pronated
+    wrist: [0, 0, 0.45] as const, // Fully pronated, knuckles aligned with forearm
 
     // Opposite arm fully retracted (hikite)
     // RIGHT-arm convention: positive Z = flexion for right elbow
-    oppositeShoulder: [-0.2, 0, -0.3] as const,
-    oppositeElbow: [0, 0, 1.1] as const, // Elbow bent, fist at hip (hikite)
+    oppositeShoulder: [-0.2, 0, -0.35] as const,
+    oppositeElbow: [0, 0, 1.55] as const, // Deep hikite, fist at hip
 
-    // Maximum body rotation
-    spineY: 0.45,
-    pelvisY: 0.3,
+    // Maximum body rotation - peak of hip drive (within test envelope < 0.5)
+    spineY: 0.52, // Strong shoulder torque (~30°)
+    pelvisY: 0.49, // Peak hip rotation (~28°)
   },
 } as const;
 
