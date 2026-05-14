@@ -42,8 +42,9 @@ export const AnimationUpdater: React.FC<AnimationUpdaterProps> = ({
   player2Animation,
 }) => {
   useFrame((_state, delta) => {
-    player1Animation.update(delta);
-    player2Animation.update(delta);
+    const safeDelta = Math.min(delta, 1 / 30);
+    player1Animation.update(safeDelta);
+    player2Animation.update(safeDelta);
   });
 
   return null; // Component only updates animation state, renders no visual elements

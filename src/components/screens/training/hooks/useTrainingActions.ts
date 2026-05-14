@@ -17,6 +17,7 @@ import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysic
 import {
   AnimationState,
   AnimationType,
+  getAnimation,
   getAnimationForTechnique,
 } from "../../../../systems/animation";
 import { physicalReachCalculator } from "../../../../systems/physics";
@@ -69,6 +70,7 @@ export interface UseTrainingActionsConfig {
   }) => void;
   readonly playerAnimation: {
     readonly transitionTo: (state: AnimationState) => boolean;
+    readonly transitionToAttack: (durationSeconds: number) => boolean;
     readonly transitionToStanceGuard: (stance: TrigramStance) => boolean;
     readonly currentState: string;
   };
@@ -452,9 +454,11 @@ export function useTrainingActions(
     if (setAttackAnimation && techniqueId) {
       const animationName = getAnimationForTechnique(techniqueId);
       setAttackAnimation(animationName);
+      const animation = getAnimation(animationName);
+      playerAnimation.transitionToAttack(animation?.duration ?? 0.55);
+    } else {
+      playerAnimation.transitionToAttack(0.55);
     }
-
-    playerAnimation.transitionTo(AnimationState.ATTACK);
 
     if (!techniqueToUse && selectedTechniqueId) {
       techniqueToUse = KoreanTechniquesSystem.getTechniqueById(selectedTechniqueId);

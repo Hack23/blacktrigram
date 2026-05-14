@@ -101,6 +101,13 @@ describe("AnimationRegistry", () => {
       expect(ALL_ANIMATIONS.size).toBeGreaterThan(50); // Many animations
     });
 
+    it("should contain dedicated Li, Gam, and Gon trigram animations", () => {
+      expect(ALL_ANIMATIONS.has("li_fire_spear_animation")).toBe(true);
+      expect(ALL_ANIMATIONS.has("gam_water_flow_counter")).toBe(true);
+      expect(ALL_ANIMATIONS.has("gon_earth_embrace")).toBe(true);
+      expect(ALL_ANIMATIONS.has("gon_leg_sweep")).toBe(true);
+    });
+
     it("should return valid SkeletalAnimation objects", () => {
       const idle = ALL_ANIMATIONS.get("idle");
       expect(idle).toBeDefined();
@@ -336,6 +343,14 @@ describe("AnimationRegistry", () => {
         expect(animation?.duration).toBeGreaterThan(0);
         expect(animation?.keyframes).toBeInstanceOf(Array);
       }
+    });
+  });
+
+  describe("resolveTechniqueAnimation", () => {
+    it("should resolve animationId entries before generic name fallback", () => {
+      const result = getAnimationForTechnique("gon_earth_embrace");
+      expect(result).toBe("gon_earth_embrace");
+      expect(getAnimation(result)?.name).toBe("gon_earth_embrace");
     });
   });
 

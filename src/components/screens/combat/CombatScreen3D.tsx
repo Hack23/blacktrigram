@@ -1358,7 +1358,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     (newStance: TrigramStance) => {
       const currentStance = validPlayers[0].currentStance;
 
-      const success = player1Animation.transitionToStanceGuard(newStance);
+      const success = player1Animation.transitionToStanceChange(
+        currentStance,
+        newStance,
+      );
 
       if (success) {
         const prevStance = STANCE_INDEX_MAP.get(currentStance) ?? 0;
@@ -1455,7 +1458,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       setPlayer1TechniqueId(basicTechnique.id);
     }
 
-    const success = player1Animation.transitionTo(AnimationState.ATTACK);
+    const skeletalAnim = getAnimation(animationName);
+    const attackDuration = skeletalAnim?.duration ?? 0.55;
+    setPlayer1AttackDuration(attackDuration);
+    const success = player1Animation.transitionToAttack(attackDuration);
     if (success) {
       combatActions.setExecutingTechnique(true);
     } else {
@@ -1577,7 +1583,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             break;
 
           case "stance_side_switch":
-            player1Animation.transitionTo(AnimationState.STANCE_SIDE_SWITCH);
+            handleStanceSideSwitch(0);
             break;
 
         }
@@ -1588,6 +1594,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         executeFallbackRecovery,
         balanceSystem,
         player1Animation,
+        handleStanceSideSwitch,
         players,
         onPlayerUpdate,
         audio,

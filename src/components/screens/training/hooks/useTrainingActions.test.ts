@@ -9,7 +9,7 @@
 import { renderHook, act } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { useTrainingActions, UseTrainingActionsConfig } from "./useTrainingActions";
-import { AnimationState, AnimationType } from "../../../../systems/animation";
+import { AnimationType } from "../../../../systems/animation";
 import { PlayerArchetype, TrigramStance } from "../../../../types/common";
 import { KoreanTechniquesSystem } from "../../../../systems/trigram/KoreanTechniques";
 
@@ -38,6 +38,7 @@ describe("useTrainingActions", () => {
     mockAudioPlaySFX = vi.fn().mockResolvedValue(undefined);
     mockPlayerAnimation = {
       transitionTo: vi.fn().mockReturnValue(true),
+      transitionToAttack: vi.fn().mockReturnValue(true),
       transitionToStanceGuard: vi.fn().mockReturnValue(true),
       currentState: "idle",
     };
@@ -374,8 +375,8 @@ describe("useTrainingActions", () => {
         result.current.handleAttack();
       });
 
-      // Animation should always be triggered
-      expect(mockPlayerAnimation.transitionTo).toHaveBeenCalledWith(AnimationState.ATTACK);
+      // Animation should always be triggered with a technique-aware duration.
+      expect(mockPlayerAnimation.transitionToAttack).toHaveBeenCalledWith(0.55);
     });
   });
 

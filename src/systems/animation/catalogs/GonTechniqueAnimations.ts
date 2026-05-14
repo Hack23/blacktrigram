@@ -1135,3 +1135,23 @@ export const GON_SACRIFICE_THROW_ANIMATION: SkeletalAnimation =
     .withGrab("both") // Maintain control
     
     .build();
+
+/**
+ * All Gon technique combat animations.
+ *
+ * Keeps Earth-trigram throw and ground-control techniques addressable by their
+ * technique IDs instead of falling back to generic grappling animations.
+ *
+ * @korean 곤괘기술애니메이션맵
+ */
+export const GON_TECHNIQUE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
+  new Map([
+    ["gon_earth_embrace", GON_EARTH_EMBRACE_ANIMATION],
+    ["gon_ground_control_transition", GON_GROUND_CONTROL_TRANSITION],
+    ["gon_leg_sweep", GON_LEG_SWEEP_ANIMATION],
+    ["gon_ankle_pick", GON_ANKLE_PICK_ANIMATION],
+    ["gon_ssireum_throw", GON_SSIREUM_THROW_ANIMATION],
+    ["gon_ground_pound", GON_GROUND_POUND_ANIMATION],
+    ["gon_body_lock", GON_BODY_LOCK_ANIMATION],
+    ["gon_sacrifice_throw", GON_SACRIFICE_THROW_ANIMATION],
+  ]);

@@ -35,6 +35,7 @@ export type PlayerAnimation =
   | "defend"
   | "hit"
   | "stance_change"
+  | "stance_side_switch"
   | "technique_execute"
   | "walk"
   | "run" // Running animation (달리기)
