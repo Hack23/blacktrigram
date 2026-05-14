@@ -831,6 +831,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     setPlayer2TechniqueId(undefined);
   });
 
+  const preparePlayer1AttackTiming = useCallback((animationName: string) => {
+    const attackDuration = getAnimationDurationOrFallback(animationName);
+    const attackFrames = Math.max(
+      1,
+      Math.round(attackDuration * TARGET_ANIMATION_FPS),
+    );
+    player1HitTriggerFrameRef.current = Math.round(attackFrames * 0.4);
+    player1AttackHitFiredRef.current = false;
+    setPlayer1AttackDuration(attackDuration);
+    return attackDuration;
+  }, []);
+
   const player1AnimationEvents = useMemo<AnimationEvents>(
     () => ({
       onFrame: (frame, state) => {
@@ -1309,15 +1321,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         setPlayer1TechniqueId(technique.id);
 
-        const attackDuration = getAnimationDurationOrFallback(animationName);
-
-        const attackFrames = Math.max(
-          1,
-          Math.round(attackDuration * TARGET_ANIMATION_FPS),
-        );
-        player1HitTriggerFrameRef.current = Math.round(attackFrames * 0.4);
-        player1AttackHitFiredRef.current = false;
-        setPlayer1AttackDuration(attackDuration);
+        const attackDuration = preparePlayer1AttackTiming(animationName);
         player1Animation.transitionToAttack(attackDuration);
         combatActions.setExecutingTechnique(true);
 
@@ -1341,6 +1345,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         addCombatMessage,
         player1Animation,
         combatActions,
+        preparePlayer1AttackTiming,
       ],
     ),
   });
@@ -1465,8 +1470,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       setPlayer1TechniqueId(basicTechnique.id);
     }
 
-    const attackDuration = getAnimationDurationOrFallback(animationName);
-    setPlayer1AttackDuration(attackDuration);
+    const attackDuration = preparePlayer1AttackTiming(animationName);
     const success = player1Animation.transitionToAttack(attackDuration);
     if (success) {
       combatActions.setExecutingTechnique(true);
@@ -1481,6 +1485,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatActions,
     handleAttack,
     techniqueSelection.availableTechniques,
+    preparePlayer1AttackTiming,
   ]);
 
   const handleDefendWithFeedback = useCallback(() => {

@@ -836,7 +836,9 @@ export function getAnimationByName(
 ): SkeletalAnimation | undefined {
   // ALL_ANIMATIONS contains concrete authored keyframe clips and takes
   // precedence; ANIMATION_ID_REGISTRY contains technique-data aliases that may
-  // intentionally point at those same clips.
+  // intentionally point at those same clips. Example: a technique animationId
+  // can exist only as an alias when "musa_dragon_fist" maps to the existing
+  // CROSS_ANIMATION_ENHANCED clip rather than a separately named keyframe clip.
   return ALL_ANIMATIONS.get(name) ?? ANIMATION_ID_REGISTRY.get(name);
 }
 
