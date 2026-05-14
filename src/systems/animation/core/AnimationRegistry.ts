@@ -32,6 +32,7 @@
 
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { AnimationType } from "../builders/MartialArtsAnimationBuilder";
+import { FALLBACK_ATTACK_DURATION_SECONDS } from "./types";
 import {
   BACKWARD_RETREAT_ANIMATION,
   FORWARD_DASH_ANIMATION,
@@ -818,6 +819,9 @@ export function getCategoryDefaultAnimation(
 /**
  * Get animation by name (legacy support)
  *
+ * Legacy semantic alias for callers that specifically receive a skeletal
+ * animation name from UI/rendering code.
+ *
  * @param name - Animation name (e.g., "front_kick")
  * @returns Skeletal animation or undefined
  *
@@ -830,13 +834,17 @@ export function getCategoryDefaultAnimation(
 export function getAnimationByName(
   name: string,
 ): SkeletalAnimation | undefined {
-  // Dedicated skeletal animation names win; ID registry entries are secondary
-  // aliases from technique data to existing animation objects.
+  // ALL_ANIMATIONS contains concrete authored keyframe clips and takes
+  // precedence; ANIMATION_ID_REGISTRY contains technique-data aliases that may
+  // intentionally point at those same clips.
   return ALL_ANIMATIONS.get(name) ?? ANIMATION_ID_REGISTRY.get(name);
 }
 
 /**
  * Get animation by name - unified lookup across all animation registries
+ *
+ * Preferred general-purpose lookup for gameplay systems that may pass either a
+ * concrete skeletal animation name or a technique animation ID.
  *
  * Searches ALL_ANIMATIONS which includes:
  * - BASIC_ANIMATIONS (idle, walk, run, fall)
@@ -854,8 +862,20 @@ export function getAnimationByName(
  * @korean 애니메이션가져오기
  */
 export function getAnimation(name: string): SkeletalAnimation | undefined {
-  // Preserve exact skeletal animation keys before falling back to technique ID aliases.
+  // Preserve authored clip keys before falling back to technique ID aliases.
   return ALL_ANIMATIONS.get(name) ?? ANIMATION_ID_REGISTRY.get(name);
+}
+
+/**
+ * Get a skeletal animation duration or the shared short-technique fallback.
+ *
+ * @param name - Animation name or technique animation ID.
+ * @returns Duration in seconds.
+ *
+ * @korean 애니메이션지속시간조회
+ */
+export function getAnimationDurationOrFallback(name: string): number {
+  return getAnimation(name)?.duration ?? FALLBACK_ATTACK_DURATION_SECONDS;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

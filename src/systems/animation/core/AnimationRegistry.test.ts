@@ -16,6 +16,7 @@ import {
   ANIMATION_REGISTRY,
   CATEGORY_DEFAULT_ANIMATIONS,
   getAnimation,
+  getAnimationDurationOrFallback,
   getAnimationById,
   getAnimationByIdWithFallback,
   getAnimationByName,
@@ -343,6 +344,18 @@ describe("AnimationRegistry", () => {
         expect(animation?.duration).toBeGreaterThan(0);
         expect(animation?.keyframes).toBeInstanceOf(Array);
       }
+    });
+  });
+
+  describe("getAnimationDurationOrFallback", () => {
+    it("should return registered animation duration when metadata exists", () => {
+      expect(getAnimationDurationOrFallback("gon_earth_embrace")).toBe(
+        getAnimation("gon_earth_embrace")?.duration,
+      );
+    });
+
+    it("should return shared fallback duration for missing animation metadata", () => {
+      expect(getAnimationDurationOrFallback("missing_animation")).toBe(0.55);
     });
   });
 

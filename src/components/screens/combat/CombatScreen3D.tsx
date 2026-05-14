@@ -40,8 +40,8 @@ import {
   AnimationState,
   AnimationType,
   determineRecoveryType,
-  FALLBACK_ATTACK_DURATION_SECONDS,
   getAnimation,
+  getAnimationDurationOrFallback,
   getRecoveryAnimationState,
   resolveTechniqueAnimation,
 } from "../../../systems/animation";
@@ -139,6 +139,8 @@ import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
+
+const PLAYER_ONE_INDEX = 0;
 
 /**
  * Props for the CombatScreen3D component.
@@ -1306,8 +1308,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         setPlayer1TechniqueId(technique.id);
 
-        const skeletalAnim = getAnimation(animationName);
-        const attackDuration = skeletalAnim?.duration ?? 0.55;
+        const attackDuration = getAnimationDurationOrFallback(animationName);
 
         const attackFrames = Math.max(1, Math.round(attackDuration * 60));
         player1HitTriggerFrameRef.current = Math.round(attackFrames * 0.4);
@@ -1460,9 +1461,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       setPlayer1TechniqueId(basicTechnique.id);
     }
 
-    const skeletalAnim = getAnimation(animationName);
-    const attackDuration =
-      skeletalAnim?.duration ?? FALLBACK_ATTACK_DURATION_SECONDS;
+    const attackDuration = getAnimationDurationOrFallback(animationName);
     setPlayer1AttackDuration(attackDuration);
     const success = player1Animation.transitionToAttack(attackDuration);
     if (success) {
@@ -1586,7 +1585,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             break;
 
           case "stance_side_switch":
-            handleStanceSideSwitch(0);
+            handleStanceSideSwitch(PLAYER_ONE_INDEX);
             break;
 
         }

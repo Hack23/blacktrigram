@@ -17,8 +17,7 @@ import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysic
 import {
   AnimationState,
   AnimationType,
-  FALLBACK_ATTACK_DURATION_SECONDS,
-  getAnimation,
+  getAnimationDurationOrFallback,
   getAnimationForTechnique,
 } from "../../../../systems/animation";
 import { physicalReachCalculator } from "../../../../systems/physics";
@@ -455,12 +454,11 @@ export function useTrainingActions(
     if (setAttackAnimation && techniqueId) {
       const animationName = getAnimationForTechnique(techniqueId);
       setAttackAnimation(animationName);
-      const animation = getAnimation(animationName);
       playerAnimation.transitionToAttack(
-        animation?.duration ?? FALLBACK_ATTACK_DURATION_SECONDS,
+        getAnimationDurationOrFallback(animationName),
       );
     } else {
-      playerAnimation.transitionToAttack(FALLBACK_ATTACK_DURATION_SECONDS);
+      playerAnimation.transitionToAttack(getAnimationDurationOrFallback(""));
     }
 
     if (!techniqueToUse && selectedTechniqueId) {
