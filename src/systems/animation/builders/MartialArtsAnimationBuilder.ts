@@ -1522,9 +1522,11 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(oppositeElbow, 0, 0, isRight ? -1.1 : 1.1);
 
       // Drive up through legs - explosive extension generates upward force (다리구동력)
-      // From crouch position, knees extend to nearly straight (0 = straight)
-      kf.rotate(BoneName.KNEE_L, 0.05, 0, 0); // Extend from crouch (nearly straight)
-      kf.rotate(BoneName.KNEE_R, 0.05, 0, 0); // Extend from crouch (nearly straight)
+      // 중심 (Jungsim) — knees retain a slight bend even at peak extension
+      // so the centre of mass stays over the base of support and the rise
+      // does not over-extend into a locked, hyperextended stance.
+      kf.rotate(BoneName.KNEE_L, -0.05, 0, 0); // Extend from crouch (slight bend retained)
+      kf.rotate(BoneName.KNEE_R, -0.05, 0, 0); // Extend from crouch (slight bend retained)
       kf.rotate(BoneName.HIP_L, -0.1, 0, 0); // Hip drives upward
       kf.rotate(BoneName.HIP_R, -0.1, 0, 0); // Hip drives upward
       kf.rotate(BoneName.PELVIS, -0.25, isRight ? 0.2 : -0.2, 0); // Explosive rise

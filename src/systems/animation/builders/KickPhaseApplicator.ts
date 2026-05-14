@@ -16,6 +16,11 @@ import { KICK_PHASES } from "./MartialArtsConstants";
 /**
  * Interface for basic kick phases (CHAMBER, EXTENSION, HIGH_PEAK)
  * These phases have pelvis as a tuple [x, y, z]
+ *
+ * Optional `pelvisY` overrides `pelvis[1]` when present and is used by
+ * EXTENSION-type phases to express the support-leg hip-pivot torque
+ * (축발회전 / Chukbal Hoejeon) independently from the lateral tilt
+ * encoded in `pelvis[0]` (forward) and `pelvis[2]` (lateral).
  */
 interface BasicKickPhase {
   readonly hip: readonly [number, number, number];
@@ -23,6 +28,7 @@ interface BasicKickPhase {
   readonly ankle?: readonly [number, number, number];
   readonly supportKnee?: readonly [number, number, number];
   readonly pelvis?: readonly [number, number, number];
+  readonly pelvisY?: number;
 }
 
 /**
@@ -88,6 +94,12 @@ export function applyKickPhaseToConfig(
   const footBone = side === "right" ? BoneName.FOOT_R : BoneName.FOOT_L;
   const supportKneeBone = side === "right" ? BoneName.KNEE_L : BoneName.KNEE_R;
 
+  // 축발회전 (Chukbal Hoejeon) — support-foot pivot direction reverses with
+  // kicking leg: a right kick rotates the support hip CW (negative Y),
+  // a left kick rotates it CCW (positive Y). The lateral pelvis tilt
+  // (pelvis[2]) and counter-spine-lean are likewise mirrored.
+  const sideMirror = side === "right" ? 1 : -1;
+
   // Required bones for all kick phases
   kf.rotate(hipBone, phase.hip[0], phase.hip[1], phase.hip[2]);
   kf.rotate(kneeBone, phase.knee[0], phase.knee[1], phase.knee[2]);
@@ -103,16 +115,15 @@ export function applyKickPhaseToConfig(
 
   // Optional pelvis - includes both tilt (X) and rotation (Y)
   if (includePelvis && phase.pelvis) {
-    // Use pelvisY if defined (for hip rotation power), otherwise pelvis[1]
-    const pelvisYRotation =
-      "pelvisY" in phase && typeof phase.pelvisY === "number"
-        ? phase.pelvisY
-        : phase.pelvis[1];
+    // Use pelvisY if defined (for hip rotation power), otherwise pelvis[1].
+    // Y rotation and lateral tilt (Z) mirror with kicking leg.
+    const pelvisYRaw =
+      typeof phase.pelvisY === "number" ? phase.pelvisY : phase.pelvis[1];
     kf.rotate(
       BoneName.PELVIS,
       phase.pelvis[0],
-      pelvisYRotation,
-      phase.pelvis[2],
+      pelvisYRaw * sideMirror,
+      phase.pelvis[2] * sideMirror,
     );
   }
 
@@ -154,16 +165,19 @@ export function applyRoundhousePhaseToConfig(
 
   const hipBone = side === "right" ? BoneName.HIP_R : BoneName.HIP_L;
   const kneeBone = side === "right" ? BoneName.KNEE_R : BoneName.KNEE_L;
+  // 호선 (Hoseon) — circular arc of the roundhouse mirrors with the
+  // kicking leg: support-foot pivot and torso counter-rotation reverse.
+  const sideMirror = side === "right" ? 1 : -1;
 
   kf.rotate(hipBone, phase.hip[0], phase.hip[1], phase.hip[2]);
   kf.rotate(kneeBone, phase.knee[0], phase.knee[1], phase.knee[2]);
 
   // Y-axis only rotations for roundhouse
   if (phase.pelvisY !== undefined) {
-    kf.rotate(BoneName.PELVIS, 0, phase.pelvisY, 0);
+    kf.rotate(BoneName.PELVIS, 0, phase.pelvisY * sideMirror, 0);
   }
   if (phase.spineY !== undefined) {
-    kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY, 0);
+    kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY * sideMirror, 0);
   }
 
   // Anatomy integration
@@ -194,18 +208,22 @@ export function applySideKickPhaseToConfig(
 
   const hipBone = side === "right" ? BoneName.HIP_R : BoneName.HIP_L;
   const kneeBone = side === "right" ? BoneName.KNEE_R : BoneName.KNEE_L;
+  // 옆차기 (Yeop Chagi) lean direction reverses with kicking leg —
+  // a right side-kick leans the torso to the right (away from kicking
+  // leg's path), a left side-kick leans to the left.
+  const sideMirror = side === "right" ? 1 : -1;
 
   kf.rotate(hipBone, phase.hip[0], phase.hip[1], phase.hip[2]);
   kf.rotate(kneeBone, phase.knee[0], phase.knee[1], phase.knee[2]);
 
-  // Side kick specific rotations
+  // Side kick specific rotations (mirrored by kicking leg)
   if (phase.pelvisY !== undefined) {
-    kf.rotate(BoneName.PELVIS, 0, phase.pelvisY, 0);
+    kf.rotate(BoneName.PELVIS, 0, phase.pelvisY * sideMirror, 0);
   }
   if (phase.spineY !== undefined) {
-    const lean = phase.spineLean ?? 0;
-    kf.rotate(BoneName.SPINE_LOWER, 0, phase.spineY, 0);
-    kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY, lean);
+    const lean = (phase.spineLean ?? 0) * sideMirror;
+    kf.rotate(BoneName.SPINE_LOWER, 0, phase.spineY * sideMirror, 0);
+    kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY * sideMirror, lean);
   }
 
   // Anatomy integration
@@ -238,6 +256,9 @@ export function applyHighPeakPhaseToConfig(
   const kneeBone = side === "right" ? BoneName.KNEE_R : BoneName.KNEE_L;
   const footBone = side === "right" ? BoneName.FOOT_R : BoneName.FOOT_L;
   const supportKneeBone = side === "right" ? BoneName.KNEE_L : BoneName.KNEE_R;
+  // High-peak axe-kick rise: pelvis lateral tilt and support-hip pivot
+  // mirror with kicking leg for biomechanical correctness.
+  const sideMirror = side === "right" ? 1 : -1;
 
   kf.rotate(hipBone, phase.hip[0], phase.hip[1], phase.hip[2]);
   kf.rotate(kneeBone, phase.knee[0], phase.knee[1], phase.knee[2]);
@@ -254,11 +275,13 @@ export function applyHighPeakPhaseToConfig(
     );
   }
   if (phase.pelvis) {
+    const pelvisYRaw =
+      typeof phase.pelvisY === "number" ? phase.pelvisY : phase.pelvis[1];
     kf.rotate(
       BoneName.PELVIS,
       phase.pelvis[0],
-      phase.pelvis[1],
-      phase.pelvis[2],
+      pelvisYRaw * sideMirror,
+      phase.pelvis[2] * sideMirror,
     );
   }
 

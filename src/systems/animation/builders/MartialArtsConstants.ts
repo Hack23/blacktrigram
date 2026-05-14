@@ -31,28 +31,36 @@
 export const HAND_POSES = {
   /**
    * Closed Fist - Standard punch (주먹)
-   * Fingers curled tight, thumb outside
+   * Fingers curled tight, thumb wrapped outside over index/middle PIPs.
+   *
+   * Korean martial arts (Taekwondo / Tang Soo Do / Hapkido) fist:
+   * - MCP (prox) flexed ~90° (1.57 rad)
+   * - PIP (inter) flexed ~90° (1.57 rad)
+   * - DIP (dist) flexed ~63° (1.1 rad) — fingertips pressed firmly into the
+   *   distal palmar crease so the striking surface is the front of the
+   *   second-row knuckles (정권). Previous value of 0.8 rad (~46°) left
+   *   the fingertips visibly slack and reduced impact-surface integrity.
    */
   FIST: {
     thumb_meta: [0.3, 0.5, 0.2] as const,
     thumb_prox: [0.4, 0, 0] as const,
     thumb_dist: [0.3, 0, 0] as const,
     index_meta: [0, 0, 0] as const,
-    index_prox: [1.57, 0, 0] as const, // 90° curl
-    index_inter: [1.57, 0, 0] as const,
-    index_dist: [0.8, 0, 0] as const,
+    index_prox: [1.57, 0, 0] as const, // 90° curl (MCP)
+    index_inter: [1.57, 0, 0] as const, // 90° curl (PIP)
+    index_dist: [1.1, 0, 0] as const, // ~63° curl (DIP) — tip into palm
     middle_meta: [0, 0, 0] as const,
     middle_prox: [1.57, 0, 0] as const,
     middle_inter: [1.57, 0, 0] as const,
-    middle_dist: [0.8, 0, 0] as const,
+    middle_dist: [1.1, 0, 0] as const,
     ring_meta: [0, 0, 0] as const,
     ring_prox: [1.57, 0, 0] as const,
     ring_inter: [1.57, 0, 0] as const,
-    ring_dist: [0.8, 0, 0] as const,
+    ring_dist: [1.1, 0, 0] as const,
     pinky_meta: [0, 0, 0] as const,
     pinky_prox: [1.57, 0, 0] as const,
     pinky_inter: [1.57, 0, 0] as const,
-    pinky_dist: [0.8, 0, 0] as const,
+    pinky_dist: [1.1, 0, 0] as const,
   },
 
   /**
@@ -108,34 +116,50 @@ export const HAND_POSES = {
   },
 
   /**
-   * Knife Hand - Ridge hand strikes (수도)
-   * Fingers together, thumb tucked
+   * Knife Hand - Ridge hand strikes (수도, Sudo)
+   *
+   * Korean 수도치기 (Sudo Chigi): all four fingers fully extended and
+   * pressed tightly together so the medial edge of the hand (pinky-side
+   * fascia overlying the fifth metacarpal) forms a rigid striking ridge.
+   * The thumb is firmly adducted and flexed across the palm so it cannot
+   * be hooked or broken by the target.
+   *
+   * Previous values held the fingers at a slight 0.1 rad bend, which
+   * softens the ridge and is anatomically incorrect for 수도. Fingers are
+   * now strictly 0 rad (fully straight); thumb wrap is unchanged.
    */
   KNIFE_HAND: {
     thumb_meta: [0.5, 0.8, 0.4] as const,
     thumb_prox: [0.4, 0, 0] as const,
     thumb_dist: [0.2, 0, 0] as const,
     index_meta: [0, 0, 0] as const,
-    index_prox: [0.1, 0, 0] as const,
-    index_inter: [0.05, 0, 0] as const,
+    index_prox: [0, 0, 0] as const, // Fully extended (rigid ridge)
+    index_inter: [0, 0, 0] as const,
     index_dist: [0, 0, 0] as const,
     middle_meta: [0, 0, 0] as const,
-    middle_prox: [0.1, 0, 0] as const,
-    middle_inter: [0.05, 0, 0] as const,
+    middle_prox: [0, 0, 0] as const,
+    middle_inter: [0, 0, 0] as const,
     middle_dist: [0, 0, 0] as const,
     ring_meta: [0, 0, 0] as const,
-    ring_prox: [0.1, 0, 0] as const,
-    ring_inter: [0.05, 0, 0] as const,
+    ring_prox: [0, 0, 0] as const,
+    ring_inter: [0, 0, 0] as const,
     ring_dist: [0, 0, 0] as const,
     pinky_meta: [0, 0, 0] as const,
-    pinky_prox: [0.1, 0, 0] as const,
-    pinky_inter: [0.05, 0, 0] as const,
+    pinky_prox: [0, 0, 0] as const,
+    pinky_inter: [0, 0, 0] as const,
     pinky_dist: [0, 0, 0] as const,
   },
 
   /**
-   * Hammer Fist - Bottom fist strikes (철퇴)
-   * Tight fist for hammer blow
+   * Hammer Fist - Bottom fist strikes (철퇴, Cheoltoe)
+   *
+   * Korean martial arts hammer-fist (망치주먹): the fist is clenched
+   * tighter than a standard punching fist because the striking surface is
+   * the bottom (ulnar-side) of the rolled fingers, which must be a hard,
+   * compact mass with no give. PIP/MCP are at the upper end of voluntary
+   * flexion (~97° / 1.7 rad) and DIP is now ~69° (1.2 rad) so the
+   * fingertips bury deep into the palmar crease and present a single,
+   * rounded striking ridge along the pinky side.
    */
   HAMMER_FIST: {
     thumb_meta: [0.4, 0.6, 0.3] as const,
@@ -144,45 +168,51 @@ export const HAND_POSES = {
     index_meta: [0, 0, 0] as const,
     index_prox: [1.7, 0, 0] as const,
     index_inter: [1.7, 0, 0] as const,
-    index_dist: [1.0, 0, 0] as const,
+    index_dist: [1.2, 0, 0] as const, // Tip pressed firmly into palm
     middle_meta: [0, 0, 0] as const,
     middle_prox: [1.7, 0, 0] as const,
     middle_inter: [1.7, 0, 0] as const,
-    middle_dist: [1.0, 0, 0] as const,
+    middle_dist: [1.2, 0, 0] as const,
     ring_meta: [0, 0, 0] as const,
     ring_prox: [1.7, 0, 0] as const,
     ring_inter: [1.7, 0, 0] as const,
-    ring_dist: [1.0, 0, 0] as const,
+    ring_dist: [1.2, 0, 0] as const,
     pinky_meta: [0, 0, 0] as const,
     pinky_prox: [1.7, 0, 0] as const,
     pinky_inter: [1.7, 0, 0] as const,
-    pinky_dist: [1.0, 0, 0] as const,
+    pinky_dist: [1.2, 0, 0] as const,
   },
 
   /**
-   * Backfist - Knuckle strikes (등주먹)
-   * Fist with wrist extended back
+   * Backfist - Knuckle strikes (등주먹, Deungjumeok)
+   *
+   * Korean 등주먹치기 (Deungjumeok Chigi): the fist is closed exactly as
+   * for a forward punch — only the wrist orientation changes so that the
+   * dorsal surface of the second-row knuckles is the impact face. The
+   * previous values left the fist noticeably loose (1.4 / 1.4 / 0.7),
+   * which is biomechanically inconsistent with a 등주먹 strike where the
+   * fist must be a single rigid mass on impact. Now matches FIST tightness.
    */
   BACKFIST: {
     thumb_meta: [0.3, 0.5, 0.2] as const,
     thumb_prox: [0.3, 0, 0] as const,
     thumb_dist: [0.2, 0, 0] as const,
     index_meta: [0, 0, 0] as const,
-    index_prox: [1.4, 0, 0] as const,
-    index_inter: [1.4, 0, 0] as const,
-    index_dist: [0.7, 0, 0] as const,
+    index_prox: [1.55, 0, 0] as const,
+    index_inter: [1.55, 0, 0] as const,
+    index_dist: [1.05, 0, 0] as const,
     middle_meta: [0, 0, 0] as const,
-    middle_prox: [1.4, 0, 0] as const,
-    middle_inter: [1.4, 0, 0] as const,
-    middle_dist: [0.7, 0, 0] as const,
+    middle_prox: [1.55, 0, 0] as const,
+    middle_inter: [1.55, 0, 0] as const,
+    middle_dist: [1.05, 0, 0] as const,
     ring_meta: [0, 0, 0] as const,
-    ring_prox: [1.4, 0, 0] as const,
-    ring_inter: [1.4, 0, 0] as const,
-    ring_dist: [0.7, 0, 0] as const,
+    ring_prox: [1.55, 0, 0] as const,
+    ring_inter: [1.55, 0, 0] as const,
+    ring_dist: [1.05, 0, 0] as const,
     pinky_meta: [0, 0, 0] as const,
-    pinky_prox: [1.4, 0, 0] as const,
-    pinky_inter: [1.4, 0, 0] as const,
-    pinky_dist: [0.7, 0, 0] as const,
+    pinky_prox: [1.55, 0, 0] as const,
+    pinky_inter: [1.55, 0, 0] as const,
+    pinky_dist: [1.05, 0, 0] as const,
   },
 
   /**
