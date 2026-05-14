@@ -225,14 +225,11 @@ import {
   THROAT_STRIKE_ANIMATION,
 } from "../catalogs/SpecializedPunchAnimations";
 
-const getRegisteredGonTechniqueAnimation = (
-  animationId: string,
-): SkeletalAnimation => {
-  const animation = GON_TECHNIQUE_ANIMATIONS.get(animationId);
-  if (!animation) {
-    throw new Error(`Missing Gon technique animation: ${animationId}`);
-  }
-  return animation;
+const STANCE_TRANSITION_ANIMATION: SkeletalAnimation = {
+  ...IDLE_STANCE_ANIMATION,
+  name: "stance_change",
+  koreanName: "자세전환",
+  loop: false,
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -545,7 +542,7 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ...GON_TECHNIQUE_ANIMATIONS, // ☷ Earth: Ssireum throws and ground control
   // Additional animations from AttackAnimations not in other maps
   ["idle_stance", IDLE_STANCE_ANIMATION],
-  ["stance_change", IDLE_STANCE_ANIMATION],
+  ["stance_change", STANCE_TRANSITION_ANIMATION],
   ["forward_dash", FORWARD_DASH_ANIMATION],
   ["backward_retreat", BACKWARD_RETREAT_ANIMATION],
   ["side_step", SIDE_STEP_ANIMATION],
@@ -599,20 +596,7 @@ export const ANIMATION_ID_REGISTRY: ReadonlyMap<string, SkeletalAnimation> =
     ["geon_heavenly_fist", JAB_ANIMATION_ENHANCED],
     ["geon_high_block", GEON_HIGH_BLOCK],
     ["geon_palm_strike", PALM_STRIKE_ANIMATION],
-    ["gon_ankle_pick", getRegisteredGonTechniqueAnimation("gon_ankle_pick")],
-    [
-      "gon_earth_embrace",
-      getRegisteredGonTechniqueAnimation("gon_earth_embrace"),
-    ],
-    [
-      "gon_ground_pound",
-      getRegisteredGonTechniqueAnimation("gon_ground_pound"),
-    ],
-    ["gon_leg_sweep", getRegisteredGonTechniqueAnimation("gon_leg_sweep")],
-    [
-      "gon_ssireum_throw",
-      getRegisteredGonTechniqueAnimation("gon_ssireum_throw"),
-    ],
+    ...GON_TECHNIQUE_ANIMATIONS,
     ["hacker_data_strike", PALM_STRIKE_ANIMATION],
     ["hacker_system_crash", HAMMER_FIST_ANIMATION],
     ["jin_back_kick", BACK_KICK_ANIMATION],

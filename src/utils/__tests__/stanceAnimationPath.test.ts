@@ -45,7 +45,7 @@ describe("Stance Animation Path Integration", () => {
         AnimationState.STANCE_SIDE_SWITCH
       );
       expect(result).toBe("stance_change");
-      expect(getAnimationByName(result)).toBeDefined();
+      expect(getAnimationByName(result)?.name).toBe(result);
     });
   });
 

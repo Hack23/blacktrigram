@@ -371,6 +371,21 @@ describe("AnimationRegistry", () => {
       expect(result).toBe("gon_earth_embrace");
       expect(getAnimation(result)?.name).toBe("gon_earth_embrace");
     });
+
+    it("should keep Gon ID lookups aligned with dedicated Gon clips", () => {
+      const gonAnimationIds = [
+        "gon_ankle_pick",
+        "gon_earth_embrace",
+        "gon_ground_pound",
+        "gon_leg_sweep",
+        "gon_ssireum_throw",
+      ] as const;
+
+      for (const animationId of gonAnimationIds) {
+        expect(getAnimationById(animationId)).toBe(getAnimation(animationId));
+        expect(getAnimationById(animationId)?.name).toBe(animationId);
+      }
+    });
   });
 
   describe("getAnimationByIdWithFallback", () => {
