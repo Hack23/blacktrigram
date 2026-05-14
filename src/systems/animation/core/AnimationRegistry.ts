@@ -830,6 +830,8 @@ export function getCategoryDefaultAnimation(
 export function getAnimationByName(
   name: string,
 ): SkeletalAnimation | undefined {
+  // Dedicated skeletal animation names win; ID registry entries are secondary
+  // aliases from technique data to existing animation objects.
   return ALL_ANIMATIONS.get(name) ?? ANIMATION_ID_REGISTRY.get(name);
 }
 
@@ -852,6 +854,7 @@ export function getAnimationByName(
  * @korean 애니메이션가져오기
  */
 export function getAnimation(name: string): SkeletalAnimation | undefined {
+  // Preserve exact skeletal animation keys before falling back to technique ID aliases.
   return ALL_ANIMATIONS.get(name) ?? ANIMATION_ID_REGISTRY.get(name);
 }
 

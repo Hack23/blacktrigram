@@ -21,6 +21,7 @@ import { useSkeletalAnimation } from "../../../../hooks/useSkeletalAnimation";
 import {
   createDefaultFacialDamage,
   createScaledHumanoidRig,
+  MAX_FRAME_DELTA_SECONDS,
   getExpressionFromCombatState,
   getHeadAngleRadians,
   lockFacing,
@@ -35,8 +36,6 @@ import { toHexColor } from "../../../../utils/colorHelpers";
 import { getArchetypeSkinTone } from "../../../../utils/colorUtils";
 import BoneRenderer from "../anatomy/BoneRenderer";
 import PlayerStateIndicators from "../effects/PlayerStateIndicators";
-
-const MAX_ANIMATION_DELTA_SECONDS = 1 / 30; // Clamp slow frames to 30fps-equivalent steps to prevent animation pops after tab throttling.
 
 /**
  * Get stance-specific color from Korean theming
@@ -281,7 +280,7 @@ export const SkeletalPlayer3D: React.FC<
   const frameCounter = useRef(0);
 
   useFrame((_state, delta) => {
-    const safeDelta = Math.min(delta, MAX_ANIMATION_DELTA_SECONDS);
+    const safeDelta = Math.min(delta, MAX_FRAME_DELTA_SECONDS);
     const isWalkingAnimation =
       currentAnimation === "walk" ||
       (typeof currentAnimation === "string" &&

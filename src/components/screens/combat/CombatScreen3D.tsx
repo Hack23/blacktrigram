@@ -40,6 +40,7 @@ import {
   AnimationState,
   AnimationType,
   determineRecoveryType,
+  FALLBACK_ATTACK_DURATION_SECONDS,
   getAnimation,
   getRecoveryAnimationState,
   resolveTechniqueAnimation,
@@ -138,8 +139,6 @@ import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
 import { useCombatLayout } from "./hooks/useCombatLayout";
 import { useCombatState } from "./hooks/useCombatState";
-
-const FALLBACK_ATTACK_DURATION_SECONDS = 0.55; // Median short technique duration when skeletal metadata is unavailable.
 
 /**
  * Props for the CombatScreen3D component.
@@ -1360,6 +1359,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     (newStance: TrigramStance) => {
       const currentStance = validPlayers[0].currentStance;
 
+      // Full trigram stance change; laterality-only side switches use handleStanceSideSwitch.
       const success = player1Animation.transitionToStanceChange(
         currentStance,
         newStance,

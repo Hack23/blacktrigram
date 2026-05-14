@@ -17,6 +17,7 @@ import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysic
 import {
   AnimationState,
   AnimationType,
+  FALLBACK_ATTACK_DURATION_SECONDS,
   getAnimation,
   getAnimationForTechnique,
 } from "../../../../systems/animation";
@@ -102,8 +103,6 @@ export interface UseTrainingActionsReturn {
   readonly handleStanceChange: (stanceIndex: number) => void;
   readonly handleAttack: () => void;
 }
-
-const FALLBACK_ATTACK_DURATION_SECONDS = 0.55; // Median short technique duration when skeletal metadata is unavailable.
 
 /**
  * Get the best default technique for an archetype based on current stance.

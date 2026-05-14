@@ -10,6 +10,26 @@
  */
 
 /**
+ * Maximum frame delta used by visual animation loops.
+ *
+ * 30fps-equivalent clamping prevents large tab-throttled frames from skipping
+ * key transitional poses while still allowing 60fps updates during normal play.
+ *
+ * @korean 최대프레임델타초
+ */
+export const MAX_FRAME_DELTA_SECONDS = 1 / 30;
+
+/**
+ * Median short technique duration used when skeletal metadata is unavailable.
+ *
+ * Keeps combat and training fallback attacks longer than the 200ms generic
+ * state-machine attack while avoiding slow-feeling recovery snaps.
+ *
+ * @korean 기본공격지속시간초
+ */
+export const FALLBACK_ATTACK_DURATION_SECONDS = 0.55;
+
+/**
  * Animation states for player characters (애니메이션 상태)
  *
  * Enum-based animation state system for type safety and IDE autocomplete.
