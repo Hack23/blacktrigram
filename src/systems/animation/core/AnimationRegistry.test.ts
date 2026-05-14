@@ -356,6 +356,7 @@ describe("AnimationRegistry", () => {
 
     it("should return shared fallback duration for missing animation metadata", () => {
       expect(getAnimationDurationOrFallback("missing_animation")).toBe(0.55);
+      expect(getAnimationDurationOrFallback()).toBe(0.55);
     });
   });
 

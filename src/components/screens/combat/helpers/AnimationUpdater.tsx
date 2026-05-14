@@ -12,7 +12,7 @@
 import { useFrame } from "@react-three/fiber";
 import React from "react";
 import { usePlayerAnimation } from "../../../../hooks/usePlayerAnimation";
-import { MAX_FRAME_DELTA_SECONDS } from "../../../../systems/animation";
+import { MAX_VISUAL_FRAME_DELTA_SECONDS } from "../../../../systems/animation";
 
 /**
  * Props for AnimationUpdater component
@@ -43,7 +43,7 @@ export const AnimationUpdater: React.FC<AnimationUpdaterProps> = ({
   player2Animation,
 }) => {
   useFrame((_state, delta) => {
-    const safeDelta = Math.min(delta, MAX_FRAME_DELTA_SECONDS);
+    const safeDelta = Math.min(delta, MAX_VISUAL_FRAME_DELTA_SECONDS);
     player1Animation.update(safeDelta);
     player2Animation.update(safeDelta);
   });

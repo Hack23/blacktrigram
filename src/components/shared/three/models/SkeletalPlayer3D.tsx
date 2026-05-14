@@ -21,7 +21,7 @@ import { useSkeletalAnimation } from "../../../../hooks/useSkeletalAnimation";
 import {
   createDefaultFacialDamage,
   createScaledHumanoidRig,
-  MAX_FRAME_DELTA_SECONDS,
+  MAX_VISUAL_FRAME_DELTA_SECONDS,
   getExpressionFromCombatState,
   getHeadAngleRadians,
   lockFacing,
@@ -280,7 +280,7 @@ export const SkeletalPlayer3D: React.FC<
   const frameCounter = useRef(0);
 
   useFrame((_state, delta) => {
-    const safeDelta = Math.min(delta, MAX_FRAME_DELTA_SECONDS);
+    const safeDelta = Math.min(delta, MAX_VISUAL_FRAME_DELTA_SECONDS);
     const isWalkingAnimation =
       currentAnimation === "walk" ||
       (typeof currentAnimation === "string" &&

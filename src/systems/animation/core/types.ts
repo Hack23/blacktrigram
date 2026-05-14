@@ -17,7 +17,14 @@
  *
  * @korean 최대프레임델타초
  */
-export const MAX_FRAME_DELTA_SECONDS = 1 / 30;
+export const MAX_VISUAL_FRAME_DELTA_SECONDS = 1 / 30;
+
+/**
+ * Target animation sampling rate for frame-index calculations.
+ *
+ * @korean 목표애니메이션FPS
+ */
+export const TARGET_ANIMATION_FPS = 60;
 
 /**
  * Median short technique duration used when skeletal metadata is unavailable.
@@ -27,7 +34,7 @@ export const MAX_FRAME_DELTA_SECONDS = 1 / 30;
  *
  * @korean 기본공격지속시간초
  */
-export const FALLBACK_ATTACK_DURATION_SECONDS = 0.55;
+export const DEFAULT_TECHNIQUE_DURATION_SECONDS = 0.55;
 
 /**
  * Animation states for player characters (애니메이션 상태)

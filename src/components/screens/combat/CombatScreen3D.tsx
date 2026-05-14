@@ -44,6 +44,7 @@ import {
   getAnimationDurationOrFallback,
   getRecoveryAnimationState,
   resolveTechniqueAnimation,
+  TARGET_ANIMATION_FPS,
 } from "../../../systems/animation";
 import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import type { BalancePlayerState } from "../../../systems/combat/BalanceSystem";
@@ -1310,7 +1311,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         const attackDuration = getAnimationDurationOrFallback(animationName);
 
-        const attackFrames = Math.max(1, Math.round(attackDuration * 60));
+        const attackFrames = Math.max(
+          1,
+          Math.round(attackDuration * TARGET_ANIMATION_FPS),
+        );
         player1HitTriggerFrameRef.current = Math.round(attackFrames * 0.4);
         player1AttackHitFiredRef.current = false;
         setPlayer1AttackDuration(attackDuration);

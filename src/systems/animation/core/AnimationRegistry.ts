@@ -32,7 +32,7 @@
 
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { AnimationType } from "../builders/MartialArtsAnimationBuilder";
-import { FALLBACK_ATTACK_DURATION_SECONDS } from "./types";
+import { DEFAULT_TECHNIQUE_DURATION_SECONDS } from "./types";
 import {
   BACKWARD_RETREAT_ANIMATION,
   FORWARD_DASH_ANIMATION,
@@ -869,13 +869,20 @@ export function getAnimation(name: string): SkeletalAnimation | undefined {
 /**
  * Get a skeletal animation duration or the shared short-technique fallback.
  *
- * @param name - Animation name or technique animation ID.
+ * @param name - Animation name or technique animation ID. Empty or omitted
+ * returns {@link DEFAULT_TECHNIQUE_DURATION_SECONDS}.
  * @returns Duration in seconds.
+ *
+ * @example
+ * ```typescript
+ * getAnimationDurationOrFallback("gon_earth_embrace"); // registered duration
+ * getAnimationDurationOrFallback(); // DEFAULT_TECHNIQUE_DURATION_SECONDS
+ * ```
  *
  * @korean 애니메이션지속시간조회
  */
-export function getAnimationDurationOrFallback(name: string): number {
-  return getAnimation(name)?.duration ?? FALLBACK_ATTACK_DURATION_SECONDS;
+export function getAnimationDurationOrFallback(name = ""): number {
+  return getAnimation(name)?.duration ?? DEFAULT_TECHNIQUE_DURATION_SECONDS;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

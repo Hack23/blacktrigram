@@ -458,7 +458,7 @@ export function useTrainingActions(
         getAnimationDurationOrFallback(animationName),
       );
     } else {
-      playerAnimation.transitionToAttack(getAnimationDurationOrFallback(""));
+      playerAnimation.transitionToAttack(getAnimationDurationOrFallback());
     }
 
     if (!techniqueToUse && selectedTechniqueId) {
