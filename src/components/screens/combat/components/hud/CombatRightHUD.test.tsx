@@ -77,19 +77,19 @@ describe("CombatRightHUD", () => {
     render(<CombatRightHUD {...defaultProps} height={1080} />);
     
     const rightHud = screen.getByTestId("combat-right-hud");
-    // Combat context: top ~8% (86.4px), bottom ~12% (129.6px)
-    // Available height = 1080 - 86.4 - 129.6 = 864px (with clamping gives 873.6px)
+    // Combat context: top 6% (64.8px), bottom 10% (108px)
+    // Available height = 1080 - 64.8 - 108 = 907.2px
     const heightValue = parseFloat(rightHud.style.height || "0");
-    expect(heightValue).toBeCloseTo(873.6, 1);
+    expect(heightValue).toBeCloseTo(907.2, 1);
   });
 
   it("should scale layout with positionScale", () => {
     render(<CombatRightHUD {...defaultProps} positionScale={1.5} />);
     
     const rightHud = screen.getByTestId("combat-right-hud");
-    // Combat top offset: getHUDHeight(1080, 0.08) * 1.5 = 86.4 * 1.5 = 129.6px
+    // Combat top offset: getHUDHeight(1080, 0.06) * 1.5 = 64.8 * 1.5 = 97.2px
     const topValue = parseFloat(rightHud.style.top || "0");
-    expect(topValue).toBeCloseTo(129.6, 1);
+    expect(topValue).toBeCloseTo(97.2, 1);
   });
 
   it("should not render body part health when not available", () => {

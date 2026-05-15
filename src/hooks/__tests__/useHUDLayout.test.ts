@@ -53,12 +53,12 @@ describe('useHUDLayout', () => {
       );
 
       expect(result.current.hudWidthPercent).toBe(0.14);
-      // Combat: topHeight = getHUDHeight(1080, 0.08) = 86.4
-      expect(result.current.topOffset).toBeCloseTo(86.4, 1);
-      // Combat: bottomHeight = getHUDHeight(1080, 0.12) = 120 (clamped)
-      expect(result.current.bottomOffset).toBe(120);
-      // availableHeight = 1080 - 86.4 - 120 = 873.6
-      expect(result.current.availableHeight).toBeCloseTo(873.6, 1);
+      // Combat: topHeight = getHUDHeight(1080, 0.06) = 64.8
+      expect(result.current.topOffset).toBeCloseTo(64.8, 1);
+      // Combat: bottomHeight = getHUDHeight(1080, 0.10) = 108
+      expect(result.current.bottomOffset).toBe(108);
+      // availableHeight = 1080 - 64.8 - 108 = 907.2
+      expect(result.current.availableHeight).toBeCloseTo(907.2, 1);
     });
 
     it('should scale dimensions with positionScale', () => {
@@ -154,8 +154,8 @@ describe('useHUDLayout', () => {
         useHUDLayout(1920, 1080, 1.0, 'bottom', 'combat')
       );
 
-      // Combat bottom: getHUDHeight(1080, 0.12) = 120 (clamped)
-      expect(result.current.hudHeight).toBe(120);
+      // Combat bottom: getHUDHeight(1080, 0.10) = 108
+      expect(result.current.hudHeight).toBe(108);
     });
   });
 

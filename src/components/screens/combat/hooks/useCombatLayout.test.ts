@@ -109,7 +109,7 @@ describe("useCombatLayout", () => {
       expect(arenaBounds.x).toBeCloseTo((1200 - arenaBounds.width) / 2, 0);
 
       // Arena Y should start after HUD and padding
-      expect(arenaBounds.y).toBe(130 + 10); // Updated to use new desktop HUD height
+      expect(arenaBounds.y).toBe(48 + 10); // Top HUD height plus padding
 
       // Scale is based on pixels-per-meter vs reference (100 px/m)
       expect(arenaBounds.scale).toBeGreaterThan(0);
