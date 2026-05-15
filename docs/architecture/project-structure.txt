@@ -688,6 +688,7 @@ src/components/screens/training/hooks/useAttackMovement.test.ts
 src/components/screens/training/hooks/useAttackMovement.ts
 src/components/screens/training/hooks/useTrainingActions.test.ts
 src/components/screens/training/hooks/useTrainingActions.ts
+src/components/screens/training/hooks/useTrainingLayout.responsive.test.ts
 src/components/screens/training/hooks/useTrainingLayout.test.ts
 src/components/screens/training/hooks/useTrainingLayout.ts
 src/components/screens/training/hooks/useTrainingState.test.ts
@@ -911,6 +912,7 @@ src/hooks/useCombatTimer.test.ts
 src/hooks/useCombatTimer.ts
 src/hooks/useDebounce.test.ts
 src/hooks/useDebounce.ts
+src/hooks/useHUDLayout.test.tsx
 src/hooks/useHUDLayout.ts
 src/hooks/useHandPoseTransitions.ts
 src/hooks/useKeyboardControls.test.ts

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.11% </span>
+                <span class="strong">61.37% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>209/342</span>
+                <span class='fraction'>205/334</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">32.88% </span>
+                <span class="strong">31.91% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>49/149</span>
+                <span class='fraction'>45/141</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60.72% </span>
+                <span class="strong">60.86% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>201/331</span>
+                <span class='fraction'>196/322</span>
             </div>
         
             
@@ -1405,22 +1405,8 @@
 <a name='L1340'></a><a href='#L1340'>1340</a>
 <a name='L1341'></a><a href='#L1341'>1341</a>
 <a name='L1342'></a><a href='#L1342'>1342</a>
-<a name='L1343'></a><a href='#L1343'>1343</a>
-<a name='L1344'></a><a href='#L1344'>1344</a>
-<a name='L1345'></a><a href='#L1345'>1345</a>
-<a name='L1346'></a><a href='#L1346'>1346</a>
-<a name='L1347'></a><a href='#L1347'>1347</a>
-<a name='L1348'></a><a href='#L1348'>1348</a>
-<a name='L1349'></a><a href='#L1349'>1349</a>
-<a name='L1350'></a><a href='#L1350'>1350</a>
-<a name='L1351'></a><a href='#L1351'>1351</a>
-<a name='L1352'></a><a href='#L1352'>1352</a>
-<a name='L1353'></a><a href='#L1353'>1353</a>
-<a name='L1354'></a><a href='#L1354'>1354</a>
-<a name='L1355'></a><a href='#L1355'>1355</a>
-<a name='L1356'></a><a href='#L1356'>1356</a>
-<a name='L1357'></a><a href='#L1357'>1357</a>
-<a name='L1358'></a><a href='#L1358'>1358</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1343'></a><a href='#L1343'>1343</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1608,23 +1594,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">72x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2856,6 +2826,7 @@ import { Z_INDEX } from "../../../types/LayoutTypes";
 import { DEFAULT_BODY_RADIUS_METERS } from "../../../types/physicsConstants";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { calculateDistance3D } from "../../../utils/math";
+import { getHUDPositionScale } from "../../../utils/responsiveLayoutHelpers";
 import { createCameraConfig } from "../../../utils/sharedPhysicsConfig";
 import {
   animationStateToPlayerAnimation,
@@ -2964,26 +2935,10 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
     isMobile,
   });
 &nbsp;
-  const positionScale = React.useMemo(() =&gt; {
-    if (isMobile) {
-      return 1.0;
-    }
-&nbsp;
-    switch (screenSize) {
-<span class="branch-0 cbranch-no" title="branch not covered" >      case "mobile":</span>
-<span class="cstat-no" title="statement not covered" >        return 1.0; // Mobile already has special handling</span>
-<span class="branch-1 cbranch-no" title="branch not covered" >      case "tablet":</span>
-<span class="cstat-no" title="statement not covered" >        return 1.0;</span>
-      case "desktop":
-        return 1.0;
-<span class="branch-3 cbranch-no" title="branch not covered" >      case "large":</span>
-<span class="cstat-no" title="statement not covered" >        return 1.25;</span>
-      case "xlarge":
-        return 1.5; // 4K displays need 1.5x offsets
-<span class="branch-5 cbranch-no" title="branch not covered" >      default:</span>
-<span class="cstat-no" title="statement not covered" >        return 1.0;</span>
-    }
-  }, [isMobile, screenSize]);
+  const positionScale = React.useMemo(
+    () =&gt; getHUDPositionScale(screenSize, isMobile),
+    [screenSize, isMobile],
+  );
 &nbsp;
   const difficulty: DifficultyMode = "normal";
   const vitalPointCount = 70; // Show all 70 vital points
@@ -4141,7 +4096,7 @@ export default TrainingScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-14T14:44:05.527Z
+                at 2026-05-15T12:53:45.456Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

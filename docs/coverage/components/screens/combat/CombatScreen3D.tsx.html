@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.97% </span>
+                <span class="strong">42.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>327/779</span>
+                <span class='fraction'>325/773</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.09% </span>
+                <span class="strong">29.78% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>155/515</span>
+                <span class='fraction'>151/507</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">48.17% </span>
+                <span class="strong">48.55% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>66/137</span>
+                <span class='fraction'>67/138</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.58% </span>
+                <span class="strong">41.49% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>314/755</span>
+                <span class='fraction'>310/747</span>
             </div>
         
             
@@ -2939,13 +2939,12 @@
 <a name='L2874'></a><a href='#L2874'>2874</a>
 <a name='L2875'></a><a href='#L2875'>2875</a>
 <a name='L2876'></a><a href='#L2876'>2876</a>
-<a name='L2877'></a><a href='#L2877'>2877</a>
-<a name='L2878'></a><a href='#L2878'>2878</a>
-<a name='L2879'></a><a href='#L2879'>2879</a>
-<a name='L2880'></a><a href='#L2880'>2880</a>
-<a name='L2881'></a><a href='#L2881'>2881</a>
-<a name='L2882'></a><a href='#L2882'>2882</a>
-<a name='L2883'></a><a href='#L2883'>2883</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L2877'></a><a href='#L2877'>2877</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3239,23 +3238,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">25x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -5891,7 +5879,10 @@ import {
 } from "../../../types";
 import { Injury, InjuryType } from "../../../types/injury";
 import { Z_INDEX } from "../../../types/LayoutTypes";
-import { getMobileControlsBottom } from "../../../types/constants/layout";
+import {
+  COMBAT_TOP_HUD_HEIGHT_PERCENT,
+  getMobileControlsBottom,
+} from "../../../types/constants/layout";
 import {
   FONT_FAMILY,
   getPerformanceSettings,
@@ -5902,6 +5893,8 @@ import { getAnimationTypeForTechnique } from "../../../data/techniqueMappings";
 import { toHexColor } from "../../../utils/colorHelpers";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
+import { getHUDHeight } from "../../../utils/responsiveLayout";
+import { getHUDPositionScale } from "../../../utils/responsiveLayoutHelpers";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 import { createCameraConfig } from "../../../utils/sharedPhysicsConfig";
 import { useAdaptiveQuality } from "../../shared/three/optimization";
@@ -6120,26 +6113,15 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
     isMobile,
   });
 &nbsp;
-  const positionScale = useMemo(() =&gt; {
-    if (isMobile) {
-      return 1.0;
-    }
+  const positionScale = useMemo(
+    () =&gt; getHUDPositionScale(screenSize, isMobile),
+    [screenSize, isMobile],
+  );
 &nbsp;
-    switch (screenSize) {
-<span class="branch-0 cbranch-no" title="branch not covered" >      case "mobile":</span>
-<span class="cstat-no" title="statement not covered" >        return 1.0; // Mobile already has special handling</span>
-<span class="branch-1 cbranch-no" title="branch not covered" >      case "tablet":</span>
-<span class="cstat-no" title="statement not covered" >        return 1.0;</span>
-      case "desktop":
-        return 1.0;
-<span class="branch-3 cbranch-no" title="branch not covered" >      case "large":</span>
-<span class="cstat-no" title="statement not covered" >        return 1.25;</span>
-      case "xlarge":
-        return 1.5; // 4K displays need 1.5x offsets
-<span class="branch-5 cbranch-no" title="branch not covered" >      default:</span>
-<span class="cstat-no" title="statement not covered" >        return 1.0;</span>
-    }
-  }, [isMobile, screenSize]);
+  const combatTopHudHeight = useMemo(
+    () =&gt; getHUDHeight(height, COMBAT_TOP_HUD_HEIGHT_PERCENT) * positionScale,
+    [height, positionScale],
+  );
 &nbsp;
   const cameraConfig = useMemo(() =&gt; {
     const base = createCameraConfig(isMobile);
@@ -8316,7 +8298,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
               {/* Vital Point Overlay Controls - only visible when overlay is active */}
               &lt;VitalPointOverlayControlsHtml
                 screenPosition={{
-                  top: `${layoutConstants.hudHeight + layoutConstants.padding}px`,
+                  top: `${combatTopHudHeight + layoutConstants.padding}px`,
                   left: `${layoutConstants.padding}px`,
                 }}
                 visible={overlayVisible}
@@ -8516,7 +8498,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
             player1={validPlayers[0]}
             player2={validPlayers[1]}
             positionScale={positionScale}
-            topOffset={layoutConstants.hudHeight}
+            topOffset={combatTopHudHeight}
           /&gt;
         )}
 &nbsp;
@@ -8716,7 +8698,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-14T14:44:05.151Z
+                at 2026-05-15T12:53:45.070Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
