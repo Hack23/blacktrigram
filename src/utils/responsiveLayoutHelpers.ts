@@ -14,7 +14,7 @@ import { getScreenSize } from '../systems/ResponsiveScaling';
 import type { ScreenSize } from '../systems/ResponsiveScaling';
 
 /** Desktop arena width as a proportion of viewport width. */
-const DESKTOP_ARENA_WIDTH_RATIO = 0.8;
+const DESKTOP_ARENA_WIDTH_RATIO = 0.68;
 
 /**
  * Maximum desktop arena width in CSS pixels.
@@ -33,6 +33,33 @@ const DESKTOP_ARENA_MAX_WIDTH_PX = 2560;
  */
 export function getDesktopArenaWidthBudget(width: number): number {
   return Math.min(width * DESKTOP_ARENA_WIDTH_RATIO, DESKTOP_ARENA_MAX_WIDTH_PX);
+}
+
+/**
+ * Shared HUD position scale for combat and training screens.
+ *
+ * Keeps top/bottom HUDs, side HUD offsets, and arena reservations synchronized
+ * on large and 4K displays.
+ */
+export function getHUDPositionScale(
+  screenSize: ScreenSize,
+  isMobile: boolean,
+): number {
+  if (isMobile) {
+    return 1.0;
+  }
+
+  switch (screenSize) {
+    case "large":
+      return 1.25;
+    case "xlarge":
+      return 1.5;
+    case "mobile":
+    case "tablet":
+    case "desktop":
+    default:
+      return 1.0;
+  }
 }
 
 /**

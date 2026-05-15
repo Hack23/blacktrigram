@@ -40,7 +40,15 @@ import {
   PORTRAIT_FORCE_MAX_WIDTH_PX,
   PORTRAIT_HYSTERESIS_FACTOR,
 } from "../../../../utils/responsiveOrientationConstants";
-import { getDesktopArenaWidthBudget } from "../../../../utils/responsiveLayoutHelpers";
+import {
+  getDesktopArenaWidthBudget,
+  getHUDPositionScale,
+} from "../../../../utils/responsiveLayoutHelpers";
+import {
+  TRAINING_BOTTOM_HUD_HEIGHT_PERCENT,
+  TRAINING_TOP_HUD_HEIGHT_PERCENT,
+} from "../../../../types/constants/layout";
+import { getHUDHeight } from "../../../../utils/responsiveLayout";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -108,8 +116,17 @@ export function useTrainingLayout(
     };
   }, [isMobile, screenSize]);
 
+  const positionScale = useMemo(
+    () => getHUDPositionScale(screenSize, isMobile),
+    [screenSize, isMobile],
+  );
+
   const trainingAreaBounds = useMemo<TrainingAreaBounds>(() => {
-    const areaY = layoutConstants.headerHeight + layoutConstants.padding;
+    const topHudHeight =
+      getHUDHeight(height, TRAINING_TOP_HUD_HEIGHT_PERCENT) * positionScale;
+    const bottomHudHeight =
+      getHUDHeight(height, TRAINING_BOTTOM_HUD_HEIGHT_PERCENT) * positionScale;
+    const areaY = topHudHeight + layoutConstants.padding;
 
     const worldDimensions = calculateArenaWorldDimensions(width);
 
@@ -118,7 +135,7 @@ export function useTrainingLayout(
       const topClearance = isExtraSmall ? 75 : 80;
       const bottomClearance = mobileControlsBottomClearance(
         layoutConstants.controlsHeight,
-        layoutConstants.footerHeight,
+        Math.max(layoutConstants.footerHeight, bottomHudHeight),
         isExtraSmall,
         isPortrait,
         "training",
@@ -134,10 +151,7 @@ export function useTrainingLayout(
       );
     }
 
-    const totalReservedHeight =
-      layoutConstants.headerHeight +
-      layoutConstants.controlsHeight +
-      layoutConstants.footerHeight;
+    const totalReservedHeight = topHudHeight + bottomHudHeight;
     const totalPadding = layoutConstants.padding * 3;
     const availableHeight = height - totalReservedHeight - totalPadding;
     const availableWidth = getDesktopArenaWidthBudget(width);
@@ -163,7 +177,7 @@ export function useTrainingLayout(
       worldWidthMeters: worldDimensions.widthMeters,
       worldDepthMeters: worldDimensions.depthMeters,
     };
-  }, [width, height, layoutConstants, isMobile, isPortrait]);
+  }, [width, height, layoutConstants, isMobile, isPortrait, positionScale]);
 
   return {
     layoutConstants,

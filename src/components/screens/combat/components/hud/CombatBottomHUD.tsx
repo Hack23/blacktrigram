@@ -16,7 +16,10 @@
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
-import { HUD_SIDE_CONTROL_RESERVES } from "../../../../../types/constants/layout";
+import {
+  COMBAT_BOTTOM_HUD_HEIGHT_PERCENT,
+  HUD_SIDE_CONTROL_RESERVES,
+} from "../../../../../types/constants/layout";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE ,
   OPACITY,
@@ -83,7 +86,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
   const showMobileControls = shouldShowMobileControls(width, isMobile);
 
   const layout = React.useMemo(() => {
-    const hudHeight = getHUDHeight(height, 0.1) * positionScale;
+    const hudHeight = getHUDHeight(height, COMBAT_BOTTOM_HUD_HEIGHT_PERCENT) * positionScale;
     
     const padding = getResponsivePadding(width) * positionScale;
     

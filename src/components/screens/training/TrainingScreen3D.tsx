@@ -77,6 +77,7 @@ import { Z_INDEX } from "../../../types/LayoutTypes";
 import { DEFAULT_BODY_RADIUS_METERS } from "../../../types/physicsConstants";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { calculateDistance3D } from "../../../utils/math";
+import { getHUDPositionScale } from "../../../utils/responsiveLayoutHelpers";
 import { createCameraConfig } from "../../../utils/sharedPhysicsConfig";
 import {
   animationStateToPlayerAnimation,
@@ -185,26 +186,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     isMobile,
   });
 
-  const positionScale = React.useMemo(() => {
-    if (isMobile) {
-      return 1.0;
-    }
-
-    switch (screenSize) {
-      case "mobile":
-        return 1.0; // Mobile already has special handling
-      case "tablet":
-        return 1.0;
-      case "desktop":
-        return 1.0;
-      case "large":
-        return 1.25;
-      case "xlarge":
-        return 1.5; // 4K displays need 1.5x offsets
-      default:
-        return 1.0;
-    }
-  }, [isMobile, screenSize]);
+  const positionScale = React.useMemo(
+    () => getHUDPositionScale(screenSize, isMobile),
+    [screenSize, isMobile],
+  );
 
   const difficulty: DifficultyMode = "normal";
   const vitalPointCount = 70; // Show all 70 vital points

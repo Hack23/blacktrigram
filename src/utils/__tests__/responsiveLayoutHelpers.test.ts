@@ -14,6 +14,8 @@ import {
   getResponsiveFooterHeight,
   getResponsiveSectionSpacing,
   getResponsiveButtonArea,
+  getDesktopArenaWidthBudget,
+  getHUDPositionScale,
 } from '../responsiveLayoutHelpers';
 
 describe('responsiveLayoutHelpers', () => {
@@ -208,6 +210,23 @@ describe('responsiveLayoutHelpers', () => {
   });
 
   describe('Individual helper functions', () => {
+    it('getDesktopArenaWidthBudget should reserve side HUD space on HD layouts', () => {
+      expect(getDesktopArenaWidthBudget(1280)).toBeCloseTo(870.4, 1);
+      expect(getDesktopArenaWidthBudget(1920)).toBeCloseTo(1305.6, 1);
+    });
+
+    it('getDesktopArenaWidthBudget should cap ultra-wide fill-rate cost', () => {
+      expect(getDesktopArenaWidthBudget(3840)).toBe(2560);
+      expect(getDesktopArenaWidthBudget(7680)).toBe(2560);
+    });
+
+    it('getHUDPositionScale should keep mobile compact and scale large displays', () => {
+      expect(getHUDPositionScale('mobile', true)).toBe(1);
+      expect(getHUDPositionScale('desktop', false)).toBe(1);
+      expect(getHUDPositionScale('large', false)).toBe(1.25);
+      expect(getHUDPositionScale('xlarge', false)).toBe(1.5);
+    });
+
     it('getResponsivePadding should return correct values', () => {
       expect(getResponsivePadding('mobile')).toBe(20);
       expect(getResponsivePadding('tablet')).toBe(25);

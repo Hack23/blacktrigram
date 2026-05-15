@@ -15,6 +15,7 @@
 
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
+import { COMBAT_TOP_HUD_HEIGHT_PERCENT } from "../../../../../types/constants/layout";
 import {
   BORDERS,
   FONT_SIZE_MULTIPLIERS,
@@ -78,7 +79,7 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
   const showMobileControls = shouldShowMobileControls(width, isMobile);
 
   const layout = React.useMemo(() => {
-    const hudHeight = getHUDHeight(height, 0.06) * positionScale;
+    const hudHeight = getHUDHeight(height, COMBAT_TOP_HUD_HEIGHT_PERCENT) * positionScale;
 
     const padding = getResponsivePadding(width) * positionScale;
     
