@@ -43,7 +43,13 @@ import {
 import {
   getCombatLayoutConstants,
   getDesktopArenaWidthBudget,
+  getHUDPositionScale,
 } from "../../../../utils/responsiveLayoutHelpers";
+import {
+  COMBAT_BOTTOM_HUD_HEIGHT_PERCENT,
+  COMBAT_TOP_HUD_HEIGHT_PERCENT,
+} from "../../../../types/constants/layout";
+import { getHUDHeight } from "../../../../utils/responsiveLayout";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -92,6 +98,11 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
     [width, isMobile],
   );
 
+  const positionScale = useMemo(
+    () => getHUDPositionScale(screenSize, isMobile),
+    [screenSize, isMobile],
+  );
+
   const arenaBounds = useMemo<ArenaBounds>(() => {
     const isExtraSmallWidth = width < 380;
     const portraitStatusStripHeight =
@@ -99,8 +110,12 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
         ? Math.max(isExtraSmallWidth ? 28 : 36, Math.round(height * 0.055))
         : 0;
 
+    const topHudHeight =
+      getHUDHeight(height, COMBAT_TOP_HUD_HEIGHT_PERCENT) * positionScale;
+    const bottomHudHeight =
+      getHUDHeight(height, COMBAT_BOTTOM_HUD_HEIGHT_PERCENT) * positionScale;
     const arenaY =
-      layoutConstants.hudHeight +
+      topHudHeight +
       portraitStatusStripHeight +
       layoutConstants.padding;
 
@@ -109,11 +124,11 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
     if (isMobile) {
       const isExtraSmall = isExtraSmallWidth;
       const minTopClearance =
-        (isExtraSmall ? 75 : 80) + portraitStatusStripHeight;
+        topHudHeight + layoutConstants.padding + portraitStatusStripHeight;
 
       const minBottomClearance = mobileControlsBottomClearance(
         layoutConstants.controlsHeight,
-        layoutConstants.footerHeight,
+        Math.max(layoutConstants.footerHeight, bottomHudHeight),
         isExtraSmall,
         isPortrait,
         "combat",
@@ -132,9 +147,7 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
     }
 
     const totalReservedHeight =
-      layoutConstants.hudHeight +
-      layoutConstants.controlsHeight +
-      layoutConstants.footerHeight;
+      topHudHeight + bottomHudHeight;
     const totalPadding = layoutConstants.padding * 3;
     const availableHeight = height - totalReservedHeight - totalPadding;
     const availableWidth = getDesktopArenaWidthBudget(width);
@@ -160,7 +173,7 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       worldWidthMeters: worldDimensions.widthMeters,
       worldDepthMeters: worldDimensions.depthMeters,
     };
-  }, [width, height, layoutConstants, isMobile, isPortrait]);
+  }, [width, height, layoutConstants, isMobile, isPortrait, positionScale]);
 
   return {
     layoutConstants,

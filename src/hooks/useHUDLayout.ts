@@ -10,6 +10,12 @@
 
 import { useMemo } from 'react';
 import type { HUDPosition } from '../components/shared/ui/BaseHUDContainer';
+import {
+  COMBAT_BOTTOM_HUD_HEIGHT_PERCENT,
+  COMBAT_TOP_HUD_HEIGHT_PERCENT,
+  TRAINING_BOTTOM_HUD_HEIGHT_PERCENT,
+  TRAINING_TOP_HUD_HEIGHT_PERCENT,
+} from '../types/constants/layout';
 import { getResponsiveSize, getHUDHeight, getResponsivePadding } from '../utils/responsiveLayout';
 
 /**
@@ -91,11 +97,12 @@ export function useHUDLayout(
         }) / 100  // Convert to decimal for percentage calculation
       : 1.0;  // Top and bottom HUDs use full width
 
-    // Resolution-based height calculation for top/bottom bars
-    // Training: ~6% for top, ~11% for bottom
-    // Combat: ~8% for top, ~12% for bottom
-    const topHeightPercent = context === 'training' ? 0.06 : 0.08;
-    const bottomHeightPercent = context === 'training' ? 0.11 : 0.12;
+    const topHeightPercent = context === 'training'
+      ? TRAINING_TOP_HUD_HEIGHT_PERCENT
+      : COMBAT_TOP_HUD_HEIGHT_PERCENT;
+    const bottomHeightPercent = context === 'training'
+      ? TRAINING_BOTTOM_HUD_HEIGHT_PERCENT
+      : COMBAT_BOTTOM_HUD_HEIGHT_PERCENT;
     
     const scaledTopHeight = getHUDHeight(height, topHeightPercent) * positionScale;
     const scaledBottomHeight = getHUDHeight(height, bottomHeightPercent) * positionScale;

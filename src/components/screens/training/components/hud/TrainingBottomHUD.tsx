@@ -19,7 +19,10 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { PlayerArchetype } from "../../../../../types/common";
-import { HUD_SIDE_CONTROL_RESERVES } from "../../../../../types/constants/layout";
+import {
+  HUD_SIDE_CONTROL_RESERVES,
+  TRAINING_BOTTOM_HUD_HEIGHT_PERCENT,
+} from "../../../../../types/constants/layout";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { SPACING, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import {
@@ -94,7 +97,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     selectedArchetype !== undefined;
 
   const layout = React.useMemo(() => {
-    const hudHeight = getHUDHeight(height, 0.11) * positionScale;
+    const hudHeight = getHUDHeight(height, TRAINING_BOTTOM_HUD_HEIGHT_PERCENT) * positionScale;
     
     const padding = getResponsivePadding(width) * positionScale;
 

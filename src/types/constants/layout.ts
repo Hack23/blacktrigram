@@ -89,6 +89,30 @@ export const TECHNIQUE_BAR_MIN_READABLE_SCALE = 0.7;
 export const TRAINING_TOP_HUD_HEIGHT_PERCENT = 0.06;
 
 /**
+ * Combat top HUD height ratio.
+ *
+ * Shared by CombatTopHUD, side HUD offsets, and arena layout reservations so
+ * the 3D combat area starts immediately below the visible top bar.
+ */
+export const COMBAT_TOP_HUD_HEIGHT_PERCENT = 0.06;
+
+/**
+ * Combat bottom HUD height ratio.
+ *
+ * Shared by CombatBottomHUD, side HUD offsets, and arena layout reservations so
+ * technique controls fit without over-reserving vertical arena space.
+ */
+export const COMBAT_BOTTOM_HUD_HEIGHT_PERCENT = 0.1;
+
+/**
+ * Training bottom HUD height ratio.
+ *
+ * Shared by TrainingBottomHUD, side HUD offsets, and training area layout
+ * reservations so the dojang content is framed consistently.
+ */
+export const TRAINING_BOTTOM_HUD_HEIGHT_PERCENT = 0.11;
+
+/**
  * Top positioning for UI elements (in pixels)
  * Used for elements positioned from the top of the screen
  */

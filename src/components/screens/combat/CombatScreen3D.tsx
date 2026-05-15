@@ -62,7 +62,10 @@ import {
 } from "../../../types";
 import { Injury, InjuryType } from "../../../types/injury";
 import { Z_INDEX } from "../../../types/LayoutTypes";
-import { getMobileControlsBottom } from "../../../types/constants/layout";
+import {
+  COMBAT_TOP_HUD_HEIGHT_PERCENT,
+  getMobileControlsBottom,
+} from "../../../types/constants/layout";
 import {
   FONT_FAMILY,
   getPerformanceSettings,
@@ -73,6 +76,8 @@ import { getAnimationTypeForTechnique } from "../../../data/techniqueMappings";
 import { toHexColor } from "../../../utils/colorHelpers";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
+import { getHUDHeight } from "../../../utils/responsiveLayout";
+import { getHUDPositionScale } from "../../../utils/responsiveLayoutHelpers";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 import { createCameraConfig } from "../../../utils/sharedPhysicsConfig";
 import { useAdaptiveQuality } from "../../shared/three/optimization";
@@ -291,26 +296,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     isMobile,
   });
 
-  const positionScale = useMemo(() => {
-    if (isMobile) {
-      return 1.0;
-    }
+  const positionScale = useMemo(
+    () => getHUDPositionScale(screenSize, isMobile),
+    [screenSize, isMobile],
+  );
 
-    switch (screenSize) {
-      case "mobile":
-        return 1.0; // Mobile already has special handling
-      case "tablet":
-        return 1.0;
-      case "desktop":
-        return 1.0;
-      case "large":
-        return 1.25;
-      case "xlarge":
-        return 1.5; // 4K displays need 1.5x offsets
-      default:
-        return 1.0;
-    }
-  }, [isMobile, screenSize]);
+  const combatTopHudHeight = useMemo(
+    () => getHUDHeight(height, COMBAT_TOP_HUD_HEIGHT_PERCENT) * positionScale,
+    [height, positionScale],
+  );
 
   const cameraConfig = useMemo(() => {
     const base = createCameraConfig(isMobile);
@@ -2487,7 +2481,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               {/* Vital Point Overlay Controls - only visible when overlay is active */}
               <VitalPointOverlayControlsHtml
                 screenPosition={{
-                  top: `${layoutConstants.hudHeight + layoutConstants.padding}px`,
+                  top: `${combatTopHudHeight + layoutConstants.padding}px`,
                   left: `${layoutConstants.padding}px`,
                 }}
                 visible={overlayVisible}
@@ -2687,7 +2681,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player1={validPlayers[0]}
             player2={validPlayers[1]}
             positionScale={positionScale}
-            topOffset={layoutConstants.hudHeight}
+            topOffset={combatTopHudHeight}
           />
         )}
 
