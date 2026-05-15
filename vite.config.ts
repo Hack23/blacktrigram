@@ -180,7 +180,6 @@ export default defineConfig(({ command, mode: _mode }) => ({
     // Production preview optimizations
     headers: {
       "Cache-Control": "public, max-age=31536000, immutable",
-      "Content-Encoding": "br", // Prefer Brotli if available
     },
   },
 

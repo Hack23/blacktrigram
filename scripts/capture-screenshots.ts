@@ -69,6 +69,7 @@ const TIMING = {
 const SCREENSHOTS_DIR = path.join(process.cwd(), "screenshots");
 const REPORT_DIR = path.join(process.cwd(), "screenshots", "reports");
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
+const NAVIGATION_TIMEOUT_MS = 45000;
 
 // Ensure directories exist
 if (!fs.existsSync(SCREENSHOTS_DIR)) {
@@ -76,6 +77,19 @@ if (!fs.existsSync(SCREENSHOTS_DIR)) {
 }
 if (!fs.existsSync(REPORT_DIR)) {
   fs.mkdirSync(REPORT_DIR, { recursive: true });
+}
+
+/**
+ * Navigate to the application without waiting for every subresource to fire the
+ * load event. Screenshot analysis validates screen content explicitly below, so
+ * DOM readiness is a safer gate when optional assets or service-worker caches
+ * produce transient resource errors.
+ */
+async function navigateToApp(page: Page, appPath = ""): Promise<void> {
+  await page.goto(`${BASE_URL}${appPath}`, {
+    waitUntil: "domcontentloaded",
+    timeout: NAVIGATION_TIMEOUT_MS,
+  });
 }
 
 /**
@@ -579,7 +593,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     waitForTimeout: 6000, // Increased from 5000ms for Html overlay rendering
     actions: async (page) => {
       // Return to menu first for a clean state
-      await page.goto(BASE_URL);
+      await navigateToApp(page);
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
@@ -651,7 +665,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     waitForTimeout: 5000, // Increased from 4000ms for Html overlay rendering
     actions: async (page) => {
       // Return to menu first
-      await page.goto(BASE_URL);
+      await navigateToApp(page);
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
@@ -712,7 +726,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     waitForTimeout: 6000, // Increased from 5000ms for full UI load
     actions: async (page) => {
       // Return to menu
-      await page.goto(BASE_URL);
+      await navigateToApp(page);
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
@@ -772,7 +786,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     waitForTimeout: 6000, // Increased from 5000ms for full combat UI load
     actions: async (page) => {
       // Return to menu
-      await page.goto(BASE_URL);
+      await navigateToApp(page);
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
@@ -824,7 +838,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
     waitForTimeout: 6000, // Increased from 5000ms for full combat UI load
     actions: async (page) => {
       // Return to menu
-      await page.goto(BASE_URL);
+      await navigateToApp(page);
       await page.waitForTimeout(TIMING.ANIMATION_SETTLE_DELAY);
       await initializeAudio(page);
 
@@ -889,7 +903,7 @@ async function captureScreenshot(
   try {
     // Navigate to path if needed
     if (config.path) {
-      await page.goto(BASE_URL + config.path);
+      await navigateToApp(page, config.path);
       await page.waitForTimeout(1000);
     }
 
