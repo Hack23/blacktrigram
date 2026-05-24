@@ -1699,7 +1699,7 @@ mindmap
       id3.3[Established martial arts franchises]
     id4(📉 Technical Debt)
       id4.1[Three.js object disposal complexity]
-      id4.2[Combat realism systems 100% complete (13/13)]
+      id4.2[Combat realism systems 100% complete 13 of 13]
       id4.3[State management complexity growing]
       id4.4[73.73% test coverage below 80% target]
     id5(🔒 CDN Security Risks)

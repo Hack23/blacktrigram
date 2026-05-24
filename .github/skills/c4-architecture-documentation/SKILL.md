@@ -203,7 +203,12 @@ export class GrapplingSystem { ... }
 ```
 
 ❌ **Incomplete C4 Diagrams**
-```mermaid
+
+<!-- Intentional non-mermaid fence: this is an example of broken/incomplete
+     C4 syntax shown for documentation. Keep this as plain text so the
+     mermaid validator does not flag it as a parse failure. -->
+
+```text
 # BAD: Missing relationships or actors
 C4Context
     System(blackTrigram, "Black Trigram")
