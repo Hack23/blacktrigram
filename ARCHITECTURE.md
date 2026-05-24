@@ -1908,7 +1908,7 @@ mindmap
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start("[🎮 Game Load]") --> Loading["⏳ Loading Assets"]
+    Start(["🎮 Game Load"]) --> Loading["⏳ Loading Assets"]
     Loading --> Intro["🏮 Intro Screen"]
 
     Intro --> |New Game| CharSelect["👤 Archetype Selection"]

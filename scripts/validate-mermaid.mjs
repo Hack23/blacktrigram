@@ -17,10 +17,8 @@
  * coverage, dist, build, .git.
  *
  * The script also performs lightweight structural checks:
- *   - Detects ```mermaid blocks closed by indented fences (CommonMark-invalid)
+ *   - Detects ```mermaid blocks that are indented (CommonMark code-block rule)
  *   - Detects mermaid blocks whose closing fence is missing/mismatched
- *   - Detects blocks nested inside another fenced code block (treated as
- *     non-diagrams and reported as informational only).
  *
  * Exit codes:
  *   0 → all real diagrams parse cleanly
@@ -93,7 +91,7 @@ function walk(dir, files = []) {
   return files;
 }
 
-// ── Block extractor (tracks nesting + indentation) ──────────────────────────
+// ── Block extractor (tracks indentation) ────────────────────────────────────
 function extractBlocks(content, relPath) {
   const lines = content.split("\n");
   const blocks = [];
@@ -113,12 +111,13 @@ function extractBlocks(content, relPath) {
           indent: indent.length,
           marker,
           startLine: i + 1,
-          nested: false,
         };
         buffer = [];
         continue;
       }
-      // closing fence must be same marker; for strict CommonMark same indent
+      // closing fence must use the same marker character; per CommonMark the
+      // closing fence indentation only needs to be ≤3 spaces (it does NOT need
+      // to match the opening indentation).
       if (line.trim().startsWith(marker[0].repeat(marker.length))) {
         if (inFence.lang === "mermaid") {
           // strip leading indent (CommonMark code-block rule)
@@ -136,8 +135,6 @@ function extractBlocks(content, relPath) {
             endLine: i + 1,
             code,
             indented: inFence.indent > 0,
-            indentedCloseFence: indent.length !== inFence.indent,
-            nested: inFence.nested,
           });
         }
         inFence = null;
@@ -158,8 +155,6 @@ function extractBlocks(content, relPath) {
       endLine: lines.length,
       code: buffer.join("\n"),
       indented: inFence.indent > 0,
-      indentedCloseFence: true,
-      nested: false,
       unterminated: true,
     });
   }
@@ -234,6 +229,7 @@ const summary = {
   filesScanned: files.length,
   totalDiagrams: 0,
   okDiagrams: 0,
+  skippedDiagrams: 0,
   errors: [],
   warnings: [],
 };
@@ -250,16 +246,16 @@ for (const f of files) {
   const blocks = extractBlocks(content, rel);
   for (const b of blocks) {
     summary.totalDiagrams++;
-    // Skip blocks that are clearly inside a parent code-block (indented but
-    // not closed on the same indent) — they're documentation examples.
-    if (b.indented && b.indentedCloseFence) {
+    // Skip blocks that are indented — they are typically documentation
+    // examples embedded inside another code block and not real diagrams.
+    if (b.indented) {
       summary.warnings.push({
         file: rel,
         line: b.line,
         idx: b.idx,
         msg: "indented ```mermaid fence (likely documentation example, not validated)",
       });
-      summary.okDiagrams++;
+      summary.skippedDiagrams++;
       continue;
     }
     const res = await validateBlock(b);
@@ -292,6 +288,7 @@ console.log(`Repo root      : ${repoRoot}`);
 console.log(`Files scanned  : ${summary.filesScanned}`);
 console.log(`Total diagrams : ${summary.totalDiagrams}`);
 console.log(`OK             : ${summary.okDiagrams}`);
+console.log(`Skipped        : ${summary.skippedDiagrams}`);
 console.log(`Errors         : ${summary.errors.length}`);
 console.log(`Warnings       : ${summary.warnings.length}\n`);
 

@@ -41,7 +41,7 @@ This document provides comprehensive flowcharts for Black Trigram (흑괘), docu
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start("[🎮 Launch Game]") --> Load{Loading<br/>Assets}
+    Start(["🎮 Launch Game"]) --> Load{Loading<br/>Assets}
 
     Load -->|Success| Intro["📺 Intro Screen<br/>흑괘 Black Trigram"]
     Load -->|Error| Error["❌ Error Screen<br/>Retry/Report"]
@@ -55,7 +55,7 @@ flowchart TD
     Menu -->|Philosophy| Philosophy["☯️ Philosophy Mode"]
     Menu -->|Controls| Controls["🎮 Controls Guide"]
     Menu -->|Settings| Settings["⚙️ Settings"]
-    Menu -->|Exit| Exit("[🚪 Exit Game]")
+    Menu -->|Exit| Exit(["🚪 Exit Game"])
 
     Settings --> Menu
     Philosophy --> Menu
@@ -125,7 +125,7 @@ Training mode provides structured practice modes for mastering vital points, tri
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#2979FF','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Enter("[🥋 Enter Training Mode]") --> TrainingMenu[Training Menu<br/>Select Practice Mode]
+    Enter(["🥋 Enter Training Mode"]) --> TrainingMenu[Training Menu<br/>Select Practice Mode]
 
     TrainingMenu --> ModeSelect{Choose Mode}
 
@@ -168,7 +168,7 @@ flowchart TD
     AdjustScale --> TrainingLoop
 
     TrainingLoop -->|Return| TrainingMenu
-    TrainingMenu -->|Exit| Exit("[🏠 Return to Main Menu]")
+    TrainingMenu -->|Exit| Exit(["🏠 Return to Main Menu"])
 
     style Enter fill:#00C853,stroke:#00796B,color:#fff
     style ActiveTraining fill:#2979FF,stroke:#0D47A1,color:#fff
@@ -187,7 +187,7 @@ The pause menu provides access to game controls, settings adjustments, and navig
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#9C27B0','primaryTextColor':'#fff','primaryBorderColor':'#6A1B9A','lineColor':'#FFD600','secondaryColor':'#2979FF','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Combat("[⚔️ Active Combat]") -->|Escape Key / Pause Button| PauseTriggered["⏸️ Pause Triggered<br/>Combat Frozen"]
+    Combat(["⚔️ Active Combat"]) -->|Escape Key / Pause Button| PauseTriggered["⏸️ Pause Triggered<br/>Combat Frozen"]
 
     PauseTriggered --> PauseMenu[Pause Menu<br/>일시정지 메뉴<br/>Cyberpunk Korean UI]
 
@@ -214,11 +214,11 @@ flowchart TD
     AccessSettings --> BackToPause2
     BackToPause2 --> PauseMenu
 
-    ConfirmQuit -->|Yes| MainMenu("[🏠 Return to Main Menu]")
+    ConfirmQuit -->|Yes| MainMenu(["🏠 Return to Main Menu"])
     ConfirmQuit -->|No| PauseMenu
 
-    Resume --> Combat2("[⚔️ Resume Combat<br/>60fps Restored]")
-    RestartMatch --> Combat3("[⚔️ New Match<br/>Round 1 Start]")
+    Resume --> Combat2(["⚔️ Resume Combat<br/>60fps Restored"])
+    RestartMatch --> Combat3(["⚔️ New Match<br/>Round 1 Start"])
 
     style PauseTriggered fill:#9C27B0,stroke:#6A1B9A,color:#fff
     style PauseMenu fill:#9C27B0,stroke:#6A1B9A,color:#fff
@@ -238,10 +238,10 @@ After a match ends (Victory or Defeat), the rematch flow allows players to start
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FFD600','primaryTextColor':'#000','primaryBorderColor':'#F57F17','lineColor':'#FF3D00','secondaryColor':'#2979FF','tertiaryColor':'#00C853'}}}%%
 flowchart TD
-    MatchEnd("[🏆 Match End<br/>Victory / Defeat Screen]") --> PostMatch{Post-Match Choice}
+    MatchEnd(["🏆 Match End<br/>Victory / Defeat Screen"]) --> PostMatch{Post-Match Choice}
 
     PostMatch -->|Rematch| RematchDecision{Same Archetypes?}
-    PostMatch -->|Return to Menu| MainMenu("[🏠 Main Menu]")
+    PostMatch -->|Return to Menu| MainMenu(["🏠 Main Menu"])
 
     RematchDecision -->|Yes - Quick Rematch| QuickRematch["⚡ Quick Rematch<br/>Same Archetypes<br/>Reset Health/Ki/Stamina<br/>Reset Round Count"]
     RematchDecision -->|No - Change Setup| ChangeSetup["👤 Return to<br/>Character Select<br/>New Archetype Choice"]
@@ -257,7 +257,7 @@ flowchart TD
 
     ResetState --> NewMatch[Initialize New Match<br/>Load 3D Assets<br/>28-Bone Skeleton Setup<br/>Reset Timer]
     NewMatch --> Countdown[3... 2... 1...<br/>건 Heaven Stance]
-    Countdown --> Fight("[⚔️ FIGHT!<br/>New Match Begins]")
+    Countdown --> Fight(["⚔️ FIGHT!<br/>New Match Begins"])
 
     style MatchEnd fill:#FFD600,stroke:#F57F17,color:#000
     style QuickRematch fill:#00C853,stroke:#00796B,color:#fff
@@ -275,7 +275,7 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FF3D00','primaryTextColor':'#fff','primaryBorderColor':'#BF360C','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#2979FF'}}}%%
 flowchart TD
-    RoundStart("[⏱️ Round Start]") --> Init[Initialize Round<br/>Reset Positions<br/>28-Bone Skeleton<br/>Reset Resources]
+    RoundStart(["⏱️ Round Start"]) --> Init[Initialize Round<br/>Reset Positions<br/>28-Bone Skeleton<br/>Reset Resources]
 
     Init --> Ready[Ready State<br/>3...2...1...<br/>Stance: 건 Heaven]
     Ready --> Fight["🥊 FIGHT!"]
@@ -312,7 +312,7 @@ flowchart TD
     ApplyEffects --> UpdateAnimation[Update Skeletal Animation<br/>Muscle Tension<br/>Injury Feedback]
 
     UpdateAnimation --> CheckKO{Victory<br/>Condition?}
-    CheckKO -->|Health ≤ 0| RoundEnd("[🏁 Round End]")
+    CheckKO -->|Health ≤ 0| RoundEnd(["🏁 Round End"])
     CheckKO -->|Consciousness ≤ 0| RoundEnd
     CheckKO -->|Time Up| RoundEnd
     CheckKO -->|Continue| Input
@@ -397,7 +397,7 @@ flowchart LR
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#FF3D00','secondaryColor':'#FFD600','tertiaryColor':'#2979FF'}}}%%
 flowchart TD
-    Start("[🎯 VP Strike Attempt<br/>70 Targets]") --> CheckStance{Correct Stance<br/>for VP Category?<br/>8 Trigrams}
+    Start(["🎯 VP Strike Attempt<br/>70 Targets"]) --> CheckStance{Correct Stance<br/>for VP Category?<br/>8 Trigrams}
 
     CheckStance -->|No| Penalty["⚠️ Stance Penalty<br/>-30% effectiveness"]
     CheckStance -->|Yes| CheckTechnique{Archetype<br/>Skill Match?<br/>5 Archetypes}
@@ -473,7 +473,7 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start("[🥋 Training Start]") --> Select{Select Training}
+    Start(["🥋 Training Start"]) --> Select{Select Training}
 
     Select -->|Vital Points| VPTraining[Vital Point<br/>Training]
     Select -->|Stances| StanceTraining[Trigram Stance<br/>Training]
@@ -537,7 +537,7 @@ flowchart TD
     CheckExit -->|Yes| SaveProgress
 
     SaveProgress --> ShowStats[Show Session<br/>Statistics]
-    ShowStats --> End("[🎓 Training Complete]")
+    ShowStats --> End(["🎓 Training Complete"])
 
     style Start fill:#2979FF,stroke:#0D47A1,color:#fff
     style Perfect fill:#00C853,stroke:#00796B,color:#fff
@@ -653,7 +653,7 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FFD600','primaryTextColor':'#000','primaryBorderColor':'#F57F17','lineColor':'#00C853','secondaryColor':'#2979FF','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start("[🚀 App Start]") --> CheckCache{Assets<br/>Cached?<br/>Browser Storage}
+    Start(["🚀 App Start"]) --> CheckCache{Assets<br/>Cached?<br/>Browser Storage}
 
     CheckCache -->|Yes| LoadCached[Load from<br/>Browser Cache<br/>IndexedDB]
     CheckCache -->|No| LoadRemote[Load from CDN<br/>Audio + 3D Models]
@@ -702,7 +702,7 @@ flowchart TD
 
     Wait --> Ready
     Complete --> ShowIntro[Show Intro<br/>Screen<br/>흑괘 Logo]
-    ShowIntro --> GameLoop("[⚡ Enter Game Loop<br/>60fps Target]")
+    ShowIntro --> GameLoop(["⚡ Enter Game Loop<br/>60fps Target"])
 
     style Start fill:#2979FF,stroke:#0D47A1,color:#fff
     style LoadRemote fill:#FFD600,stroke:#F57F17,color:#000
