@@ -77,9 +77,9 @@ graph TB
   Goal --> Dep[Compromise dependency]
   Goal --> XSS[Inject via XSS in UI]
   Goal --> Store[Tamper localStorage]
-  Dep --> |mitigated: pin + audit + SBOM| DepM[✅]
-  XSS --> |mitigated: CSP + escape + SRI| XSSM[✅]
-  Store --> |mitigated: schema validation + checksum| StoreM[✅]
+  Dep --> |mitigated: pin + audit + SBOM| DepM["✅"]
+  XSS --> |mitigated: CSP + escape + SRI| XSSM["✅"]
+  Store --> |mitigated: schema validation + checksum| StoreM["✅"]
 ```
 
 ### 4. Data Flow Diagrams (DFD)

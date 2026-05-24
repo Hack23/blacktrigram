@@ -160,14 +160,14 @@ graph TB
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     subgraph "Eight Trigram Stances (팔괘)"
-        G[☰ 건 Geon<br/>Heaven]:::geon
-        T[☱ 태 Tae<br/>Lake]:::tae
-        L[☲ 리 Li<br/>Fire]:::li
-        J[☳ 진 Jin<br/>Thunder]:::jin
-        S[☴ 손 Son<br/>Wind]:::son
-        GA[☵ 감 Gam<br/>Water]:::gam
-        GN[☶ 간 Gan<br/>Mountain]:::gan
-        GO[☷ 곤 Gon<br/>Earth]:::gon
+        G["☰ 건 Geon<br/>Heaven"]:::geon
+        T["☱ 태 Tae<br/>Lake"]:::tae
+        L["☲ 리 Li<br/>Fire"]:::li
+        J["☳ 진 Jin<br/>Thunder"]:::jin
+        S["☴ 손 Son<br/>Wind"]:::son
+        GA["☵ 감 Gam<br/>Water"]:::gam
+        GN["☶ 간 Gan<br/>Mountain"]:::gan
+        GO["☷ 곤 Gon<br/>Earth"]:::gon
     end
 
     subgraph "Trigram System Components"

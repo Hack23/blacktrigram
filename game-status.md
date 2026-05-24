@@ -1034,12 +1034,12 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#9b59b6', 'secondaryColor':'#3498db', 'tertiaryColor':'#2ecc71'}}}%%
 graph TB
-    Root[🦴 Root: Pelvis<br/>Center of Mass] --> Spine[🦴 Spine x3<br/>Lower, Mid, Upper]
-    Root --> LegL[🦵 Left Leg x5]
-    Root --> LegR[🦵 Right Leg x5]
-    Spine --> Head[🧠 Head x2<br/>Neck, Head]
-    Spine --> ArmL[💪 Left Arm x6]
-    Spine --> ArmR[💪 Right Arm x6]
+    Root["🦴 Root: Pelvis<br/>Center of Mass"] --> Spine["🦴 Spine x3<br/>Lower, Mid, Upper"]
+    Root --> LegL["🦵 Left Leg x5"]
+    Root --> LegR["🦵 Right Leg x5"]
+    Spine --> Head["🧠 Head x2<br/>Neck, Head"]
+    Spine --> ArmL["💪 Left Arm x6"]
+    Spine --> ArmR["💪 Right Arm x6"]
     
     LegL --> LegL1[Hip→Thigh→Knee<br/>→Shin→Foot]
     LegR --> LegR1[Hip→Thigh→Knee<br/>→Shin→Foot]
@@ -1151,9 +1151,9 @@ graph TB
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#27ae60', 'secondaryColor':'#f39c12', 'tertiaryColor':'#e74c3c'}}}%%
 graph LR
-    A[Overall Coverage<br/>73.17%] --> B[🟢 Excellent<br/>>85%]
-    A --> C[🟡 Good<br/>70-85%]
-    A --> D[🔴 Needs Work<br/><70%]
+    A[Overall Coverage<br/>73.17%] --> B["🟢 Excellent<br/>>85%"]
+    A --> C["🟡 Good<br/>70-85%"]
+    A --> D["🔴 Needs Work<br/><70%"]
     
     B --> B1[Animation Catalogs 99.88%]
     B --> B2[Breathing 88.88%]

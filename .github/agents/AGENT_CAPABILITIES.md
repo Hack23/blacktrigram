@@ -208,7 +208,7 @@ The Task Agent coordinates other agents for complex workflows:
 
 ```mermaid
 graph TB
-    User[User Request] --> TaskAgent[🎯 Task Agent<br/>Analyze & Plan]
+    User[User Request] --> TaskAgent["🎯 Task Agent<br/>Analyze & Plan"]
     
     TaskAgent --> Analysis{Analysis Type}
     
@@ -217,20 +217,20 @@ graph TB
     Analysis -->|Security| Issues3[Create Issues]
     Analysis -->|Tests| Issues4[Create Issues]
     
-    Issues1 --> |Assign| CodingAgent[🛠️ Coding Agent]
-    Issues2 --> |Assign| FrontendAgent[⚛️ Frontend Specialist]
-    Issues3 --> |Assign| SecurityAgent[🛡️ Security Specialist]
-    Issues4 --> |Assign| TestingAgent[🧪 Testing Agent]
+    Issues1 --> |Assign| CodingAgent["🛠️ Coding Agent"]
+    Issues2 --> |Assign| FrontendAgent["⚛️ Frontend Specialist"]
+    Issues3 --> |Assign| SecurityAgent["🛡️ Security Specialist"]
+    Issues4 --> |Assign| TestingAgent["🧪 Testing Agent"]
     
     CodingAgent --> Impl[Implementation]
     FrontendAgent --> Impl
     SecurityAgent --> Impl
     TestingAgent --> Impl
     
-    Impl --> ReviewAgent[🔍 Code Review Agent]
+    Impl --> ReviewAgent["🔍 Code Review Agent"]
     ReviewAgent --> Feedback{Quality OK?}
     
-    Feedback -->|Yes| Done[✅ Complete]
+    Feedback -->|Yes| Done["✅ Complete"]
     Feedback -->|No| TaskAgent
     
     style TaskAgent fill:#8BC34A,color:#fff

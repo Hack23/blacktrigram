@@ -154,28 +154,28 @@ Following [Hack23 AB Asset-Centric Threat Modeling](https://github.com/Hack23/IS
 }%%
 flowchart TB
     subgraph CROWN_JEWELS["💎 Crown Jewels"]
-        EDUCATIONAL[🎓 Educational Integrity<br/>Korean Martial Arts Authenticity]
-        CULTURAL[🇰🇷 Cultural Content<br/>Traditional Knowledge & Respect]
-        GAMEPLAY[🎮 Game Experience<br/>User Engagement & Performance]
-        DOMAIN[🌐 Domain Trust<br/>Blacktrigram.com Reputation]
+        EDUCATIONAL["🎓 Educational Integrity<br/>Korean Martial Arts Authenticity"]
+        CULTURAL["🇰🇷 Cultural Content<br/>Traditional Knowledge & Respect"]
+        GAMEPLAY["🎮 Game Experience<br/>User Engagement & Performance"]
+        DOMAIN["🌐 Domain Trust<br/>Blacktrigram.com Reputation"]
     end
 
     subgraph ATTACK_VECTORS["⚔️ Primary Attack Vectors"]
-        CONTENT_POISON[💉 Content Poisoning]
-        SUPPLY_CHAIN[🔗 Supply Chain Attack]
-        CLIENT_EXPLOIT[💻 Client-Side Exploitation]
-        CULTURAL_ATTACK[🏛️ Cultural Misrepresentation]
-        DOMAIN_HIJACK[🌐 Domain Hijacking]
-        SESSION_ATTACK[👤 Session Manipulation]
+        CONTENT_POISON["💉 Content Poisoning"]
+        SUPPLY_CHAIN["🔗 Supply Chain Attack"]
+        CLIENT_EXPLOIT["💻 Client-Side Exploitation"]
+        CULTURAL_ATTACK["🏛️ Cultural Misrepresentation"]
+        DOMAIN_HIJACK["🌐 Domain Hijacking"]
+        SESSION_ATTACK["👤 Session Manipulation"]
     end
 
     subgraph THREAT_AGENTS["👥 Key Threat Agents"]
-        SCRIPT_KIDDIES[🐛 Script Kiddies<br/>Simple Web Exploits]
-        CULTURAL_TROLLS[🎭 Cultural Trolls<br/>Offensive Content Injection]
-        MALWARE_DISTRIBUTORS[🦠 Malware Distributors<br/>Browser Exploitation]
-        COMPETITOR_SABOTAGE[🏢 Competitor Sabotage<br/>Platform Disruption]
-        NATION_STATE[🏛️ Nation-State Actors<br/>Cultural/Political Agenda]
-        CRIMINAL_GROUPS[💰 Cybercriminal Groups<br/>Monetization/Disruption]
+        SCRIPT_KIDDIES["🐛 Script Kiddies<br/>Simple Web Exploits"]
+        CULTURAL_TROLLS["🎭 Cultural Trolls<br/>Offensive Content Injection"]
+        MALWARE_DISTRIBUTORS["🦠 Malware Distributors<br/>Browser Exploitation"]
+        COMPETITOR_SABOTAGE["🏢 Competitor Sabotage<br/>Platform Disruption"]
+        NATION_STATE["🏛️ Nation-State Actors<br/>Cultural/Political Agenda"]
+        CRIMINAL_GROUPS["💰 Cybercriminal Groups<br/>Monetization/Disruption"]
     end
 
     CONTENT_POISON --> EDUCATIONAL
@@ -221,35 +221,35 @@ Following [Architecture-Centric Threat Modeling](https://github.com/Hack23/ISMS-
 }%%
 flowchart TB
     subgraph TRUST_BOUNDARY_1["🌐 Internet Trust Boundary"]
-        USER[👤 Player/Learner]
-        ATTACKER[🎭 Potential Attacker]
+        USER["👤 Player/Learner"]
+        ATTACKER["🎭 Potential Attacker"]
     end
 
     subgraph TRUST_BOUNDARY_2["📦 CDN Trust Boundary"]
-        STATIC_CDN[📄 Static Asset CDN]
-        AUDIO_CDN[🎵 Audio Asset CDN]
-        APP_CDN[🌐 Application CDN]
+        STATIC_CDN["📄 Static Asset CDN"]
+        AUDIO_CDN["🎵 Audio Asset CDN"]
+        APP_CDN["🌐 Application CDN"]
     end
 
     subgraph TRUST_BOUNDARY_3["🖥️ Browser Trust Boundary"]
-        BROWSER[🌐 Web Browser]
-        REACT_APP[⚛️ React Application]
-        THREE_RENDERER[🎨 Three.js Renderer]
-        AUDIO_ENGINE[🎵 Audio Engine]
-        LOCAL_STORAGE[💾 Browser Storage]
+        BROWSER["🌐 Web Browser"]
+        REACT_APP["⚛️ React Application"]
+        THREE_RENDERER["🎨 Three.js Renderer"]
+        AUDIO_ENGINE["🎵 Audio Engine"]
+        LOCAL_STORAGE["💾 Browser Storage"]
     end
 
     subgraph TRUST_BOUNDARY_4["🏗️ Build Trust Boundary"]
-        GITHUB[📦 GitHub Repository]
-        CI_CD[🔧 GitHub Actions]
-        DEPENDENCIES[📚 NPM Dependencies]
-        ATTESTATIONS[🔏 SLSA Attestations]
+        GITHUB["📦 GitHub Repository"]
+        CI_CD["🔧 GitHub Actions"]
+        DEPENDENCIES["📚 NPM Dependencies"]
+        ATTESTATIONS["🔏 SLSA Attestations"]
     end
 
     subgraph TRUST_BOUNDARY_5["🌐 Domain Trust Boundary"]
-        DNS[🌍 DNS Resolution]
-        DOMAIN[🏷️ blacktrigram.com]
-        TLS[🔒 TLS Certificate]
+        DNS["🌍 DNS Resolution"]
+        DOMAIN["🏷️ blacktrigram.com"]
+        TLS["🔒 TLS Certificate"]
     end
 
     USER -->|🎯 T1: Malicious Input| BROWSER
@@ -332,53 +332,53 @@ Following [MITRE ATT&CK-Driven Analysis](https://github.com/Hack23/ISMS-PUBLIC/b
   }
 }%%
 flowchart TD
-    GOAL[🎯 Compromise Black Trigram<br/>Educational Gaming Platform]
+    GOAL["🎯 Compromise Black Trigram<br/>Educational Gaming Platform"]
 
-    GOAL --> PATH1[🚪 External Web Attack]
-    GOAL --> PATH2[🔒 Client-Side Abuse]
-    GOAL --> PATH3[🔗 Supply Chain Compromise]
-    GOAL --> PATH4[🌐 Infrastructure Attack]
-    GOAL --> PATH5[🏛️ Cultural/Social Attack]
+    GOAL --> PATH1["🚪 External Web Attack"]
+    GOAL --> PATH2["🔒 Client-Side Abuse"]
+    GOAL --> PATH3["🔗 Supply Chain Compromise"]
+    GOAL --> PATH4["🌐 Infrastructure Attack"]
+    GOAL --> PATH5["🏛️ Cultural/Social Attack"]
 
-    PATH1 --> EXT1[🌐 Web Application Exploit]
-    PATH1 --> EXT2[🔌 CDN/Asset Abuse]
-    PATH1 --> EXT3[📧 Social Engineering]
+    PATH1 --> EXT1["🌐 Web Application Exploit"]
+    PATH1 --> EXT2["🔌 CDN/Asset Abuse"]
+    PATH1 --> EXT3["📧 Social Engineering"]
 
-    EXT1 --> EXT1A[🔍 XSS/CSRF Attack]
-    EXT1 --> EXT1B[💉 Content Injection]
-    EXT1A --> EXT1A1[🎯 Session Hijacking]
-    EXT1B --> EXT1B1[📊 Data Corruption]
+    EXT1 --> EXT1A["🔍 XSS/CSRF Attack"]
+    EXT1 --> EXT1B["💉 Content Injection"]
+    EXT1A --> EXT1A1["🎯 Session Hijacking"]
+    EXT1B --> EXT1B1["📊 Data Corruption"]
 
-    EXT2 --> EXT2A[📦 Malicious Asset Injection]
-    EXT2 --> EXT2B[🎵 Audio Content Tampering]
-    EXT2A --> EXT2A1[🦠 Malware Distribution]
-    EXT2B --> EXT2B1[🎭 Cultural Offensive Content]
+    EXT2 --> EXT2A["📦 Malicious Asset Injection"]
+    EXT2 --> EXT2B["🎵 Audio Content Tampering"]
+    EXT2A --> EXT2A1["🦠 Malware Distribution"]
+    EXT2B --> EXT2B1["🎭 Cultural Offensive Content"]
 
-    PATH2 --> CLI1[🖥️ Browser Exploitation]
-    PATH2 --> CLI2[👤 User Session Abuse]
-    CLI1 --> CLI1A[🎨 WebGL/Canvas Attack]
-    CLI1 --> CLI1B[🔊 Audio System Exploit]
-    CLI2 --> CLI2A[💾 Storage Manipulation]
-    CLI2 --> CLI2B[🎮 Gameplay Disruption]
+    PATH2 --> CLI1["🖥️ Browser Exploitation"]
+    PATH2 --> CLI2["👤 User Session Abuse"]
+    CLI1 --> CLI1A["🎨 WebGL/Canvas Attack"]
+    CLI1 --> CLI1B["🔊 Audio System Exploit"]
+    CLI2 --> CLI2A["💾 Storage Manipulation"]
+    CLI2 --> CLI2B["🎮 Gameplay Disruption"]
 
-    PATH3 --> SUP1[📚 NPM Dependency Attack]
-    PATH3 --> SUP2[🔧 Build Pipeline Compromise]
-    SUP1 --> SUP1A[🦠 Malicious Package Injection]
-    SUP2 --> SUP2A[🏗️ CI/CD Tampering]
+    PATH3 --> SUP1["📚 NPM Dependency Attack"]
+    PATH3 --> SUP2["🔧 Build Pipeline Compromise"]
+    SUP1 --> SUP1A["🦠 Malicious Package Injection"]
+    SUP2 --> SUP2A["🏗️ CI/CD Tampering"]
 
-    PATH4 --> INF1[🌐 DNS/Domain Attack]
-    PATH4 --> INF2[📦 CDN Infrastructure]
-    INF1 --> INF1A[🏷️ Domain Hijacking]
-    INF1 --> INF1B[🌍 DNS Poisoning]
-    INF2 --> INF2A[📄 Asset Tampering]
-    INF2 --> INF2B[🔒 CDN Compromise]
+    PATH4 --> INF1["🌐 DNS/Domain Attack"]
+    PATH4 --> INF2["📦 CDN Infrastructure"]
+    INF1 --> INF1A["🏷️ Domain Hijacking"]
+    INF1 --> INF1B["🌍 DNS Poisoning"]
+    INF2 --> INF2A["📄 Asset Tampering"]
+    INF2 --> INF2B["🔒 CDN Compromise"]
 
-    PATH5 --> CUL1[🇰🇷 Cultural Misrepresentation]
-    PATH5 --> CUL2[🎭 Community Manipulation]
-    CUL1 --> CUL1A[🏛️ Offensive Content Injection]
-    CUL1 --> CUL1B[📚 Educational Misinformation]
-    CUL2 --> CUL2A[👥 Social Media Campaign]
-    CUL2 --> CUL2B[🗣️ Reputation Attack]
+    PATH5 --> CUL1["🇰🇷 Cultural Misrepresentation"]
+    PATH5 --> CUL2["🎭 Community Manipulation"]
+    CUL1 --> CUL1A["🏛️ Offensive Content Injection"]
+    CUL1 --> CUL1B["📚 Educational Misinformation"]
+    CUL2 --> CUL2A["👥 Social Media Campaign"]
+    CUL2 --> CUL2B["🗣️ Reputation Attack"]
 
     style GOAL fill:#d32f2f,color:#fff
     style PATH1 fill:#ff5722,color:#fff
@@ -522,36 +522,36 @@ Aligned with [Security Architecture](SECURITY_ARCHITECTURE.md) implementation:
 }%%
 flowchart TB
     subgraph PERIMETER["🌐 Perimeter Security"]
-        HTTPS[🔐 HTTPS Enforcement]
-        CDN[📦 CDN Security]
-        SRI[🔒 Subresource Integrity]
+        HTTPS["🔐 HTTPS Enforcement"]
+        CDN["📦 CDN Security"]
+        SRI["🔒 Subresource Integrity"]
     end
 
     subgraph APPLICATION["📱 Application Security"]
-        CSP[🛡️ Content Security Policy]
-        REACT[⚛️ React Security Patterns]
-        INPUT[✅ Input Validation]
-        THREE[🎨 Three.js Security Context]
+        CSP["🛡️ Content Security Policy"]
+        REACT["⚛️ React Security Patterns"]
+        INPUT["✅ Input Validation"]
+        THREE["🎨 Three.js Security Context"]
     end
 
     subgraph BROWSER["🖥️ Browser Security"]
-        STORAGE[💾 Session-Only Storage]
-        PERMISSIONS[🔑 API Permissions]
-        SANDBOX[📦 Browser Sandbox]
-        CORS[🌐 CORS Policy]
+        STORAGE["💾 Session-Only Storage"]
+        PERMISSIONS["🔑 API Permissions"]
+        SANDBOX["📦 Browser Sandbox"]
+        CORS["🌐 CORS Policy"]
     end
 
     subgraph PIPELINE["🏗️ Build Security"]
-        DEPS[📚 Dependency Scanning]
-        SLSA[🔏 SLSA Attestations]
-        SAST[🔍 Static Analysis]
-        SBOM[📋 Software Bill of Materials]
+        DEPS["📚 Dependency Scanning"]
+        SLSA["🔏 SLSA Attestations"]
+        SAST["🔍 Static Analysis"]
+        SBOM["📋 Software Bill of Materials"]
     end
 
     subgraph MONITORING["📊 Security Monitoring"]
-        PERFORMANCE[📈 Performance Monitoring]
-        ERRORS[🚨 Error Tracking]
-        INTEGRITY[🔍 Content Integrity]
+        PERFORMANCE["📈 Performance Monitoring"]
+        ERRORS["🚨 Error Tracking"]
+        INTEGRITY["🔍 Content Integrity"]
     end
 
     HTTPS --> CSP
@@ -619,24 +619,24 @@ Following cultural authenticity requirements from [CRA Assessment](CRA-ASSESSMEN
 }%%
 flowchart TD
     subgraph EDUCATIONAL_THREATS["🎓 Educational Integrity Threats"]
-        MISINFORMATION[📚 Misinformation Injection]
-        CULTURAL_BIAS[🏛️ Cultural Bias Introduction]
-        TECHNIQUE_DANGER[⚠️ Dangerous Technique Promotion]
-        HISTORICAL_FALSIFICATION[📜 Historical Falsification]
+        MISINFORMATION["📚 Misinformation Injection"]
+        CULTURAL_BIAS["🏛️ Cultural Bias Introduction"]
+        TECHNIQUE_DANGER["⚠️ Dangerous Technique Promotion"]
+        HISTORICAL_FALSIFICATION["📜 Historical Falsification"]
     end
 
     subgraph ATTACK_METHODS["⚔️ Attack Methods"]
-        CONTENT_INJECTION[💉 Content Injection]
-        GRADUAL_CORRUPTION[🔄 Gradual Content Corruption]
-        SOCIAL_ENGINEERING[🎭 Social Engineering]
-        INSIDER_MODIFICATION[👤 Insider Content Modification]
+        CONTENT_INJECTION["💉 Content Injection"]
+        GRADUAL_CORRUPTION["🔄 Gradual Content Corruption"]
+        SOCIAL_ENGINEERING["🎭 Social Engineering"]
+        INSIDER_MODIFICATION["👤 Insider Content Modification"]
     end
 
     subgraph CULTURAL_IMPACTS["🇰🇷 Cultural Impacts"]
-        STEREOTYPE_REINFORCEMENT[📺 Stereotype Reinforcement]
-        CULTURAL_APPROPRIATION[🎭 Cultural Appropriation]
-        DISRESPECTFUL_PORTRAYAL[😠 Disrespectful Portrayal]
-        EDUCATIONAL_HARM[🎓 Educational Harm]
+        STEREOTYPE_REINFORCEMENT["📺 Stereotype Reinforcement"]
+        CULTURAL_APPROPRIATION["🎭 Cultural Appropriation"]
+        DISRESPECTFUL_PORTRAYAL["😠 Disrespectful Portrayal"]
+        EDUCATIONAL_HARM["🎓 Educational Harm"]
     end
 
     MISINFORMATION --> CONTENT_INJECTION
@@ -680,27 +680,27 @@ Following frontend-only architecture from [Architecture](ARCHITECTURE.md):
 }%%
 flowchart LR
     subgraph DEVELOPMENT["🔧 Development Phase"]
-        CODE[💻 Source Code]
-        ASSETS[📦 Static Assets]
-        DEPS[📚 Dependencies]
+        CODE["💻 Source Code"]
+        ASSETS["📦 Static Assets"]
+        DEPS["📚 Dependencies"]
     end
 
     subgraph BUILD["🏗️ Build Phase"]
-        SCAN[🔍 Security Scanning]
-        BUNDLE[📦 Asset Bundling]
-        HASH[🔐 Integrity Hashing]
-        SIGN[✍️ Asset Signing]
+        SCAN["🔍 Security Scanning"]
+        BUNDLE["📦 Asset Bundling"]
+        HASH["🔐 Integrity Hashing"]
+        SIGN["✍️ Asset Signing"]
     end
 
     subgraph DEPLOYMENT["🚀 Deployment Phase"]
-        CDN_UPLOAD[📤 CDN Upload]
-        SRI_GEN[🔒 SRI Generation]
-        CSP_CONFIG[🛡️ CSP Configuration]
+        CDN_UPLOAD["📤 CDN Upload"]
+        SRI_GEN["🔒 SRI Generation"]
+        CSP_CONFIG["🛡️ CSP Configuration"]
     end
 
     subgraph RUNTIME["⚡ Runtime Phase"]
-        BROWSER[🌐 Browser Load]
-        VALIDATE[✅ Integrity Check]
+        BROWSER["🌐 Browser Load"]
+        VALIDATE["✅ Integrity Check"]
         EXECUTE[▶️ Safe Execution]
     end
 
@@ -944,7 +944,7 @@ Following [Hack23 AB Threat Modeling Policy — AI-Enabled Threats](https://gith
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    A[🤖 AI Threat Detection] --> B{Threat Category}
+    A["🤖 AI Threat Detection"] --> B{Threat Category}
     B -->|Content Manipulation| C[Cultural Review Gate]
     B -->|Supply Chain| D[SBOM + SRI Validation]
     B -->|Social Engineering| E[Contributor Verification]
@@ -953,7 +953,7 @@ flowchart TD
     D --> H[SLSA Provenance + Lockfile Audit]
     E --> I[Signed Commits + Code Review]
     F --> J[Rate Limiting + Shield Standard]
-    G --> K[✅ Safe to Deploy]
+    G --> K["✅ Safe to Deploy"]
     H --> K
     I --> K
     J --> K
@@ -982,10 +982,10 @@ Following [Hack23 AB Threat Modeling Policy — Maturity Framework](https://gith
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
-    L1[Level 1<br/>Ad-hoc<br/>✅ Done] --> L2[Level 2<br/>Repeatable<br/>✅ Done]
-    L2 --> L3[Level 3<br/>Defined<br/>✅ Current]
-    L3 --> L4[Level 4<br/>Managed<br/>🎯 2026]
-    L4 --> L5[Level 5<br/>Optimizing<br/>🔮 2027+]
+    L1["Level 1<br/>Ad-hoc<br/>✅ Done"] --> L2["Level 2<br/>Repeatable<br/>✅ Done"]
+    L2 --> L3["Level 3<br/>Defined<br/>✅ Current"]
+    L3 --> L4["Level 4<br/>Managed<br/>🎯 2026"]
+    L4 --> L5["Level 5<br/>Optimizing<br/>🔮 2027+"]
     style L1 fill:#4CAF50,color:#fff
     style L2 fill:#4CAF50,color:#fff
     style L3 fill:#2196F3,color:#fff

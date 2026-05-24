@@ -173,21 +173,21 @@ The Test and Report workflow ensures comprehensive quality validation:
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start[🚀 Code Push/PR] --> Prepare[🔧 Prepare Environment]
-    Prepare --> BuildVal[🏗️ Build Validation]
-    Prepare --> UnitTests[🧪 Unit Tests]
-    Prepare --> E2ETests[🌐 E2E Tests]
+    Start["🚀 Code Push/PR"] --> Prepare["🔧 Prepare Environment"]
+    Prepare --> BuildVal["🏗️ Build Validation"]
+    Prepare --> UnitTests["🧪 Unit Tests"]
+    Prepare --> E2ETests["🌐 E2E Tests"]
 
-    BuildVal --> BuildPass{✅ Build Success?}
-    UnitTests --> Coverage[📊 Coverage Report]
-    E2ETests --> CypressArtifacts[🎬 Videos & Screenshots]
+    BuildVal --> BuildPass{"✅ Build Success?"}
+    UnitTests --> Coverage["📊 Coverage Report"]
+    E2ETests --> CypressArtifacts["🎬 Videos & Screenshots"]
 
-    BuildPass -->|Yes| TestResults[📋 Test Results]
-    BuildPass -->|No| FailBuild[❌ Fail Build]
+    BuildPass -->|Yes| TestResults["📋 Test Results"]
+    BuildPass -->|No| FailBuild["❌ Fail Build"]
 
     Coverage --> TestResults
     CypressArtifacts --> TestResults
-    TestResults --> Report[📤 Upload Reports]
+    TestResults --> Report["📤 Upload Reports"]
 
     classDef startEnd fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
     classDef process fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
@@ -219,16 +219,16 @@ The secure release workflow handles version management, build attestations, and 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Trigger[🏷️ Release Trigger] --> Prepare[🔧 Prepare Release]
-    Prepare --> Build[🏗️ Build Package]
-    Build --> Security[🔒 Security Validation]
+    Trigger["🏷️ Release Trigger"] --> Prepare["🔧 Prepare Release"]
+    Prepare --> Build["🏗️ Build Package"]
+    Build --> Security["🔒 Security Validation"]
 
-    Security --> SBOM[📄 Generate SBOM]
-    SBOM --> Attestations[🔏 Create Attestations]
-    Attestations --> Release[📦 Create Release]
+    Security --> SBOM["📄 Generate SBOM"]
+    SBOM --> Attestations["🔏 Create Attestations"]
+    Attestations --> Release["📦 Create Release"]
 
-    Release --> Deploy[🌐 Deploy to Pages]
-    Deploy --> Complete[✅ Release Complete]
+    Release --> Deploy["🌐 Deploy to Pages"]
+    Deploy --> Complete["✅ Release Complete"]
 
     classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
     classDef process fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
@@ -257,13 +257,13 @@ The AWS deployment workflow handles automatic deployment to CloudFront + S3 mult
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Trigger[📝 Push to Main] --> Prepare[🔧 Environment Setup]
-    Prepare --> S3Deploy[💾 Sync docs/ to S3 us-east-1]
+    Trigger["📝 Push to Main"] --> Prepare["🔧 Environment Setup"]
+    Prepare --> S3Deploy["💾 Sync docs/ to S3 us-east-1"]
     
-    S3Deploy --> CacheHeaders[⚡ Set Cache Headers]
-    CacheHeaders --> CFInvalidate[🔄 Invalidate CloudFront]
+    S3Deploy --> CacheHeaders["⚡ Set Cache Headers"]
+    CacheHeaders --> CFInvalidate["🔄 Invalidate CloudFront"]
     
-    CFInvalidate --> Complete[✅ Deployment Complete]
+    CFInvalidate --> Complete["✅ Deployment Complete"]
     
     classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
     classDef process fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
@@ -317,20 +317,20 @@ Multiple security scanning workflows protect the application:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "🔒 Static Security Analysis"
-        CodeQL[🔍 CodeQL Analysis]
-        Deps[📦 Dependency Review]
-        Score[⭐ Scorecard Analysis]
+        CodeQL["🔍 CodeQL Analysis"]
+        Deps["📦 Dependency Review"]
+        Score["⭐ Scorecard Analysis"]
     end
 
     subgraph "🕷️ Dynamic Security Testing"
-        ZAP[🕷️ ZAP DAST Scan]
-        Light[🔆 Lighthouse Audit]
+        ZAP["🕷️ ZAP DAST Scan"]
+        Light["🔆 Lighthouse Audit"]
     end
 
     subgraph "📊 Security Reporting"
-        SecTab[🛡️ GitHub Security Tab]
-        Artifacts[📄 Security Artifacts]
-        Badge[🏆 Security Badge]
+        SecTab["🛡️ GitHub Security Tab"]
+        Artifacts["📄 Security Artifacts"]
+        Badge["🏆 Security Badge"]
     end
 
     CodeQL --> SecTab
@@ -380,17 +380,17 @@ Intelligent pull request labeling for development workflows:
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    PR[📝 Pull Request] --> Analysis[🔍 File Analysis]
-    Analysis --> Labels{🏷️ Label Categories}
+    PR["📝 Pull Request"] --> Analysis["🔍 File Analysis"]
+    Analysis --> Labels{"🏷️ Label Categories"}
 
-    Labels --> Feature[🚀 Features & Enhancements]
-    Labels --> Bug[🐛 Bug Fixes]
-    Labels --> Docs[📝 Documentation]
-    Labels --> Security[🔒 Security]
-    Labels --> Testing[🧪 Testing]
-    Labels --> Deps[📦 Dependencies]
+    Labels --> Feature["🚀 Features & Enhancements"]
+    Labels --> Bug["🐛 Bug Fixes"]
+    Labels --> Docs["📝 Documentation"]
+    Labels --> Security["🔒 Security"]
+    Labels --> Testing["🧪 Testing"]
+    Labels --> Deps["📦 Dependencies"]
 
-    Feature --> Apply[🏷️ Apply Labels]
+    Feature --> Apply["🏷️ Apply Labels"]
     Bug --> Apply
     Docs --> Apply
     Security --> Apply
@@ -430,14 +430,14 @@ Lighthouse performance auditing using the budget.json configuration:
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Deploy[🌐 Deployment] --> Lighthouse[🔆 Lighthouse Audit]
-    Lighthouse --> Performance[⚡ Performance Metrics]
-    Lighthouse --> Budget[📊 Budget Validation]
+    Deploy["🌐 Deployment"] --> Lighthouse["🔆 Lighthouse Audit"]
+    Lighthouse --> Performance["⚡ Performance Metrics"]
+    Lighthouse --> Budget["📊 Budget Validation"]
 
-    Performance --> Metrics[📈 Core Web Vitals]
-    Budget --> Limits[⚠️ Budget Limits]
+    Performance --> Metrics["📈 Core Web Vitals"]
+    Budget --> Limits["⚠️ Budget Limits"]
 
-    Metrics --> Report[📋 Performance Report]
+    Metrics --> Report["📋 Performance Report"]
     Limits --> Report
 
     classDef deploy fill:#27ae60,stroke:#1e8449,stroke-width:2px,color:white
@@ -478,11 +478,11 @@ ZAP security scanning of the deployed application:
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Deployed[🌐 Deployed Application] --> ZAP[🕷️ ZAP Security Scan]
-    ZAP --> WebVulns[🔍 Web Vulnerabilities]
-    ZAP --> OWASP[🛡️ OWASP Top 10]
+    Deployed["🌐 Deployed Application"] --> ZAP["🕷️ ZAP Security Scan"]
+    ZAP --> WebVulns["🔍 Web Vulnerabilities"]
+    ZAP --> OWASP["🛡️ OWASP Top 10"]
 
-    WebVulns --> SecurityReport[📋 Security Report]
+    WebVulns --> SecurityReport["📋 Security Report"]
     OWASP --> SecurityReport
 
     classDef deployed fill:#27ae60,stroke:#1e8449,stroke-width:2px,color:white
@@ -510,20 +510,20 @@ GitHub Copilot environment preparation with Model Context Protocol (MCP) servers
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Trigger[🚀 Workflow Trigger] --> Setup[🔧 Environment Setup]
-    Setup --> Chrome[🌐 Chrome Installation]
-    Setup --> Node[📦 Node.js 26]
-    Setup --> ThreeJS[🎮 Three.js Test Environment]
+    Trigger["🚀 Workflow Trigger"] --> Setup["🔧 Environment Setup"]
+    Setup --> Chrome["🌐 Chrome Installation"]
+    Setup --> Node["📦 Node.js 26"]
+    Setup --> ThreeJS["🎮 Three.js Test Environment"]
     
-    Chrome --> WebGL[🎨 WebGL Support]
-    Node --> Dependencies[📦 npm ci]
-    ThreeJS --> Xvfb[🖥️ Xvfb Display Server]
+    Chrome --> WebGL["🎨 WebGL Support"]
+    Node --> Dependencies["📦 npm ci"]
+    ThreeJS --> Xvfb["🖥️ Xvfb Display Server"]
     
-    WebGL --> Cypress[🧪 Cypress Verification]
+    WebGL --> Cypress["🧪 Cypress Verification"]
     Dependencies --> Cypress
     Xvfb --> Cypress
     
-    Cypress --> Ready[✅ Copilot Ready]
+    Cypress --> Ready["✅ Copilot Ready"]
     
     classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
     classDef setup fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
@@ -566,24 +566,24 @@ WCAG 2.1 Level AA compliance validation for Korean-English bilingual UI:
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Trigger[🔄 PR/Push Trigger] --> AxeTests[♿ axe-core Tests]
-    Trigger --> ColorTests[🎨 Color Contrast Tests]
+    Trigger["🔄 PR/Push Trigger"] --> AxeTests["♿ axe-core Tests"]
+    Trigger --> ColorTests["🎨 Color Contrast Tests"]
     
-    AxeTests --> ARIAValidation[🏷️ ARIA Labels]
-    AxeTests --> KeyboardNav[⌨️ Keyboard Navigation]
-    AxeTests --> FocusIndicators[🔍 Focus Indicators]
+    AxeTests --> ARIAValidation["🏷️ ARIA Labels"]
+    AxeTests --> KeyboardNav["⌨️ Keyboard Navigation"]
+    AxeTests --> FocusIndicators["🔍 Focus Indicators"]
     
-    ColorTests --> TextContrast[📝 Text Contrast 4.5:1]
-    ColorTests --> UIContrast[🎨 UI Contrast 3:1]
+    ColorTests --> TextContrast["📝 Text Contrast 4.5:1"]
+    ColorTests --> UIContrast["🎨 UI Contrast 3:1"]
     
-    ARIAValidation --> Report[📋 Accessibility Report]
+    ARIAValidation --> Report["📋 Accessibility Report"]
     KeyboardNav --> Report
     FocusIndicators --> Report
     TextContrast --> Report
     UIContrast --> Report
     
-    Report --> PRComment[💬 PR Comment]
-    Report --> Artifacts[📦 Upload Artifacts]
+    Report --> PRComment["💬 PR Comment"]
+    Report --> Artifacts["📦 Upload Artifacts"]
     
     classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
     classDef test fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
@@ -623,23 +623,23 @@ Automated validation of asset references and integrity:
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Trigger[🔄 Code/Asset Changes] --> Audit[🔍 Asset Audit Script]
+    Trigger["🔄 Code/Asset Changes"] --> Audit["🔍 Asset Audit Script"]
     
-    Audit --> Images[🖼️ Image References]
-    Audit --> Audio[🎵 Audio Files]
-    Audit --> Fonts[🔤 Font Files]
+    Audit --> Images["🖼️ Image References"]
+    Audit --> Audio["🎵 Audio Files"]
+    Audit --> Fonts["🔤 Font Files"]
     
-    Images --> Validate[✅ Validate Existence]
+    Images --> Validate["✅ Validate Existence"]
     Audio --> Validate
     Fonts --> Validate
     
     Validate --> Pass{All Valid?}
     
-    Pass -->|Yes| Success[✅ Audit Passed]
-    Pass -->|No| PRComment[❌ PR Comment with Missing Assets]
+    Pass -->|Yes| Success["✅ Audit Passed"]
+    Pass -->|No| PRComment["❌ PR Comment with Missing Assets"]
     
-    Success --> Complete[🎉 Complete]
-    PRComment --> Fail[❌ Workflow Failed]
+    Success --> Complete["🎉 Complete"]
+    PRComment --> Fail["❌ Workflow Failed"]
     
     classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
     classDef audit fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
@@ -670,17 +670,17 @@ Automated UI/UX screenshot capture for visual regression and documentation:
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Trigger[🔄 PR Trigger] --> SetupEnv[🔧 Playwright Setup]
-    SetupEnv --> BuildApp[🏗️ Build Application]
+    Trigger["🔄 PR Trigger"] --> SetupEnv["🔧 Playwright Setup"]
+    SetupEnv --> BuildApp["🏗️ Build Application"]
     
-    BuildApp --> Xvfb[🖥️ Start Xvfb Display]
-    Xvfb --> CaptureIntro[📸 Capture IntroScreen]
+    BuildApp --> Xvfb["🖥️ Start Xvfb Display"]
+    Xvfb --> CaptureIntro["📸 Capture IntroScreen"]
     
-    CaptureIntro --> CaptureCombat[📸 Capture CombatScreen]
-    CaptureCombat --> CaptureSettings[📸 Capture SettingsScreen]
+    CaptureIntro --> CaptureCombat["📸 Capture CombatScreen"]
+    CaptureCombat --> CaptureSettings["📸 Capture SettingsScreen"]
     
-    CaptureSettings --> Upload[📦 Upload Artifacts]
-    Upload --> PostPR[💬 Post to PR]
+    CaptureSettings --> Upload["📦 Upload Artifacts"]
+    Upload --> PostPR["💬 Post to PR"]
     
     classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
     classDef setup fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
@@ -710,14 +710,14 @@ Automated detection of unused files, exports, types, and dependencies on every p
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Trigger[🔄 PR Trigger] --> Setup[🔧 Node.js Setup]
-    Setup --> Install[📦 npm ci]
-    Install --> KnipText[🧹 Run Knip - text report]
-    Install --> KnipJson[📊 Run Knip - JSON report]
-    KnipText --> Summary[📝 Job Summary Table]
+    Trigger["🔄 PR Trigger"] --> Setup["🔧 Node.js Setup"]
+    Setup --> Install["📦 npm ci"]
+    Install --> KnipText["🧹 Run Knip - text report"]
+    Install --> KnipJson["📊 Run Knip - JSON report"]
+    KnipText --> Summary["📝 Job Summary Table"]
     KnipJson --> Summary
-    Summary --> Artifact[📦 Upload knip-report artifact]
-    Artifact --> Status[✅/⚠️ Notice or Warning]
+    Summary --> Artifact["📦 Upload knip-report artifact"]
+    Artifact --> Status["✅/⚠️ Notice or Warning"]
 
     classDef trigger fill:#3498db,stroke:#2980b9,stroke-width:2px,color:white
     classDef step fill:#9b59b6,stroke:#8e44ad,stroke-width:1.5px,color:white
@@ -772,40 +772,40 @@ The complete CI/CD pipeline shows how all workflows interact:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TB
     subgraph "🔄 Continuous Integration"
-        PR[📝 Pull Request] --> TestReport[🧪 Test & Report]
-        PR --> DepReview[📦 Dependency Review]
-        PR --> Labeler[🏷️ PR Labeler]
-        PR --> A11yTest[♿ Accessibility Test]
-        PR --> AssetAudit[📦 Asset Audit]
-        PR --> Screenshots[📸 Screenshot Analysis]
-        PR --> Knip[🧹 Knip Unused Code]
-        TestReport --> CodeQL[🔍 CodeQL Analysis]
+        PR["📝 Pull Request"] --> TestReport["🧪 Test & Report"]
+        PR --> DepReview["📦 Dependency Review"]
+        PR --> Labeler["🏷️ PR Labeler"]
+        PR --> A11yTest["♿ Accessibility Test"]
+        PR --> AssetAudit["📦 Asset Audit"]
+        PR --> Screenshots["📸 Screenshot Analysis"]
+        PR --> Knip["🧹 Knip Unused Code"]
+        TestReport --> CodeQL["🔍 CodeQL Analysis"]
     end
 
     subgraph "🚀 Continuous Deployment"
-        Release[🏷️ Release Trigger] --> Build[🏗️ Build & Attest]
-        Build --> ReleaseDeploy[📦 Release Artifacts]
-        Build --> GHPagesDeploy[📄 Deploy to GitHub Pages DR]
+        Release["🏷️ Release Trigger"] --> Build["🏗️ Build & Attest"]
+        Build --> ReleaseDeploy["📦 Release Artifacts"]
+        Build --> GHPagesDeploy["📄 Deploy to GitHub Pages DR"]
         
-        Main[🌟 Main Branch] --> AWSDeployTrigger[☁️ AWS Deploy Trigger]
-        AWSDeployTrigger --> S3Deploy[💾 Deploy to S3 + CloudFront]
+        Main["🌟 Main Branch"] --> AWSDeployTrigger["☁️ AWS Deploy Trigger"]
+        AWSDeployTrigger --> S3Deploy["💾 Deploy to S3 + CloudFront"]
         
-        S3Deploy --> Lighthouse[🔆 Lighthouse Audit]
-        S3Deploy --> ZAPScan[🕷️ ZAP Security Scan]
+        S3Deploy --> Lighthouse["🔆 Lighthouse Audit"]
+        S3Deploy --> ZAPScan["🕷️ ZAP Security Scan"]
     end
 
     subgraph "📊 Continuous Monitoring"
-        Schedule[⏰ Scheduled] --> Scorecard[⭐ Scorecard Analysis]
-        Schedule --> CodeQLScheduled[🔍 CodeQL Weekly]
+        Schedule["⏰ Scheduled"] --> Scorecard["⭐ Scorecard Analysis"]
+        Schedule --> CodeQLScheduled["🔍 CodeQL Weekly"]
     end
     
     subgraph "🤖 Developer Experience"
-        CopilotTrigger[🔧 Copilot Setup] --> CopilotEnv[🤖 MCP Servers & Environment]
-        CopilotEnv --> AgentReady[✅ Agent Ready]
+        CopilotTrigger["🔧 Copilot Setup"] --> CopilotEnv["🤖 MCP Servers & Environment"]
+        CopilotEnv --> AgentReady["✅ Agent Ready"]
     end
     
     subgraph "🛠️ Repository Management"
-        LabelSetup[🔒 Setup Labels] --> LabelsReady[✅ Labels Created]
+        LabelSetup["🔒 Setup Labels"] --> LabelsReady["✅ Labels Created"]
         LabelsReady -.->|enables| Labeler
     end
 

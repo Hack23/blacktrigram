@@ -5707,3 +5707,4 @@ build
 test-results.xml
 build/
 .playwright-mcp/
+mermaid-validation-report.json
