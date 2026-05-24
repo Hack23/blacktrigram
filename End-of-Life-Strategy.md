@@ -483,34 +483,34 @@ Black Trigram will be designated as EOL and archived in read-only state when ANY
   }
 }%%
 flowchart TD
-    START[🎯 EOL Assessment Trigger] --> SECURITY{🔒 Security Support Available?}
+    START["🎯 EOL Assessment Trigger"] --> SECURITY{"🔒 Security Support Available?"}
 
-    SECURITY -->|❌ No| CRITICAL[🚨 Critical EOL<br/>Immediate Retirement]
-    SECURITY -->|✅ Yes| BROWSER{🌐 Browser Compatibility OK?}
+    SECURITY -->|❌ No| CRITICAL["🚨 Critical EOL<br/>Immediate Retirement"]
+    SECURITY -->|✅ Yes| BROWSER{"🌐 Browser Compatibility OK?"}
 
     BROWSER -->|❌ No| CRITICAL
-    BROWSER -->|✅ Yes| PERFORMANCE{⚡ Performance Acceptable?}
+    BROWSER -->|✅ Yes| PERFORMANCE{"⚡ Performance Acceptable?"}
 
     PERFORMANCE -->|❌ No| CRITICAL
-    PERFORMANCE -->|✅ Yes| MAINTENANCE{💰 Maintenance Cost Reasonable?}
+    PERFORMANCE -->|✅ Yes| MAINTENANCE{"💰 Maintenance Cost Reasonable?"}
 
-    MAINTENANCE -->|❌ No| BUSINESS[🟠 Business EOL<br/>Planned Retirement]
-    MAINTENANCE -->|✅ Yes| COMPLIANCE{📋 Compliant with Regulations?}
+    MAINTENANCE -->|❌ No| BUSINESS["🟠 Business EOL<br/>Planned Retirement"]
+    MAINTENANCE -->|✅ Yes| COMPLIANCE{"📋 Compliant with Regulations?"}
 
     COMPLIANCE -->|❌ No| BUSINESS
-    COMPLIANCE -->|✅ Yes| MIGRATION{🔄 Migration Required?}
+    COMPLIANCE -->|✅ Yes| MIGRATION{"🔄 Migration Required?"}
 
-    MIGRATION -->|🔴 Critical| TECHNICAL[🟡 Technical EOL<br/>Migration Required]
-    MIGRATION -->|🟢 Manageable| CONTINUE[✅ Continue Maintenance<br/>Monitor EOL Triggers]
+    MIGRATION -->|🔴 Critical| TECHNICAL["🟡 Technical EOL<br/>Migration Required"]
+    MIGRATION -->|🟢 Manageable| CONTINUE["✅ Continue Maintenance<br/>Monitor EOL Triggers"]
 
-    CRITICAL --> ARCHIVE[📦 Archive Repository<br/>Read-Only State]
-    BUSINESS --> MIGRATE_OR_ARCHIVE{🤔 Migration Feasible?}
-    TECHNICAL --> PLAN_MIGRATION[📋 Plan Migration<br/>To Modern Stack]
+    CRITICAL --> ARCHIVE["📦 Archive Repository<br/>Read-Only State"]
+    BUSINESS --> MIGRATE_OR_ARCHIVE{"🤔 Migration Feasible?"}
+    TECHNICAL --> PLAN_MIGRATION["📋 Plan Migration<br/>To Modern Stack"]
 
     MIGRATE_OR_ARCHIVE -->|❌ No| ARCHIVE
     MIGRATE_OR_ARCHIVE -->|✅ Yes| PLAN_MIGRATION
 
-    PLAN_MIGRATION --> NEW_PLATFORM[🚀 New Platform Development<br/>Modern Technology Stack]
+    PLAN_MIGRATION --> NEW_PLATFORM["🚀 New Platform Development<br/>Modern Technology Stack"]
 
     style CRITICAL fill:#ffcdd2,stroke:#d32f2f
     style BUSINESS fill:#fff3e0,stroke:#f57c00

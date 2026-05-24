@@ -124,7 +124,7 @@ graph LR
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
-    A[🔒 Code Push/PR] --> B{🛡️ Security Gates}
+    A["🔒 Code Push/PR"] --> B{"🛡️ Security Gates"}
 
     B --> |🔍 Code Analysis| C[CodeQL Scanning]
     B --> |📦 Dependencies| D[Dependency Review]
@@ -134,8 +134,8 @@ graph TD
     D --> |⚠️ Known CVEs| F
     E --> |📊 Security Score| G[Security Dashboard]
 
-    F --> H[🚫 Block Merge]
-    G --> I[✅ Security Badge]
+    F --> H["🚫 Block Merge"]
+    G --> I["✅ Security Badge"]
 
     subgraph "🔐 Protection Layers"
         J[Runner Hardening]
@@ -144,9 +144,9 @@ graph TD
     end
 
     subgraph "🧪 Runtime Security Testing"
-        M[🕷️ ZAP DAST Scan]
-        N[⚡ Lighthouse Audit]
-        O[🌐 Live Site Testing]
+        M["🕷️ ZAP DAST Scan"]
+        N["⚡ Lighthouse Audit"]
+        O["🌐 Live Site Testing"]
     end
 
     I --> M
@@ -172,22 +172,22 @@ graph TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
-    A[🚀 Code Push/PR] --> B{🔍 Prepare Environment}
+    A["🚀 Code Push/PR"] --> B{"🔍 Prepare Environment"}
 
-    B --> |✅ Dependencies| C[🏗️ Build Validation]
-    B --> |✅ Cypress Cache| D[🧪 Unit Tests]
-    B --> |✅ Display Setup| E[🌐 E2E Tests]
+    B --> |✅ Dependencies| C["🏗️ Build Validation"]
+    B --> |✅ Cypress Cache| D["🧪 Unit Tests"]
+    B --> |✅ Display Setup| E["🌐 E2E Tests"]
 
-    C --> |✅ Build Success| F{📊 Parallel Testing}
+    C --> |✅ Build Success| F{"📊 Parallel Testing"}
 
     F --> D
     F --> E
 
-    D --> |📈 Coverage Report| G[📋 Test Reports]
+    D --> |📈 Coverage Report| G["📋 Test Reports"]
     E --> |🎬 Videos & Screenshots| G
 
-    G --> H[📤 Artifact Upload]
-    H --> I[✨ Combined Reports]
+    G --> H["📤 Artifact Upload"]
+    H --> I["✨ Combined Reports"]
 
     %% Styling
     classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000
@@ -447,17 +447,17 @@ See comprehensive test plans:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "🔧 CI Pipeline"
-        A1[📝 Code Changes] --> A2[🔍 Lint & Type Check]
-        A2 --> A3[🏗️ Build]
-        A3 --> A4[🧪 Test]
-        A4 --> A5[📊 Report]
+        A1["📝 Code Changes"] --> A2["🔍 Lint & Type Check"]
+        A2 --> A3["🏗️ Build"]
+        A3 --> A4["🧪 Test"]
+        A4 --> A5["📊 Report"]
     end
 
     subgraph "🔒 Security Pipeline"
-        S1[🛡️ CodeQL Analysis]
-        S2[📦 Dependency Review]
-        S3[🏆 OSSF Scorecard]
-        S4[🔐 Runner Hardening]
+        S1["🛡️ CodeQL Analysis"]
+        S2["📦 Dependency Review"]
+        S3["🏆 OSSF Scorecard"]
+        S4["🔐 Runner Hardening"]
     end
 
     subgraph "📈 Test Coverage"
@@ -467,11 +467,11 @@ flowchart LR
     end
 
     subgraph "🎯 Outputs"
-        C1[📄 Coverage Reports]
-        C2[🎬 Test Videos]
-        C3[📸 Screenshots]
-        C4[📋 JUnit XML]
-        C5[🛡️ Security Reports]
+        C1["📄 Coverage Reports"]
+        C2["🎬 Test Videos"]
+        C3["📸 Screenshots"]
+        C4["📋 JUnit XML"]
+        C5["🛡️ Security Reports"]
     end
 
     A4 --> B1
@@ -1001,23 +1001,23 @@ cat .env.production
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    A[🚀 Release Trigger] --> B{📋 Release Type}
+    A["🚀 Release Trigger"] --> B{"📋 Release Type"}
 
-    B -->|🏷️ Tag Push| C[🔄 Automatic Release]
-    B -->|⚡ Manual Dispatch| D[📝 Manual Release]
+    B -->|🏷️ Tag Push| C["🔄 Automatic Release"]
+    B -->|⚡ Manual Dispatch| D["📝 Manual Release"]
 
-    C --> E[📦 Prepare Phase]
+    C --> E["📦 Prepare Phase"]
     D --> E
 
-    E --> F[🏗️ Build & Test]
-    F --> G[🔒 Security Validation]
+    E --> F["🏗️ Build & Test"]
+    F --> G["🔒 Security Validation"]
 
-    G --> H[📄 Generate SBOM]
-    H --> I[🔏 Create Attestations]
-    I --> J[📋 Draft Release Notes]
+    G --> H["📄 Generate SBOM"]
+    H --> I["🔏 Create Attestations"]
+    I --> J["📋 Draft Release Notes"]
 
-    J --> K[🌐 Deploy to Pages]
-    K --> L[📢 Publish Release]
+    J --> K["🌐 Deploy to Pages"]
+    K --> L["📢 Publish Release"]
 
     subgraph "🔒 Security Layers"
         M[SLSA Build Provenance]
@@ -1066,16 +1066,16 @@ Release notes are automatically generated using semantic labeling:
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
-    A[🔄 PR Labels] --> B[📝 Release Drafter]
-    B --> C[📊 Categorized Notes]
+    A["🔄 PR Labels"] --> B["📝 Release Drafter"]
+    B --> C["📊 Categorized Notes"]
 
     subgraph "🏷️ Label Categories"
-        D[🚀 New Features]
-        E[🎮 Game Development]
-        F[🔒 Security & Compliance]
-        G[🐛 Bug Fixes]
-        H[📦 Dependencies]
-        I[🧪 Test Coverage]
+        D["🚀 New Features"]
+        E["🎮 Game Development"]
+        F["🔒 Security & Compliance"]
+        G["🐛 Bug Fixes"]
+        H["📦 Dependencies"]
+        I["🧪 Test Coverage"]
     end
 
     A --> D
@@ -1085,7 +1085,7 @@ graph LR
     A --> H
     A --> I
 
-    C --> J[📢 GitHub Release]
+    C --> J["📢 GitHub Release"]
 
     classDef labels fill:#fff3e0,stroke:#e65100,stroke-width:2px
     classDef process fill:#e3f2fd,stroke:#1565c0,stroke-width:2px

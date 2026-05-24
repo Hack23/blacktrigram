@@ -70,8 +70,8 @@ As of Q1 2026, Black Trigram has reached production-ready quality across all maj
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
-    A[Black Trigram Q1 2026] --> B[✅ Production-Ready Systems]
-    A --> C[⚠️ Polish & Optimization]
+    A[Black Trigram Q1 2026] --> B["✅ Production-Ready Systems"]
+    A --> C["⚠️ Polish & Optimization"]
 
     B --> B1[183 Screen Components]
     B --> B2[1641-Line Combat Engine]

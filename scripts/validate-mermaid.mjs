@@ -180,6 +180,54 @@ async function validateBlock(b) {
   }
 }
 
+// ── Lightweight style checks (warnings, not errors) ─────────────────────────
+const EMOJI_RE =
+  /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{2300}-\u{23FF}\u{2B00}-\u{2BFF}]/u;
+
+function styleCheck(b) {
+  const issues = [];
+  const lines = b.code.split("\n");
+
+  // Detect diagram type from first non-init line
+  let diagramType = "";
+  for (const l of lines) {
+    if (l.trim().startsWith("%%")) continue;
+    const dt = l
+      .trim()
+      .match(
+        /^(flowchart|graph|stateDiagram|classDiagram|sequenceDiagram|mindmap|C4Context|C4Container|C4Component|erDiagram|gantt|journey|pie|timeline)/i
+      );
+    if (dt) {
+      diagramType = dt[1].toLowerCase();
+      break;
+    }
+  }
+
+  // Only enforce icon-quoting style on flowchart / graph (where unquoted
+  // emoji labels are the most common source of broken rendering).
+  if (!/^(flowchart|graph)/.test(diagramType)) return issues;
+
+  // Unquoted bracket / round / brace labels containing emoji
+  const shapeRe =
+    /([\w][\w.-]*)([\[\(\{])(?!\2)([^\[\(\{\)\]\}\n]*?)(?!\3)([\)\]\}])(?!\4)/g;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    let m;
+    shapeRe.lastIndex = 0;
+    while ((m = shapeRe.exec(line)) !== null) {
+      const inner = m[3];
+      if (!EMOJI_RE.test(inner)) continue;
+      const trimmed = inner.trim();
+      if (trimmed.startsWith('"') || trimmed.startsWith("`")) continue;
+      issues.push({
+        line: b.line + i,
+        msg: `Unquoted icon label: ${m[0]} → consider ${m[1]}${m[2]}"${inner}"${m[4]}`,
+      });
+    }
+  }
+  return issues;
+}
+
 // ── Main ────────────────────────────────────────────────────────────────────
 const files = walk(repoRoot).sort();
 const summary = {
@@ -224,6 +272,15 @@ for (const f of files) {
         idx: b.idx,
         msg: res.msg,
         codePreview: b.code.split("\n").slice(0, 6).join("\n"),
+      });
+    }
+    // Style warnings: unquoted emoji icon labels in flowchart/graph diagrams
+    for (const w of styleCheck(b)) {
+      summary.warnings.push({
+        file: rel,
+        line: w.line,
+        idx: b.idx,
+        msg: w.msg,
       });
     }
   }

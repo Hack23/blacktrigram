@@ -29,7 +29,7 @@ This document outlines planned workflow enhancements for Black Trigram (흑괘),
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#2979FF','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    A[🚀 App Launch] --> B{User<br/>Session Exists?<br/>HttpOnly Cookie}
+    A["🚀 App Launch"] --> B{User<br/>Session Exists?<br/>HttpOnly Cookie}
     
     B -->|No| C[Show Login<br/>Screen<br/>흑괘 Logo]
     B -->|Yes| D[Validate Session<br/>Backend Endpoint<br/>/api/auth/verify]
@@ -53,7 +53,7 @@ flowchart TD
     J --> M
     K --> N[Generate Guest ID<br/>UUID v4]
     
-    L -->|No| O[❌ Login Failed<br/>Show Error<br/>Retry Option]
+    L -->|No| O["❌ Login Failed<br/>Show Error<br/>Retry Option"]
     L -->|Yes| P[Authenticate<br/>with Cognito<br/>Get Access Token]
     
     M -->|Success| P
@@ -93,9 +93,9 @@ flowchart TD
     
     AD --> AE[S3 Asset Check<br/>Custom Skins<br/>Profile Images]
     
-    AE --> AF[📊 Main Menu<br/>Ready to Play<br/>Online Status: 🟢]
+    AE --> AF["📊 Main Menu<br/>Ready to Play<br/>Online Status: 🟢"]
     
-    Q --> AG[⚠️ Offline Mode<br/>Local Only<br/>No Leaderboards]
+    Q --> AG["⚠️ Offline Mode<br/>Local Only<br/>No Leaderboards"]
     
     AG --> AF
     
@@ -123,7 +123,7 @@ flowchart TD
     
     AQ --> AS[CloudWatch Logs<br/>Session Metrics<br/>Performance Data]
     
-    AS --> AT[✅ Data Synced<br/>Session Complete<br/>Exit Safe]
+    AS --> AT["✅ Data Synced<br/>Session Complete<br/>Exit Safe"]
 
     style A fill:#2979FF,stroke:#0D47A1,color:#fff
     style P fill:#00C853,stroke:#00796B,color:#fff
@@ -140,7 +140,7 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FFD600','primaryTextColor':'#000','primaryBorderColor':'#F57F17','lineColor':'#00C853','secondaryColor':'#2979FF','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start([🛒 User Browsing Shop]) --> Browse[Browse Items<br/>Cosmetics<br/>Battle Pass<br/>DLC Packs]
+    Start("[🛒 User Browsing Shop]") --> Browse[Browse Items<br/>Cosmetics<br/>Battle Pass<br/>DLC Packs]
     
     Browse --> Select{Item<br/>Selected}
     
@@ -153,7 +153,7 @@ flowchart TD
     BattlePass --> CheckOwnership
     DLC --> CheckOwnership
     
-    CheckOwnership -->|Yes| AlreadyOwned[⚠️ Already Owned<br/>Cannot Purchase]
+    CheckOwnership -->|Yes| AlreadyOwned["⚠️ Already Owned<br/>Cannot Purchase"]
     CheckOwnership -->|No| ShowPrice[Show Price<br/>KRW / USD<br/>Payment Options]
     
     AlreadyOwned --> Browse
@@ -168,7 +168,7 @@ flowchart TD
     
     StripeURL --> CustomerPays{Customer<br/>Completes<br/>Payment?}
     
-    CustomerPays -->|Cancel| Cancelled[❌ Payment Cancelled<br/>Return to Shop]
+    CustomerPays -->|Cancel| Cancelled["❌ Payment Cancelled<br/>Return to Shop"]
     CustomerPays -->|Success| StripeWebhook[Stripe Webhook<br/>POST /api/webhook/stripe<br/>Event: checkout.session.completed]
     
     Cancelled --> Browse
@@ -182,7 +182,7 @@ flowchart TD
     AlreadyProcessed -->|Yes| SkipProcessing[Skip Processing<br/>Return 200 OK<br/>Idempotent Response]
     AlreadyProcessed -->|No| ValidSignature{Signature<br/>Valid?}
     
-    ValidSignature -->|No| RejectWebhook[❌ Reject Webhook<br/>Log Security Event<br/>CloudWatch Alert]
+    ValidSignature -->|No| RejectWebhook["❌ Reject Webhook<br/>Log Security Event<br/>CloudWatch Alert"]
     ValidSignature -->|Yes| ParseEvent[Parse Event Data<br/>Extract customer_id<br/>line_items<br/>payment_status]
     
     SkipProcessing --> End([Process Complete])
@@ -203,7 +203,7 @@ flowchart TD
     
     NotifyUser --> WebSocketUpdate[WebSocket Broadcast<br/>Real-time inventory update<br/>Client receives new items]
     
-    WebSocketUpdate --> Success[✅ Purchase Complete<br/>Items Granted<br/>Receipt Sent]
+    WebSocketUpdate --> Success["✅ Purchase Complete<br/>Items Granted<br/>Receipt Sent"]
     
     Success --> End
     LogFailure --> End
@@ -224,20 +224,20 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start([🎮 Multiplayer Mode]) --> CheckAuth{User<br/>Authenticated?<br/>Session Valid?}
+    Start("[🎮 Multiplayer Mode]") --> CheckAuth{User<br/>Authenticated?<br/>Session Valid?}
     
     CheckAuth -->|No| RedirectAuth[Redirect to<br/>Login Screen<br/>OAuth Required]
-    CheckAuth -->|Yes| MatchMenu[🏆 Matchmaking Menu<br/>Game Modes]
+    CheckAuth -->|Yes| MatchMenu["🏆 Matchmaking Menu<br/>Game Modes"]
     
     RedirectAuth --> Login[Authentication Flow]
     Login --> MatchMenu
     
     MatchMenu --> SelectMode{Select<br/>Mode}
     
-    SelectMode -->|Ranked 1v1| Ranked[⭐ Ranked Match<br/>ELO-based<br/>Competitive]
-    SelectMode -->|Casual 1v1| Casual[🎲 Casual Match<br/>Quick Play<br/>No Rank Impact]
-    SelectMode -->|2v2 Teams| Teams[👥 Team Match<br/>Coordinated Combat]
-    SelectMode -->|Custom| Custom[⚙️ Custom Lobby<br/>Room Code<br/>Settings]
+    SelectMode -->|Ranked 1v1| Ranked["⭐ Ranked Match<br/>ELO-based<br/>Competitive"]
+    SelectMode -->|Casual 1v1| Casual["🎲 Casual Match<br/>Quick Play<br/>No Rank Impact"]
+    SelectMode -->|2v2 Teams| Teams["👥 Team Match<br/>Coordinated Combat"]
+    SelectMode -->|Custom| Custom["⚙️ Custom Lobby<br/>Room Code<br/>Settings"]
     SelectMode -->|Back| Exit([Return to Main Menu])
     
     Ranked --> EstimateWait[Show Wait Time<br/>Queue Position<br/>Estimated: 1-3min]
@@ -274,7 +274,7 @@ flowchart TD
     
     PlayerAccepted --> CheckAllAccept{All Players<br/>Accepted?}
     
-    CheckAllAccept -->|No| SomeoneDeclined[❌ Match Declined<br/>Someone declined<br/>Return to Queue]
+    CheckAllAccept -->|No| SomeoneDeclined["❌ Match Declined<br/>Someone declined<br/>Return to Queue"]
     CheckAllAccept -->|Yes| CreateMatch[Lambda: createMatch<br/>DynamoDB PutItem<br/>matches table]
     
     SomeoneDeclined --> EnterQueue
@@ -291,22 +291,22 @@ flowchart TD
     
     SyncGameState --> Countdown[Match Countdown<br/>3... 2... 1...<br/>FIGHT!]
     
-    Countdown --> InMatch[🥊 Match Active<br/>Real-time Combat<br/>60fps Target]
+    Countdown --> InMatch["🥊 Match Active<br/>Real-time Combat<br/>60fps Target"]
     
     InMatch --> MonitorConnection{Connection<br/>Stable?}
     
-    MonitorConnection -->|Disconnect| Disconnect[⚠️ Connection Lost<br/>Reconnect Attempt<br/>30s Grace Period]
+    MonitorConnection -->|Disconnect| Disconnect["⚠️ Connection Lost<br/>Reconnect Attempt<br/>30s Grace Period"]
     MonitorConnection -->|Stable| CombatLoop[Combat Loop<br/>State Updates<br/>WebSocket Sync]
     
     Disconnect --> Reconnect{Reconnect<br/>Success?}
-    Reconnect -->|No| Forfeit[❌ Match Forfeit<br/>Opponent Wins<br/>-LP Penalty]
+    Reconnect -->|No| Forfeit["❌ Match Forfeit<br/>Opponent Wins<br/>-LP Penalty"]
     Reconnect -->|Yes| InMatch
     
     CombatLoop --> CheckMatchEnd{Match<br/>Complete?}
     
     CheckMatchEnd -->|No| CombatLoop
-    CheckMatchEnd -->|Victory| Victory[🏆 Victory!<br/>Calculate ELO<br/>+LP Reward]
-    CheckMatchEnd -->|Defeat| Defeat[💀 Defeat<br/>Calculate ELO<br/>-LP Penalty]
+    CheckMatchEnd -->|Victory| Victory["🏆 Victory!<br/>Calculate ELO<br/>+LP Reward"]
+    CheckMatchEnd -->|Defeat| Defeat["💀 Defeat<br/>Calculate ELO<br/>-LP Penalty"]
     
     Victory --> SaveResults[Lambda: saveMatchResults<br/>DynamoDB Update<br/>match_history]
     Defeat --> SaveResults
@@ -314,7 +314,7 @@ flowchart TD
     
     SaveResults --> UpdateRankings[Update Rankings<br/>Leaderboard<br/>DynamoDB GSI Query]
     
-    UpdateRankings --> PostMatch[📊 Post-Match Stats<br/>Damage Dealt<br/>VP Strikes<br/>Techniques Used<br/>Replay Available]
+    UpdateRankings --> PostMatch["📊 Post-Match Stats<br/>Damage Dealt<br/>VP Strikes<br/>Techniques Used<br/>Replay Available"]
     
     PostMatch --> MatchMenu
     

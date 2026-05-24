@@ -233,15 +233,15 @@ The combat loop is fully deterministic, frame-accurate, and side-effect-isolated
 
 ```mermaid
 flowchart LR
-    A[🎮 Input<br/>Keyboard · Touch · Gesture] --> B[☯️ Trigram Stance<br/>건태리진손감간곤]
-    B --> C[🦴 Skeletal Pose<br/>28 bones · 7 hand poses]
-    C --> D[🎯 Vital-Point Targeter<br/>70 points · 4 regions · 14 meridians]
-    D --> E[⚔️ Damage Calculator<br/>severity · accuracy · archetype bonus]
-    E --> F[🩸 Body-Part Health<br/>pain · consciousness · breathing · balance]
-    F --> G[🤖 Counter-Attack AI<br/>limb-exposure detection]
-    G --> H[🎨 Three.js Render<br/>60fps · trauma · particles · shaders]
-    F --> I[🔊 Audio Engine<br/>bone impact · breath · 국악]
-    H --> J[♿ WCAG 2.1 AA HUD<br/>combat readiness · haptics]
+    A["🎮 Input<br/>Keyboard · Touch · Gesture"] --> B["☯️ Trigram Stance<br/>건태리진손감간곤"]
+    B --> C["🦴 Skeletal Pose<br/>28 bones · 7 hand poses"]
+    C --> D["🎯 Vital-Point Targeter<br/>70 points · 4 regions · 14 meridians"]
+    D --> E["⚔️ Damage Calculator<br/>severity · accuracy · archetype bonus"]
+    E --> F["🩸 Body-Part Health<br/>pain · consciousness · breathing · balance"]
+    F --> G["🤖 Counter-Attack AI<br/>limb-exposure detection"]
+    G --> H["🎨 Three.js Render<br/>60fps · trauma · particles · shaders"]
+    F --> I["🔊 Audio Engine<br/>bone impact · breath · 국악"]
+    H --> J["♿ WCAG 2.1 AA HUD<br/>combat readiness · haptics"]
     I --> J
 
     classDef korean fill:#000000,stroke:#FFD700,color:#FFD700,stroke-width:2px

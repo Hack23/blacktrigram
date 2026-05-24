@@ -41,21 +41,21 @@ This document provides comprehensive flowcharts for Black Trigram (흑괘), docu
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start([🎮 Launch Game]) --> Load{Loading<br/>Assets}
+    Start("[🎮 Launch Game]") --> Load{Loading<br/>Assets}
 
-    Load -->|Success| Intro[📺 Intro Screen<br/>흑괘 Black Trigram]
-    Load -->|Error| Error[❌ Error Screen<br/>Retry/Report]
+    Load -->|Success| Intro["📺 Intro Screen<br/>흑괘 Black Trigram"]
+    Load -->|Error| Error["❌ Error Screen<br/>Retry/Report"]
     Error -->|Retry| Load
 
     Intro --> Menu{Main Menu}
 
-    Menu -->|Training| Training[🥋 Training Mode]
-    Menu -->|Versus| CharSelect[👤 Character Select]
-    Menu -->|Tutorial| Tutorial[📚 Tutorial Mode]
-    Menu -->|Philosophy| Philosophy[☯️ Philosophy Mode]
-    Menu -->|Controls| Controls[🎮 Controls Guide]
-    Menu -->|Settings| Settings[⚙️ Settings]
-    Menu -->|Exit| Exit([🚪 Exit Game])
+    Menu -->|Training| Training["🥋 Training Mode"]
+    Menu -->|Versus| CharSelect["👤 Character Select"]
+    Menu -->|Tutorial| Tutorial["📚 Tutorial Mode"]
+    Menu -->|Philosophy| Philosophy["☯️ Philosophy Mode"]
+    Menu -->|Controls| Controls["🎮 Controls Guide"]
+    Menu -->|Settings| Settings["⚙️ Settings"]
+    Menu -->|Exit| Exit("[🚪 Exit Game]")
 
     Settings --> Menu
     Philosophy --> Menu
@@ -68,13 +68,13 @@ flowchart TD
     SelectArchetype -->|정보요원 Intelligence| Combat
     SelectArchetype -->|조직폭력배 Organized Crime| Combat
 
-    Training --> TrainingFlow[🥋 Training Flow<br/>See Training Mode Flowchart]
-    Tutorial --> TutorialGuide[📚 Guided Tutorial<br/>기초 안내 Basic Guidance]
+    Training --> TrainingFlow["🥋 Training Flow<br/>See Training Mode Flowchart"]
+    Tutorial --> TutorialGuide["📚 Guided Tutorial<br/>기초 안내 Basic Guidance"]
 
-    Combat[⚔️ Combat Screen] --> Round{Round Start}
+    Combat["⚔️ Combat Screen"] --> Round{Round Start}
     Round --> Fight[Active Combat]
 
-    Fight -->|Pause| PauseMenu[⏸️ Pause Menu<br/>See Pause Menu Flow]
+    Fight -->|Pause| PauseMenu["⏸️ Pause Menu<br/>See Pause Menu Flow"]
     PauseMenu -->|Resume| Fight
 
     Fight --> HitCheck{Attack Lands?}
@@ -95,13 +95,13 @@ flowchart TD
 
     RoundEnd --> MatchCheck{Match<br/>Complete?}
     MatchCheck -->|More Rounds| Round
-    MatchCheck -->|Victory| Victory[🏆 Victory Screen]
-    MatchCheck -->|Defeat| Defeat[💀 Defeat Screen]
+    MatchCheck -->|Victory| Victory["🏆 Victory Screen"]
+    MatchCheck -->|Defeat| Defeat["💀 Defeat Screen"]
 
     Victory --> PostMatch{Post-Match}
     Defeat --> PostMatch
     PostMatch -->|Return to Menu| Menu
-    PostMatch -->|Rematch| RematchFlow[🔄 Rematch Flow<br/>See Rematch Flowchart]
+    PostMatch -->|Rematch| RematchFlow["🔄 Rematch Flow<br/>See Rematch Flowchart"]
     RematchFlow --> Round
 
     style Start fill:#2979FF,stroke:#0D47A1,color:#fff
@@ -125,14 +125,14 @@ Training mode provides structured practice modes for mastering vital points, tri
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#2979FF','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Enter([🥋 Enter Training Mode]) --> TrainingMenu[Training Menu<br/>Select Practice Mode]
+    Enter("[🥋 Enter Training Mode]") --> TrainingMenu[Training Menu<br/>Select Practice Mode]
 
     TrainingMenu --> ModeSelect{Choose Mode}
 
-    ModeSelect -->|Free Practice| FreePractice[🥊 Free Practice<br/>자유 연습<br/>Open Sparring with Dummy]
-    ModeSelect -->|Vital Point Drill| VPDrill[🎯 Vital Point Drill<br/>급소 훈련<br/>Target 70 Vital Points]
-    ModeSelect -->|Footwork Drill| FootworkDrill[👣 Footwork Drill<br/>발놀림 훈련<br/>Movement & Positioning]
-    ModeSelect -->|Anatomy Study| AnatomyStudy[🔬 Anatomy Study<br/>해부학 학습<br/>Body System Visualization]
+    ModeSelect -->|Free Practice| FreePractice["🥊 Free Practice<br/>자유 연습<br/>Open Sparring with Dummy"]
+    ModeSelect -->|Vital Point Drill| VPDrill["🎯 Vital Point Drill<br/>급소 훈련<br/>Target 70 Vital Points"]
+    ModeSelect -->|Footwork Drill| FootworkDrill["👣 Footwork Drill<br/>발놀림 훈련<br/>Movement & Positioning"]
+    ModeSelect -->|Anatomy Study| AnatomyStudy["🔬 Anatomy Study<br/>해부학 학습<br/>Body System Visualization"]
 
     FreePractice --> SelectArchetype{Select Archetype<br/>for Dummy}
     SelectArchetype -->|무사 Musa| ActiveTraining
@@ -149,8 +149,8 @@ flowchart TD
     FilterRegion --> ActiveTraining
     FilterSearch --> ActiveTraining
 
-    FootworkDrill --> ActiveTraining[⚡ Active Training<br/>활성 훈련]
-    AnatomyStudy --> AnatomyView[🔬 Anatomy Overlay<br/>Layer Visualization<br/>Skeletal/Muscle/VP]
+    FootworkDrill --> ActiveTraining["⚡ Active Training<br/>활성 훈련"]
+    AnatomyStudy --> AnatomyView["🔬 Anatomy Overlay<br/>Layer Visualization<br/>Skeletal/Muscle/VP"]
     AnatomyView --> ActiveTraining
 
     ActiveTraining --> TrainingLoop{Training Action}
@@ -159,16 +159,16 @@ flowchart TD
     TrainingLoop -->|Toggle Overlay| ToggleVP[Toggle VP Overlay<br/>V Key Shortcut]
     TrainingLoop -->|Adjust Scale| AdjustScale[Adjust View Scale<br/>Default: 1.2x]
 
-    ExecuteAttack --> Feedback[📊 Feedback Display<br/>Hit Location<br/>Damage Calculation<br/>VP Hit Result]
+    ExecuteAttack --> Feedback["📊 Feedback Display<br/>Hit Location<br/>Damage Calculation<br/>VP Hit Result"]
     ChangeStance --> Feedback
-    Feedback --> StatsUpdate[📈 Stats Update<br/>Hits Landed<br/>VP Accuracy<br/>Technique Mastery]
+    Feedback --> StatsUpdate["📈 Stats Update<br/>Hits Landed<br/>VP Accuracy<br/>Technique Mastery"]
     StatsUpdate --> TrainingLoop
 
     ToggleVP --> TrainingLoop
     AdjustScale --> TrainingLoop
 
     TrainingLoop -->|Return| TrainingMenu
-    TrainingMenu -->|Exit| Exit([🏠 Return to Main Menu])
+    TrainingMenu -->|Exit| Exit("[🏠 Return to Main Menu]")
 
     style Enter fill:#00C853,stroke:#00796B,color:#fff
     style ActiveTraining fill:#2979FF,stroke:#0D47A1,color:#fff
@@ -187,7 +187,7 @@ The pause menu provides access to game controls, settings adjustments, and navig
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#9C27B0','primaryTextColor':'#fff','primaryBorderColor':'#6A1B9A','lineColor':'#FFD600','secondaryColor':'#2979FF','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Combat([⚔️ Active Combat]) -->|Escape Key / Pause Button| PauseTriggered[⏸️ Pause Triggered<br/>Combat Frozen]
+    Combat("[⚔️ Active Combat]") -->|Escape Key / Pause Button| PauseTriggered["⏸️ Pause Triggered<br/>Combat Frozen"]
 
     PauseTriggered --> PauseMenu[Pause Menu<br/>일시정지 메뉴<br/>Cyberpunk Korean UI]
 
@@ -199,7 +199,7 @@ flowchart TD
     MenuItem -->|⚙️ 설정 Settings| QuickSettings[Quick Settings<br/>설정 조정]
     MenuItem -->|🏠 메인 메뉴 Return| ConfirmQuit{Confirm Quit?<br/>메인 메뉴 확인}
 
-    ConfirmRestart -->|Yes| RestartMatch[🔄 Restart Match<br/>Reset Round State<br/>Reset Player Health]
+    ConfirmRestart -->|Yes| RestartMatch["🔄 Restart Match<br/>Reset Round State<br/>Reset Player Health"]
     ConfirmRestart -->|No| PauseMenu
 
     ControlsGuide --> BackToPause1[Back to Pause Menu]
@@ -214,11 +214,11 @@ flowchart TD
     AccessSettings --> BackToPause2
     BackToPause2 --> PauseMenu
 
-    ConfirmQuit -->|Yes| MainMenu([🏠 Return to Main Menu])
+    ConfirmQuit -->|Yes| MainMenu("[🏠 Return to Main Menu]")
     ConfirmQuit -->|No| PauseMenu
 
-    Resume --> Combat2([⚔️ Resume Combat<br/>60fps Restored])
-    RestartMatch --> Combat3([⚔️ New Match<br/>Round 1 Start])
+    Resume --> Combat2("[⚔️ Resume Combat<br/>60fps Restored]")
+    RestartMatch --> Combat3("[⚔️ New Match<br/>Round 1 Start]")
 
     style PauseTriggered fill:#9C27B0,stroke:#6A1B9A,color:#fff
     style PauseMenu fill:#9C27B0,stroke:#6A1B9A,color:#fff
@@ -238,13 +238,13 @@ After a match ends (Victory or Defeat), the rematch flow allows players to start
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FFD600','primaryTextColor':'#000','primaryBorderColor':'#F57F17','lineColor':'#FF3D00','secondaryColor':'#2979FF','tertiaryColor':'#00C853'}}}%%
 flowchart TD
-    MatchEnd([🏆 Match End<br/>Victory / Defeat Screen]) --> PostMatch{Post-Match Choice}
+    MatchEnd("[🏆 Match End<br/>Victory / Defeat Screen]") --> PostMatch{Post-Match Choice}
 
     PostMatch -->|Rematch| RematchDecision{Same Archetypes?}
-    PostMatch -->|Return to Menu| MainMenu([🏠 Main Menu])
+    PostMatch -->|Return to Menu| MainMenu("[🏠 Main Menu]")
 
-    RematchDecision -->|Yes - Quick Rematch| QuickRematch[⚡ Quick Rematch<br/>Same Archetypes<br/>Reset Health/Ki/Stamina<br/>Reset Round Count]
-    RematchDecision -->|No - Change Setup| ChangeSetup[👤 Return to<br/>Character Select<br/>New Archetype Choice]
+    RematchDecision -->|Yes - Quick Rematch| QuickRematch["⚡ Quick Rematch<br/>Same Archetypes<br/>Reset Health/Ki/Stamina<br/>Reset Round Count"]
+    RematchDecision -->|No - Change Setup| ChangeSetup["👤 Return to<br/>Character Select<br/>New Archetype Choice"]
 
     QuickRematch --> ResetState[Reset Combat State<br/>Clear Status Effects<br/>Reset Body Part HP<br/>Reset VP State<br/>Reset Consciousness]
 
@@ -257,7 +257,7 @@ flowchart TD
 
     ResetState --> NewMatch[Initialize New Match<br/>Load 3D Assets<br/>28-Bone Skeleton Setup<br/>Reset Timer]
     NewMatch --> Countdown[3... 2... 1...<br/>건 Heaven Stance]
-    Countdown --> Fight([⚔️ FIGHT!<br/>New Match Begins])
+    Countdown --> Fight("[⚔️ FIGHT!<br/>New Match Begins]")
 
     style MatchEnd fill:#FFD600,stroke:#F57F17,color:#000
     style QuickRematch fill:#00C853,stroke:#00796B,color:#fff
@@ -275,10 +275,10 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FF3D00','primaryTextColor':'#fff','primaryBorderColor':'#BF360C','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#2979FF'}}}%%
 flowchart TD
-    RoundStart([⏱️ Round Start]) --> Init[Initialize Round<br/>Reset Positions<br/>28-Bone Skeleton<br/>Reset Resources]
+    RoundStart("[⏱️ Round Start]") --> Init[Initialize Round<br/>Reset Positions<br/>28-Bone Skeleton<br/>Reset Resources]
 
     Init --> Ready[Ready State<br/>3...2...1...<br/>Stance: 건 Heaven]
-    Ready --> Fight[🥊 FIGHT!]
+    Ready --> Fight["🥊 FIGHT!"]
 
     Fight --> Input{Player Input}
 
@@ -312,7 +312,7 @@ flowchart TD
     ApplyEffects --> UpdateAnimation[Update Skeletal Animation<br/>Muscle Tension<br/>Injury Feedback]
 
     UpdateAnimation --> CheckKO{Victory<br/>Condition?}
-    CheckKO -->|Health ≤ 0| RoundEnd([🏁 Round End])
+    CheckKO -->|Health ≤ 0| RoundEnd("[🏁 Round End]")
     CheckKO -->|Consciousness ≤ 0| RoundEnd
     CheckKO -->|Time Up| RoundEnd
     CheckKO -->|Continue| Input
@@ -341,15 +341,15 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FFD600','primaryTextColor':'#000','primaryBorderColor':'#F57F17','lineColor':'#FF3D00','secondaryColor':'#00C853','tertiaryColor':'#2979FF'}}}%%
 flowchart LR
-    A[⚔️ Attack Input] --> B{Validate Attack}
+    A["⚔️ Attack Input"] --> B{Validate Attack}
 
-    B -->|Invalid| X1[❌ Cancel Attack<br/>Play Error SFX]
+    B -->|Invalid| X1["❌ Cancel Attack<br/>Play Error SFX"]
     B -->|Valid| C[Consume Ki/Stamina]
 
     C --> D[Calculate Hit Box]
     D --> E{Collision<br/>Detected?}
 
-    E -->|No| X2[🌀 Miss<br/>Play Woosh SFX]
+    E -->|No| X2["🌀 Miss<br/>Play Woosh SFX"]
     E -->|Yes| F{Defender<br/>Blocking?}
 
     F -->|Yes| G[Reduce Damage<br/>50-80%]
@@ -360,7 +360,7 @@ flowchart LR
 
     I --> J{Critical Hit?<br/>Roll < Crit%}
 
-    J -->|Yes| K[×2 Damage<br/>✨ Critical Effect]
+    J -->|Yes| K["×2 Damage<br/>✨ Critical Effect"]
     J -->|No| L[Normal Damage]
 
     K --> M{Vital Point<br/>Hit?}
@@ -377,7 +377,7 @@ flowchart LR
     R --> S[Play Audio<br/>Feedback]
     S --> T[Update Combat<br/>Stats]
 
-    T --> U[✅ Attack Complete]
+    T --> U["✅ Attack Complete"]
     X1 --> U
     X2 --> U
 
@@ -397,22 +397,22 @@ flowchart LR
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#FF3D00','secondaryColor':'#FFD600','tertiaryColor':'#2979FF'}}}%%
 flowchart TD
-    Start([🎯 VP Strike Attempt<br/>70 Targets]) --> CheckStance{Correct Stance<br/>for VP Category?<br/>8 Trigrams}
+    Start("[🎯 VP Strike Attempt<br/>70 Targets]") --> CheckStance{Correct Stance<br/>for VP Category?<br/>8 Trigrams}
 
-    CheckStance -->|No| Penalty[⚠️ Stance Penalty<br/>-30% effectiveness]
+    CheckStance -->|No| Penalty["⚠️ Stance Penalty<br/>-30% effectiveness"]
     CheckStance -->|Yes| CheckTechnique{Archetype<br/>Skill Match?<br/>5 Archetypes}
 
     Penalty --> CheckTechnique
 
-    CheckTechnique -->|Poor Match| SkillPenalty[⚠️ Skill Penalty<br/>-20% precision]
+    CheckTechnique -->|Poor Match| SkillPenalty["⚠️ Skill Penalty<br/>-20% precision"]
     CheckTechnique -->|Good Match| RollPrecision["🎲 Roll Precision<br/>Random 0-100<br/>vs VP Threshold"]
 
     SkillPenalty --> RollPrecision
 
     RollPrecision --> ComparePrecision{Roll ≥<br/>VP Precision<br/>Requirement?}
 
-    ComparePrecision -->|No| Glance[⚡ Glancing VP<br/>50% effectiveness<br/>Partial damage]
-    ComparePrecision -->|Yes| PerfectHit[✨ Perfect Strike!<br/>Full VP effect<br/>Maximum damage]
+    ComparePrecision -->|No| Glance["⚡ Glancing VP<br/>50% effectiveness<br/>Partial damage"]
+    ComparePrecision -->|Yes| PerfectHit["✨ Perfect Strike!<br/>Full VP effect<br/>Maximum damage"]
 
     Glance --> ApplyDamage[Apply Damage<br/>×VP multiplier<br/>Update Body Part]
     PerfectHit --> ApplyDamage
@@ -451,8 +451,8 @@ flowchart TD
 
     UpdateSystems --> CheckKO{KO Condition?<br/>Health ≤ 0 OR<br/>Consciousness ≤ 0?}
 
-    CheckKO -->|Yes| KO[💀 Knockout<br/>Round End<br/>Victory]
-    CheckKO -->|No| Continue[✅ Continue Fight<br/>Combat Active]
+    CheckKO -->|Yes| KO["💀 Knockout<br/>Round End<br/>Victory"]
+    CheckKO -->|No| Continue["✅ Continue Fight<br/>Combat Active"]
 
     KO --> End([Attack Complete])
     Continue --> End
@@ -473,7 +473,7 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start([🥋 Training Start]) --> Select{Select Training}
+    Start("[🥋 Training Start]") --> Select{Select Training}
 
     Select -->|Vital Points| VPTraining[Vital Point<br/>Training]
     Select -->|Stances| StanceTraining[Trigram Stance<br/>Training]
@@ -485,10 +485,10 @@ flowchart TD
     SelectVP --> AttemptStrike[Execute Strike]
     AttemptStrike --> Grade{Grade<br/>Accuracy}
 
-    Grade -->|Perfect| Perfect[⭐ Perfect!<br/>+100 points]
-    Grade -->|Good| Good[✅ Good<br/>+50 points]
-    Grade -->|Poor| Poor[⚠️ Poor<br/>+10 points]
-    Grade -->|Miss| Miss[❌ Miss<br/>0 points]
+    Grade -->|Perfect| Perfect["⭐ Perfect!<br/>+100 points"]
+    Grade -->|Good| Good["✅ Good<br/>+50 points"]
+    Grade -->|Poor| Poor["⚠️ Poor<br/>+10 points"]
+    Grade -->|Miss| Miss["❌ Miss<br/>0 points"]
 
     Perfect --> ShowFeedback[Show Feedback<br/>& Statistics]
     Good --> ShowFeedback
@@ -505,9 +505,9 @@ flowchart TD
     PracticeStance --> TimeTransition[Time Transition<br/>Speed]
     TimeTransition --> GradeTransition{Grade<br/>Transition}
 
-    GradeTransition -->|Fast| FastGrade[⚡ Fast!<br/>< 0.5s]
-    GradeTransition -->|Normal| NormalGrade[✅ Normal<br/>0.5-1s]
-    GradeTransition -->|Slow| SlowGrade[🐢 Slow<br/>> 1s]
+    GradeTransition -->|Fast| FastGrade["⚡ Fast!<br/>< 0.5s"]
+    GradeTransition -->|Normal| NormalGrade["✅ Normal<br/>0.5-1s"]
+    GradeTransition -->|Slow| SlowGrade["🐢 Slow<br/>> 1s"]
 
     FastGrade --> Continue2{Continue?}
     NormalGrade --> Continue2
@@ -520,9 +520,9 @@ flowchart TD
     ShowCombo --> ExecuteCombo[Execute Combo<br/>Steps]
     ExecuteCombo --> CheckCombo{Combo<br/>Correct?}
 
-    CheckCombo -->|Perfect| ComboSuccess[🎯 Perfect Combo!<br/>Max points]
-    CheckCombo -->|Partial| ComboPartial[⚡ Partial<br/>Some correct]
-    CheckCombo -->|Failed| ComboFail[❌ Failed<br/>Retry]
+    CheckCombo -->|Perfect| ComboSuccess["🎯 Perfect Combo!<br/>Max points"]
+    CheckCombo -->|Partial| ComboPartial["⚡ Partial<br/>Some correct"]
+    CheckCombo -->|Failed| ComboFail["❌ Failed<br/>Retry"]
 
     ComboSuccess --> Continue3{Continue?}
     ComboPartial --> Continue3
@@ -537,7 +537,7 @@ flowchart TD
     CheckExit -->|Yes| SaveProgress
 
     SaveProgress --> ShowStats[Show Session<br/>Statistics]
-    ShowStats --> End([🎓 Training Complete])
+    ShowStats --> End("[🎓 Training Complete]")
 
     style Start fill:#2979FF,stroke:#0D47A1,color:#fff
     style Perfect fill:#00C853,stroke:#00796B,color:#fff
@@ -593,7 +593,7 @@ flowchart LR
     S -->|No| U[Continue]
 
     T --> U
-    U --> V[✅ Audio Complete]
+    U --> V["✅ Audio Complete"]
     X --> V
 
     style A fill:#2979FF,stroke:#0D47A1,color:#fff
@@ -653,7 +653,7 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FFD600','primaryTextColor':'#000','primaryBorderColor':'#F57F17','lineColor':'#00C853','secondaryColor':'#2979FF','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start([🚀 App Start]) --> CheckCache{Assets<br/>Cached?<br/>Browser Storage}
+    Start("[🚀 App Start]") --> CheckCache{Assets<br/>Cached?<br/>Browser Storage}
 
     CheckCache -->|Yes| LoadCached[Load from<br/>Browser Cache<br/>IndexedDB]
     CheckCache -->|No| LoadRemote[Load from CDN<br/>Audio + 3D Models]
@@ -670,7 +670,7 @@ flowchart TD
     DownloadAssets -->|Yes| CacheAssets[Cache Assets<br/>IndexedDB<br/>Service Worker]
 
     Retry -->|Yes| LoadRemote
-    Retry -->|No| ErrorScreen[❌ Loading Error<br/>Offline Mode?<br/>Error Details]
+    Retry -->|No| ErrorScreen["❌ Loading Error<br/>Offline Mode?<br/>Error Details"]
 
     ErrorScreen --> End([Exit/Retry])
 
@@ -698,11 +698,11 @@ flowchart TD
     AISystem --> Ready
 
     Ready -->|No| Wait[Wait for<br/>Initialization<br/>Loading Spinner]
-    Ready -->|Yes| Complete[✅ Ready to Play<br/>All Systems Online<br/>60fps Active]
+    Ready -->|Yes| Complete["✅ Ready to Play<br/>All Systems Online<br/>60fps Active"]
 
     Wait --> Ready
     Complete --> ShowIntro[Show Intro<br/>Screen<br/>흑괘 Logo]
-    ShowIntro --> GameLoop([⚡ Enter Game Loop<br/>60fps Target])
+    ShowIntro --> GameLoop("[⚡ Enter Game Loop<br/>60fps Target]")
 
     style Start fill:#2979FF,stroke:#0D47A1,color:#fff
     style LoadRemote fill:#FFD600,stroke:#F57F17,color:#000

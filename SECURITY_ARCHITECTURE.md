@@ -104,38 +104,38 @@ graph TD
         direction TB
 
         subgraph "Layer 1: Perimeter & Network Security"
-            L1A[🌐 CloudFront CDN<br/>400+ Edge Locations]
-            L1B[🛡️ AWS Shield Standard<br/>DDoS Protection L3/L4]
-            L1C[🔐 TLS 1.3<br/>HTTPS-Only Enforcement]
-            L1D[📡 Route53 DNSSEC<br/>DNS Integrity]
+            L1A["🌐 CloudFront CDN<br/>400+ Edge Locations"]
+            L1B["🛡️ AWS Shield Standard<br/>DDoS Protection L3/L4"]
+            L1C["🔐 TLS 1.3<br/>HTTPS-Only Enforcement"]
+            L1D["📡 Route53 DNSSEC<br/>DNS Integrity"]
         end
 
         subgraph "Layer 2: Application Security Controls"
-            L2A[🛡️ Content Security Policy<br/>XSS Prevention]
-            L2B[🔒 Security Headers<br/>HSTS, X-Frame-Options]
-            L2C[🔍 Input Validation<br/>Client-Side Sanitization]
-            L2D[🖥️ Browser Sandbox<br/>Origin Isolation]
+            L2A["🛡️ Content Security Policy<br/>XSS Prevention"]
+            L2B["🔒 Security Headers<br/>HSTS, X-Frame-Options"]
+            L2C["🔍 Input Validation<br/>Client-Side Sanitization"]
+            L2D["🖥️ Browser Sandbox<br/>Origin Isolation"]
         end
 
         subgraph "Layer 3: Data Protection & Key Management"
-            L3A[💾 SSE-S3 Encryption<br/>At-Rest Protection]
-            L3B[🔑 ACM Certificates<br/>Auto-Renewal]
-            L3C[🗝️ OIDC Federation<br/>No Static Credentials]
-            L3D[📦 S3 Versioning<br/>Recovery Capability]
+            L3A["💾 SSE-S3 Encryption<br/>At-Rest Protection"]
+            L3B["🔑 ACM Certificates<br/>Auto-Renewal"]
+            L3C["🗝️ OIDC Federation<br/>No Static Credentials"]
+            L3D["📦 S3 Versioning<br/>Recovery Capability"]
         end
 
         subgraph "Layer 4: Supply Chain & CI/CD Security"
-            L4A[🔍 CodeQL SAST<br/>Vulnerability Detection]
-            L4B[📦 Dependency Review<br/>SCA Scanning]
-            L4C[🔏 SLSA Attestations<br/>Build Provenance]
-            L4D[📄 SBOM Generation<br/>Transparency]
+            L4A["🔍 CodeQL SAST<br/>Vulnerability Detection"]
+            L4B["📦 Dependency Review<br/>SCA Scanning"]
+            L4C["🔏 SLSA Attestations<br/>Build Provenance"]
+            L4D["📄 SBOM Generation<br/>Transparency"]
         end
 
         subgraph "Layer 5: Monitoring & Compliance"
-            L5A[⭐ OSSF Scorecard<br/>Supply Chain Rating]
-            L5B[🕷️ ZAP DAST<br/>Dynamic Testing]
-            L5C[📊 Lighthouse Audit<br/>Best Practices]
-            L5D[📋 ISMS Alignment<br/>ISO 27001 / NIST CSF]
+            L5A["⭐ OSSF Scorecard<br/>Supply Chain Rating"]
+            L5B["🕷️ ZAP DAST<br/>Dynamic Testing"]
+            L5C["📊 Lighthouse Audit<br/>Best Practices"]
+            L5D["📋 ISMS Alignment<br/>ISO 27001 / NIST CSF"]
         end
     end
 
@@ -169,15 +169,15 @@ graph TD
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Frontend-Only Architecture (No Authentication)"
-        A[👤 Player] -->|"Direct Access"| B[🌐 Web Browser]
-        B -->|"HTTPS"| C[📦 Static Assets<br/>CDN]
+        A["👤 Player"] -->|"Direct Access"| B["🌐 Web Browser"]
+        B -->|"HTTPS"| C["📦 Static Assets<br/>CDN"]
 
-        C --> D[⚙️ Game Logic<br/>Client-Side Only]
-        D --> E[💾 Local Storage<br/>Session Only]
+        C --> D["⚙️ Game Logic<br/>Client-Side Only"]
+        D --> E["💾 Local Storage<br/>Session Only"]
 
-        F[🔄 No Backend<br/>No Authentication]
-        G[🔒 No User Accounts<br/>No Persistence]
-        H[⚠️ No Access Control<br/>No Authorization]
+        F["🔄 No Backend<br/>No Authentication"]
+        G["🔒 No User Accounts<br/>No Persistence"]
+        H["⚠️ No Access Control<br/>No Authorization"]
     end
 
     style A fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
@@ -218,13 +218,13 @@ Black Trigram is a frontend-only web application with:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Auditing Architecture"
-        A[👤 Player] -->|"Action"| B[⚙️ Client Logic]
-        B -->|"Temporary"| C[💾 Browser Memory]
+        A["👤 Player"] -->|"Action"| B["⚙️ Client Logic"]
+        B -->|"Temporary"| C["💾 Browser Memory"]
 
-        D[📝 No Audit Trail]
-        E[👤 No Author Tracking]
-        F[📊 No Change History]
-        G[⏱️ No Persistence]
+        D["📝 No Audit Trail"]
+        E["👤 No Author Tracking"]
+        F["📊 No Change History"]
+        G["⏱️ No Persistence"]
     end
 
     style A fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
@@ -257,13 +257,13 @@ Black Trigram currently has:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Session Tracking"
-        A[👤 Player] -->|"Interact"| B[🖱️ Game Interface]
-        B -->|"Local Only"| C[📝 Browser State]
+        A["👤 Player"] -->|"Interact"| B["🖱️ Game Interface"]
+        B -->|"Local Only"| C["📝 Browser State"]
 
-        D[📋 No Session Metadata]
-        E[🌐 No IP Tracking]
-        F[⏰ No Time Tracking]
-        G[💾 No Storage]
+        D["📋 No Session Metadata"]
+        E["🌐 No IP Tracking"]
+        F["⏰ No Time Tracking"]
+        G["💾 No Storage"]
     end
 
     style A fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
@@ -296,13 +296,13 @@ Black Trigram session handling:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Security Event Monitoring"
-        A[🔓 No Authentication<br>Events]
-        B[🛡️ No Authorization<br>Events]
-        C[⚙️ No System<br>Events]
+        A["🔓 No Authentication<br>Events"]
+        B["🛡️ No Authorization<br>Events"]
+        C["⚙️ No System<br>Events"]
 
-        D[📝 No Event Storage]
-        E[🚨 No Security Alerts]
-        F[📊 No Security Dashboard]
+        D["📝 No Event Storage"]
+        E["🚨 No Security Alerts"]
+        F["📊 No Security Dashboard"]
     end
 
     style A,B,C,D,E,F fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
@@ -332,21 +332,21 @@ Black Trigram security monitoring:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "AWS Network Security Infrastructure"
-        A[🌐 Internet] -->|"DNS Query"| B[🛡️ Route53 DNSSEC + Health Checks]
-        B -->|"Primary"| C[⚖️ CloudFront CDN]
-        B -.failover.-> D[📄 GitHub Pages DR]
+        A["🌐 Internet"] -->|"DNS Query"| B["🛡️ Route53 DNSSEC + Health Checks"]
+        B -->|"Primary"| C["⚖️ CloudFront CDN"]
+        B -.failover.-> D["📄 GitHub Pages DR"]
         
-        C -->|"Origin Fetch"| E[💾 S3 us-east-1 Primary]
-        E -.replication.-> F[💾 S3 Backup Region]
+        C -->|"Origin Fetch"| E["💾 S3 us-east-1 Primary"]
+        E -.replication.-> F["💾 S3 Backup Region"]
         
-        C -->|"HTTPS Only"| G[📦 Asset Delivery]
+        C -->|"HTTPS Only"| G["📦 Asset Delivery"]
         D -.DR.-> G
 
-        H[🔒 TLS 1.3] --> C
-        I[🛡️ WAF Protection] --> C
-        J[🔐 CAA Records] --> B
-        K[🔑 DNSSEC Validation] --> B
-        L[💚 Health Checks] --> B
+        H["🔒 TLS 1.3"] --> C
+        I["🛡️ WAF Protection"] --> C
+        J["🔐 CAA Records"] --> B
+        K["🔑 DNSSEC Validation"] --> B
+        L["💚 Health Checks"] --> B
     end
 
     style A fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
@@ -442,9 +442,9 @@ Black Trigram network security includes AWS CloudFront + S3 multi-region deploym
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "DNS Security Monitoring"
-        A[🔍 DNSSEC Validation] --> B[📊 Query Monitoring]
-        C[📜 CAA Compliance] --> D[🚨 Certificate Alerts]
-        E[🛡️ Route53 Logs] --> F[📈 Security Metrics]
+        A["🔍 DNSSEC Validation"] --> B["📊 Query Monitoring"]
+        C["📜 CAA Compliance"] --> D["🚨 Certificate Alerts"]
+        E["🛡️ Route53 Logs"] --> F["📈 Security Metrics"]
     end
 
     style A,B,C,D,E,F fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
@@ -465,9 +465,9 @@ flowchart LR
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "No VPC Infrastructure"
-        A[🚫 No Private Subnets]
-        B[🚫 No VPC Endpoints]
-        C[🚫 No AWS Services]
+        A["🚫 No Private Subnets"]
+        B["🚫 No VPC Endpoints"]
+        C["🚫 No AWS Services"]
     end
 
     style A,B,C fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
@@ -489,18 +489,18 @@ Black Trigram does not use VPC infrastructure:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "AWS Multi-Region High Availability"
-        A[📡 Route53 Health Checks] --> B{Primary Healthy?}
-        B -->|Yes| C[⚖️ CloudFront CDN]
-        B -->|No| D[📄 GitHub Pages DR]
+        A["📡 Route53 Health Checks"] --> B{Primary Healthy?}
+        B -->|Yes| C["⚖️ CloudFront CDN"]
+        B -->|No| D["📄 GitHub Pages DR"]
         
-        C --> E[💾 S3 us-east-1]
-        E -.replication.-> F[💾 S3 Backup Region]
+        C --> E["💾 S3 us-east-1"]
+        E -.replication.-> F["💾 S3 Backup Region"]
         
-        C --> G[🌐 Global Edge Locations]
+        C --> G["🌐 Global Edge Locations"]
         D --> G
         
-        H[🔄 Automatic Failover]
-        I[💚 Active Monitoring]
+        H["🔄 Automatic Failover"]
+        I["💚 Active Monitoring"]
     end
 
     style A fill:#FF6F00,stroke:#E65100,stroke-width:2px,color:white,font-weight:bold
@@ -557,13 +557,13 @@ As a static content application, Black Trigram benefits from inherent resilience
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Data Protection Strategy"
-        A[👤 Player] <-->|"🔒 TLS 1.3"| B[⚖️ CloudFront CDN]
-        B <-->|"🔐 HTTPS"| C[💾 S3 with SSE]
-        C -.replication.-> D[💾 S3 Backup]
+        A["👤 Player"] <-->|"🔒 TLS 1.3"| B["⚖️ CloudFront CDN"]
+        B <-->|"🔐 HTTPS"| C["💾 S3 with SSE"]
+        C -.replication.-> D["💾 S3 Backup"]
         
-        E[🔐 Encryption at Rest<br/>SSE-S3]
-        F[🔐 Encryption in Transit<br/>TLS 1.3]
-        G[🗝️ ACM Certificates<br/>Auto-Renewal]
+        E["🔐 Encryption at Rest<br/>SSE-S3"]
+        F["🔐 Encryption in Transit<br/>TLS 1.3"]
+        G["🗝️ ACM Certificates<br/>Auto-Renewal"]
     end
 
     style A fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold
@@ -607,18 +607,18 @@ Black Trigram data protection:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "AWS Security Services"
-        A[⚖️ CloudFront CDN] --> B[🛡️ AWS Shield Standard]
-        A --> C[🔐 ACM Certificates]
+        A["⚖️ CloudFront CDN"] --> B["🛡️ AWS Shield Standard"]
+        A --> C["🔐 ACM Certificates"]
         
-        D[💾 S3 Storage] --> E[🔒 SSE-S3 Encryption]
-        D --> F[📋 IAM Policies]
-        D --> G[🔐 Block Public Access]
+        D["💾 S3 Storage"] --> E["🔒 SSE-S3 Encryption"]
+        D --> F["📋 IAM Policies"]
+        D --> G["🔐 Block Public Access"]
         
-        H[📡 Route53 DNS] --> I[🛡️ DNSSEC]
-        H --> J[💚 Health Checks]
+        H["📡 Route53 DNS"] --> I["🛡️ DNSSEC"]
+        H --> J["💚 Health Checks"]
         
-        K[🔑 IAM Roles] --> L[🎭 OIDC Authentication]
-        L --> M[🔧 GitHub Actions]
+        K["🔑 IAM Roles"] --> L["🎭 OIDC Authentication"]
+        L --> M["🔧 GitHub Actions"]
     end
 
     style A,D,H fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:white,font-weight:bold
@@ -690,10 +690,10 @@ Black Trigram uses AWS infrastructure exclusively for static content hosting and
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No AWS FSBP Implementation"
-        A[🚫 No Config Service]
-        B[🚫 No Security Hub]
-        C[🚫 No GuardDuty]
-        D[🚫 No Inspector]
+        A["🚫 No Config Service"]
+        B["🚫 No Security Hub"]
+        C["🚫 No GuardDuty"]
+        D["🚫 No Inspector"]
     end
 
     style A,B,C,D fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
@@ -716,9 +716,9 @@ Black Trigram does not implement AWS FSBP (uses AWS only for static hosting via 
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Threat Detection"
-        A[🔍 No Threat<br>Detection]
-        B[🔎 No Investigation<br>Tools]
-        C[⚠️ No Security<br>Findings]
+        A["🔍 No Threat<br>Detection"]
+        B["🔎 No Investigation<br>Tools"]
+        C["⚠️ No Security<br>Findings"]
     end
 
     style A,B,C fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
@@ -747,9 +747,9 @@ Black Trigram threat detection:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Vulnerability Management"
-        A[🔎 No Vulnerability<br>Scanning]
-        B[📋 No CVE<br>Database]
-        C[🔧 No Patch<br>Management]
+        A["🔎 No Vulnerability<br>Scanning"]
+        B["📋 No CVE<br>Database"]
+        C["🔧 No Patch<br>Management"]
     end
 
     style A,B,C fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
@@ -778,9 +778,9 @@ Black Trigram vulnerability management:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Configuration Management"
-        A[⚙️ No AWS Config]
-        B[📝 No Resource<br>Inventory]
-        C[📊 No Compliance<br>Rules]
+        A["⚙️ No AWS Config"]
+        B["📝 No Resource<br>Inventory"]
+        C["📊 No Compliance<br>Rules"]
     end
 
     style A,B,C fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
@@ -808,10 +808,10 @@ Black Trigram configuration management:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Security Monitoring"
-        A[📊 No Log Sources]
-        B[📈 No CloudWatch]
-        C[🔍 No Security Lake]
-        D[🚨 No Alerting]
+        A["📊 No Log Sources"]
+        B["📈 No CloudWatch"]
+        C["🔍 No Security Lake"]
+        D["🚨 No Alerting"]
     end
 
     style A,B,C,D fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
@@ -840,9 +840,9 @@ Black Trigram monitoring:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Automated Security Operations"
-        A[⏱️ No Maintenance<br>Windows]
-        B[🔄 No Patch<br>Management]
-        C[📊 No Security<br>Automation]
+        A["⏱️ No Maintenance<br>Windows"]
+        B["🔄 No Patch<br>Management"]
+        C["📊 No Security<br>Automation"]
     end
 
     style A,B,C fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
@@ -870,13 +870,13 @@ Black Trigram automated operations:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart LR
     subgraph "Frontend Application Security"
-        A[🛡️ Browser<br>Security Model] --> B[🔐 HTTPS Only]
-        A --> C[🔒 CSP Headers]
-        A --> D[🛑 Input<br>Validation]
+        A["🛡️ Browser<br>Security Model"] --> B["🔐 HTTPS Only"]
+        A --> C["🔒 CSP Headers"]
+        A --> D["🛑 Input<br>Validation"]
 
-        E[🚫 No Backend<br>Security]
-        F[🚫 No Authentication]
-        G[🚫 No Authorization]
+        E["🚫 No Backend<br>Security"]
+        F["🚫 No Authentication"]
+        G["🚫 No Authorization"]
     end
 
     style A,B,C,D fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
@@ -909,10 +909,10 @@ Black Trigram application security:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph "No Formal Compliance"
-        A[🏛️ No Compliance<br>Framework]
-        B[🔍 No NIST CSF]
-        C[🔐 No ISO 27001]
-        D[📋 No Regulatory<br>Requirements]
+        A["🏛️ No Compliance<br>Framework"]
+        B["🔍 No NIST CSF"]
+        C["🔐 No ISO 27001"]
+        D["📋 No Regulatory<br>Requirements"]
     end
 
     style A,B,C,D fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
@@ -941,13 +941,13 @@ Black Trigram compliance:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Simplified Defense-in-Depth"
-        A[🌐 Network Layer] --> B[🔒 HTTPS/TLS]
-        C[🖥️ Application Layer] --> D[🛡️ Browser Security]
-        E[👤 User Layer] --> F[🔍 Input Validation]
+        A["🌐 Network Layer"] --> B["🔒 HTTPS/TLS"]
+        C["🖥️ Application Layer"] --> D["🛡️ Browser Security"]
+        E["👤 User Layer"] --> F["🔍 Input Validation"]
 
-        G[🚫 No Identity Layer]
-        H[🚫 No Data Layer]
-        I[🚫 No Infrastructure Layer]
+        G["🚫 No Identity Layer"]
+        H["🚫 No Data Layer"]
+        I["🚫 No Infrastructure Layer"]
     end
 
     style A,B,C,D,E,F fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
@@ -982,10 +982,10 @@ Black Trigram's simplified defense approach:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "No Security Operations"
-        A[🔍 No Monitoring]
-        B[⚡ No Incident<br>Response]
-        C[🔄 No Security<br>Maintenance]
-        D[📊 No Threat<br>Intelligence]
+        A["🔍 No Monitoring"]
+        B["⚡ No Incident<br>Response"]
+        C["🔄 No Security<br>Maintenance"]
+        D["📊 No Threat<br>Intelligence"]
     end
 
     style A,B,C,D fill:#9E9E9E,stroke:#616161,stroke-width:2px,color:white,font-weight:bold
@@ -1014,13 +1014,13 @@ Black Trigram security operations:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Minimal Security Investment"
-        A[💰 Low Cost] --> B[📦 CDN Costs Only]
-        A --> C[🔒 TLS Certificate]
-        A --> D[🛠️ Development Time]
+        A["💰 Low Cost"] --> B["📦 CDN Costs Only"]
+        A --> C["🔒 TLS Certificate"]
+        A --> D["🛠️ Development Time"]
 
-        E[💲 AWS Hosting Costs]
-        F[🚫 No Backend Costs]
-        G[🚫 No Operations Costs]
+        E["💲 AWS Hosting Costs"]
+        F["🚫 No Backend Costs"]
+        G["🚫 No Operations Costs"]
     end
 
     style A,B,C,D fill:#00C853,stroke:#007E33,stroke-width:2px,color:white,font-weight:bold
@@ -1053,21 +1053,21 @@ Black Trigram security investment:
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
     subgraph "Security-Hardened CI/CD Pipeline"
-        A[🔒 Source Code<br>Security] --> B[🔍 CodeQL Analysis]
-        A --> C[📦 Dependency Review]
-        A --> D[⭐ OSSF Scorecard]
+        A["🔒 Source Code<br>Security"] --> B["🔍 CodeQL Analysis"]
+        A --> C["📦 Dependency Review"]
+        A --> D["⭐ OSSF Scorecard"]
 
-        E[🏗️ Build Security] --> F[🔏 SLSA Attestations]
-        E --> G[📄 SBOM Generation]
-        E --> H[🔐 Artifact Signing]
+        E["🏗️ Build Security"] --> F["🔏 SLSA Attestations"]
+        E --> G["📄 SBOM Generation"]
+        E --> H["🔐 Artifact Signing"]
 
-        I[🚀 Deployment<br>Security] --> J[🌐 GitHub Pages]
-        I --> K[🔆 Lighthouse Audit]
-        I --> L[🕷️ ZAP Security Scan]
+        I["🚀 Deployment<br>Security"] --> J["🌐 GitHub Pages"]
+        I --> K["🔆 Lighthouse Audit"]
+        I --> L["🕷️ ZAP Security Scan"]
 
-        M[🛡️ Runner Security] --> N[📌 SHA Pinning]
-        M --> O[📊 Audit Logging]
-        M --> P[🔒 Hardened Runners]
+        M["🛡️ Runner Security"] --> N["📌 SHA Pinning"]
+        M --> O["📊 Audit Logging"]
+        M --> P["🔒 Hardened Runners"]
     end
 
     style A,B,C,D fill:#2979FF,stroke:#0D47A1,stroke-width:2px,color:white,font-weight:bold

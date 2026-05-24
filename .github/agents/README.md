@@ -154,18 +154,18 @@ statuses: read         # Read commit statuses
 ```mermaid
 graph LR
     A[Development Task] --> B{Task Type?}
-    B -->|Product Analysis| K[🎯 Task Agent]
+    B -->|Product Analysis| K["🎯 Task Agent"]
     B -->|Create Issues| K
     B -->|Quality Check| K
-    B -->|Feature/Bug| C[🛠️ Coding Agent]
-    B -->|UI/React| D[⚛️ Frontend Specialist]
-    B -->|Game Logic| E[🎮 Game Developer]
-    B -->|Combat/Martial Arts| L[🥋 Korean Martial Arts Expert]
-    B -->|Testing| F[🧪 Testing Agent]
-    B -->|Documentation| G[📝 Documentation Writer]
-    B -->|Security| H[🛡️ Security Specialist]
-    B -->|Review| I[🔍 Code Review Agent]
-    B -->|Test Strategy| J[🔬 Test Engineer]
+    B -->|Feature/Bug| C["🛠️ Coding Agent"]
+    B -->|UI/React| D["⚛️ Frontend Specialist"]
+    B -->|Game Logic| E["🎮 Game Developer"]
+    B -->|Combat/Martial Arts| L["🥋 Korean Martial Arts Expert"]
+    B -->|Testing| F["🧪 Testing Agent"]
+    B -->|Documentation| G["📝 Documentation Writer"]
+    B -->|Security| H["🛡️ Security Specialist"]
+    B -->|Review| I["🔍 Code Review Agent"]
+    B -->|Test Strategy| J["🔬 Test Engineer"]
     
     K -.Delegates.-> C
     K -.Delegates.-> D
@@ -401,24 +401,24 @@ flowchart TD
     Start([Need Help?]) --> Type{What are you doing?}
     
     Type -->|Product Management| Management{Management Type?}
-    Management -->|Create Issues| TaskAgent[🎯 Task Agent]
+    Management -->|Create Issues| TaskAgent["🎯 Task Agent"]
     Management -->|Quality Analysis| TaskAgent
     Management -->|ISMS Compliance| TaskAgent
     Management -->|Agent Coordination| TaskAgent
     
     Type -->|Writing Code| Code{Code Type?}
-    Code -->|UI Components| Frontend[⚛️ Frontend Specialist]
-    Code -->|Game Logic| Game[🎮 Game Developer]
-    Code -->|Combat/Martial Arts| MartialArts[🥋 Korean Martial Arts Expert]
-    Code -->|General Feature| Coding[🛠️ Coding Agent]
+    Code -->|UI Components| Frontend["⚛️ Frontend Specialist"]
+    Code -->|Game Logic| Game["🎮 Game Developer"]
+    Code -->|Combat/Martial Arts| MartialArts["🥋 Korean Martial Arts Expert"]
+    Code -->|General Feature| Coding["🛠️ Coding Agent"]
     
     Type -->|Writing Tests| TestType{Test Type?}
-    TestType -->|Unit/E2E Tests| Testing[🧪 Testing Agent]
-    TestType -->|Test Strategy| TestEng[🔬 Test Engineer]
+    TestType -->|Unit/E2E Tests| Testing["🧪 Testing Agent"]
+    TestType -->|Test Strategy| TestEng["🔬 Test Engineer"]
     
-    Type -->|Documentation| Docs[📝 Documentation Writer]
-    Type -->|Code Review| Review[🔍 Code Review Agent]
-    Type -->|Security| Security[🛡️ Security Specialist]
+    Type -->|Documentation| Docs["📝 Documentation Writer"]
+    Type -->|Code Review| Review["🔍 Code Review Agent"]
+    Type -->|Security| Security["🛡️ Security Specialist"]
     
     TaskAgent --> Action[Get Agent Help]
     Frontend --> Action

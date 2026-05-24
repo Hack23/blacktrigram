@@ -1220,34 +1220,34 @@ sequenceDiagram
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TD
     subgraph PM["🔍 Performance Monitoring (Q1 2026)"]
-      PerfMon[📈 Performance Monitor]
-      FPS[📊 FPS Tracking - PerformanceOverlay3D]
-      Memory[💾 Memory Usage - Chrome DevTools]
-      GC[🗑️ GC Observations - Three.js Object Disposal]
-      AssetTiming[⏱️ Asset Load Times - Three.js Models & Textures]
-      ThreeRenderer[🎨 Three.js Renderer Stats - Draw Calls]
+      PerfMon["📈 Performance Monitor"]
+      FPS["📊 FPS Tracking - PerformanceOverlay3D"]
+      Memory["💾 Memory Usage - Chrome DevTools"]
+      GC["🗑️ GC Observations - Three.js Object Disposal"]
+      AssetTiming["⏱️ Asset Load Times - Three.js Models & Textures"]
+      ThreeRenderer["🎨 Three.js Renderer Stats - Draw Calls"]
     end
 
     subgraph OT["🚀 Optimization Techniques (Three.js)"]
-      OptEngine[⚙️ Optimization Engine]
-      Instancing[📦 Three.js Instancing - 1000+ Particles]
-      LOD[🎭 Level of Detail - Character Models]
-      ObjectPooling[🔄 Object Pooling - Three.js Objects]
-      GeometryReuse[🔺 Geometry Reuse - Shared Meshes]
-      CodeSplitting[📂 Dynamic import - Three.js Chunks]
-      AudioCompression[🎵 OGG/WebM Streaming - Web Audio API]
-      Debounce[⏳ Debounce/Throttle - useFrame Optimization]
-      Memoization[🧠 React.memo / useMemo - Component Optimization]
-      FrustumCulling[👁️ Frustum Culling - Auto Off-screen Culling]
-      MaterialReuse[🎨 Material Caching - Shared Materials]
+      OptEngine["⚙️ Optimization Engine"]
+      Instancing["📦 Three.js Instancing - 1000+ Particles"]
+      LOD["🎭 Level of Detail - Character Models"]
+      ObjectPooling["🔄 Object Pooling - Three.js Objects"]
+      GeometryReuse["🔺 Geometry Reuse - Shared Meshes"]
+      CodeSplitting["📂 Dynamic import - Three.js Chunks"]
+      AudioCompression["🎵 OGG/WebM Streaming - Web Audio API"]
+      Debounce["⏳ Debounce/Throttle - useFrame Optimization"]
+      Memoization["🧠 React.memo / useMemo - Component Optimization"]
+      FrustumCulling["👁️ Frustum Culling - Auto Off-screen Culling"]
+      MaterialReuse["🎨 Material Caching - Shared Materials"]
     end
 
     subgraph FS["🛡️ Fallback Systems"]
-      FallbackMgr[⚠️ Fallback Manager]
-      LowQualityMode[📉 Reduced Polygon Count]
-      ReducedEffects[❌ Disable Shadows & Post-Processing]
-      ProceduralAudio[🎹 Procedural SFX Fallback]
-      WebGLFallback[🖼️ Fallback to WebGL 1.0]
+      FallbackMgr["⚠️ Fallback Manager"]
+      LowQualityMode["📉 Reduced Polygon Count"]
+      ReducedEffects["❌ Disable Shadows & Post-Processing"]
+      ProceduralAudio["🎹 Procedural SFX Fallback"]
+      WebGLFallback["🖼️ Fallback to WebGL 1.0"]
     end
 
     PerfMon --> FPS
@@ -1908,20 +1908,20 @@ mindmap
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start([🎮 Game Load]) --> Loading[⏳ Loading Assets]
-    Loading --> Intro[🏮 Intro Screen]
+    Start("[🎮 Game Load]") --> Loading["⏳ Loading Assets"]
+    Loading --> Intro["🏮 Intro Screen"]
 
-    Intro --> |New Game| CharSelect[👤 Archetype Selection]
-    Intro --> |Training| Training[🎯 Training Mode]
-    Intro --> |Settings| Settings[⚙️ Settings Menu]
+    Intro --> |New Game| CharSelect["👤 Archetype Selection"]
+    Intro --> |Training| Training["🎯 Training Mode"]
+    Intro --> |Settings| Settings["⚙️ Settings Menu"]
 
-    CharSelect --> Combat[⚔️ Combat Arena]
-    Training --> VitalPractice[🎯 Vital Point Practice]
-    Training --> StancePractice[☯️ Stance Training]
+    CharSelect --> Combat["⚔️ Combat Arena"]
+    Training --> VitalPractice["🎯 Vital Point Practice"]
+    Training --> StancePractice["☯️ Stance Training"]
 
-    Combat --> |Victory| Victory[🏆 Victory Screen]
-    Combat --> |Defeat| Defeat[💀 Defeat Screen]
-    Combat --> |Pause| PauseMenu[⏸️ Pause Menu]
+    Combat --> |Victory| Victory["🏆 Victory Screen"]
+    Combat --> |Defeat| Defeat["💀 Defeat Screen"]
+    Combat --> |Pause| PauseMenu["⏸️ Pause Menu"]
 
     Victory --> Intro
     Defeat --> Intro
@@ -2015,14 +2015,14 @@ graph TB
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph LR
     subgraph "☯️ Trigram Relationships"
-        G[☰ 건 Geon]
-        T[☱ 태 Tae]
-        L[☲ 리 Li]
-        J[☳ 진 Jin]
-        S[☴ 손 Son]
-        GM[☵ 감 Gam]
-        GN[☶ 간 Gan]
-        K[☷ 곤 Gon]
+        G["☰ 건 Geon"]
+        T["☱ 태 Tae"]
+        L["☲ 리 Li"]
+        J["☳ 진 Jin"]
+        S["☴ 손 Son"]
+        GM["☵ 감 Gam"]
+        GN["☶ 간 Gan"]
+        K["☷ 곤 Gon"]
     end
 
     %% Advantage relationships (→ means "has advantage over")
