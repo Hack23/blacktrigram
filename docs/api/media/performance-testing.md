@@ -156,18 +156,18 @@ The performance testing framework ensures the application meets both web perform
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 graph TB
-    A[👨‍💻 Code Changes] --> B[🔨 Build Application]
-    B --> C{📦 Bundle Size Check}
-    C -->|✅ Within Budget| D[🚀 Deploy to Staging]
-    C -->|❌ Over Budget| E[⚡ Optimize & Rebuild]
+    A["👨‍💻 Code Changes"] --> B["🔨 Build Application"]
+    B --> C{"📦 Bundle Size Check"}
+    C -->|✅ Within Budget| D["🚀 Deploy to Staging"]
+    C -->|❌ Over Budget| E["⚡ Optimize & Rebuild"]
     E --> B
-    D --> F[🔍 Lighthouse Audit]
-    F --> G{📊 Scores >90?}
-    G -->|❌ Below Target| H[🔧 Performance Optimization]
-    G -->|✅ Pass| I[🎮 Three.js Profiling]
-    I --> J{🎯 60fps Stable?}
+    D --> F["🔍 Lighthouse Audit"]
+    F --> G{"📊 Scores >90?"}
+    G -->|❌ Below Target| H["🔧 Performance Optimization"]
+    G -->|✅ Pass| I["🎮 Three.js Profiling"]
+    I --> J{"🎯 60fps Stable?"}
     J -->|❌ Frame Drops| H
-    J -->|✅ Pass| K[✅ Deploy to Production]
+    J -->|✅ Pass| K["✅ Deploy to Production"]
     H --> F
 
     style A fill:#e3f2fd

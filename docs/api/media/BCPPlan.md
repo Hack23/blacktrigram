@@ -52,24 +52,24 @@ Our business continuity planning is directly driven by the [Classification Frame
 }%%
 graph TB
     subgraph BIA["📊 Business Impact Analysis"]
-        EDUCATIONAL[🎓 Educational Impact<br/>Learning Disruption]
-        OPERATIONAL[⚙️ Operational Impact<br/>Platform Availability]
-        REPUTATIONAL[🤝 Reputational Impact<br/>Cultural Trust]
-        TECHNICAL[💻 Technical Impact<br/>Service Degradation]
+        EDUCATIONAL["🎓 Educational Impact<br/>Learning Disruption"]
+        OPERATIONAL["⚙️ Operational Impact<br/>Platform Availability"]
+        REPUTATIONAL["🤝 Reputational Impact<br/>Cultural Trust"]
+        TECHNICAL["💻 Technical Impact<br/>Service Degradation"]
     end
     
     subgraph RECOVERY["🔄 Recovery Prioritization"]
-        CRITICAL[🔴 Critical Recovery<br/>RTO < 15 minutes]
-        HIGH[🟠 High Priority<br/>RTO 15min-4 hours]
-        MEDIUM[🟡 Medium Priority<br/>RTO 4-24 hours]
-        STANDARD[🟢 Standard Recovery<br/>RTO > 24 hours]
+        CRITICAL["🔴 Critical Recovery<br/>RTO < 15 minutes"]
+        HIGH["🟠 High Priority<br/>RTO 15min-4 hours"]
+        MEDIUM["🟡 Medium Priority<br/>RTO 4-24 hours"]
+        STANDARD["🟢 Standard Recovery<br/>RTO > 24 hours"]
     end
     
     subgraph BUSINESS["🏢 Educational Functions"]
-        CORE[🏗️ Core Education<br/>Combat Training]
-        SUPPORT[🛠️ Support Functions<br/>Asset Delivery]
-        CONTENT[📋 Content Management<br/>Repository Updates]
-        MARKETING[📢 Community<br/>Social & Growth]
+        CORE["🏗️ Core Education<br/>Combat Training"]
+        SUPPORT["🛠️ Support Functions<br/>Asset Delivery"]
+        CONTENT["📋 Content Management<br/>Repository Updates"]
+        MARKETING["📢 Community<br/>Social & Growth"]
     end
     
     EDUCATIONAL --> CRITICAL
@@ -118,30 +118,30 @@ Based on [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/m
   }
 }%%
 flowchart TD
-    INCIDENT[🚨 Service Disruption<br/>Event Detected] --> ASSESS[📊 Business Impact<br/>Assessment]
+    INCIDENT["🚨 Service Disruption<br/>Event Detected"] --> ASSESS["📊 Business Impact<br/>Assessment"]
     
-    ASSESS --> EDUCATIONAL{🎓 Educational<br/>Impact Level?}
-    ASSESS --> OPERATIONAL{⚙️ Operational<br/>Impact Level?}
-    ASSESS --> REPUTATION{🤝 Reputational<br/>Impact Level?}
-    ASSESS --> TECHNICAL{💻 Technical<br/>Impact Level?}
+    ASSESS --> EDUCATIONAL{"🎓 Educational<br/>Impact Level?"}
+    ASSESS --> OPERATIONAL{"⚙️ Operational<br/>Impact Level?"}
+    ASSESS --> REPUTATION{"🤝 Reputational<br/>Impact Level?"}
+    ASSESS --> TECHNICAL{"💻 Technical<br/>Impact Level?"}
     
-    EDUCATIONAL -->|Critical/Very High| IMMEDIATE[⚡ Immediate Response<br/>< 15 minutes]
+    EDUCATIONAL -->|Critical/Very High| IMMEDIATE["⚡ Immediate Response<br/>< 15 minutes"]
     OPERATIONAL -->|Critical| IMMEDIATE
     TECHNICAL -->|Critical| IMMEDIATE
     
-    EDUCATIONAL -->|High/Moderate| URGENT[🔄 Urgent Response<br/>< 1 hour]
+    EDUCATIONAL -->|High/Moderate| URGENT["🔄 Urgent Response<br/>< 1 hour"]
     OPERATIONAL -->|High| URGENT
     REPUTATION -->|High/Moderate| URGENT
     TECHNICAL -->|High| URGENT
     
-    EDUCATIONAL -->|Low| STANDARD[📅 Standard Response<br/>< 24 hours]
+    EDUCATIONAL -->|Low| STANDARD["📅 Standard Response<br/>< 24 hours"]
     OPERATIONAL -->|Moderate/Low| STANDARD
     REPUTATION -->|Low| STANDARD
     TECHNICAL -->|Low/Negligible| STANDARD
     
-    IMMEDIATE --> CRITICAL_RECOVERY[🔴 Critical Recovery<br/>Full Resources<br/>AWS + GitHub Failover]
-    URGENT --> HIGH_RECOVERY[🟠 High Priority Recovery<br/>Escalated Resources<br/>Multi-region Activation]
-    STANDARD --> NORMAL_RECOVERY[🟢 Normal Recovery<br/>Standard Resources<br/>Scheduled Maintenance]
+    IMMEDIATE --> CRITICAL_RECOVERY["🔴 Critical Recovery<br/>Full Resources<br/>AWS + GitHub Failover"]
+    URGENT --> HIGH_RECOVERY["🟠 High Priority Recovery<br/>Escalated Resources<br/>Multi-region Activation"]
+    STANDARD --> NORMAL_RECOVERY["🟢 Normal Recovery<br/>Standard Resources<br/>Scheduled Maintenance"]
     
     classDef incident fill:#D32F2F,stroke:#B71C1C,stroke-width:3px,color:#ffffff
     classDef assessment fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:#ffffff

@@ -133,27 +133,27 @@ Following [Hack23 AB Asset-Centric Threat Modeling](https://github.com/Hack23/IS
 }%%
 flowchart TB
     subgraph CROWN_JEWELS["💎 Crown Jewels"]
-        USER_AUTH[🔐 User Authentication<br/>AWS Cognito Identity]
-        PLAYER_DATA[📊 Player Data<br/>Progress & Achievements]
-        PAYMENT_PROC[💳 Payment Processing<br/>Transaction Integrity]
-        GAME_STATE[🎮 Game State<br/>Save Data & Replays]
+        USER_AUTH["🔐 User Authentication<br/>AWS Cognito Identity"]
+        PLAYER_DATA["📊 Player Data<br/>Progress & Achievements"]
+        PAYMENT_PROC["💳 Payment Processing<br/>Transaction Integrity"]
+        GAME_STATE["🎮 Game State<br/>Save Data & Replays"]
     end
 
     subgraph ATTACK_VECTORS["⚔️ Primary Attack Vectors"]
-        AUTH_BYPASS[🔓 Authentication Bypass]
-        DATA_BREACH[💉 Data Breach]
-        PAYMENT_FRAUD[💸 Payment Fraud]
-        API_ABUSE[🚪 API Abuse]
-        CREDENTIAL_THEFT[🔑 Credential Theft]
-        SERVERLESS_EXPLOIT[⚡ Serverless Exploitation]
+        AUTH_BYPASS["🔓 Authentication Bypass"]
+        DATA_BREACH["💉 Data Breach"]
+        PAYMENT_FRAUD["💸 Payment Fraud"]
+        API_ABUSE["🚪 API Abuse"]
+        CREDENTIAL_THEFT["🔑 Credential Theft"]
+        SERVERLESS_EXPLOIT["⚡ Serverless Exploitation"]
     end
 
     subgraph THREAT_AGENTS["👥 Key Threat Agents"]
-        HACKERS[🎯 Cybercriminals<br/>Monetization via Fraud]
-        NATION_STATE[🏛️ Nation-State Actors<br/>Data Exfiltration]
-        INSIDER_THREAT[👤 Malicious Insiders<br/>AWS Access Abuse]
-        SCRIPT_KIDDIES[🐛 Script Kiddies<br/>API Exploitation]
-        COMPETITORS[🏢 Competitors<br/>Service Disruption]
+        HACKERS["🎯 Cybercriminals<br/>Monetization via Fraud"]
+        NATION_STATE["🏛️ Nation-State Actors<br/>Data Exfiltration"]
+        INSIDER_THREAT["👤 Malicious Insiders<br/>AWS Access Abuse"]
+        SCRIPT_KIDDIES["🐛 Script Kiddies<br/>API Exploitation"]
+        COMPETITORS["🏢 Competitors<br/>Service Disruption"]
     end
 
     AUTH_BYPASS --> USER_AUTH
@@ -194,22 +194,22 @@ flowchart TB
   }
 }%%
 flowchart TD
-    A[👤 Player] -->|HTTPS| B[⚖️ CloudFront + WAF]
-    B --> C[⚛️ React Frontend]
-    C -->|OAuth 2.0<br/>Authorization Code + PKCE| D[🔐 AWS Cognito]
-    D -->|JWT Tokens<br/>ID, Access, Refresh| E[🚪 API Gateway + WAF]
-    E -->|Validated JWT| F[⚡ Lambda Functions]
-    F --> G[📊 DynamoDB<br/>Player Data]
-    F --> H[📦 S3<br/>Save Games]
-    C -->|Stripe.js<br/>Tokenized Payment| I[💳 Stripe]
+    A["👤 Player"] -->|HTTPS| B["⚖️ CloudFront + WAF"]
+    B --> C["⚛️ React Frontend"]
+    C -->|OAuth 2.0<br/>Authorization Code + PKCE| D["🔐 AWS Cognito"]
+    D -->|JWT Tokens<br/>ID, Access, Refresh| E["🚪 API Gateway + WAF"]
+    E -->|Validated JWT| F["⚡ Lambda Functions"]
+    F --> G["📊 DynamoDB<br/>Player Data"]
+    F --> H["📦 S3<br/>Save Games"]
+    C -->|Stripe.js<br/>Tokenized Payment| I["💳 Stripe"]
     I -->|Webhook<br/>HMAC-SHA256| F
     
-    J[🌐 Social Providers<br/>Google, Facebook, Discord<br/>GitHub, Twitter/X, Apple] -->|OAuth 2.0| D
+    J["🌐 Social Providers<br/>Google, Facebook, Discord<br/>GitHub, Twitter/X, Apple"] -->|OAuth 2.0| D
     
-    K[☁️ AWS Security Services] --> L[🛡️ GuardDuty]
-    K --> M[📈 Security Hub]
-    K --> N[🔍 CloudTrail]
-    K --> O[📊 CloudWatch]
+    K["☁️ AWS Security Services"] --> L["🛡️ GuardDuty"]
+    K --> M["📈 Security Hub"]
+    K --> N["🔍 CloudTrail"]
+    K --> O["📊 CloudWatch"]
     
     style D fill:#ff6f00,stroke:#e65100,color:white,stroke-width:3px
     style E fill:#9c27b0,stroke:#6a1b9a,color:white,stroke-width:3px
@@ -233,42 +233,42 @@ flowchart TD
 }%%
 graph TB
     subgraph TRUST_BOUNDARY_1["🌐 Internet Trust Boundary"]
-        PLAYER[👤 Player]
-        ATTACKER[🎯 Attacker]
+        PLAYER["👤 Player"]
+        ATTACKER["🎯 Attacker"]
     end
     
     subgraph TRUST_BOUNDARY_2["⚖️ CDN Trust Boundary"]
-        CLOUDFRONT[⚖️ CloudFront]
-        WAF_CDN[🛡️ WAF - CDN Layer]
+        CLOUDFRONT["⚖️ CloudFront"]
+        WAF_CDN["🛡️ WAF - CDN Layer"]
     end
     
     subgraph TRUST_BOUNDARY_3["🔐 Authentication Trust Boundary"]
-        COGNITO[🔐 AWS Cognito]
-        SOCIAL_PROVIDERS[🌐 Social Login Providers]
-        IDENTITY_POOL[🔑 Identity Pool]
+        COGNITO["🔐 AWS Cognito"]
+        SOCIAL_PROVIDERS["🌐 Social Login Providers"]
+        IDENTITY_POOL["🔑 Identity Pool"]
     end
     
     subgraph TRUST_BOUNDARY_4["🚪 API Trust Boundary"]
-        API_GATEWAY[🚪 API Gateway]
-        WAF_API[🛡️ WAF - API Layer]
-        AUTHORIZER[🔓 JWT Authorizer]
+        API_GATEWAY["🚪 API Gateway"]
+        WAF_API["🛡️ WAF - API Layer"]
+        AUTHORIZER["🔓 JWT Authorizer"]
     end
     
     subgraph TRUST_BOUNDARY_5["⚡ Compute Trust Boundary - VPC"]
-        LAMBDA[⚡ Lambda Functions]
-        VPC[🔒 VPC Private Subnets]
-        SECURITY_GROUPS[🛡️ Security Groups]
+        LAMBDA["⚡ Lambda Functions"]
+        VPC["🔒 VPC Private Subnets"]
+        SECURITY_GROUPS["🛡️ Security Groups"]
     end
     
     subgraph TRUST_BOUNDARY_6["📊 Data Trust Boundary"]
-        DYNAMODB[📊 DynamoDB]
-        S3[📦 S3]
-        KMS[🔐 AWS KMS]
+        DYNAMODB["📊 DynamoDB"]
+        S3["📦 S3"]
+        KMS["🔐 AWS KMS"]
     end
     
     subgraph TRUST_BOUNDARY_7["💳 Payment Trust Boundary"]
-        STRIPE[💳 Stripe]
-        WEBHOOK[⚡ Webhook Handler]
+        STRIPE["💳 Stripe"]
+        WEBHOOK["⚡ Webhook Handler"]
     end
 
     PLAYER -->|T1: Malicious Request| CLOUDFRONT
@@ -542,55 +542,55 @@ Following [MITRE ATT&CK-Driven Analysis](https://github.com/Hack23/ISMS-PUBLIC/b
   }
 }%%
 flowchart TD
-    GOAL[🎯 Compromise Black Trigram<br/>AWS Serverless Backend]
+    GOAL["🎯 Compromise Black Trigram<br/>AWS Serverless Backend"]
 
-    GOAL --> PATH1[🔐 Authentication Attack]
-    GOAL --> PATH2[🚪 API Gateway Attack]
-    GOAL --> PATH3[⚡ Serverless Exploitation]
-    GOAL --> PATH4[📊 Data Layer Attack]
-    GOAL --> PATH5[💳 Payment System Attack]
+    GOAL --> PATH1["🔐 Authentication Attack"]
+    GOAL --> PATH2["🚪 API Gateway Attack"]
+    GOAL --> PATH3["⚡ Serverless Exploitation"]
+    GOAL --> PATH4["📊 Data Layer Attack"]
+    GOAL --> PATH5["💳 Payment System Attack"]
 
-    PATH1 --> AUTH1[🔓 Credential Compromise]
-    PATH1 --> AUTH2[👥 Social Login Attack]
-    PATH1 --> AUTH3[🎭 Session Hijacking]
+    PATH1 --> AUTH1["🔓 Credential Compromise"]
+    PATH1 --> AUTH2["👥 Social Login Attack"]
+    PATH1 --> AUTH3["🎭 Session Hijacking"]
 
-    AUTH1 --> AUTH1A[🎯 Brute Force Cognito]
-    AUTH1 --> AUTH1B[💉 Credential Stuffing]
-    AUTH1A --> AUTH1A1[🔑 Account Takeover]
-    AUTH1B --> AUTH1B1[📊 Data Breach]
+    AUTH1 --> AUTH1A["🎯 Brute Force Cognito"]
+    AUTH1 --> AUTH1B["💉 Credential Stuffing"]
+    AUTH1A --> AUTH1A1["🔑 Account Takeover"]
+    AUTH1B --> AUTH1B1["📊 Data Breach"]
 
-    AUTH2 --> AUTH2A[🌐 OAuth Token Theft]
-    AUTH2 --> AUTH2B[🔗 Account Linking Attack]
-    AUTH2A --> AUTH2A1[🎭 Impersonation]
-    AUTH2B --> AUTH2B1[👤 Identity Confusion]
+    AUTH2 --> AUTH2A["🌐 OAuth Token Theft"]
+    AUTH2 --> AUTH2B["🔗 Account Linking Attack"]
+    AUTH2A --> AUTH2A1["🎭 Impersonation"]
+    AUTH2B --> AUTH2B1["👤 Identity Confusion"]
 
-    PATH2 --> API1[🚪 API Abuse]
-    PATH2 --> API2[💥 DDoS Attack]
-    API1 --> API1A[💉 Injection Attack]
-    API1 --> API1B[🔓 Broken Access Control]
-    API2 --> API2A[🌊 Request Flood]
-    API2 --> API2B[📡 WebSocket Exhaustion]
+    PATH2 --> API1["🚪 API Abuse"]
+    PATH2 --> API2["💥 DDoS Attack"]
+    API1 --> API1A["💉 Injection Attack"]
+    API1 --> API1B["🔓 Broken Access Control"]
+    API2 --> API2A["🌊 Request Flood"]
+    API2 --> API2B["📡 WebSocket Exhaustion"]
 
-    PATH3 --> LAMBDA1[⚡ Lambda Function Exploit]
-    PATH3 --> LAMBDA2[🔑 IAM Privilege Escalation]
-    LAMBDA1 --> LAMBDA1A[💉 Code Injection]
-    LAMBDA1 --> LAMBDA1B[📦 Dependency Poisoning]
-    LAMBDA2 --> LAMBDA2A[🎯 Overprivileged Function]
-    LAMBDA2 --> LAMBDA2B[🔓 Role Assumption Abuse]
+    PATH3 --> LAMBDA1["⚡ Lambda Function Exploit"]
+    PATH3 --> LAMBDA2["🔑 IAM Privilege Escalation"]
+    LAMBDA1 --> LAMBDA1A["💉 Code Injection"]
+    LAMBDA1 --> LAMBDA1B["📦 Dependency Poisoning"]
+    LAMBDA2 --> LAMBDA2A["🎯 Overprivileged Function"]
+    LAMBDA2 --> LAMBDA2B["🔓 Role Assumption Abuse"]
 
-    PATH4 --> DATA1[📊 Database Attack]
-    PATH4 --> DATA2[📦 Storage Attack]
-    DATA1 --> DATA1A[💉 NoSQL Injection]
-    DATA1 --> DATA1B[🔓 Unauthorized Access]
-    DATA2 --> DATA2A[📤 Data Exfiltration]
-    DATA2 --> DATA2B[🗑️ Malicious File Upload]
+    PATH4 --> DATA1["📊 Database Attack"]
+    PATH4 --> DATA2["📦 Storage Attack"]
+    DATA1 --> DATA1A["💉 NoSQL Injection"]
+    DATA1 --> DATA1B["🔓 Unauthorized Access"]
+    DATA2 --> DATA2A["📤 Data Exfiltration"]
+    DATA2 --> DATA2B["🗑️ Malicious File Upload"]
 
-    PATH5 --> PAY1[💳 Payment Fraud]
-    PATH5 --> PAY2[🎣 Webhook Attack]
-    PAY1 --> PAY1A[💸 Price Manipulation]
-    PAY1 --> PAY1B[🔁 Transaction Replay]
-    PAY2 --> PAY2A[🎭 Webhook Forgery]
-    PAY2 --> PAY2B[💉 Webhook Injection]
+    PATH5 --> PAY1["💳 Payment Fraud"]
+    PATH5 --> PAY2["🎣 Webhook Attack"]
+    PAY1 --> PAY1A["💸 Price Manipulation"]
+    PAY1 --> PAY1B["🔁 Transaction Replay"]
+    PAY2 --> PAY2A["🎭 Webhook Forgery"]
+    PAY2 --> PAY2B["💉 Webhook Injection"]
 
     style GOAL fill:#d32f2f,color:#fff,stroke-width:3px
     style PATH1 fill:#ff5722,color:#fff,stroke-width:2px
