@@ -1,6 +1,6 @@
 {
   "name": "blacktrigram",
-  "version": "0.7.59",
+  "version": "0.7.60",
   "description": "Black Trigram (흑괘) - Korean Martial Arts Combat Simulator. Reusable game systems, combat mechanics, animation framework, and Korean martial arts data built with React, Three.js, and TypeScript.",
   "type": "module",
   "main": "./lib/index.js",
@@ -188,7 +188,7 @@
     "three": "0.184.0"
   },
   "devDependencies": {
-    "@aws-sdk/client-bedrock-runtime": "3.1064.0",
+    "@aws-sdk/client-bedrock-runtime": "3.1065.0",
     "@eslint/js": "10.0.1",
     "@react-three/drei": "10.7.7",
     "@react-three/fiber": "9.6.1",
@@ -204,7 +204,7 @@
     "@vitejs/plugin-react": "6.0.2",
     "@vitest/coverage-v8": "4.1.8",
     "@vitest/ui": "4.1.8",
-    "cypress": "15.16.0",
+    "cypress": "15.17.0",
     "cypress-junit-reporter": "1.3.1",
     "cypress-multi-reporters": "2.0.5",
     "cypress-wait-until": "3.0.2",
@@ -228,7 +228,7 @@
     "postprocessing": "6.39.1",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "start-server-and-test": "3.0.8",
+    "start-server-and-test": "3.0.9",
     "three": "0.184.0",
     "ts-morph": "28.0.0",
     "ts-node": "10.9.2",
