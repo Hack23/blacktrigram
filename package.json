@@ -228,7 +228,7 @@
     "postprocessing": "6.39.1",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "start-server-and-test": "3.0.9",
+    "start-server-and-test": "3.0.10",
     "three": "0.184.0",
     "ts-morph": "28.0.0",
     "ts-node": "10.9.2",
