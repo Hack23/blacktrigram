@@ -1,0 +1,169 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 3,
+    "pending": 1,
+    "failures": -1,
+    "start": "2026-06-13T07:47:33.782Z",
+    "end": "2026-06-13T07:48:02.604Z",
+    "duration": 28822,
+    "testsRegistered": 4,
+    "passPercent": 100,
+    "pendingPercent": 25,
+    "other": 1,
+    "hasOther": true,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "1fcdfba7-8a98-4864-a052-25749dff5247",
+      "title": "",
+      "fullFile": "cypress/e2e/screens/trauma-visualization.cy.ts",
+      "file": "cypress/e2e/screens/trauma-visualization.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "532b9057-4cad-4c74-8570-56aeeb27adf6",
+          "title": "Trauma Visualization System - E2E Test (Target: 2-3 min)",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should demonstrate progressive bruising with 5 strikes to same location",
+              "fullTitle": "Trauma Visualization System - E2E Test (Target: 2-3 min) should demonstrate progressive bruising with 5 strikes to same location",
+              "timedOut": null,
+              "duration": 15638,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing Progressive Bruising System\");\n// ============================================================\n// 1. Verify Combat Screen Rendering\n// ============================================================\ncy.log(\"1️⃣ Verifying Combat Screen Rendering\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.verifyCombatScreenReady)();\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.verifyCanvasPresent)();\ncy.log(\"✅ Combat screen and Three.js rendering verified\");\n// ============================================================\n// 2. Strike torso location 5 times\n// ============================================================\ncy.log(\"2️⃣ Striking torso 5 times to test progressive bruising\");\n// Perform 5 attacks to same body region\nfor (let i = 1; i <= 5; i++) {\n    cy.log(`Strike ${i}/5 - Hitting torso`);\n    // Press attack button (space or click attack button)\n    cy.get(\"body\").type(\" \");\n    // Wait for attack animation\n    (0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.waitForTransition)(400);\n    // Verify combat state updated\n    cy.verifyThreeJSRendering({ timeout: 1000, minPixelChange: 10 });\n    cy.log(`✅ Strike ${i} completed`);\n}\ncy.log(\"✅ All 5 strikes completed\");\n// ============================================================\n// 3. Verify trauma visualization exists\n// ============================================================\ncy.log(\"3️⃣ Verifying trauma visualization\");\n// Check for trauma overlay in Three.js scene\n// Note: TraumaOverlay3D renders as Three.js group, not in DOM\n// This test verifies pixel changes on canvas, indicating rendering is happening.\n// For more deterministic tests, consider adding test hooks to expose injury count\n// or using Html overlays with data-testid attributes.\ncy.get(\"canvas\").should(\"exist\");\n// Verify rendering changes (injuries should be visible in 3D scene)\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 20 });\ncy.log(\"✅ Trauma visualization rendering verified\");\n// ============================================================\n// 4. Verify performance (should maintain 60fps)\n// ============================================================\ncy.log(\"4️⃣ Verifying performance after trauma effects\");\n// Perform additional actions to test performance\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(300);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(300);\n// Verify Three.js is still rendering smoothly\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 30 });\ncy.log(\"✅ Performance maintained with multiple injuries\");\n// ============================================================\n// 5. Test blood effects with heavy damage\n// ============================================================\ncy.log(\"5️⃣ Testing blood effects trigger (damage > 30)\");\n// Note: This test verifies pixel changes but doesn't deterministically\n// verify blood effects were triggered. For better test coverage, consider:\n// - Adding a test hook to expose blood effect state\n// - Using mocked combat damage events with known values\n// - Adding Html overlay with data-testid for blood effect indicators\n// Perform multiple heavy attacks\nfor (let i = 1; i <= 3; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(300);\n}\n// Verify visual effects are still rendering\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 40 });\ncy.log(\"✅ Blood effects rendered (if triggered by damage > 30)\");\n// ============================================================\n// 6. Verify different body parts can be injured\n// ============================================================\ncy.log(\"6️⃣ Testing injuries to multiple body parts\");\n// Switch stance to target different body regions\ncy.get(\"body\").type(\"2\"); // Switch to Tae stance\ncy.wait(300);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(300);\ncy.get(\"body\").type(\"3\"); // Switch to Li stance\ncy.wait(300);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(300);\n// Verify multiple injuries rendered\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 50 });\ncy.log(\"✅ Multiple body part injuries verified\");\ncy.log(\"✅✅✅ Progressive Bruising E2E Test Complete\");",
+              "err": {},
+              "uuid": "337de134-08ae-4f93-b962-0c27d76f3068",
+              "parentUUID": "532b9057-4cad-4c74-8570-56aeeb27adf6",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should handle rapid combat with multiple injuries (stress test)",
+              "fullTitle": "Trauma Visualization System - E2E Test (Target: 2-3 min) should handle rapid combat with multiple injuries (stress test)",
+              "timedOut": null,
+              "duration": 8846,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Trauma Visualization - Stress Test\");\ncy.log(\"Performing rapid combat sequence\");\n// Rapid combat sequence\nfor (let i = 1; i <= 10; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(200); // Faster pace\n}\n// Verify performance hasn't degraded\ncy.verifyThreeJSRendering({ timeout: 3000, minPixelChange: 30 });\n// Verify health bars still update (conditional — Html overlays may not mount in mocked WebGL)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"health-bar-player_1\"]').length > 0) {\n        cy.verifyHealthBar(\"health-bar-player_1\", 0, 200).then((health) => {\n            cy.log(`Player 1 health after stress test: ${health}`);\n        });\n    }\n    else {\n        cy.log(\"⚠️ Health bar player_1 not found — Html overlays may not render in mocked WebGL\");\n    }\n    if ($body.find('[data-testid=\"health-bar-player_2\"]').length > 0) {\n        cy.verifyHealthBar(\"health-bar-player_2\", 0, 200).then((health) => {\n            cy.log(`Player 2 health after stress test: ${health}`);\n            // In headless/mocked WebGL, attacks may not register so health may not change.\n            // Log the result rather than hard-asserting damage.\n            cy.get('[data-testid=\"health-bar-player_2\"]').invoke(\"attr\", \"aria-valuemax\").then((max) => {\n                const maxHealth = Number(max) || 200;\n                if (health < maxHealth) {\n                    cy.log(`✅ Opponent took damage: ${maxHealth - health} HP lost`);\n                }\n                else {\n                    cy.log(\"⚠️ Opponent health unchanged — attacks may not register in headless/mocked WebGL\");\n                }\n            });\n        });\n    }\n    else {\n        cy.log(\"⚠️ Health bar player_2 not found — Html overlays may not render in mocked WebGL\");\n    }\n});\ncy.log(\"✅ Stress test completed - system remains stable\");",
+              "err": {},
+              "uuid": "d4146acb-4360-4731-96a1-3cc2620bcc77",
+              "parentUUID": "532b9057-4cad-4c74-8570-56aeeb27adf6",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should clear injuries on new round",
+              "fullTitle": "Trauma Visualization System - E2E Test (Target: 2-3 min) should clear injuries on new round",
+              "timedOut": null,
+              "duration": 0,
+              "state": "pending",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": true,
+              "context": null,
+              "code": "// TODO: Implement once round system exists\n// This test requires:\n// 1. A deterministic way to end a round\n// 2. Observable state to verify injuries are cleared\n// 3. Test hooks or UI elements to trigger and verify round reset\ncy.annotate(\"Testing Injury Persistence Across Rounds (SKIPPED - Not Implemented)\");\ncy.log(\"Creating injuries in round 1\");\n// Create some injuries\nfor (let i = 1; i <= 3; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(300);\n}\n// Verify injuries exist\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 20 });\ncy.log(\"✅ Injuries created in round 1\");\n// End round (if round system exists)\n// Note: This test assumes round restart clears injuries\n// Implementation may vary based on game logic\ncy.log(\"Round persistence test skipped (requires implementation)\");",
+              "err": {},
+              "uuid": "f8035a1b-4cd7-433d-9e04-e2ac06928ffe",
+              "parentUUID": "532b9057-4cad-4c74-8570-56aeeb27adf6",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should verify InjuryTracker exports are available",
+              "fullTitle": "Trauma Visualization System - E2E Test (Target: 2-3 min) should verify InjuryTracker exports are available",
+              "timedOut": null,
+              "duration": 2777,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Verify window exists from the combat screen setup by beforeEach\ncy.window().should(\"exist\");\ncy.log(\"✅ Window loaded successfully\");",
+              "err": {},
+              "uuid": "30c20509-9df1-4f79-bd10-52db619ced23",
+              "parentUUID": "532b9057-4cad-4c74-8570-56aeeb27adf6",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "337de134-08ae-4f93-b962-0c27d76f3068",
+            "d4146acb-4360-4731-96a1-3cc2620bcc77",
+            "30c20509-9df1-4f79-bd10-52db619ced23"
+          ],
+          "failures": [],
+          "pending": [
+            "f8035a1b-4cd7-433d-9e04-e2ac06928ffe"
+          ],
+          "skipped": [],
+          "duration": 27261,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "build/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
