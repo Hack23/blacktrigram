@@ -13,7 +13,7 @@ permissions:
 jobs:
   capture-screenshots:
     name: Capture UI/UX Screenshots
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     # Run inside Microsoft's official Playwright image. Includes all browsers
     # (Chromium/Firefox/WebKit) plus every system dependency Playwright needs,

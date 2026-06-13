@@ -34,7 +34,7 @@ jobs:
     # Baseline runs on schedule, on workflow_dispatch when not explicitly "full",
     # and is the safe default. It performs only passive checks (≈1-3 minutes).
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.scan_type != 'full')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     steps:
       - name: Harden Runner
@@ -65,7 +65,7 @@ jobs:
     # scan_type=full. It is significantly slower (≥30 minutes) and performs
     # active attacks, so we never run it on schedule.
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.scan_type == 'full'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 120
     steps:
       - name: Harden Runner
