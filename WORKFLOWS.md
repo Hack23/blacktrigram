@@ -4,7 +4,8 @@ This document details the continuous integration and deployment workflows used i
 
 **Current TypeScript version: 6.0.3**  
 **Current Product Version: 0.7.33**  
-**Last Updated: 2026-04-28**
+**Runner OS: ubuntu-26.04**  
+**Last Updated: 2026-06-13**
 
 ## 🔐 ISMS Policy Alignment
 
@@ -99,6 +100,7 @@ Every workflow in the Black Trigram project implements:
 5. **🔏 Build Attestations**: Cryptographic proof of build integrity
 6. **⏱️ Timeout Limits**: Resource exhaustion prevention
 7. **🔑 OIDC Tokens**: Secure authentication without long-lived secrets
+8. **🖥️ Pinned Runner OS**: All jobs run on `ubuntu-26.04` (fixed version, not `ubuntu-latest`)
 
 ## 🗃️ Cache Strategy
 

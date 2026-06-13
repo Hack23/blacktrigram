@@ -16,9 +16,10 @@
   <a href="#"><img src="https://img.shields.io/badge/Review-Annual-orange?style=for-the-badge" alt="Review Cycle"/></a>
 </p>
 
-**📋 Document Owner:** CEO | **📄 Version:** 1.2 | **📅 Last Updated:** 2026-04-21 (UTC)  
+**📋 Document Owner:** CEO | **📄 Version:** 1.3 | **📅 Last Updated:** 2026-06-13 (UTC)  
 **🔄 Review Cycle:** Annual | **⏰ Next Review:** 2027-04-21  
-**🏷️ Classification:** Public (Frontend-Only Educational Gaming Platform)
+**🏷️ Classification:** Public (Frontend-Only Educational Gaming Platform)  
+**🖥️ CI Runner OS:** ubuntu-26.04
 
 ---
 
@@ -129,6 +130,7 @@ mindmap
 | **⚡ Vite Build Tool**  | 8.0.9 (Latest)            | Major annually                  | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
 | **📝 TypeScript**       | 6.0.3 (Latest)           | Major every ~12 months          | Active development | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)   |
 | **☕ Node.js Runtime**  | 26.x (CI); 27.x nightly (next testing) | Major every 6 months; even-numbered majors LTS | LTS 24.x: **Apr 2027**; LTS 26.x: **Apr 2028** | [![High](https://img.shields.io/badge/Complexity-High-orange?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)     |
+| **🖥️ GitHub Actions Runner** | ubuntu-26.04 | Pinned OS version (not `ubuntu-latest`) | Active (Ubuntu 26.04 LTS) | [![Low](https://img.shields.io/badge/Complexity-Low-lightgreen?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
 | **🧪 Testing Stack**    | Vitest 4.1.4 + Cypress 15.14.0 | Major annually            | Active development | [![Medium](https://img.shields.io/badge/Complexity-Medium-yellow?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) |
 
 ---
