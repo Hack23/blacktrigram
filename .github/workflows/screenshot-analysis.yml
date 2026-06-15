@@ -22,7 +22,7 @@ jobs:
     # so the bundled browser binaries always match the npm client. Node is then
     # normalised to the version in .nvmrc by actions/setup-node below.
     container:
-      image: mcr.microsoft.com/playwright:v1.60.0-noble
+      image: mcr.microsoft.com/playwright:v1.61.0-noble
       # Run as root so actions/setup-node cache writes and the Playwright
       # browser cache write work without permission issues. The Playwright
       # noble image runs as the `pwuser` non-root user by default.
