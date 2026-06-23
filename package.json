@@ -224,7 +224,7 @@
     "mochawesome-merge": "5.1.1",
     "mochawesome-report-generator": "6.3.2",
     "openai": "6.44.0",
-    "playwright": "1.61.0",
+    "playwright": "1.61.1",
     "postprocessing": "6.39.1",
     "react": "19.2.7",
     "react-dom": "19.2.7",
