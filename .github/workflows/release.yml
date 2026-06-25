@@ -337,7 +337,7 @@ jobs:
         # "pull_request_target.X is not a known webhook name" due to
         # Probot framework limitations. These are harmless and tracked
         # upstream: https://github.com/release-drafter/release-drafter/issues/1369
-        uses: release-drafter/release-drafter@73b95fa1c286dfd6802a4f949b07dad6149f2b0f # v7.5.0
+        uses: release-drafter/release-drafter@4d75298e00d9e34c483e5ff8c68d0ea1c1940c1e # v7.5.1
         with:
           version: ${{ needs.prepare.outputs.version }}
           tag: ${{ needs.prepare.outputs.version }}
