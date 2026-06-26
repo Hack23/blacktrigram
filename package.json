@@ -216,7 +216,7 @@
     "globals": "17.7.0",
     "jest-axe": "10.0.0",
     "jsdom": "29.1.1",
-    "knip": "6.20.0",
+    "knip": "6.21.0",
     "license-compliance": "3.0.1",
     "mermaid": "11.16.0",
     "mocha-junit-reporter": "2.2.1",
