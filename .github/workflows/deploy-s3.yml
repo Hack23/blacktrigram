@@ -46,11 +46,16 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: Deploy to S3 with minimal API calls
         run: |
-          # Optimized deployment: 6 sync operations instead of 16
-          # - Hashed/static assets use --size-only (content-addressed, safe to skip by size)
+          # Optimized deployment: 8 sync operations instead of 16+
+          # - Content-hashed assets (Vite build output) use --size-only + a 1-year
+          #   immutable cache, since their filenames change whenever content changes.
+          # - Non-hashed static assets (TypeDoc/coverage/mochawesome CSS+JS, which
+          #   keep the SAME filename across releases, e.g. docs/api/assets/style.css)
+          #   must NOT be marked immutable, otherwise browsers/CDNs never refetch
+          #   updated CSS/JS and the docs pages render as broken/unstyled.
           # - HTML and metadata use default sync (size+mtime) to catch same-size content changes
           # - Does NOT use --delete to preserve legacy URLs on S3
-          
+
           if [ "${{ github.event.inputs.force_metadata_update }}" = "true" ]; then
             # Force mode: use --exact-timestamps to force re-evaluation + metadata replace
             HASHED_SYNC_FLAGS="--exact-timestamps --metadata-directive REPLACE"
@@ -65,18 +70,32 @@ jobs:
 
           # --- Deploy to root prefix (supports current URLs: blacktrigram.hack23.com/*)  ---
 
-          # 1. Sync all static/hashed assets (everything except HTML and metadata) with immutable cache
-          echo "⚡ [root] Syncing static assets with immutable cache..."
+          # 1. Sync content-hashed Vite build assets (game bundle + test-results app) with immutable cache
+          echo "⚡ [root] Syncing content-hashed assets with immutable cache..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
+            --exclude "*" \
+            --include "assets/*" \
+            --include "test-results/assets/*" \
+            --cache-control "public, max-age=31536000, immutable" \
+            $HASHED_SYNC_FLAGS
+
+          # 2. Sync all other static assets (TypeDoc api docs, coverage, cypress
+          #    mochawesome, dependency/architecture diagrams, images, etc.) with a
+          #    short revalidating cache, since these filenames are stable across
+          #    releases and must be refetched whenever content changes.
+          echo "📦 [root] Syncing non-hashed static assets with revalidation cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
             --exclude ".git/*" \
+            --exclude "assets/*" \
+            --exclude "test-results/assets/*" \
             --exclude "*.html" \
             --exclude "*.xml" \
             --exclude "*.json" \
             --exclude "*.txt" \
-            --cache-control "public, max-age=31536000, immutable" \
-            $HASHED_SYNC_FLAGS
+            --cache-control "public, max-age=3600, must-revalidate" \
+            $DOCUMENT_SYNC_FLAGS
 
-          # 2. Sync HTML files with short cache (must-revalidate, 1 hour)
+          # 3. Sync HTML files with short cache (must-revalidate, 1 hour)
           echo "📄 [root] Syncing HTML files with revalidation cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
             --exclude "*" \
@@ -85,7 +104,7 @@ jobs:
             --content-type "text/html; charset=utf-8" \
             $DOCUMENT_SYNC_FLAGS
 
-          # 3. Sync metadata files (xml, json, txt) with 1-day cache (not content-hashed)
+          # 4. Sync metadata files (xml, json, txt) with 1-day cache (not content-hashed)
           echo "📋 [root] Syncing metadata files with 1-day cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/ \
             --exclude "*" \
@@ -97,18 +116,29 @@ jobs:
 
           # --- Deploy to /docs/ prefix (supports legacy URLs: blacktrigram.hack23.com/docs/*) ---
 
-          # 4. Sync all static/hashed assets to /docs/ with immutable cache
-          echo "⚡ [/docs/] Syncing static assets with immutable cache..."
+          # 5. Sync content-hashed assets to /docs/ with immutable cache
+          echo "⚡ [/docs/] Syncing content-hashed assets with immutable cache..."
+          aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
+            --exclude "*" \
+            --include "assets/*" \
+            --include "test-results/assets/*" \
+            --cache-control "public, max-age=31536000, immutable" \
+            $HASHED_SYNC_FLAGS
+
+          # 6. Sync all other static assets to /docs/ with revalidation cache
+          echo "📦 [/docs/] Syncing non-hashed static assets with revalidation cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
             --exclude ".git/*" \
+            --exclude "assets/*" \
+            --exclude "test-results/assets/*" \
             --exclude "*.html" \
             --exclude "*.xml" \
             --exclude "*.json" \
             --exclude "*.txt" \
-            --cache-control "public, max-age=31536000, immutable" \
-            $HASHED_SYNC_FLAGS
+            --cache-control "public, max-age=3600, must-revalidate" \
+            $DOCUMENT_SYNC_FLAGS
 
-          # 5. Sync HTML files to /docs/ with short cache
+          # 7. Sync HTML files to /docs/ with short cache
           echo "📄 [/docs/] Syncing HTML files with revalidation cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
             --exclude "*" \
@@ -117,7 +147,7 @@ jobs:
             --content-type "text/html; charset=utf-8" \
             $DOCUMENT_SYNC_FLAGS
 
-          # 6. Sync metadata files to /docs/ with 1-day cache
+          # 8. Sync metadata files to /docs/ with 1-day cache
           echo "📋 [/docs/] Syncing metadata files with 1-day cache..."
           aws s3 sync docs/. s3://${{ env.S3_BUCKET_NAME }}/docs/ \
             --exclude "*" \
@@ -127,7 +157,7 @@ jobs:
             --cache-control "public, max-age=86400" \
             $DOCUMENT_SYNC_FLAGS
 
-          echo "✅ Deployment completed (6 sync ops instead of 16, ~63% fewer CloudTrail events)"
+          echo "✅ Deployment completed (8 sync ops instead of 16+, correctness-first caching)"
 
       # Invalidate CloudFront cache to ensure latest content is served
       - name: Invalidate CloudFront
