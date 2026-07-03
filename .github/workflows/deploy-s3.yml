@@ -7,16 +7,6 @@ on:
         required: false
         default: false
         type: boolean
-  # Automatically sync docs/api, generated reports and the game build to S3
-  # once "Build, Attest and Release" finishes committing them to main.
-  # Without this, the deploy was only ever triggered manually and blacktrigram.com
-  # could silently go stale after a release.
-  # NOTE: no `branches:` filter here — release.yml's primary trigger is a
-  # `v*` tag push, so `head_branch` on that workflow_run is the tag, not
-  # `main`. The job always checks out `ref: main` explicitly below.
-  workflow_run:
-    workflows: ["Build, Attest and Release"]
-    types: [completed]
 permissions:
   contents: read
   id-token: write
@@ -27,7 +17,6 @@ env:
   CLOUDFRONT_STACK_NAME: "blacktrigram-frontend"
 jobs:
   deploy:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-26.04
     steps:
       - name: Harden Runner
@@ -48,10 +37,6 @@ jobs:
             sts.us-east-1.amazonaws.com:443
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          # Always deploy the latest main, which includes the docs/reports
-          # committed by the release workflow that triggered this run.
-          ref: main
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
