@@ -80,4 +80,24 @@ export {
 } from "./SkeletonRig";
 
 // Animation factory presets for reducing code duplication
-export * from "./AnimationFactoryPresets";
+export {
+  TIMING_PRESETS,
+  createKickAnimation,
+  createPunchAnimation,
+  createTrigramLocomotion,
+  createDefenseAnimation,
+  createBothStances,
+  createComboAnimation,
+  createTrigramBreathing,
+  getAnimationForStance,
+  PRESET_KICKS,
+  PRESET_PUNCHES,
+  PRESET_COMBOS,
+} from "./AnimationFactoryPresets";
+export type {
+  KickConfig,
+  PunchConfig,
+  LocomotionConfig,
+  DefenseConfig,
+  LeadFoot,
+} from "./AnimationFactoryPresets";
