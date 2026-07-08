@@ -23,17 +23,16 @@
     "declarationMap": true,
     "ignoreDeprecations": "6.0",
     "types": ["node"],
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@/components/*": ["src/components/*"],
-      "@/systems/*": ["src/systems/*"],
-      "@/types/*": ["src/types/*"],
-      "@/audio/*": ["src/audio/*"],
-      "@/utils/*": ["src/utils/*"],
-      "@/hooks/*": ["src/hooks/*"],
-      "@/data/*": ["src/data/*"],
-      "@/assets/*": ["src/assets/*"]
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/systems/*": ["./src/systems/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/audio/*": ["./src/audio/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/data/*": ["./src/data/*"],
+      "@/assets/*": ["./src/assets/*"]
     }
   },
   "include": ["src"],
