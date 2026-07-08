@@ -42,7 +42,7 @@
     <td>
       <p><strong>🥋 Korean martial arts · ☯️ Eight Trigrams (팔괘) · 🎯 70 vital points (급소) · ⚔️ 51 techniques · 🎮 Three.js / React Three Fiber · 📱 60fps desktop · 55fps+ mobile</strong></p>
       <p><strong>Black Trigram (흑괘)</strong> is a production-ready 3D precision combat simulator that turns authentic Korean martial arts — Hapkido (합기도), Taekwondo (태권도), Taekkyeon (택견), Kuk Sool Won, Tang Soo Do, Hwa Rang Do, Ssireum, Subak, Yudo, and Gongkwon Yusul — into a typed, deterministic, browser-native combat experience. Eight I&nbsp;Ching trigram stances drive a 70-point anatomical targeting system across 5 distinct fighter archetypes, with skeletal animation (28 bones · 7 hand poses · 4 grappling states), counter-attack AI with limb-exposure detection, and a complete 13/13 combat-realism stack covering pain, consciousness, breathing, balance, trauma visualization, and bone-impact audio.</p>
-      <p>Built on <strong>React 19</strong>, <strong>Three.js 0.184</strong>, <strong>@react-three/fiber 9</strong>, <strong>@react-three/drei 10</strong>, <strong>TypeScript 6.0.3</strong>, and <strong>Vite 8</strong>. Frontend-only architecture deployed on <strong>AWS CloudFront + S3 (multi-region)</strong> with <strong>Route 53</strong> health-checked failover to <strong>GitHub Pages</strong> — zero backend, zero PII, WCAG 2.1 AA accessible, GDPR-clean, and aligned with the full Hack23 ISMS, ISO 27001:2022, NIST CSF 2.0, CIS Controls v8.1, EU CRA, and NIS2.</p>
+      <p>Built on <strong>React 19.2.7</strong>, <strong>Three.js 0.185.1</strong>, <strong>@react-three/fiber 9.6.1</strong>, <strong>@react-three/drei 10.7.7</strong>, <strong>TypeScript 6.0.2 + 7.0.1-rc</strong> (migration started), and <strong>Vite 8.1.3</strong>. Frontend-only architecture deployed on <strong>AWS CloudFront + S3 (multi-region)</strong> with <strong>Route 53</strong> health-checked failover to <strong>GitHub Pages</strong> — zero backend, zero PII, WCAG 2.1 AA accessible, GDPR-clean, and aligned with the full Hack23 ISMS, ISO 27001:2022, NIST CSF 2.0, CIS Controls v8.1, EU CRA, and NIS2.</p>
       <div>
         <a href="https://github.com/Hack23/blacktrigram"><img src="https://img.shields.io/badge/📦_Repo-Hack23%2Fblacktrigram-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub repository Hack23/blacktrigram"/></a>
         <a href="https://blacktrigram.com/"><img src="https://img.shields.io/badge/🎮_Live_Game-blacktrigram.com-FFD700?style=flat-square&labelColor=000000" alt="Live game at blacktrigram.com"/></a>
@@ -123,7 +123,7 @@ It is a **complete 13/13 combat-realism platform** — body-part health, vital-p
 |---|---|
 | 🥋 **Cultural Authenticity** | Hangul + Revised Romanization + meaning for every term. 51 techniques sourced from Hapkido, Taekwondo, Taekkyeon, Kuk Sool Won, Tang Soo Do, Hwa Rang Do, Gumdo, Ssireum, Subak, Yudo, Gongkwon Yusul. 127 medical references underpin the 70 vital points. |
 | 🎯 **Anatomical Precision** | 70/70 vital points, 4 body regions, 5 severity levels, 14 TCM meridians, 28-bone skeletal animation, 7 hand poses, 4 grappling states. Counter-attack AI with limb-exposure detection. |
-| ⚙️ **Engineering Rigor** | TypeScript strict mode, React 19, Three.js 0.184, R3F 9, Drei 10, Vite 8 — 60fps desktop, 55fps+ mobile, 75%+ test coverage, 518 tests, deterministic combat math. |
+| ⚙️ **Engineering Rigor** | TypeScript strict mode, React 19.2.7, Three.js 0.185.1, R3F 9.6.1, Drei 10.7.7, Vite 8.1.3, and a TypeScript 6/7 migration in progress — 60fps desktop, 55fps+ mobile, 75%+ test coverage, 518 tests, deterministic combat math. |
 | 🔐 **Radical Transparency** | Frontend-only · zero backend · zero PII · public ISMS · CodeQL · ZAP DAST · Lighthouse · OSSF Scorecard · SLSA 3 attestations · CycloneDX SBOM. |
 
 **📊 Production-readiness snapshot (v0.7.32)** — see [`game-status.md`](./game-status.md) and [`ARCHITECTURE.md`](./ARCHITECTURE.md):
@@ -370,15 +370,15 @@ Built for **combat realism**, **60fps performance**, and **production-grade engi
 
 ### 🎮 Rendering Engine
 
-![Three.js 0.184](https://img.shields.io/badge/Three.js-0.184-000000?style=for-the-badge&logo=three.js&logoColor=white)
-![React Three Fiber 9](https://img.shields.io/badge/R3F-9.x-00FFFF?style=for-the-badge&logo=react&logoColor=black)
-![@react-three/drei 10](https://img.shields.io/badge/Drei-10.x-FFD700?style=for-the-badge&logo=react&logoColor=black)
-![React 19](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![TypeScript 6.0](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Three.js 0.185.1](https://img.shields.io/badge/Three.js-0.185.1-000000?style=for-the-badge&logo=three.js&logoColor=white)
+![React Three Fiber 9.6.1](https://img.shields.io/badge/R3F-9.6.1-00FFFF?style=for-the-badge&logo=react&logoColor=black)
+![@react-three/drei 10.7.7](https://img.shields.io/badge/Drei-10.7.7-FFD700?style=for-the-badge&logo=react&logoColor=black)
+![React 19.2.7](https://img.shields.io/badge/React-19.2.7-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![TypeScript 6.0.2 / 7.0.1-rc](https://img.shields.io/badge/TypeScript-6.0.2%2F7.0.1--rc-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
 ### ⚡ Build & Performance
 
-![Vite 8](https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Vite 8.1.3](https://img.shields.io/badge/Vite-8.1.3-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Node 26+](https://img.shields.io/badge/Node-%E2%89%A526-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![WebGL 2](https://img.shields.io/badge/WebGL-2.0-990000?style=for-the-badge)
 ![Web Audio](https://img.shields.io/badge/Audio-Web_Audio_API-FF9500?style=for-the-badge)
@@ -543,7 +543,7 @@ George Dorn provides repository deep-dives based on **actual code inspection**, 
 
 **[Repository Deep-Dive](https://hack23.com/blog-george-dorn-trigram-code.html)**
 
-**Stack:** TypeScript 6.0.3 · React 19 · Three.js 0.184 · Vite 8<br>
+**Stack:** TypeScript 6.0.2 / 7.0.1-rc · React 19.2.7 · Three.js 0.185.1 · @react-three/fiber 9.6.1 · @react-three/drei 10.7.7 · Vite 8.1.3<br>
 **Metrics:** 132+ TypeScript files · 70 vital points · 5 archetypes · 28-bone skeletal animation · 51 techniques
 
 Examined `package.json` dependencies, explored `src/` structure, verified combat-system implementation, and reviewed AI integrations.
