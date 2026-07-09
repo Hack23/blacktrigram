@@ -1050,22 +1050,22 @@ const <span class="fstat-no" title="function not covered" >ActionButtonsComponen
   right = <span class="branch-0 cbranch-no" title="branch not covered" >20,</span>
   opacity = <span class="branch-0 cbranch-no" title="branch not covered" >0.8,</span>
 }) =&gt; {
-  const [attackPressed, <span class="cstat-no" title="statement not covered" >setAttackPressed] = useState(false);</span>
-  const [blockPressed, <span class="cstat-no" title="statement not covered" >setBlockPressed] = useState(false);</span>
-  const [attackFocused, <span class="cstat-no" title="statement not covered" >setAttackFocused] = useState(false);</span>
-  const [blockFocused, <span class="cstat-no" title="statement not covered" >setBlockFocused] = useState(false);</span>
+  const [attackPressed, setAttackPressed] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
+  const [blockPressed, setBlockPressed] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
+  const [attackFocused, setAttackFocused] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
+  const [blockFocused, setBlockFocused] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >attackButtonRef = useRef&lt;HTMLButtonElement&gt;(null);</span>
-  const <span class="cstat-no" title="statement not covered" >blockButtonRef = useRef&lt;HTMLButtonElement&gt;(null);</span>
+  const attackButtonRef = <span class="cstat-no" title="statement not covered" >useRef&lt;HTMLButtonElement&gt;(null);</span>
+  const blockButtonRef = <span class="cstat-no" title="statement not covered" >useRef&lt;HTMLButtonElement&gt;(null);</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >throttledOnAttack = useThrottle(onAttack, 16);</span>
-  const <span class="cstat-no" title="statement not covered" >throttledOnBlock = useThrottle(onBlock, 16);</span>
+  const throttledOnAttack = <span class="cstat-no" title="statement not covered" >useThrottle(onAttack, 16);</span>
+  const throttledOnBlock = <span class="cstat-no" title="statement not covered" >useThrottle(onBlock, 16);</span>
 &nbsp;
   /**
    * Handle attack button press with optimized latency (&lt;16ms)
    * Uses direct DOM manipulation for immediate visual feedback
    */
-  const <span class="cstat-no" title="statement not covered" >handleAttackStart = <span class="fstat-no" title="function not covered" >useCallback(</span></span>
+  const handleAttackStart = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(</span></span>
     (e: React.TouchEvent | React.MouseEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (disabled) <span class="cstat-no" title="statement not covered" >return;</span></span>
 <span class="cstat-no" title="statement not covered" >      e.preventDefault();</span>
@@ -1090,7 +1090,7 @@ const <span class="fstat-no" title="function not covered" >ActionButtonsComponen
   /**
    * Handle attack button release with optimized latency
    */
-  const <span class="cstat-no" title="statement not covered" >handleAttackEnd = <span class="fstat-no" title="function not covered" >useCallback(</span></span>
+  const handleAttackEnd = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(</span></span>
     (e: React.TouchEvent | React.MouseEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (disabled) <span class="cstat-no" title="statement not covered" >return;</span></span>
 <span class="cstat-no" title="statement not covered" >      e.preventDefault();</span>
@@ -1113,7 +1113,7 @@ const <span class="fstat-no" title="function not covered" >ActionButtonsComponen
   /**
    * Handle block button press with optimized latency (&lt;16ms)
    */
-  const <span class="cstat-no" title="statement not covered" >handleBlockStart = <span class="fstat-no" title="function not covered" >useCallback(</span></span>
+  const handleBlockStart = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(</span></span>
     (e: React.TouchEvent | React.MouseEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (disabled) <span class="cstat-no" title="statement not covered" >return;</span></span>
 <span class="cstat-no" title="statement not covered" >      e.preventDefault();</span>
@@ -1138,7 +1138,7 @@ const <span class="fstat-no" title="function not covered" >ActionButtonsComponen
   /**
    * Handle block button release with optimized latency
    */
-  const <span class="cstat-no" title="statement not covered" >handleBlockEnd = <span class="fstat-no" title="function not covered" >useCallback(</span></span>
+  const handleBlockEnd = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(</span></span>
     (e: React.TouchEvent | React.MouseEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (disabled) <span class="cstat-no" title="statement not covered" >return;</span></span>
 <span class="cstat-no" title="statement not covered" >      e.preventDefault();</span>
@@ -1186,7 +1186,7 @@ const <span class="fstat-no" title="function not covered" >ActionButtonsComponen
   /**
    * Handle keyboard navigation for attack button
    */
-  const <span class="cstat-no" title="statement not covered" >handleAttackKeyDown = <span class="fstat-no" title="function not covered" >useCallback(</span></span>
+  const handleAttackKeyDown = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(</span></span>
     (e: React.KeyboardEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (disabled) <span class="cstat-no" title="statement not covered" >return;</span></span>
 <span class="cstat-no" title="statement not covered" >      handleKeyboardNav(e.nativeEvent, {</span>
@@ -1204,7 +1204,7 @@ const <span class="fstat-no" title="function not covered" >ActionButtonsComponen
   /**
    * Handle keyboard navigation for block button
    */
-  const <span class="cstat-no" title="statement not covered" >handleBlockKeyDown = <span class="fstat-no" title="function not covered" >useCallback(</span></span>
+  const handleBlockKeyDown = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(</span></span>
     (e: React.KeyboardEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (disabled) <span class="cstat-no" title="statement not covered" >return;</span></span>
 <span class="cstat-no" title="statement not covered" >      handleKeyboardNav(e.nativeEvent, {</span>
@@ -1222,7 +1222,7 @@ const <span class="fstat-no" title="function not covered" >ActionButtonsComponen
     [disabled, onBlock],
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >colors = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const colors = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       gold: getColorRGB(KOREAN_COLORS.ACCENT_GOLD),
       blue: getColorRGB(KOREAN_COLORS.ACCENT_BLUE),
@@ -1393,7 +1393,7 @@ ActionButtons.displayName = "ActionButtons";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-08T12:18:51.621Z
+                at 2026-07-09T21:43:43.267Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

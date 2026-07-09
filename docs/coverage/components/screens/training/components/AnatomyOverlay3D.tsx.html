@@ -1254,9 +1254,9 @@ export interface AnatomyOverlay3DProps {
  * Simplified skeletal structure visualization with glass-like transmission
  */
 const <span class="fstat-no" title="function not covered" >SkeletonLayer: React.FC&lt;{ opacity: number }&gt; = ({</span> opacity }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >groupRef = useRef&lt;THREE.Group&gt;(null);</span>
+  const groupRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Group&gt;(null);</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >skullGeometry = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.SphereGeometry(0.25, 16, 16), [</span>]);</span>
+  const skullGeometry = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.SphereGeometry(0.25, 16, 16), [</span>]);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useEffect(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >    return () =&gt; {</span></span>
@@ -1442,7 +1442,7 @@ const <span class="fstat-no" title="function not covered" >SkeletonLayer: React.
  * Nervous system pathways visualization
  */
 const <span class="fstat-no" title="function not covered" >NervesLayer: React.FC&lt;{ opacity: number }&gt; = ({</span> opacity }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >groupRef = useRef&lt;THREE.Group&gt;(null);</span>
+  const groupRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Group&gt;(null);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useFrame((s</span>tate) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!groupRef.current) <span class="cstat-no" title="statement not covered" >return;</span></span>
@@ -1552,7 +1552,7 @@ const <span class="fstat-no" title="function not covered" >NervesLayer: React.FC
  * Blood vessel system visualization with glass-like transmission
  */
 const <span class="fstat-no" title="function not covered" >VascularLayer: React.FC&lt;{ opacity: number }&gt; = ({</span> opacity }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >groupRef = useRef&lt;THREE.Group&gt;(null);</span>
+  const groupRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Group&gt;(null);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useFrame((s</span>tate) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!groupRef.current) <span class="cstat-no" title="statement not covered" >return;</span></span>
@@ -1748,19 +1748,19 @@ export const <span class="fstat-no" title="function not covered" >AnatomyOverlay
   visibleLayers,
   opacity = <span class="branch-0 cbranch-no" title="branch not covered" >0.7,</span>
 }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >showSkeleton = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const showSkeleton = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; <span class="cstat-no" title="statement not covered" >visibleLayers.includes("skeleton"),</span>
     [visibleLayers]
   );
-  const <span class="cstat-no" title="statement not covered" >showNerves = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const showNerves = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; <span class="cstat-no" title="statement not covered" >visibleLayers.includes("nerves"),</span>
     [visibleLayers]
   );
-  const <span class="cstat-no" title="statement not covered" >showVascular = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const showVascular = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; <span class="cstat-no" title="statement not covered" >visibleLayers.includes("vascular"),</span>
     [visibleLayers]
   );
-  const <span class="cstat-no" title="statement not covered" >showSurface = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const showSurface = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; <span class="cstat-no" title="statement not covered" >visibleLayers.includes("surface"),</span>
     [visibleLayers]
   );
@@ -1783,7 +1783,7 @@ export default AnatomyOverlay3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-08T12:18:51.621Z
+                at 2026-07-09T21:43:43.267Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

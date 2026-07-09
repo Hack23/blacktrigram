@@ -926,9 +926,9 @@ const <span class="fstat-no" title="function not covered" >LightningArc: React.F
   intensity: number;
   color: number;
 }&gt; = ({ start, end, intensity, color }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >lineRef = useRef&lt;THREE.Line&gt;(null);</span>
+  const lineRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Line&gt;(null);</span>
 &nbsp;
-  const [<span class="cstat-no" title="statement not covered" >line] = <span class="fstat-no" title="function not covered" >useState(() =&gt; {</span></span>
+  const [line] = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useState(() =&gt; {</span></span>
     const points: THREE.Vector3[] = <span class="cstat-no" title="statement not covered" >[];</span>
     const segments = <span class="cstat-no" title="statement not covered" >8;</span>
     const displacement = <span class="cstat-no" title="statement not covered" >0.2 * intensity;</span>
@@ -1017,9 +1017,9 @@ const <span class="fstat-no" title="function not covered" >ElectricSpark: React.
   velocity: THREE.Vector3;
   intensity: number;
 }&gt; = ({ position: initialPosition, velocity, intensity }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >meshRef = useRef&lt;THREE.Mesh&gt;(null);</span>
-  const <span class="cstat-no" title="statement not covered" >positionRef = useRef(initialPosition.clone());</span>
-  const <span class="cstat-no" title="statement not covered" >velocityRef = useRef(velocity.clone());</span>
+  const meshRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Mesh&gt;(null);</span>
+  const positionRef = <span class="cstat-no" title="statement not covered" >useRef(initialPosition.clone());</span>
+  const velocityRef = <span class="cstat-no" title="statement not covered" >useRef(velocity.clone());</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useFrame((_</span>, delta) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (meshRef.current) {</span>
@@ -1056,9 +1056,9 @@ const <span class="fstat-no" title="function not covered" >ThunderChargeEffect: 
   position: [number, number, number];
   intensity: number;
 }&gt; = ({ position, intensity }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >groupRef = useRef&lt;THREE.Group&gt;(null);</span>
+  const groupRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Group&gt;(null);</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >arcs = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; {</span></span>
+  const arcs = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; {</span></span>
     const arcData: Array&lt;{ start: THREE.Vector3; end: THREE.Vector3 }&gt; = <span class="cstat-no" title="statement not covered" >[];</span>
     const center = <span class="cstat-no" title="statement not covered" >new THREE.Vector3(0, 0, 0);</span>
     const radius = <span class="cstat-no" title="statement not covered" >0.5 * intensity;</span>
@@ -1128,9 +1128,9 @@ const <span class="fstat-no" title="function not covered" >ThunderReleaseEffect:
   progressRef: React.MutableRefObject&lt;number&gt;;
   active: boolean;
 }&gt; = ({ position, intensity, progressRef, active }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >groupRef = useRef&lt;THREE.Group&gt;(null);</span>
+  const groupRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Group&gt;(null);</span>
 &nbsp;
-  const [sparks, <span class="cstat-no" title="statement not covered" >setSparks] = useState&lt;Array&lt;{</span>
+  const [sparks, setSparks] = <span class="cstat-no" title="statement not covered" >useState&lt;Array&lt;{</span>
     position: THREE.Vector3;
     velocity: THREE.Vector3;
   }&gt;&gt;([]);
@@ -1244,9 +1244,9 @@ export const <span class="fstat-no" title="function not covered" >ThunderEffect3
   onComplete,
   active = <span class="branch-0 cbranch-no" title="branch not covered" >true,</span>
 }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >progressRef = useRef(0);</span>
-  const <span class="cstat-no" title="statement not covered" >startTimeRef = useRef(0);</span>
-  const <span class="cstat-no" title="statement not covered" >completedRef = useRef(false);</span>
+  const progressRef = <span class="cstat-no" title="statement not covered" >useRef(0);</span>
+  const startTimeRef = <span class="cstat-no" title="statement not covered" >useRef(0);</span>
+  const completedRef = <span class="cstat-no" title="statement not covered" >useRef(false);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useEffect(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    startTimeRef.current = Date.now();</span>
@@ -1294,7 +1294,7 @@ export default ThunderEffect3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-08T12:18:51.991Z
+                at 2026-07-09T21:43:43.614Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

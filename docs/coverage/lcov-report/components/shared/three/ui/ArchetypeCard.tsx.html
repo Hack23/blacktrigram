@@ -591,30 +591,30 @@ export const <span class="fstat-no" title="function not covered" >ArchetypeCard:
   showStats = <span class="branch-0 cbranch-no" title="branch not covered" >true,</span>
   testId,
 }) =&gt; {
-  const [isHovered, <span class="cstat-no" title="statement not covered" >setIsHovered] = useState(false);</span>
+  const [isHovered, setIsHovered] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >archetypeData = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const archetypeData = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; <span class="cstat-no" title="statement not covered" >PLAYER_ARCHETYPES_DATA[archetype],</span>
     [archetype]
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >handleClick = <span class="fstat-no" title="function not covered" >useCallback(() =&gt; {</span></span>
+  const handleClick = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (onSelect) {</span>
 <span class="cstat-no" title="statement not covered" >      onSelect(archetype);</span>
     }
   }, [onSelect, archetype]);
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >handleMouseEnter = <span class="fstat-no" title="function not covered" >useCallback(() =&gt; {</span></span>
+  const handleMouseEnter = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    setIsHovered(true);</span>
   }, []);
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >handleMouseLeave = <span class="fstat-no" title="function not covered" >useCallback(() =&gt; {</span></span>
+  const handleMouseLeave = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    setIsHovered(false);</span>
   }, []);
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >cardStyle = <span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(() =&gt; {</span></span>
-    let <span class="cstat-no" title="statement not covered" >background = hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);</span>
-    let <span class="cstat-no" title="statement not covered" >borderColor = hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.4);</span>
+  const cardStyle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(() =&gt; {</span></span>
+    let background = <span class="cstat-no" title="statement not covered" >hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);</span>
+    let borderColor = <span class="cstat-no" title="statement not covered" >hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.4);</span>
     let boxShadow = <span class="cstat-no" title="statement not covered" >`0 2px 8px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.3)}`;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (isSelected) {</span>
@@ -648,7 +648,7 @@ export const <span class="fstat-no" title="function not covered" >ArchetypeCard:
     };
   }, [width, isSelected, isHovered, onSelect]);
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >headerStyle = <span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
+  const headerStyle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       marginBottom: "12px",
       paddingBottom: "8px",
@@ -657,7 +657,7 @@ export const <span class="fstat-no" title="function not covered" >ArchetypeCard:
     []
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >titleStyle = <span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
+  const titleStyle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       fontFamily: FONT_FAMILY.KOREAN,
       fontSize: "20px",
@@ -669,7 +669,7 @@ export const <span class="fstat-no" title="function not covered" >ArchetypeCard:
     []
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >subtitleStyle = <span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
+  const subtitleStyle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       fontFamily: FONT_FAMILY.KOREAN,
       fontSize: "14px",
@@ -680,7 +680,7 @@ export const <span class="fstat-no" title="function not covered" >ArchetypeCard:
     []
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >descriptionStyle = <span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
+  const descriptionStyle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       fontFamily: FONT_FAMILY.KOREAN,
       fontSize: "14px",
@@ -691,7 +691,7 @@ export const <span class="fstat-no" title="function not covered" >ArchetypeCard:
     [showStats]
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >statsContainerStyle = <span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
+  const statsContainerStyle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       display: "grid",
       gridTemplateColumns: "repeat(2, 1fr)",
@@ -701,7 +701,7 @@ export const <span class="fstat-no" title="function not covered" >ArchetypeCard:
     []
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >statItemStyle = <span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
+  const statItemStyle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       display: "flex",
       flexDirection: "column",
@@ -710,7 +710,7 @@ export const <span class="fstat-no" title="function not covered" >ArchetypeCard:
     []
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >statLabelStyle = <span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
+  const statLabelStyle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       fontFamily: FONT_FAMILY.KOREAN,
       fontSize: "12px",
@@ -720,7 +720,7 @@ export const <span class="fstat-no" title="function not covered" >ArchetypeCard:
     []
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >statValueStyle = <span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
+  const statValueStyle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo&lt;React.CSSProperties&gt;(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       fontFamily: FONT_FAMILY.KOREAN,
       fontSize: "16px",
@@ -784,7 +784,7 @@ ArchetypeCard.displayName = "ArchetypeCard";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-08T12:18:51.991Z
+                at 2026-07-09T21:43:43.614Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

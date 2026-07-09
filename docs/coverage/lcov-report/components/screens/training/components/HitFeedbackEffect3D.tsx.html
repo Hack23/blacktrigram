@@ -815,13 +815,13 @@ const <span class="fstat-no" title="function not covered" >ImpactParticles: Reac
   color: number;
   count: number;
 }&gt; = ({ position, color, count }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >pointsRef = useRef&lt;THREE.Points&gt;(null);</span>
+  const pointsRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Points&gt;(null);</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >velocitiesRef = useRef&lt;Float32Array | null&gt;(null);</span>
+  const velocitiesRef = <span class="cstat-no" title="statement not covered" >useRef&lt;Float32Array | null&gt;(null);</span>
 &nbsp;
-  const [<span class="cstat-no" title="statement not covered" >initialPosition] = useState(position);</span>
+  const [initialPosition] = <span class="cstat-no" title="statement not covered" >useState(position);</span>
 &nbsp;
-  const { positions, <span class="cstat-no" title="statement not covered" >velocities } = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; {</span></span>
+  const { positions, velocities } = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; {</span></span>
     const pos = <span class="cstat-no" title="statement not covered" >new Float32Array(count * 3);</span>
     const vel = <span class="cstat-no" title="statement not covered" >new Float32Array(count * 3);</span>
 &nbsp;
@@ -918,8 +918,8 @@ const <span class="fstat-no" title="function not covered" >RingEffect: React.FC&
   color: number;
   maxRadius: number;
 }&gt; = ({ position, color, maxRadius }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >meshRef = useRef&lt;THREE.Mesh&gt;(null);</span>
-  const <span class="cstat-no" title="statement not covered" >startTime = useRef&lt;number&gt;(0);</span>
+  const meshRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Mesh&gt;(null);</span>
+  const startTime = <span class="cstat-no" title="statement not covered" >useRef&lt;number&gt;(0);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useEffect(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (startTime.current === 0) {</span>
@@ -969,10 +969,10 @@ const <span class="fstat-no" title="function not covered" >DamageNumber: React.F
   isMobile: boolean;
   onComplete: () =&gt; void;
 }&gt; = ({ position, damage, type, isMobile, onComplete }) =&gt; {
-  const [offset, <span class="cstat-no" title="statement not covered" >setOffset] = useState(0);</span>
-  const [opacity, <span class="cstat-no" title="statement not covered" >setOpacity] = useState(1);</span>
-  const <span class="cstat-no" title="statement not covered" >startTime = useRef&lt;number&gt;(0);</span>
-  const <span class="cstat-no" title="statement not covered" >completedRef = useRef(false);</span>
+  const [offset, setOffset] = <span class="cstat-no" title="statement not covered" >useState(0);</span>
+  const [opacity, setOpacity] = <span class="cstat-no" title="statement not covered" >useState(1);</span>
+  const startTime = <span class="cstat-no" title="statement not covered" >useRef&lt;number&gt;(0);</span>
+  const completedRef = <span class="cstat-no" title="statement not covered" >useRef(false);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useEffect(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (startTime.current === 0) {</span>
@@ -1035,10 +1035,10 @@ export const <span class="fstat-no" title="function not covered" >HitFeedbackEff
   duration = <span class="branch-0 cbranch-no" title="branch not covered" >1500,</span>
   isMobile = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
 }) =&gt; {
-  const [showEffect, <span class="cstat-no" title="statement not covered" >setShowEffect] = useState(visible);</span>
-  const <span class="cstat-no" title="statement not covered" >timeoutRef = useRef&lt;ReturnType&lt;typeof setTimeout&gt; | null&gt;(null);</span>
+  const [showEffect, setShowEffect] = <span class="cstat-no" title="statement not covered" >useState(visible);</span>
+  const timeoutRef = <span class="cstat-no" title="statement not covered" >useRef&lt;ReturnType&lt;typeof setTimeout&gt; | null&gt;(null);</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >effectColor = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; {</span></span>
+  const effectColor = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    switch (type) {</span>
       case "perfect":
 <span class="cstat-no" title="statement not covered" >        return KOREAN_COLORS.ACCENT_GOLD;</span>
@@ -1051,7 +1051,7 @@ export const <span class="fstat-no" title="function not covered" >HitFeedbackEff
     }
   }, [type]);
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >particleCount = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; {</span></span>
+  const particleCount = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; {</span></span>
     const isPerfect = <span class="cstat-no" title="statement not covered" >type === "perfect";</span>
     const isSuccess = <span class="cstat-no" title="statement not covered" >type === "success";</span>
 &nbsp;
@@ -1063,9 +1063,9 @@ export const <span class="fstat-no" title="function not covered" >HitFeedbackEff
   }, [type, isMobile]);
   const ringRadius = <span class="cstat-no" title="statement not covered" >type === "perfect" ? 1.5 : 1.0;</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >completedRef = useRef(false);</span>
+  const completedRef = <span class="cstat-no" title="statement not covered" >useRef(false);</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >handleComplete = <span class="fstat-no" title="function not covered" >useCallback(() =&gt; {</span></span>
+  const handleComplete = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (completedRef.current) <span class="cstat-no" title="statement not covered" >return;</span></span>
 <span class="cstat-no" title="statement not covered" >    completedRef.current = true;</span>
 <span class="cstat-no" title="statement not covered" >    setShowEffect(false);</span>
@@ -1135,7 +1135,7 @@ export default HitFeedbackEffect3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-08T12:18:51.991Z
+                at 2026-07-09T21:43:43.614Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

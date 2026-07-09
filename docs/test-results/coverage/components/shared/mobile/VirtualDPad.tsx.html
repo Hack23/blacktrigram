@@ -1043,10 +1043,10 @@ const DPadButton = React.<span class="fstat-no" title="function not covered" >me
     const x = <span class="cstat-no" title="statement not covered" >Math.cos(radian) * radius;</span>
     const y = <span class="cstat-no" title="statement not covered" >Math.sin(radian) * radius;</span>
 &nbsp;
-    const <span class="cstat-no" title="statement not covered" >goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);</span>
-    const <span class="cstat-no" title="statement not covered" >primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);</span>
+    const goldColor = <span class="cstat-no" title="statement not covered" >getColorRGB(KOREAN_COLORS.ACCENT_GOLD);</span>
+    const primaryColor = <span class="cstat-no" title="statement not covered" >getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);</span>
 &nbsp;
-    const <span class="cstat-no" title="statement not covered" >ariaLabel = createBilingualLabel(</span>
+    const ariaLabel = <span class="cstat-no" title="statement not covered" >createBilingualLabel(</span>
       `이동 ${config.korean}`,
       `Move ${config.englishLabel}`,
     ).label;
@@ -1154,20 +1154,20 @@ const <span class="fstat-no" title="function not covered" >VirtualDPadComponent:
   left = <span class="branch-0 cbranch-no" title="branch not covered" >20,</span>
   opacity = <span class="branch-0 cbranch-no" title="branch not covered" >0.8,</span>
 }) =&gt; {
-  const [activeDirection, <span class="cstat-no" title="statement not covered" >setActiveDirection] = useState&lt;Direction | null&gt;(</span>
+  const [activeDirection, setActiveDirection] = <span class="cstat-no" title="statement not covered" >useState&lt;Direction | null&gt;(</span>
     null,
   );
-  const [focusedDirection, <span class="cstat-no" title="statement not covered" >setFocusedDirection] = useState&lt;Direction | null&gt;(</span>
+  const [focusedDirection, setFocusedDirection] = <span class="cstat-no" title="statement not covered" >useState&lt;Direction | null&gt;(</span>
     null,
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >throttledOnMove = useThrottle(onMove, 16);</span>
+  const throttledOnMove = <span class="cstat-no" title="statement not covered" >useThrottle(onMove, 16);</span>
 &nbsp;
   /**
    * Handle touch or mouse start on a direction button
    * Throttled for performance
    */
-  const <span class="cstat-no" title="statement not covered" >handleStart = <span class="fstat-no" title="function not covered" >useCallback(</span></span>
+  const handleStart = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(</span></span>
     (e: React.TouchEvent | React.MouseEvent, direction: Direction) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (disabled) <span class="cstat-no" title="statement not covered" >return;</span></span>
 <span class="cstat-no" title="statement not covered" >      e.preventDefault();</span>
@@ -1184,7 +1184,7 @@ const <span class="fstat-no" title="function not covered" >VirtualDPadComponent:
    * Handle touch or mouse end
    * Throttled for performance
    */
-  const <span class="cstat-no" title="statement not covered" >handleEnd = <span class="fstat-no" title="function not covered" >useCallback(</span></span>
+  const handleEnd = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(</span></span>
     (e: React.TouchEvent | React.MouseEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if (disabled) <span class="cstat-no" title="statement not covered" >return;</span></span>
 <span class="cstat-no" title="statement not covered" >      e.preventDefault();</span>
@@ -1199,7 +1199,7 @@ const <span class="fstat-no" title="function not covered" >VirtualDPadComponent:
   /**
    * Handle keyboard navigation for D-Pad
    */
-  const <span class="cstat-no" title="statement not covered" >handleKeyDown = <span class="fstat-no" title="function not covered" >useCallback(</span></span>
+  const handleKeyDown = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useCallback(</span></span>
     (<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >direction: Direction) =&gt; (e</span>: React.KeyboardEvent) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (disabled) <span class="cstat-no" title="statement not covered" >return;</span></span>
 <span class="cstat-no" title="statement not covered" >      handleKeyboardNav(e.nativeEvent, {</span>
@@ -1217,7 +1217,7 @@ const <span class="fstat-no" title="function not covered" >VirtualDPadComponent:
     [disabled, throttledOnMove],
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >dimensions = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const dimensions = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       buttonSize: Math.max(48, size * 0.3),
       radius: (size - Math.max(48, size * 0.3)) / 2,
@@ -1225,7 +1225,7 @@ const <span class="fstat-no" title="function not covered" >VirtualDPadComponent:
     [size],
   );
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >colors = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const colors = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       primary: getColorRGB(KOREAN_COLORS.PRIMARY_CYAN),
       gold: getColorRGB(KOREAN_COLORS.ACCENT_GOLD),
@@ -1333,7 +1333,7 @@ VirtualDPad.displayName = "VirtualDPad";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-08T12:18:51.621Z
+                at 2026-07-09T21:43:43.267Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

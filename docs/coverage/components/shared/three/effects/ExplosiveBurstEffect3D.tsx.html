@@ -922,8 +922,8 @@ const <span class="fstat-no" title="function not covered" >ParticleBurst: React.
   particles: ParticleData[];
   color: number;
 }&gt; = ({ position, particles, color }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >groupRef = useRef&lt;THREE.Group&gt;(null);</span>
-  const <span class="cstat-no" title="statement not covered" >particlesRef = useRef(particles);</span>
+  const groupRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Group&gt;(null);</span>
+  const particlesRef = <span class="cstat-no" title="statement not covered" >useRef(particles);</span>
   
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useEffect(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    particlesRef.current = particles;</span>
@@ -931,7 +931,7 @@ const <span class="fstat-no" title="function not covered" >ParticleBurst: React.
   
   const particleCount = <span class="cstat-no" title="statement not covered" >particles.length;</span>
   
-  const <span class="cstat-no" title="statement not covered" >meshRefsArray = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const meshRefsArray = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; <span class="cstat-no" title="statement not covered" >particles.<span class="fstat-no" title="function not covered" >map(() =&gt; (<span class="cstat-no" title="statement not covered" >{</span> current: null as THREE.Mesh | null }))</span>,</span>
     [particles]
   );
@@ -985,7 +985,7 @@ const <span class="fstat-no" title="function not covered" >ShockwaveRing: React.
   intensity: number;
   color: number;
 }&gt; = ({ position, progressRef, intensity, color }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >meshRef = useRef&lt;THREE.Mesh&gt;(null);</span>
+  const meshRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Mesh&gt;(null);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useFrame(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (meshRef.current) {</span>
@@ -1020,7 +1020,7 @@ const <span class="fstat-no" title="function not covered" >ExplosionFlash: React
   intensity: number;
   color: number;
 }&gt; = ({ position, progressRef, intensity, color }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >meshRef = useRef&lt;THREE.Mesh&gt;(null);</span>
+  const meshRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Mesh&gt;(null);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useFrame(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (meshRef.current) {</span>
@@ -1054,9 +1054,9 @@ const <span class="fstat-no" title="function not covered" >DebrisParticles: Reac
   color: number;
   active: boolean;
 }&gt; = ({ position, intensity, color, active }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >groupRef = useRef&lt;THREE.Group&gt;(null);</span>
+  const groupRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Group&gt;(null);</span>
 &nbsp;
-  const [debris, <span class="cstat-no" title="statement not covered" >setDebris] = useState&lt;Array&lt;{</span>
+  const [debris, setDebris] = <span class="cstat-no" title="statement not covered" >useState&lt;Array&lt;{</span>
     position: THREE.Vector3;
     velocity: THREE.Vector3;
     rotation: THREE.Euler;
@@ -1109,7 +1109,7 @@ const <span class="fstat-no" title="function not covered" >DebrisParticles: Reac
 <span class="cstat-no" title="statement not covered" >    setDebris(debrisData);</span>
   }, [position, intensity, active]);
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >debrisRefs = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const debrisRefs = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt; <span class="cstat-no" title="statement not covered" >debris.<span class="fstat-no" title="function not covered" >map(() =&gt; <span class="cstat-no" title="statement not covered" >R</span>eact.createRef&lt;THREE.Mesh&gt;())</span>,</span>
     [debris]
   );
@@ -1162,15 +1162,15 @@ export const <span class="fstat-no" title="function not covered" >ExplosiveBurst
 }) =&gt; {
   const cappedParticleCount = <span class="cstat-no" title="statement not covered" >Math.min(particleCount, 50);</span>
   
-  const <span class="cstat-no" title="statement not covered" >progressRef = useRef(0);</span>
-  const <span class="cstat-no" title="statement not covered" >startTimeRef = useRef(0);</span>
-  const <span class="cstat-no" title="statement not covered" >completedRef = useRef(false);</span>
+  const progressRef = <span class="cstat-no" title="statement not covered" >useRef(0);</span>
+  const startTimeRef = <span class="cstat-no" title="statement not covered" >useRef(0);</span>
+  const completedRef = <span class="cstat-no" title="statement not covered" >useRef(false);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useEffect(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    startTimeRef.current = Date.now();</span>
   }, []);
 &nbsp;
-  const [particles, <span class="cstat-no" title="statement not covered" >setParticles] = useState&lt;ParticleData[]&gt;([]);</span>
+  const [particles, setParticles] = <span class="cstat-no" title="statement not covered" >useState&lt;ParticleData[]&gt;([]);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useEffect(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (!active) <span class="cstat-no" title="statement not covered" >return;</span></span>
@@ -1270,7 +1270,7 @@ export default ExplosiveBurstEffect3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-08T12:18:51.621Z
+                at 2026-07-09T21:43:43.267Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

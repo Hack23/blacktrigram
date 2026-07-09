@@ -607,20 +607,20 @@ export const <span class="fstat-no" title="function not covered" >TrainingHitEff
   visible,
   onComplete,
 }) =&gt; {
-  const <span class="cstat-no" title="statement not covered" >groupRef = useRef&lt;THREE.Group&gt;(null);</span>
-  const <span class="cstat-no" title="statement not covered" >instancedMeshRef = useRef&lt;THREE.InstancedMesh&gt;(null);</span>
-  const <span class="cstat-no" title="statement not covered" >particlesRef = useRef&lt;Particle[]&gt;([]);</span>
-  const [isActive, <span class="cstat-no" title="statement not covered" >setIsActive] = useState(false);</span>
-  const [hasParticles, <span class="cstat-no" title="statement not covered" >setHasParticles] = useState(false);</span>
-  const <span class="cstat-no" title="statement not covered" >initializedRef = useRef(false);</span>
+  const groupRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.Group&gt;(null);</span>
+  const instancedMeshRef = <span class="cstat-no" title="statement not covered" >useRef&lt;THREE.InstancedMesh&gt;(null);</span>
+  const particlesRef = <span class="cstat-no" title="statement not covered" >useRef&lt;Particle[]&gt;([]);</span>
+  const [isActive, setIsActive] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
+  const [hasParticles, setHasParticles] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
+  const initializedRef = <span class="cstat-no" title="statement not covered" >useRef(false);</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >tempMatrix = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.Matrix4(), [</span>]);</span>
-  const <span class="cstat-no" title="statement not covered" >tempVelocity = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.Vector3(), [</span>]);</span>
-  const <span class="cstat-no" title="statement not covered" >tempColor = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.Color(), [</span>]);</span>
-  const <span class="cstat-no" title="statement not covered" >tempScaleVector = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.Vector3(), [</span>]);</span>
+  const tempMatrix = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.Matrix4(), [</span>]);</span>
+  const tempVelocity = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.Vector3(), [</span>]);</span>
+  const tempColor = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.Color(), [</span>]);</span>
+  const tempScaleVector = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.Vector3(), [</span>]);</span>
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >particleCount = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >g</span>etParticleCount(type), [</span>type]);</span>
-  const <span class="cstat-no" title="statement not covered" >color = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.Color(getEffectColor(type)), [</span>type]);</span>
+  const particleCount = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >g</span>etParticleCount(type), [</span>type]);</span>
+  const color = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.Color(getEffectColor(type)), [</span>type]);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >  useEffect(() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (visible &amp;&amp; !initializedRef.current) {</span>
@@ -710,8 +710,8 @@ export const <span class="fstat-no" title="function not covered" >TrainingHitEff
     }
   });
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >geometry = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.SphereGeometry(1, 8, 8), [</span>]);</span>
-  const <span class="cstat-no" title="statement not covered" >material = <span class="fstat-no" title="function not covered" >useMemo(</span></span>
+  const geometry = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.SphereGeometry(1, 8, 8), [</span>]);</span>
+  const material = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useMemo(</span></span>
     () =&gt;
 <span class="cstat-no" title="statement not covered" >      new THREE.MeshBasicMaterial({</span>
         transparent: true,
@@ -766,7 +766,7 @@ export default TrainingHitEffects3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-08T12:18:51.621Z
+                at 2026-07-09T21:43:43.267Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
