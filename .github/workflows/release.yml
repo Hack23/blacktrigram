@@ -6,7 +6,7 @@ on:
       version:
         description: "Version to release (vX.Y.Z format)"
         required: true
-        default: "v0.1.0"
+        default: "v0.7.0"
       prerelease:
         description: "Is this a pre-release?"
         type: boolean
@@ -46,10 +46,19 @@ jobs:
       # NOTE: step-security/harden-runner does not support container jobs and is
       # intentionally omitted from this job.
 
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: true
 
       - name: Get version
         id: get-version
@@ -126,9 +135,9 @@ jobs:
         run: |
           set -euo pipefail
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
+          git config user.name "Hack23 Automation"
+          git config user.email "automation@hack23.com"
+          
           git add -A
           if git diff --cached --quiet; then
             echo "No changes to commit for version bump."
@@ -216,11 +225,19 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
-          # Use GITHUB_REF directly for tag events
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: true
           ref: ${{ github.event_name == 'push' && github.ref || github.event_name == 'workflow_dispatch' && github.event.inputs.version || '' }}
 
       - name: Setup Node.js
@@ -312,11 +329,19 @@ jobs:
         with:
           egress-policy: audit
 
-      # Checkout main branch to get latest documentation
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: true
           ref: main # Always use main branch for deployment
 
       - name: Download build artifacts
@@ -345,7 +370,7 @@ jobs:
           publish: false
           prerelease: ${{ needs.prepare.outputs.is_prerelease }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
       # Create GitHub Release with all artifacts
       - name: Create GitHub Release
@@ -363,7 +388,7 @@ jobs:
             artifacts/security/game-${{ needs.prepare.outputs.version }}.spdx.json
             artifacts/security/game-${{ needs.prepare.outputs.version }}.zip.intoto.jsonl
             artifacts/security/game-${{ needs.prepare.outputs.version }}.spdx.json.intoto.jsonl
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       # Prepare docs directory for GitHub Pages
       - name: Prepare docs directory
@@ -404,10 +429,19 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: true
           ref: ${{ github.event_name == 'push' && github.ref || format('refs/tags/{0}', needs.prepare.outputs.version) }}
 
       - name: Setup Node.js
@@ -436,7 +470,6 @@ jobs:
       - name: Publish to npm with provenance
         run: npm publish --provenance --access public --ignore-scripts
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
       - name: Verify npm package
