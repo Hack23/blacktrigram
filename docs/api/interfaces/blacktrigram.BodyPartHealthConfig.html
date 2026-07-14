@@ -23,7 +23,7 @@ health system for damage calculation and effect application.</p>
 </div></div></section>
 <div class="tsd-signature"><span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">BodyPartHealthConfig</span> <span class="tsd-signature-symbol">{</span><br/>    <a class="tsd-kind-property" href="#criticalthreshold">criticalThreshold</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#defaultmaxhealth">defaultMaxHealth</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#effectmultipliers">effectMultipliers</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{</span><br/>        <span class="tsd-kind-property">critical</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>        <span class="tsd-kind-property">major</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>        <span class="tsd-kind-property">minor</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>        <span class="tsd-kind-property">severe</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#majorpenaltythreshold">majorPenaltyThreshold</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#minorpenaltythreshold">minorPenaltyThreshold</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#severepenaltythreshold">severePenaltyThreshold</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/><span class="tsd-signature-symbol">}</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/bodypart/types.ts#L270">systems/bodypart/types.ts:270</a></li></ul></aside>
+<li>Defined in systems/bodypart/types.ts:270</li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
@@ -47,42 +47,42 @@ health system for damage calculation and effect application.</p>
 <div class="tsd-comment tsd-typography"><p>Health threshold for critical status (percentage)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/bodypart/types.ts#L280">systems/bodypart/types.ts:280</a></li></ul></aside></section>
+<li>Defined in systems/bodypart/types.ts:280</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="defaultmaxhealth"><code class="tsd-tag">Readonly</code><span>default<wbr/>Max<wbr/>Health</span><a href="#defaultmaxhealth" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">defaultMaxHealth</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Default max health for all body parts</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/bodypart/types.ts#L272">systems/bodypart/types.ts:272</a></li></ul></aside></section>
+<li>Defined in systems/bodypart/types.ts:272</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="effectmultipliers"><code class="tsd-tag">Readonly</code><span>effect<wbr/>Multipliers</span><a href="#effectmultipliers" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">effectMultipliers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{</span><br/>    <span class="tsd-kind-property">critical</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <span class="tsd-kind-property">major</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <span class="tsd-kind-property">minor</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <span class="tsd-kind-property">severe</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/><span class="tsd-signature-symbol">}</span></div>
 <div class="tsd-comment tsd-typography"><p>Effect multipliers for each threshold tier</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/bodypart/types.ts#L282">systems/bodypart/types.ts:282</a></li></ul></aside></section>
+<li>Defined in systems/bodypart/types.ts:282</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="majorpenaltythreshold"><code class="tsd-tag">Readonly</code><span>major<wbr/>Penalty<wbr/>Threshold</span><a href="#majorpenaltythreshold" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">majorPenaltyThreshold</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Health threshold for major penalties (percentage)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/bodypart/types.ts#L276">systems/bodypart/types.ts:276</a></li></ul></aside></section>
+<li>Defined in systems/bodypart/types.ts:276</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="minorpenaltythreshold"><code class="tsd-tag">Readonly</code><span>minor<wbr/>Penalty<wbr/>Threshold</span><a href="#minorpenaltythreshold" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">minorPenaltyThreshold</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Health threshold for minor penalties (percentage)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/bodypart/types.ts#L274">systems/bodypart/types.ts:274</a></li></ul></aside></section>
+<li>Defined in systems/bodypart/types.ts:274</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="severepenaltythreshold"><code class="tsd-tag">Readonly</code><span>severe<wbr/>Penalty<wbr/>Threshold</span><a href="#severepenaltythreshold" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">severePenaltyThreshold</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Health threshold for severe penalties (percentage)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/bodypart/types.ts#L278">systems/bodypart/types.ts:278</a></li></ul></aside></section></section></details></div>
+<li>Defined in systems/bodypart/types.ts:278</li></ul></aside></section></section></details></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">

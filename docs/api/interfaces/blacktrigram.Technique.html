@@ -29,7 +29,7 @@ and may apply special effects or require specific stances.</p>
 </div></div></section>
 <div class="tsd-signature"><span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">Technique</span> <span class="tsd-signature-symbol">{</span><br/>    <a class="tsd-kind-property" href="#animation">animation</a><span class="tsd-signature-symbol">?:</span> <a href="blacktrigram.TechniqueAnimationConfig.html" class="tsd-signature-type tsd-kind-interface">TechniqueAnimationConfig</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#animationduration">animationDuration</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#cooldown">cooldown</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#criticalchance">criticalChance</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#damage">damage</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{</span> <span class="tsd-kind-property">max</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span> <span class="tsd-kind-property">min</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span> <span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#damagetype">damageType</a><span class="tsd-signature-symbol">:</span> <a href="../enums/blacktrigram.DamageType.html" class="tsd-signature-type tsd-kind-enum">DamageType</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#description">description</a><span class="tsd-signature-symbol">:</span> <a href="blacktrigram.KoreanText.html" class="tsd-signature-type tsd-kind-interface">KoreanText</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#icon">icon</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#id">id</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#keyboardshortcut">keyboardShortcut</a><span class="tsd-signature-symbol">:</span> <a href="../types/blacktrigram.TechniqueKey.html" class="tsd-signature-type tsd-kind-type-alias">TechniqueKey</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#kicost">kiCost</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#name">name</a><span class="tsd-signature-symbol">:</span> <a href="blacktrigram.KoreanText.html" class="tsd-signature-type tsd-kind-interface">KoreanText</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#requiredstance">requiredStance</a><span class="tsd-signature-symbol">?:</span> <a href="../enums/blacktrigram.TrigramStance.html" class="tsd-signature-type tsd-kind-enum">TrigramStance</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#specialeffect">specialEffect</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#staminacost">staminaCost</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#targetsvitalpoint">targetsVitalPoint</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br/><span class="tsd-signature-symbol">}</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L75">types/technique.ts:75</a></li></ul></aside>
+<li>Defined in types/technique.ts:75</li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
@@ -72,49 +72,49 @@ When technique is executed, the appropriate animation is played at the specified
 
 </div></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L144">types/technique.ts:144</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:144</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="animationduration"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>animation<wbr/>Duration</span><a href="#animationduration" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">animationDuration</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Animation duration in milliseconds</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L116">types/technique.ts:116</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:116</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="cooldown"><code class="tsd-tag">Readonly</code><span>cooldown</span><a href="#cooldown" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">cooldown</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Cooldown duration in milliseconds</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L101">types/technique.ts:101</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:101</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="criticalchance"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>critical<wbr/>Chance</span><a href="#criticalchance" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">criticalChance</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Critical hit chance modifier (0.0-1.0)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L113">types/technique.ts:113</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:113</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="damage"><code class="tsd-tag">Readonly</code><span>damage</span><a href="#damage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">damage</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{</span> <span class="tsd-kind-property">max</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span> <span class="tsd-kind-property">min</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span> <span class="tsd-signature-symbol">}</span></div>
 <div class="tsd-comment tsd-typography"><p>Base damage range</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L92">types/technique.ts:92</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:92</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="damagetype"><code class="tsd-tag">Readonly</code><span>damage<wbr/>Type</span><a href="#damagetype" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">damageType</span><span class="tsd-signature-symbol">:</span> <a href="../enums/blacktrigram.DamageType.html" class="tsd-signature-type tsd-kind-enum">DamageType</a></div>
 <div class="tsd-comment tsd-typography"><p>Type of damage dealt</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L98">types/technique.ts:98</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:98</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="description"><code class="tsd-tag">Readonly</code><span>description</span><a href="#description" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">description</span><span class="tsd-signature-symbol">:</span> <a href="blacktrigram.KoreanText.html" class="tsd-signature-type tsd-kind-interface">KoreanText</a></div>
 <div class="tsd-comment tsd-typography"><p>Bilingual technique description</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L83">types/technique.ts:83</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:83</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="icon"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>icon</span><a href="#icon" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">icon</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span></div>
@@ -123,63 +123,63 @@ Can be an emoji character (e.g., &quot;⚔️&quot;), icon font class name, or i
 Defaults to &quot;⚔️&quot; if not specified in the UI.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L126">types/technique.ts:126</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:126</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="id"><code class="tsd-tag">Readonly</code><span>id</span><a href="#id" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">id</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 <div class="tsd-comment tsd-typography"><p>Unique technique identifier</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L77">types/technique.ts:77</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:77</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="keyboardshortcut"><code class="tsd-tag">Readonly</code><span>keyboard<wbr/>Shortcut</span><a href="#keyboardshortcut" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">keyboardShortcut</span><span class="tsd-signature-symbol">:</span> <a href="../types/blacktrigram.TechniqueKey.html" class="tsd-signature-type tsd-kind-type-alias">TechniqueKey</a></div>
 <div class="tsd-comment tsd-typography"><p>Keyboard shortcut key</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L107">types/technique.ts:107</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:107</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="kicost"><code class="tsd-tag">Readonly</code><span>ki<wbr/>Cost</span><a href="#kicost" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">kiCost</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Ki (氣) cost to execute (0-100)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L89">types/technique.ts:89</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:89</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="name"><code class="tsd-tag">Readonly</code><span>name</span><a href="#name" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">:</span> <a href="blacktrigram.KoreanText.html" class="tsd-signature-type tsd-kind-interface">KoreanText</a></div>
 <div class="tsd-comment tsd-typography"><p>Bilingual technique name</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L80">types/technique.ts:80</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:80</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="requiredstance"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>required<wbr/>Stance</span><a href="#requiredstance" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">requiredStance</span><span class="tsd-signature-symbol">?:</span> <a href="../enums/blacktrigram.TrigramStance.html" class="tsd-signature-type tsd-kind-enum">TrigramStance</a></div>
 <div class="tsd-comment tsd-typography"><p>Required stance to execute (optional)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L104">types/technique.ts:104</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:104</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="specialeffect"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>special<wbr/>Effect</span><a href="#specialeffect" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">specialEffect</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span></div>
 <div class="tsd-comment tsd-typography"><p>Special effect type (stun, bleed, etc.)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L119">types/technique.ts:119</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:119</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="staminacost"><code class="tsd-tag">Readonly</code><span>stamina<wbr/>Cost</span><a href="#staminacost" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">staminaCost</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Stamina cost to execute (0-100)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L86">types/technique.ts:86</a></li></ul></aside></section>
+<li>Defined in types/technique.ts:86</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="targetsvitalpoint"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>targets<wbr/>Vital<wbr/>Point</span><a href="#targetsvitalpoint" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">targetsVitalPoint</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span></div>
 <div class="tsd-comment tsd-typography"><p>Whether technique targets vital points</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/types/technique.ts#L110">types/technique.ts:110</a></li></ul></aside></section></section></details></div>
+<li>Defined in types/technique.ts:110</li></ul></aside></section></section></details></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">

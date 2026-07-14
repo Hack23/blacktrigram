@@ -23,7 +23,7 @@ to the physics-based movement system.</p>
 </div></div></section>
 <div class="tsd-signature"><span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">SpeedModifierState</span> <span class="tsd-signature-symbol">{</span><br/>    <a class="tsd-kind-property" href="#basespeed">baseSpeed</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#canrun">canRun</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#combatstatepenalty">combatStatePenalty</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#finalacceleration">finalAcceleration</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#finalspeed">finalSpeed</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#injurypenalty">injuryPenalty</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#staminapenalty">staminaPenalty</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#stancemodifier">stanceModifier</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/><span class="tsd-signature-symbol">}</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/physics/SpeedModifierSystem.ts#L58">systems/physics/SpeedModifierSystem.ts:58</a></li></ul></aside>
+<li>Defined in systems/physics/SpeedModifierSystem.ts:58</li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
@@ -49,56 +49,56 @@ to the physics-based movement system.</p>
 <div class="tsd-comment tsd-typography"><p>Base movement speed before modifiers (m/s)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/physics/SpeedModifierSystem.ts#L60">systems/physics/SpeedModifierSystem.ts:60</a></li></ul></aside></section>
+<li>Defined in systems/physics/SpeedModifierSystem.ts:60</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="canrun"><code class="tsd-tag">Readonly</code><span>can<wbr/>Run</span><a href="#canrun" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">canRun</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 <div class="tsd-comment tsd-typography"><p>Whether running is allowed (false when stamina &lt; 10%)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/physics/SpeedModifierSystem.ts#L74">systems/physics/SpeedModifierSystem.ts:74</a></li></ul></aside></section>
+<li>Defined in systems/physics/SpeedModifierSystem.ts:74</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="combatstatepenalty"><code class="tsd-tag">Readonly</code><span>combat<wbr/>State<wbr/>Penalty</span><a href="#combatstatepenalty" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">combatStatePenalty</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Combat state speed reduction (0.0 to 1.0, percentage reduction)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/physics/SpeedModifierSystem.ts#L66">systems/physics/SpeedModifierSystem.ts:66</a></li></ul></aside></section>
+<li>Defined in systems/physics/SpeedModifierSystem.ts:66</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="finalacceleration"><code class="tsd-tag">Readonly</code><span>final<wbr/>Acceleration</span><a href="#finalacceleration" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">finalAcceleration</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Final calculated acceleration (m/s²)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/physics/SpeedModifierSystem.ts#L72">systems/physics/SpeedModifierSystem.ts:72</a></li></ul></aside></section>
+<li>Defined in systems/physics/SpeedModifierSystem.ts:72</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="finalspeed"><code class="tsd-tag">Readonly</code><span>final<wbr/>Speed</span><a href="#finalspeed" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">finalSpeed</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Final calculated movement speed (m/s)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/physics/SpeedModifierSystem.ts#L70">systems/physics/SpeedModifierSystem.ts:70</a></li></ul></aside></section>
+<li>Defined in systems/physics/SpeedModifierSystem.ts:70</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="injurypenalty"><code class="tsd-tag">Readonly</code><span>injury<wbr/>Penalty</span><a href="#injurypenalty" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">injuryPenalty</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Injury-based speed reduction (0.0 to 0.75, percentage reduction) - Korean: 부상감소</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/physics/SpeedModifierSystem.ts#L64">systems/physics/SpeedModifierSystem.ts:64</a></li></ul></aside></section>
+<li>Defined in systems/physics/SpeedModifierSystem.ts:64</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="staminapenalty"><code class="tsd-tag">Readonly</code><span>stamina<wbr/>Penalty</span><a href="#staminapenalty" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">staminaPenalty</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Stamina-based acceleration reduction (0.0 to 0.75, percentage reduction) - Korean: 스태미나효과</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/physics/SpeedModifierSystem.ts#L68">systems/physics/SpeedModifierSystem.ts:68</a></li></ul></aside></section>
+<li>Defined in systems/physics/SpeedModifierSystem.ts:68</li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="stancemodifier"><code class="tsd-tag">Readonly</code><span>stance<wbr/>Modifier</span><a href="#stancemodifier" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">stanceModifier</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Stance-based speed multiplier (0.80 to 1.25)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/systems/physics/SpeedModifierSystem.ts#L62">systems/physics/SpeedModifierSystem.ts:62</a></li></ul></aside></section></section></details></div>
+<li>Defined in systems/physics/SpeedModifierSystem.ts:62</li></ul></aside></section></section></details></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
