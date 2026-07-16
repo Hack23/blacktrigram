@@ -21,6 +21,9 @@ permissions: read-all
 jobs:
   prepare:
     name: Prepare Release
+    # A GitHub App token triggers tag-push workflows. The dispatch run that
+    # creates that tag is the release owner, so skip its secondary push run.
+    if: github.event_name != 'push' || github.actor != 'hack23-automation[bot]'
     runs-on: ubuntu-26.04
     # Run inside Cypress's official browsers image so Chrome/Firefox/Edge/Xvfb and all
     # GTK/NSS/font system libs are preinstalled. Node is normalised to the version pinned
@@ -238,7 +241,7 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: true
-          ref: ${{ github.event_name == 'push' && github.ref || github.event_name == 'workflow_dispatch' && github.event.inputs.version || '' }}
+          ref: ${{ format('refs/tags/{0}', needs.prepare.outputs.version) }}
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
