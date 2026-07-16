@@ -135,6 +135,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           VERSION: ${{ github.event.inputs.version }}
+          RELEASE_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -158,7 +159,10 @@ jobs:
           # actions/checkout leaves the repo in a detached HEAD state for
           # workflow_dispatch on a branch, so push HEAD explicitly to main.
           git push origin "HEAD:${GITHUB_REF_NAME}"
-          git push origin "refs/tags/${VERSION}"
+          # GITHUB_TOKEN does not trigger a new workflow run, so the tag
+          # created by this manual release cannot start a duplicate release.
+          git push "https://x-access-token:${RELEASE_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            "refs/tags/${VERSION}"
 
       - name: Verify Cypress
         run: npx cypress verify
