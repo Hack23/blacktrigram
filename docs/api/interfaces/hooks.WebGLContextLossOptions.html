@@ -13,7 +13,7 @@
 <h1>Interface WebGLContextLossOptions</h1></div>
 <div class="tsd-signature"><span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">WebGLContextLossOptions</span> <span class="tsd-signature-symbol">{</span><br/>    <a class="tsd-kind-property" href="#autorestore">autoRestore</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#canvasref">canvasRef</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">RefObject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#maxretries">maxRetries</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#mountdelay">mountDelay</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#oncontextlost">onContextLost</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">()</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#oncontextrestored">onContextRestored</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">()</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/><span class="tsd-signature-symbol">}</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in hooks/useWebGLContextLossHandler.ts:45</li></ul></aside>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/hooks/useWebGLContextLossHandler.ts#L45">hooks/useWebGLContextLossHandler.ts:45</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
@@ -37,7 +37,7 @@
 <div class="tsd-comment tsd-typography"><p>Whether to attempt automatic restoration (default: true)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in hooks/useWebGLContextLossHandler.ts:59</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/hooks/useWebGLContextLossHandler.ts#L59">hooks/useWebGLContextLossHandler.ts:59</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="canvasref"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>canvas<wbr/>Ref</span><a href="#canvasref" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">canvasRef</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">RefObject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol">&gt;</span></div>
@@ -45,14 +45,14 @@
 If not provided, will query for the first canvas in the document</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in hooks/useWebGLContextLossHandler.ts:65</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/hooks/useWebGLContextLossHandler.ts#L65">hooks/useWebGLContextLossHandler.ts:65</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="maxretries"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>max<wbr/>Retries</span><a href="#maxretries" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">maxRetries</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Maximum attempts to find canvas element (default: 5)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in hooks/useWebGLContextLossHandler.ts:76</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/hooks/useWebGLContextLossHandler.ts#L76">hooks/useWebGLContextLossHandler.ts:76</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="mountdelay"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>mount<wbr/>Delay</span><a href="#mountdelay" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">mountDelay</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
@@ -60,21 +60,21 @@ If not provided, will query for the first canvas in the document</p>
 Helps avoid race conditions during screen transitions</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in hooks/useWebGLContextLossHandler.ts:71</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/hooks/useWebGLContextLossHandler.ts#L71">hooks/useWebGLContextLossHandler.ts:71</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="oncontextlost"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>on<wbr/>Context<wbr/>Lost</span><a href="#oncontextlost" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">onContextLost</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">()</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span></div>
 <div class="tsd-comment tsd-typography"><p>Callback when context is lost</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in hooks/useWebGLContextLossHandler.ts:49</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/hooks/useWebGLContextLossHandler.ts#L49">hooks/useWebGLContextLossHandler.ts:49</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="oncontextrestored"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>on<wbr/>Context<wbr/>Restored</span><a href="#oncontextrestored" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">onContextRestored</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">()</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span></div>
 <div class="tsd-comment tsd-typography"><p>Callback when context is restored</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in hooks/useWebGLContextLossHandler.ts:54</li></ul></aside></section></section></details></div>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/hooks/useWebGLContextLossHandler.ts#L54">hooks/useWebGLContextLossHandler.ts:54</a></li></ul></aside></section></section></details></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">

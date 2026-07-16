@@ -17,7 +17,7 @@ Provides all state and callbacks required for the 3D combat screen.</p>
 </div></section>
 <div class="tsd-signature"><span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">CombatScreen3DProps</span> <span class="tsd-signature-symbol">{</span><br/>    <a class="tsd-kind-property" href="#currentround">currentRound</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#enableadaptivequality">enableAdaptiveQuality</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#gamemode">gameMode</a><span class="tsd-signature-symbol">?:</span> <a href="../enums/blacktrigram.GameMode.html" class="tsd-signature-type tsd-kind-enum">GameMode</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#height">height</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#ispaused">isPaused</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#ongameend">onGameEnd</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">winner</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#onplayerupdate">onPlayerUpdate</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><br/>        <span class="tsd-kind-parameter">playerIndex</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">updates</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="blacktrigram.PlayerState.html" class="tsd-signature-type tsd-kind-interface">PlayerState</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#onreturntomenu">onReturnToMenu</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">()</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#players">players</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">readonly</span> <a href="blacktrigram.PlayerState.html" class="tsd-signature-type tsd-kind-interface">PlayerState</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#showperformanceoverlay">showPerformanceOverlay</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#timeremaining">timeRemaining</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#width">width</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/><span class="tsd-signature-symbol">}</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:155</li></ul></aside>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L155">components/screens/combat/CombatScreen3D.tsx:155</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
@@ -47,35 +47,35 @@ Provides all state and callbacks required for the 3D combat screen.</p>
 <div class="tsd-comment tsd-typography"><p>Current round number (1-based).</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:173</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L173">components/screens/combat/CombatScreen3D.tsx:173</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="enableadaptivequality"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>enable<wbr/>Adaptive<wbr/>Quality</span><a href="#enableadaptivequality" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">enableAdaptiveQuality</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span></div>
 <div class="tsd-comment tsd-typography"><p>Enable adaptive quality adjustment (default: true on mobile)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:206</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L206">components/screens/combat/CombatScreen3D.tsx:206</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="gamemode"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>game<wbr/>Mode</span><a href="#gamemode" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">gameMode</span><span class="tsd-signature-symbol">?:</span> <a href="../enums/blacktrigram.GameMode.html" class="tsd-signature-type tsd-kind-enum">GameMode</a></div>
 <div class="tsd-comment tsd-typography"><p>Optional game mode (affects rules/behavior).</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:194</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L194">components/screens/combat/CombatScreen3D.tsx:194</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="height"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>height</span><a href="#height" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">height</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Canvas height in pixels. Defaults to 800.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:202</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L202">components/screens/combat/CombatScreen3D.tsx:202</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="ispaused"><code class="tsd-tag">Readonly</code><span>is<wbr/>Paused</span><a href="#ispaused" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">isPaused</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 <div class="tsd-comment tsd-typography"><p>Whether combat is currently paused.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:181</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L181">components/screens/combat/CombatScreen3D.tsx:181</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="ongameend"><code class="tsd-tag">Readonly</code><span>on<wbr/>Game<wbr/>End</span><a href="#ongameend" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">onGameEnd</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">winner</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span></div>
@@ -96,7 +96,7 @@ Provides all state and callbacks required for the 3D combat screen.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:190</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L190">components/screens/combat/CombatScreen3D.tsx:190</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="onplayerupdate"><code class="tsd-tag">Readonly</code><span>on<wbr/>Player<wbr/>Update</span><a href="#onplayerupdate" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">onPlayerUpdate</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">playerIndex</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">updates</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="blacktrigram.PlayerState.html" class="tsd-signature-type tsd-kind-interface">PlayerState</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span></div>
@@ -120,14 +120,14 @@ Provides all state and callbacks required for the 3D combat screen.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:166</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L166">components/screens/combat/CombatScreen3D.tsx:166</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="onreturntomenu"><code class="tsd-tag">Readonly</code><span>on<wbr/>Return<wbr/>To<wbr/>Menu</span><a href="#onreturntomenu" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">onReturnToMenu</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">()</span> <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span></div>
 <div class="tsd-comment tsd-typography"><p>Callback when the user exits to the menu.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:185</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L185">components/screens/combat/CombatScreen3D.tsx:185</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="players"><code class="tsd-tag">Readonly</code><span>players</span><a href="#players" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">players</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">readonly</span> <a href="blacktrigram.PlayerState.html" class="tsd-signature-type tsd-kind-interface">PlayerState</a><span class="tsd-signature-symbol">[]</span></div>
@@ -135,28 +135,28 @@ Provides all state and callbacks required for the 3D combat screen.</p>
 Each PlayerState contains all combat and status information for a player.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:160</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L160">components/screens/combat/CombatScreen3D.tsx:160</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="showperformanceoverlay"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>show<wbr/>Performance<wbr/>Overlay</span><a href="#showperformanceoverlay" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">showPerformanceOverlay</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span></div>
 <div class="tsd-comment tsd-typography"><p>Show performance overlay in dev mode (default: import.meta.env.DEV)</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:210</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L210">components/screens/combat/CombatScreen3D.tsx:210</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="timeremaining"><code class="tsd-tag">Readonly</code><span>time<wbr/>Remaining</span><a href="#timeremaining" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">timeRemaining</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Remaining time in seconds for the current round.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:177</li></ul></aside></section>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L177">components/screens/combat/CombatScreen3D.tsx:177</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="width"><code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>width</span><a href="#width" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">width</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Canvas width in pixels. Defaults to 1200.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in components/screens/combat/CombatScreen3D.tsx:198</li></ul></aside></section></section></details></div>
+<li>Defined in <a href="https://github.com/Hack23/blacktrigram/blob/main/src/components/screens/combat/CombatScreen3D.tsx#L198">components/screens/combat/CombatScreen3D.tsx:198</a></li></ul></aside></section></section></details></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
