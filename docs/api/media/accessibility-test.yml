@@ -17,11 +17,17 @@ on:
       - 'src/types/constants/colors.ts'
   workflow_dispatch: # Allow manual trigger
 
+permissions:
+  contents: read
+
 jobs:
   accessibility-tests:
     name: Run Accessibility Tests with axe-core
     runs-on: ubuntu-26.04
     timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: write
 
     steps:
       - name: Harden the runner (Audit all outbound calls)
