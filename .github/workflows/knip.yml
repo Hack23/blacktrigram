@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: ["main"]
 
-# Set default permissions to read-only (least privilege)
-permissions: read-all
+# All jobs declare their required permissions explicitly.
+permissions: {}
 
 jobs:
   knip:
