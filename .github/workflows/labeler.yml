@@ -4,8 +4,8 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened, edited]
 
-# Set default permissions to read-only
-permissions: read-all
+# All jobs declare their required permissions explicitly.
+permissions: {}
 
 jobs:
   labeler:
@@ -15,8 +15,7 @@ jobs:
     permissions:
       contents: read # Required to check out the code
       pull-requests: write # Required to apply labels to PRs
-      issues: write # Required to create and manage labels
-      repository-projects: write # Required for repository management
+      issues: read # Required to check whether labels exist
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0

@@ -6,8 +6,8 @@ on:
     - cron: '0 6 * * 1'
   workflow_dispatch:
 
-# Set default permissions to read-only
-permissions: read-all
+# All jobs declare their required permissions explicitly.
+permissions: {}
 
 jobs:
   test-node-next:

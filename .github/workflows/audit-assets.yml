@@ -25,7 +25,6 @@ jobs:
     permissions:
       contents: read
       issues: write  # For PR comments on failure
-      pull-requests: write  # For PR comments on failure
     
     steps:
       - name: Harden the runner (Audit all outbound calls)
