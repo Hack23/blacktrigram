@@ -2,7 +2,7 @@
 
 /**
  * Sitemap Generator for Black Trigram (흑괘)
- * Generates both sitemap.xml and sitemap.html from docs directory
+ * Generates both sitemap.xml and sitemap.html from deployed HTML directories
  * For SEO optimization on blacktrigram.com
  */
 
@@ -15,6 +15,11 @@ const __dirname = path.dirname(__filename);
 
 const BASE_URL = 'https://blacktrigram.com';
 const DOCS_DIR = path.join(__dirname, 'docs');
+const ANALYSIS_DIR = path.join(__dirname, 'analysis');
+const CONTENT_ROOTS = [
+  { directory: DOCS_DIR, directoryName: 'docs', urlPrefixes: ['', 'docs'] },
+  { directory: ANALYSIS_DIR, directoryName: 'analysis', urlPrefixes: ['analysis'] },
+];
 // NOTE: CURRENT_DATE is evaluated once at module load time.
 // This is acceptable for short-lived, single-run sitemap generation.
 // If this script is ever used as a long-running process or daemon, consider
@@ -95,18 +100,26 @@ function findFiles(dir, fileList = []) {
 }
 
 /**
- * Get relative path from docs directory
+ * Get the URL-relative path for a deployed file.
+ *
+ * The deploy workflow publishes docs twice: at the site root and under /docs/.
+ * Analysis output, when present, is published under /analysis/.
  */
-function getRelativePath(filePath) {
-  return './' + path.relative(DOCS_DIR, filePath).replace(/\\/g, '/');
+function getDeployedPaths(filePath, root) {
+  const relativePath = path.relative(root.directory, filePath).replace(/\\/g, '/');
+
+  return root.urlPrefixes.map(prefix => ({
+    relativePath: `./${prefix ? `${prefix}/` : ''}${relativePath}`,
+    categoryPath: `./${root.directory === DOCS_DIR ? relativePath : `${root.directoryName}/${relativePath}`}`,
+  }));
 }
 
 /**
  * Check if file should be included
  */
 function shouldInclude(relativePath) {
-  // Must be HTML or MD file
-  if (!/\.(html|md)$/i.test(relativePath)) {
+  // The deployment sitemap must describe pages, not source or asset files.
+  if (!/\.html$/i.test(relativePath)) {
     return false;
   }
 
@@ -609,7 +622,7 @@ function generateSitemapHTML(entries) {
 function main() {
   console.log('🚀 Black Trigram Sitemap Generator');
 
-  // Validate docs directory before proceeding
+  // Validate the primary documentation directory before proceeding
   if (!fs.existsSync(DOCS_DIR)) {
     console.error(`❌ Docs directory does not exist: ${DOCS_DIR}`);
     process.exitCode = 1;
@@ -633,28 +646,34 @@ function main() {
   console.log('📁 Scanning docs directory...\n');
 
   try {
-    // Find all files
-    const allFiles = findFiles(DOCS_DIR);
-    console.log(`Found ${allFiles.length} total files`);
+    // Find all files in each deployed content root.
+    const allFiles = CONTENT_ROOTS.flatMap(root => {
+      if (!fs.existsSync(root.directory)) {
+        return [];
+      }
+
+      return findFiles(root.directory).map(filePath => ({ filePath, root }));
+    });
+    console.log(`Found ${allFiles.length} total deployed files`);
 
     // Filter and process files
     const entries = [];
-    allFiles.forEach(filePath => {
-      const relativePath = getRelativePath(filePath);
-      
-      if (shouldInclude(relativePath)) {
-        const { category, config } = getCategoryConfig(relativePath);
-        const url = pathToURL(relativePath);
+    allFiles.forEach(({ filePath, root }) => {
+      getDeployedPaths(filePath, root).forEach(({ relativePath, categoryPath }) => {
+        if (shouldInclude(relativePath)) {
+          const { category, config } = getCategoryConfig(categoryPath);
+          const url = pathToURL(relativePath);
 
-        entries.push({
-          url,
-          lastmod: CURRENT_DATE,
-          changefreq: config.changefreq,
-          priority: config.priority,
-          category,
-          relativePath,
-        });
-      }
+          entries.push({
+            url,
+            lastmod: CURRENT_DATE,
+            changefreq: config.changefreq,
+            priority: config.priority,
+            category,
+            relativePath,
+          });
+        }
+      });
     });
 
     console.log(`✅ Processed ${entries.length} pages for sitemap\n`);

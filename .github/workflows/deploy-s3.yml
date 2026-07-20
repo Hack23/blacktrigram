@@ -157,6 +157,21 @@ jobs:
             --cache-control "public, max-age=86400" \
             $DOCUMENT_SYNC_FLAGS
 
+          # --- Deploy generated analysis reports when the optional directory exists ---
+          if [ -d analysis ]; then
+            echo "📊 Syncing analysis reports..."
+            aws s3 sync analysis/. s3://${{ env.S3_BUCKET_NAME }}/analysis/ \
+              --exclude "*.html" \
+              --cache-control "public, max-age=3600, must-revalidate" \
+              $DOCUMENT_SYNC_FLAGS
+            aws s3 sync analysis/. s3://${{ env.S3_BUCKET_NAME }}/analysis/ \
+              --exclude "*" \
+              --include "*.html" \
+              --cache-control "public, max-age=3600, must-revalidate" \
+              --content-type "text/html; charset=utf-8" \
+              $DOCUMENT_SYNC_FLAGS
+          fi
+
           echo "✅ Deployment completed (8 sync ops instead of 16+, correctness-first caching)"
 
       # Invalidate CloudFront cache to ensure latest content is served
