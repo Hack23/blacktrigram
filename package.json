@@ -192,7 +192,7 @@
     "@aws-sdk/client-bedrock-runtime": "3.1100.0",
     "@eslint/js": "10.0.1",
     "@react-three/drei": "10.7.7",
-    "@react-three/fiber": "9.6.1",
+    "@react-three/fiber": "9.7.0",
     "@react-three/postprocessing": "3.0.4",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "7.0.0",
