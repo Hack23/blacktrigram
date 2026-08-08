@@ -1,6 +1,6 @@
 {
   "name": "blacktrigram",
-  "version": "0.7.105",
+  "version": "0.7.106",
   "description": "Black Trigram (흑괘) - Korean Martial Arts Combat Simulator. Reusable game systems, combat mechanics, animation framework, and Korean martial arts data built with React, Three.js, and TypeScript.",
   "type": "module",
   "main": "./lib/index.js",
@@ -189,7 +189,7 @@
     "three": "0.185.1"
   },
   "devDependencies": {
-    "@aws-sdk/client-bedrock-runtime": "3.1105.0",
+    "@aws-sdk/client-bedrock-runtime": "3.1106.0",
     "@eslint/js": "10.0.1",
     "@react-three/drei": "10.7.8",
     "@react-three/fiber": "9.7.0",
@@ -198,7 +198,7 @@
     "@testing-library/jest-dom": "7.0.0",
     "@testing-library/react": "16.3.2",
     "@testing-library/user-event": "14.6.3",
-    "@types/node": "26.1.2",
+    "@types/node": "26.2.0",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@types/three": "0.185.4",
@@ -211,7 +211,7 @@
     "cypress-wait-until": "3.0.2",
     "dependency-cruiser": "18.1.1",
     "dotenv": "17.4.2",
-    "eslint": "10.8.0",
+    "eslint": "10.8.1",
     "eslint-plugin-react-hooks": "7.1.1",
     "eslint-plugin-react-refresh": "0.5.3",
     "globals": "17.9.0",
@@ -234,7 +234,7 @@
     "ts-morph": "28.0.0",
     "ts-node": "10.9.2",
     "tsc-alias": "1.9.1",
-    "tsx": "4.23.10",
+    "tsx": "4.23.11",
     "typedoc": "0.28.20",
     "typedoc-plugin-markdown": "4.12.0",
     "typedoc-plugin-mermaid": "1.12.0",
