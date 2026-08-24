@@ -1,0 +1,111 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-08-24T21:53:23.958Z",
+    "end": "2026-08-24T21:53:45.048Z",
+    "duration": 21090,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "85b4568b-02f1-4984-8820-a519426ca89c",
+      "title": "",
+      "fullFile": "cypress/e2e/screens/training-screen.cy.ts",
+      "file": "cypress/e2e/screens/training-screen.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "9321a703-fa41-45f0-91ef-89d2fae08c7d",
+          "title": "TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should render TrainingScreen with training mechanics and vital points",
+              "fullTitle": "TrainingScreen - Comprehensive E2E Test (Target: 3-4 min) should render TrainingScreen with training mechanics and vital points",
+              "timedOut": null,
+              "duration": 20393,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.annotate(\"Testing TrainingScreen - Full Training Journey\");\n// ============================================================\n// 1. Verify Training Screen Rendering (20s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Training Screen Rendering\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.verifyTrainingScreenReady)();\n// Check for training header\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.verifyElementConditional)('training-header', 'Training header not found or embedded in canvas');\n// ============================================================\n// 2. Test Stance Practice (60s)\n// ============================================================\ncy.log(\"2️⃣ Testing Stance Practice System\");\n// Practice stance 1 (Geon) twice\ncy.log(\"Practicing Stance 1 (Geon)...\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.practiceStanceWithVerification)(1, 2);\n// Practice stance 3 (Li) twice\ncy.log(\"Practicing Stance 3 (Li)...\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.practiceStanceWithVerification)(3, 2);\n// Practice stance 5 (Son) twice\ncy.log(\"Practicing Stance 5 (Son)...\");\n(0,_support_test_helpers__WEBPACK_IMPORTED_MODULE_0__.practiceStanceWithVerification)(5, 2);\n// ============================================================\n// 3. Test Training Dummy Interaction (40s)\n// ============================================================\ncy.log(\"3️⃣ Testing Training Dummy Interaction\");\n// Verify training dummy container exists\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-dummy-container\"]').length > 0) {\n        cy.get('[data-testid=\"training-dummy-container\"]').should(\"exist\");\n        cy.log(\"✅ Training dummy container found\");\n    }\n    else {\n        cy.log(\"⚠️ Training dummy container not found, may be in 3D scene\");\n    }\n});\n// Check for training area\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-area\"]').length > 0) {\n        cy.get('[data-testid=\"training-area\"]').should(\"exist\");\n        cy.log(\"✅ Training area found\");\n    }\n});\n// Check for training player\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-player\"]').length > 0) {\n        cy.get('[data-testid=\"training-player\"]').should(\"exist\");\n        cy.log(\"✅ Training player found\");\n    }\n});\n// ============================================================\n// 4. Test All 8 Stances (60s)\n// ============================================================\ncy.log(\"4️⃣ Testing All 8 Trigram Stances\");\nfor (let stance = 1; stance <= 8; stance++) {\n    cy.log(`Testing stance ${stance}/8...`);\n    // Change to stance\n    cy.get(\"body\").type(stance.toString());\n    // Execute technique with space bar\n    cy.get(\"body\").type(\" \");\n    // Verify training screen still exists after action\n    cy.get('[data-testid=\"training-screen-3d\"]', { timeout: 1000 }).should(\"exist\");\n    cy.log(`✅ Stance ${stance} tested`);\n}\ncy.log(\"✅ All 8 stances tested in training\");\n// ============================================================\n// 5. Test Extended Training Session (30s)\n// ============================================================\ncy.log(\"5️⃣ Testing Extended Training Session\");\n// Practice multiple repetitions of stance 2\nfor (let i = 0; i < 3; i++) {\n    cy.log(`Training repetition ${i + 1}/3`);\n    cy.practiceStance(2, 2);\n}\ncy.log(\"✅ Extended training session completed\");\n// ============================================================\n// 6. Test Training Controls (20s)\n// ============================================================\ncy.log(\"6️⃣ Testing Training Controls\");\n// Test movement in training mode\ncy.get(\"body\").type(\"w\");\ncy.get(\"body\").type(\"a\");\ncy.get(\"body\").type(\"s\");\ncy.get(\"body\").type(\"d\");\ncy.log(\"✅ Movement controls tested\");\n// ============================================================\n// 7. Verify HUD Components (30s)\n// ============================================================\ncy.log(\"7️⃣ Verifying HUD Components\");\n// Check for HUD overlay container\ncy.get('[data-testid=\"training-hud-overlay\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Training HUD overlay found\");\n// Check for Left HUD (Anatomy/Guard)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-left-hud\"]').length > 0) {\n        cy.get('[data-testid=\"training-left-hud\"]').should(\"exist\");\n        cy.log(\"✅ Left HUD found (Anatomy/Guard)\");\n    }\n    else {\n        cy.log(\"⚠️ Left HUD not found\");\n    }\n});\n// Check for Top HUD (Controls/Mode Selector)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-top-hud\"]').length > 0) {\n        cy.get('[data-testid=\"training-top-hud\"]').should(\"exist\");\n        cy.log(\"✅ Top HUD found (Controls/Mode Selector)\");\n    }\n    else {\n        cy.log(\"⚠️ Top HUD not found\");\n    }\n});\n// Check for Right HUD (Stats/Vital Points)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-right-hud\"]').length > 0) {\n        cy.get('[data-testid=\"training-right-hud\"]').should(\"exist\");\n        cy.log(\"✅ Right HUD found (Stats/Vital Points)\");\n    }\n    else {\n        cy.log(\"⚠️ Right HUD not found\");\n    }\n});\n// Check for Bottom HUD (Technique Bar)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-bottom-hud\"]').length > 0) {\n        cy.get('[data-testid=\"training-bottom-hud\"]').should(\"exist\");\n        cy.log(\"✅ Bottom HUD found (Technique Bar)\");\n    }\n    else {\n        cy.log(\"⚠️ Bottom HUD not found\");\n    }\n});\n// ============================================================\n// 8. Verify Training UI Elements (20s)\n// ============================================================\ncy.log(\"8️⃣ Verifying Training UI Elements\");\n// Check for stance indicator\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"stance-indicator\"]').length > 0) {\n        cy.get('[data-testid=\"stance-indicator\"]').should(\"exist\");\n        cy.log(\"✅ Stance indicator found\");\n    }\n    else {\n        cy.log(\"⚠️ Stance indicator not found\");\n    }\n});\n// Check for training stats\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-stats\"]').length > 0) {\n        cy.get('[data-testid=\"training-stats\"]').should(\"exist\");\n        cy.log(\"✅ Training stats found\");\n    }\n    else {\n        cy.log(\"⚠️ Training stats not found\");\n    }\n});\n// ============================================================\n// 9. Verify Korean Text in Training (10s)\n// ============================================================\ncy.log(\"9️⃣ Verifying Korean Text\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    if (bodyText.includes(\"훈련\") ||\n        bodyText.includes(\"연습\") ||\n        bodyText.includes(\"팔괘\")) {\n        cy.log(\"✅ Korean text found in training UI\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text may be rendered in canvas\");\n    }\n});\n// ============================================================\n// 10. Test Vital Point Display (15s)\n// ============================================================\ncy.log(\"🔟 Testing Vital Point Display\");\n// Check for vital point overlay or information\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"vital-points\"]').length > 0) {\n        cy.get('[data-testid=\"vital-points\"]').should(\"exist\");\n        cy.log(\"✅ Vital points display found\");\n    }\n    else if ($body.find('[data-testid=\"training-info\"]').length > 0) {\n        cy.get('[data-testid=\"training-info\"]').should(\"exist\");\n        cy.log(\"✅ Training info panel found\");\n    }\n    else {\n        cy.log(\"⚠️ Vital points display not found\");\n    }\n});\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ TrainingScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Training screen rendering\");\ncy.log(\"   ✓ Stance practice system\");\ncy.log(\"   ✓ Training dummy interaction\");\ncy.log(\"   ✓ All 8 trigram stances\");\ncy.log(\"   ✓ Extended training session\");\ncy.log(\"   ✓ Training controls\");\ncy.log(\"   ✓ HUD components (Left, Top, Right, Bottom)\");\ncy.log(\"   ✓ Training UI elements\");\ncy.log(\"   ✓ Korean text rendering\");\ncy.log(\"   ✓ Vital point display\");",
+              "err": {},
+              "uuid": "932cefe3-7b24-4fa9-9433-eb0047e171b8",
+              "parentUUID": "9321a703-fa41-45f0-91ef-89d2fae08c7d",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "932cefe3-7b24-4fa9-9433-eb0047e171b8"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 20393,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.0.1"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "build/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
