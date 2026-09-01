@@ -11,8 +11,8 @@
  */
 export function isRunningInCI(): boolean {
   const isHeadless = Cypress.browser?.isHeadless === true;
-  const ciFlag = Cypress.env("CI");
-  const githubActionsFlag = Cypress.env("GITHUB_ACTIONS");
+  const ciFlag = Cypress.expose("CI");
+  const githubActionsFlag = Cypress.expose("GITHUB_ACTIONS");
 
   if (isHeadless) return true;
   if (ciFlag === true || ciFlag === "true") return true;

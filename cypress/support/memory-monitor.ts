@@ -139,8 +139,8 @@ Cypress.Commands.add('generateMemoryReport', () => {
   monitor.reset();
 });
 
-// Auto-log memory at test end (opt-in via Cypress env flag)
-if (Cypress.env('ENABLE_MEMORY_MONITOR')) {
+// Auto-log memory at test end (opt-in via Cypress expose flag)
+if (Cypress.expose("ENABLE_MEMORY_MONITOR")) {
   afterEach(function () {
     if (this.currentTest) {
       cy.logMemorySnapshot(`After: ${this.currentTest.title}`);
