@@ -16,10 +16,15 @@ const REPORTS = {
   artifacts: `${REPORTS_BASE_DIR}/artifacts`,
 };
 
+const getPublicEnvironmentValue = (
+  key: string,
+  fallback: string | number | boolean | null
+): string | number | boolean | null =>
+  process.env[`CYPRESS_${key}`] ?? process.env[key] ?? fallback;
+
 export default defineConfig({
   screenshotsFolder: REPORTS.screenshots,
   videosFolder: REPORTS.videos,
-  experimentalMemoryManagement: true,
   numTestsKeptInMemory: 1, // Keep only 1 test in memory — Three.js scenes are large
   video: true, // Video recording enabled; videos are only saved for failed tests
   videoCompression: 50, // Optimized for faster encoding (larger files, but faster CI) - increased from 25
@@ -65,11 +70,29 @@ export default defineConfig({
     pageLoadTimeout: 12000, // Reduced from 15000
     chromeWebSecurity: false,
     experimentalRunAllSpecs: true,
-    // Environment variables for Black Trigram testing
-    env: {
-      GAME_SPEED: 1.0,
-      DISABLE_AUDIO: true,
-      MOCK_WEBGL: true,
+    // Public configuration values for Black Trigram testing
+    expose: {
+      GAME_SPEED: getPublicEnvironmentValue("GAME_SPEED", 1.0),
+      DISABLE_AUDIO: getPublicEnvironmentValue("DISABLE_AUDIO", true),
+      MOCK_WEBGL: getPublicEnvironmentValue("MOCK_WEBGL", true),
+      CI: getPublicEnvironmentValue("CI", false),
+      GITHUB_ACTIONS: getPublicEnvironmentValue("GITHUB_ACTIONS", false),
+      ENABLE_MEMORY_MONITOR: getPublicEnvironmentValue(
+        "ENABLE_MEMORY_MONITOR",
+        false
+      ),
+      EVENT_LISTENER_LEAK_THRESHOLD: getPublicEnvironmentValue(
+        "EVENT_LISTENER_LEAK_THRESHOLD",
+        5
+      ),
+      MEMORY_LEAK_THRESHOLD_MB: getPublicEnvironmentValue(
+        "MEMORY_LEAK_THRESHOLD_MB",
+        100
+      ),
+      MEMORY_LEAK_THRESHOLD_PERCENT: getPublicEnvironmentValue(
+        "MEMORY_LEAK_THRESHOLD_PERCENT",
+        null
+      ),
     },
     setupNodeEvents(on, config) {
       on("before:run", () => {
@@ -263,7 +286,6 @@ export default defineConfig({
     viewportHeight: 720, // Optimized for component testing
     specPattern: "src/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "cypress/support/component.ts",
-    experimentalMemoryManagement: true,
   },
   waitForAnimations: false, // Disable animation waits for faster tests
   animationDistanceThreshold: 5, // Minimal animation threshold

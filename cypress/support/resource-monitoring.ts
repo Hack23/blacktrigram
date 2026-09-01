@@ -95,12 +95,13 @@ export class ResourceMonitor {
         });
       }
 
-      // Check for event listener leaks (configurable threshold)
+      // Check for event listener leaks (configurable exposed threshold)
       const listenerDelta =
         currentResources.eventListenerCount -
         initial.eventListenerCount;
       const listenerThreshold =
-        (Cypress.env("EVENT_LISTENER_LEAK_THRESHOLD") as number | undefined) ?? 5;
+        (Cypress.expose("EVENT_LISTENER_LEAK_THRESHOLD") as number | undefined) ??
+        5;
       if (listenerDelta > listenerThreshold) {
         leaks.push({
           type: "EventListeners",
@@ -115,14 +116,16 @@ export class ResourceMonitor {
           initial.memoryUsage) /
         (1024 * 1024);
 
-      // Allow configuration via Cypress env
+      // Allow configuration via Cypress expose
       // Default 100MB — Three.js 3D scenes naturally allocate 40-200MB for
       // geometries, materials, textures and render targets.  The old 10MB
       // threshold triggered on every single test, producing only noise.
       const thresholdMB =
-        (Cypress.env("MEMORY_LEAK_THRESHOLD_MB") as number | undefined) ?? 100;
+        (Cypress.expose("MEMORY_LEAK_THRESHOLD_MB") as number | undefined) ??
+        100;
       const thresholdPercent =
-        (Cypress.env("MEMORY_LEAK_THRESHOLD_PERCENT") as number | undefined) ?? null;
+        (Cypress.expose("MEMORY_LEAK_THRESHOLD_PERCENT") as number | undefined) ??
+        null;
 
       let percentGrowth: number | null = null;
       if (initial.memoryUsage > 0) {
