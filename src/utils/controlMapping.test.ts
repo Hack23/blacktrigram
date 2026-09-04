@@ -15,7 +15,7 @@ describe("ControlMapper", () => {
   beforeEach(() => {
     // Mock localStorage
     localStorageMock = {};
-    globalThis.localStorage = {
+    vi.stubGlobal("localStorage", {
       getItem: vi.fn((key: string) => localStorageMock[key] || null),
       setItem: vi.fn((key: string, value: string) => {
         localStorageMock[key] = value;
@@ -28,12 +28,13 @@ describe("ControlMapper", () => {
       }),
       key: vi.fn(),
       length: 0,
-    };
+    });
 
     mapper = new ControlMapper();
   });
 
   afterEach(() => {
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
