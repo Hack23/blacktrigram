@@ -22,7 +22,20 @@ import { AIComboSystem } from "@/systems/ai/ComboSystem";
 import { AIDecisionTree, CombatContext } from "@/systems/ai/DecisionTree";
 import { createMockPlayerState } from "@/test/test-utils";
 import { PlayerArchetype, TrigramStance } from "@/types";
-import { bench, describe } from "vitest";
+import { describe, test, type BenchRunOptions } from "vitest";
+
+/**
+ * Register a benchmark through Vitest 5's test-context benchmark fixture.
+ */
+function registerBenchmark(
+  name: string,
+  fn: () => void,
+  options?: BenchRunOptions,
+): void {
+  test(name, async ({ bench }) => {
+    await bench(name, fn).run(options);
+  });
+}
 
 /**
  * Create benchmark combat context matching current CombatContext interface
@@ -99,7 +112,7 @@ describe("AI Decision Performance", () => {
 
   const mockComboSystem = createMockComboSystem();
 
-  bench("AI decision making (single iteration - target <10ms)", () => {
+  registerBenchmark("AI decision making (single iteration - target <10ms)", () => {
     const context = createBenchmarkContext();
 
     // Critical: Decision must complete quickly
@@ -121,7 +134,7 @@ describe("AI Decision Performance", () => {
     aggressiveDifficulty.getDifficultyParameters(),
   );
 
-  bench("AI decision making - aggressive personality", () => {
+  registerBenchmark("AI decision making - aggressive personality", () => {
     const context = createBenchmarkContext();
     aggressiveTree.makeDecision(
       context,
@@ -136,7 +149,7 @@ describe("AI Decision Performance", () => {
     defensiveDifficulty.getDifficultyParameters(),
   );
 
-  bench("AI decision making - defensive personality", () => {
+  registerBenchmark("AI decision making - defensive personality", () => {
     const context = createBenchmarkContext();
     defensiveTree.makeDecision(
       context,
@@ -158,7 +171,7 @@ describe("AI Decision Performance", () => {
     loadTestDifficulty.getDifficultyParameters(),
   );
 
-  bench(
+  registerBenchmark(
     "AI decision making under load (60fps - 60 decisions in <1000ms)",
     () => {
       // Simulate 60 decisions (1 second at 60fps)
@@ -183,7 +196,7 @@ describe("AI Decision Performance", () => {
     sustainedDifficulty.getDifficultyParameters(),
   );
 
-  bench("AI decision making - sustained load (10 seconds at 60fps)", () => {
+  registerBenchmark("AI decision making - sustained load (10 seconds at 60fps)", () => {
     // 600 decisions (10 seconds at 60fps)
     batchContexts600.forEach((context) => {
       sustainedTree.makeDecision(
@@ -196,7 +209,7 @@ describe("AI Decision Performance", () => {
 
   // ==================== Hot Path Benchmarks ====================
 
-  bench("Distance calculation (hot path - target <0.1ms)", () => {
+  registerBenchmark("Distance calculation (hot path - target <0.1ms)", () => {
     const pos1 = { x: 400, y: 300 };
     const pos2 = { x: 800, y: 600 };
 
@@ -214,7 +227,7 @@ describe("AI Decision Performance", () => {
     pos2: { x: (i * 2) % 1200, y: (i * 3) % 800 },
   }));
 
-  bench("Distance calculation - batch (1000 calculations)", () => {
+  registerBenchmark("Distance calculation - batch (1000 calculations)", () => {
     distancePositions.forEach(({ pos1, pos2 }) => {
       calculateDistance(pos1, pos2);
     });
@@ -222,7 +235,7 @@ describe("AI Decision Performance", () => {
 
   // ==================== Adaptive Difficulty Benchmarks ====================
 
-  bench("Adaptive difficulty update (skill metrics processing)", () => {
+  registerBenchmark("Adaptive difficulty update (skill metrics processing)", () => {
     const difficulty = new AdaptiveDifficulty();
 
     difficulty.updateSkillMetrics({
@@ -243,7 +256,7 @@ describe("AI Decision Performance", () => {
     }
   });
 
-  bench("Adaptive difficulty - get parameters", () => {
+  registerBenchmark("Adaptive difficulty - get parameters", () => {
     const difficulty = new AdaptiveDifficulty();
 
     const params = difficulty.getDifficultyParameters();
@@ -255,7 +268,7 @@ describe("AI Decision Performance", () => {
 
   // ==================== Context Building Benchmarks ====================
 
-  bench("Combat context creation (per frame operation)", () => {
+  registerBenchmark("Combat context creation (per frame operation)", () => {
     const player = createMockPlayerState({ position: { x: 600, y: 400 } });
     const opponent = createMockPlayerState({ position: { x: 400, y: 400 } });
 
@@ -292,7 +305,7 @@ describe("AI Decision Performance", () => {
 
   // ==================== Memory Allocation Benchmarks ====================
 
-  bench("AI state object allocation (memory pressure test)", () => {
+  registerBenchmark("AI state object allocation (memory pressure test)", () => {
     const states = Array.from({ length: 100 }, () => ({
       lastActionType: "idle" as const,
       nextAction: Date.now() + 500,
@@ -307,7 +320,7 @@ describe("AI Decision Performance", () => {
     }
   });
 
-  bench("Player state cloning (state updates)", () => {
+  registerBenchmark("Player state cloning (state updates)", () => {
     const originalPlayer = createMockPlayerState();
 
     const clonedPlayer = {
@@ -323,7 +336,7 @@ describe("AI Decision Performance", () => {
 
   // ==================== Archetype-Specific Performance ====================
 
-  bench(
+  registerBenchmark(
     "Decision tree - all 5 archetypes (personality variation impact)",
     () => {
       const archetypes = [
@@ -367,7 +380,7 @@ describe("AI Decision Performance", () => {
     memoryPressureDifficulty.getDifficultyParameters(),
   );
 
-  bench("AI decisions under memory pressure (1000 iterations)", () => {
+  registerBenchmark("AI decisions under memory pressure (1000 iterations)", () => {
     const decisions = [];
 
     for (let i = 0; i < 1000; i++) {
@@ -385,7 +398,7 @@ describe("AI Decision Performance", () => {
     }
   });
 
-  bench("Multiple AI instances - parallel decision making", () => {
+  registerBenchmark("Multiple AI instances - parallel decision making", () => {
     // Simulate 4 AI opponents making decisions simultaneously
     const trees = Array.from({ length: 4 }, () => {
       const tree = new AIDecisionTree();
@@ -417,7 +430,7 @@ describe("Real-Time Performance Validation", () => {
   );
   const frameBudgetCombo = createMockComboSystem();
 
-  bench("Frame budget validation (16.67ms for 60fps)", () => {
+  registerBenchmark("Frame budget validation (16.67ms for 60fps)", () => {
     // Simulate one complete AI frame:
     // 1. Context creation
     // 2. Decision making
@@ -477,7 +490,7 @@ describe("Real-Time Performance Validation", () => {
     new AdaptiveDifficulty().getDifficultyParameters(),
   );
 
-  bench("Minimum frame time (target 58fps = 17.24ms per frame)", () => {
+  registerBenchmark("Minimum frame time (target 58fps = 17.24ms per frame)", () => {
     const context = createBenchmarkContext();
 
     // Complete AI cycle

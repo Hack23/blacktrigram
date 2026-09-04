@@ -17,7 +17,7 @@ import type { PlayerState } from "@/systems/player";
 import { CombatState, TrigramStance } from "@/types/common";
 import type { Position3D } from "@/types/physics";
 import * as THREE from "three";
-import { bench, describe } from "vitest";
+import { describe, test, type BenchRunOptions } from "vitest";
 import { CollisionDetection } from "../CollisionDetection";
 import KnockbackPhysics, { KnockbackConfig } from "../KnockbackPhysics";
 import {
@@ -27,9 +27,22 @@ import {
 } from "../MovementPhysics";
 import { MovementType, SpeedModifierSystem } from "../SpeedModifierSystem";
 
+/**
+ * Register a benchmark through Vitest 5's test-context benchmark fixture.
+ */
+function registerBenchmark(
+  name: string,
+  fn: () => void,
+  options?: BenchRunOptions,
+): void {
+  test(name, async ({ bench }) => {
+    await bench(name, fn).run(options);
+  });
+}
+
 describe("PhysicsPerformance - 60fps Validation", () => {
   describe("MovementPhysics Performance", () => {
-    bench(
+    registerBenchmark(
       "Single player movement update",
       () => {
         const physics = new MovementPhysics();
@@ -54,7 +67,7 @@ describe("PhysicsPerformance - 60fps Validation", () => {
       { time: 1000, iterations: 10000 },
     );
 
-    bench(
+    registerBenchmark(
       "Two players movement update",
       () => {
         const physics = new MovementPhysics();
@@ -88,7 +101,7 @@ describe("PhysicsPerformance - 60fps Validation", () => {
       { time: 1000, iterations: 10000 },
     );
 
-    bench(
+    registerBenchmark(
       "Four players movement update",
       () => {
         const physics = new MovementPhysics();
@@ -143,7 +156,7 @@ describe("PhysicsPerformance - 60fps Validation", () => {
   });
 
   describe("KnockbackPhysics Performance", () => {
-    bench(
+    registerBenchmark(
       "Single knockback calculation",
       () => {
         const physics = new KnockbackPhysics();
@@ -160,7 +173,7 @@ describe("PhysicsPerformance - 60fps Validation", () => {
       { time: 1000, iterations: 10000 },
     );
 
-    bench(
+    registerBenchmark(
       "Knockback with animation application",
       () => {
         const physics = new KnockbackPhysics();
@@ -181,7 +194,7 @@ describe("PhysicsPerformance - 60fps Validation", () => {
   });
 
   describe("CollisionDetection Performance", () => {
-    bench(
+    registerBenchmark(
       "Single collision check",
       () => {
         const collision = new CollisionDetection();
@@ -199,7 +212,7 @@ describe("PhysicsPerformance - 60fps Validation", () => {
       { time: 1000, iterations: 10000 },
     );
 
-    bench(
+    registerBenchmark(
       "100 collision checks (frame budget test)",
       () => {
         const collision = new CollisionDetection();
@@ -226,7 +239,7 @@ describe("PhysicsPerformance - 60fps Validation", () => {
   });
 
   describe("SpeedModifierSystem Performance", () => {
-    bench(
+    registerBenchmark(
       "Calculate speed modifiers",
       () => {
         const system = new SpeedModifierSystem();
@@ -241,7 +254,7 @@ describe("PhysicsPerformance - 60fps Validation", () => {
       { time: 1000, iterations: 10000 },
     );
 
-    bench(
+    registerBenchmark(
       "Calculate modifiers with injury",
       () => {
         const system = new SpeedModifierSystem();
@@ -272,7 +285,7 @@ describe("PhysicsPerformance - 60fps Validation", () => {
   });
 
   describe("Full Frame Budget Validation", () => {
-    bench(
+    registerBenchmark(
       "Complete physics frame (single player)",
       () => {
         // Simulate all physics calculations for one player in a single frame
@@ -330,7 +343,7 @@ describe("PhysicsPerformance - 60fps Validation", () => {
       { time: 1000, iterations: 1000 },
     );
 
-    bench(
+    registerBenchmark(
       "Complete physics frame (two players)",
       () => {
         // Simulate all physics calculations for two players in a single frame
@@ -523,7 +536,7 @@ describe("Arena Bounds Performance", () => {
     useTacticalSteps: false,
   };
 
-  bench(
+  registerBenchmark(
     "Movement with arena bounds validation",
     () => {
       // Reset mutable state to initial values without reallocating
@@ -552,7 +565,7 @@ describe("Arena Bounds Performance", () => {
     useTacticalSteps: false,
   };
 
-  bench(
+  registerBenchmark(
     "Boundary collision handling",
     () => {
       // Reset mutable state to initial boundary position
@@ -581,7 +594,7 @@ describe("Arena Bounds Performance", () => {
     useTacticalSteps: false,
   };
 
-  bench(
+  registerBenchmark(
     "Corner collision handling",
     () => {
       // Reset mutable state to initial corner position
