@@ -221,7 +221,7 @@
     "license-compliance": "4.0.0",
     "mermaid": "12.0.0",
     "mocha-junit-reporter": "2.2.1",
-    "mochawesome": "8.0.1",
+    "mochawesome": "8.1.0",
     "mochawesome-merge": "5.1.1",
     "mochawesome-report-generator": "6.3.2",
     "openai": "7.15.0",
