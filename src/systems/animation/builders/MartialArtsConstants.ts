@@ -397,15 +397,17 @@ export const KICK_PHASES = {
   /**
    * Extension Position (차기자세) - Leg extended with hip drive
    *
-   * Enhanced with proper hip Y-rotation for power generation (골반회전)
+   * Front kick (앞차기) keeps the hips square (정면) — NO Y-rotation.
+   * Rotational kicks (돌려차기, 옆차기) own their pelvis Y-rotation via
+   * ROUNDHOUSE_CHAMBER / SIDE_CHAMBER instead of this shared phase.
    */
   EXTENSION: {
     hip: [1.7, 0, 0] as const, // ~97° hip flexion at impact
     knee: [-0.12, 0, 0] as const, // Nearly full extension with slight protective flex (~173°)
     ankle: [0.4, 0, 0] as const, // Dorsiflexion for ball-of-foot strike (앞차기) within MAX 0.44
     supportKnee: [-0.45, 0, 0] as const, // Deep support bend - critical for stability
-    pelvis: [0.15, 0, 0] as const, // X-axis tilt
-    pelvisY: -0.6, // Hip Y-rotation for power (골반회전) ~34°
+    pelvis: [0.15, 0, 0] as const, // X-axis forward tilt only
+    pelvisY: 0, // Hips remain square for straight snap kicks (정면)
   },
 
   /**

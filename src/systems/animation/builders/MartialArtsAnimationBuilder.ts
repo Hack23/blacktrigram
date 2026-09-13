@@ -455,8 +455,9 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.SPINE_LOWER, 0.05, 0, 0); // Slight forward lean
       kf.rotate(BoneName.SPINE_UPPER, 0.03, 0, 0); // Follow through
 
-      // Position foot forward for impact
-      kf.position(BoneName.FOOT_R, 0.6, 0, 0); // Forward position
+      // Position foot forward for impact (leg-local +Z extends the kick
+      // toward the target; +X would swing the foot sideways off-axis)
+      kf.position(BoneName.FOOT_R, 0, 0, 0.6); // Forward position
 
       // Arms maintain guard
       kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
@@ -823,13 +824,18 @@ export class MartialArtsAnimationBuilder {
    */
   backKickSpin(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Body rotation - 180° for back kick
-      kf.rotate(BoneName.PELVIS, 0, -1.5, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0, -1.3, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0, -1.0, 0.1);
+      // Body rotation - half-turn (~90°) toward the 180° thrust facing.
+      // Spine bones are CHILDREN of the pelvis: their Y-rotations add to the
+      // pelvis rotation down the chain, so only small lead deltas are used
+      // here. Stacking near-180° values on each spine bone makes the torso
+      // corkscrew multiple turns (비틀림 과다) instead of a clean turn.
+      kf.rotate(BoneName.PELVIS, 0, -1.57, 0); // ~90° turn begins
+      kf.rotate(BoneName.SPINE_LOWER, 0, -0.4, 0); // Torso leads the turn
+      kf.rotate(BoneName.SPINE_UPPER, 0, -0.2, 0.1);
 
-      // CRITICAL: Look over shoulder to see target
-      kf.rotate(BoneName.HEAD, 0, 0.5, 0);
+      // CRITICAL: Look over shoulder to see target (counter-rotation so the
+      // head stays on the opponent while the body turns away)
+      kf.rotate(BoneName.HEAD, 0, 1.0, 0);
 
       // Leg chambers during rotation
       kf.rotate(BoneName.HIP_R, 0.3, 0, 0);
@@ -873,13 +879,15 @@ export class MartialArtsAnimationBuilder {
    */
   backKickThrust(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Complete rotation
-      kf.rotate(BoneName.PELVIS, 0, -3.14, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0, -3.0, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0, -2.8, 0.2);
+      // Complete 180° rotation at the pelvis. The spine rides WITH the pelvis
+      // (near-zero relative rotation) so the torso does not corkscrew — the
+      // previous -3.0/-2.8 spine stack rotated the chest ~1.4 extra turns.
+      kf.rotate(BoneName.PELVIS, 0, -3.14, 0); // 180° - back to target
+      kf.rotate(BoneName.SPINE_LOWER, 0, 0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0, 0.2); // Slight forward lean for reach
 
-      // Head still looking at target
-      kf.rotate(BoneName.HEAD, 0, 1.0, 0);
+      // Head counter-rotates to keep eyes on target (over the shoulder)
+      kf.rotate(BoneName.HEAD, 0, 1.4, 0);
 
       // Full leg extension backward
       kf.rotate(BoneName.HIP_R, 0.5, 0, 0);
@@ -3573,10 +3581,14 @@ export class MartialArtsAnimationBuilder {
   spinRecover(timeOffset: number = 0.2, easing: string = "ease-in"): this {
     const guard = MARTIAL_POSES.GUARD;
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Complete rotation to forward-facing
-      kf.rotate(BoneName.PELVIS, 0, -6.28, 0); // Full 360°
-      kf.rotate(BoneName.SPINE_LOWER, 0, -6.28, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0, -6.28, 0);
+      // Complete the spin: pelvis continues to a full 360° (same orientation
+      // as 0, reached by continuing in the spin direction so interpolation
+      // never reverses). The spine rides WITH the pelvis at near-zero
+      // relative rotation — stacking -6.28 on each spine bone made the torso
+      // spin multiple extra turns (torso corkscrew) during recovery.
+      kf.rotate(BoneName.PELVIS, 0, -6.28, 0); // Full 360° = forward-facing
+      kf.rotate(BoneName.SPINE_LOWER, 0, 0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0, 0);
       kf.rotate(BoneName.HEAD, 0, 0, 0);
       // Reset legs
       kf.rotate(BoneName.HIP_R, 0, 0, 0);
