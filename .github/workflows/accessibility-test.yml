@@ -28,6 +28,7 @@ jobs:
     permissions:
       contents: read
       issues: write
+      pull-requests: write # Required to comment results on PRs
 
     steps:
       - name: Harden the runner (Audit all outbound calls)
@@ -95,12 +96,16 @@ jobs:
 
       - name: Comment PR with results
         if: github.event_name == 'pull_request' && always()
+        # The accessibility tests and report are the source of truth; a PR
+        # comment is best-effort. Never fail the job because the comment step
+        # could not post (e.g. token scoping on pull_request events).
+        continue-on-error: true
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const fs = require('fs');
             const report = fs.readFileSync('accessibility-report.md', 'utf8');
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
