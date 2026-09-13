@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.13% </span>
+                <span class="strong">55.76% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>55/93</span>
+                <span class='fraction'>58/104</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">49.52% </span>
+                <span class="strong">48.59% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>52/105</span>
+                <span class='fraction'>52/107</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.21% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>16/19</span>
+                <span class='fraction'>16/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.82% </span>
+                <span class="strong">55.2% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>50/85</span>
+                <span class='fraction'>53/96</span>
             </div>
         
             
@@ -559,7 +559,25 @@
 <a name='L494'></a><a href='#L494'>494</a>
 <a name='L495'></a><a href='#L495'>495</a>
 <a name='L496'></a><a href='#L496'>496</a>
-<a name='L497'></a><a href='#L497'>497</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L497'></a><a href='#L497'>497</a>
+<a name='L498'></a><a href='#L498'>498</a>
+<a name='L499'></a><a href='#L499'>499</a>
+<a name='L500'></a><a href='#L500'>500</a>
+<a name='L501'></a><a href='#L501'>501</a>
+<a name='L502'></a><a href='#L502'>502</a>
+<a name='L503'></a><a href='#L503'>503</a>
+<a name='L504'></a><a href='#L504'>504</a>
+<a name='L505'></a><a href='#L505'>505</a>
+<a name='L506'></a><a href='#L506'>506</a>
+<a name='L507'></a><a href='#L507'>507</a>
+<a name='L508'></a><a href='#L508'>508</a>
+<a name='L509'></a><a href='#L509'>509</a>
+<a name='L510'></a><a href='#L510'>510</a>
+<a name='L511'></a><a href='#L511'>511</a>
+<a name='L512'></a><a href='#L512'>512</a>
+<a name='L513'></a><a href='#L513'>513</a>
+<a name='L514'></a><a href='#L514'>514</a>
+<a name='L515'></a><a href='#L515'>515</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -912,7 +930,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">264x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1408,12 +1444,30 @@ export const SkeletalPlayer3D: React.FC&lt;
     }
   });
 &nbsp;
+  // Smooth body Y-rotation toward the target instead of snapping instantly
+  // when switching between "face movement direction" and "face opponent".
+  // Shortest-arc lerp at ~10/s matches the head-facing smoothing so the body
+  // and head rotate on the same clock (부드러운 회전).
   const effectiveRotation = diagonalRotationY ?? rotation;
+  const [smoothedRotation, setSmoothedRotation] = useState(effectiveRotation);
+  const smoothedRotationRef = useRef(effectiveRotation);
+<span class="fstat-no" title="function not covered" >  useFrame((_</span>state, delta) =&gt; {
+    const target = <span class="cstat-no" title="statement not covered" >effectiveRotation;</span>
+    let diff = <span class="cstat-no" title="statement not covered" >target - smoothedRotationRef.current;</span>
+    // Wrap to shortest arc [-PI, PI]
+<span class="cstat-no" title="statement not covered" >    diff = Math.atan2(Math.sin(diff), Math.cos(diff));</span>
+    const step = <span class="cstat-no" title="statement not covered" >Math.min(delta, MAX_VISUAL_FRAME_DELTA_SECONDS) * 10;</span>
+    const next = <span class="cstat-no" title="statement not covered" >smoothedRotationRef.current + diff * Math.min(step, 1);</span>
+<span class="cstat-no" title="statement not covered" >    smoothedRotationRef.current = next;</span>
+<span class="cstat-no" title="statement not covered" >    if (Math.abs(next - smoothedRotation) &gt; 0.0005) {</span>
+<span class="cstat-no" title="statement not covered" >      setSmoothedRotation(next);</span>
+    }
+  });
 &nbsp;
   return (
     &lt;group
       position={position}
-      rotation={[0, effectiveRotation, 0]}
+      rotation={[0, smoothedRotation, 0]}
       scale={[facing === "left" ? -scale : scale, scale, scale]}
       name={`skeletal-player3d-${playerId}`}
     &gt;
@@ -1558,7 +1612,7 @@ export default SkeletalPlayer3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-09-12T18:57:20.551Z
+                at 2026-09-13T01:59:55.186Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
