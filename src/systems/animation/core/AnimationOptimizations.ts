@@ -21,6 +21,7 @@ import type {
 } from "@/types/skeletal";
 import { ThreeObjectPools } from "@/utils/threeObjectPool";
 import * as THREE from "three";
+import { getEasingFunction } from "../builders/KeyframeInterpolation";
 
 /**
  * Cached keyframe with interpolated values
@@ -348,7 +349,12 @@ export function interpolateKeyframeCached(
 
   // Calculate interpolation factor
   const timeDiff = nextKeyframe.time - prevKeyframe.time;
-  const t = timeDiff > 0 ? (time - prevKeyframe.time) / timeDiff : 0;
+  const rawT = timeDiff > 0 ? (time - prevKeyframe.time) / timeDiff : 0;
+
+  // Apply the keyframe's easing curve (was previously ignored on the cached
+  // path, making ease-in/ease-out/explosive-power render as flat linear).
+  const easingFn = getEasingFunction(nextKeyframe.easing);
+  const t = easingFn(rawT);
 
   // Interpolate rotations using object pool
   const interpolatedRotations = new Map<string, THREE.Euler>();

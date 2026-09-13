@@ -1176,10 +1176,23 @@ describe("AnimationRegistry - Biomechanical Validation (생체역학)", () => {
       expect(insufficientPivot.length).toBe(0);
     });
 
-    it("all kicks should have hip rotation during extension (≥0.5 rad pelvis Y)", () => {
+    it("rotational kicks should have hip rotation during extension (≥0.5 rad pelvis Y)", () => {
+      // Linear kicks (front/axe/jumping-front/feint/low) intentionally keep
+      // the hips SQUARE (정면) — pelvis Y-rotation belongs to rotational
+      // kicks only (roundhouse, side, back, spinning, hook, tornado).
+      const LINEAR_KICKS = new Set([
+        "front_kick",
+        "jumping_kick",
+        "geon_frontal_kick",
+        "geon_axe_kick",
+        "jin_jumping_front_kick",
+        "movement_kick_feint",
+        "jin_shocking_low_kick",
+      ]);
       const kickAnimations = Array.from(ALL_ANIMATIONS.entries())
         .filter(([name]) => name.includes("kick") || name.includes("chagi"))
-        .map(([name]) => name);
+        .map(([name]) => name)
+        .filter((name) => !LINEAR_KICKS.has(name));
 
       const insufficientHipRotation: string[] = [];
       const MINIMUM_HIP_ROTATION = 0.5; // ~29° minimum
