@@ -858,6 +858,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           if (state === AnimationState.ATTACK) {
             clearPlayer1AttackAnimation.current();
           }
+          // Return to the player's trigram stance guard instead of generic
+          // idle so the fighter keeps their stance identity (자세 유지)
+          const players = validPlayersRefForAnimation.current;
+          const currentStance = players?.[0]?.currentStance;
+          if (currentStance && player1AnimationRef.current) {
+            player1AnimationRef.current.transitionToStanceGuard(currentStance);
+          }
         } else if (state === AnimationState.STANCE_CHANGE) {
           audio.playSFX("menu_select");
           const players = validPlayersRefForAnimation.current;

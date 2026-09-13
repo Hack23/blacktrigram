@@ -351,12 +351,30 @@ export const SkeletalPlayer3D: React.FC<
     }
   });
 
+  // Smooth body Y-rotation toward the target instead of snapping instantly
+  // when switching between "face movement direction" and "face opponent".
+  // Shortest-arc lerp at ~10/s matches the head-facing smoothing so the body
+  // and head rotate on the same clock (부드러운 회전).
   const effectiveRotation = diagonalRotationY ?? rotation;
+  const [smoothedRotation, setSmoothedRotation] = useState(effectiveRotation);
+  const smoothedRotationRef = useRef(effectiveRotation);
+  useFrame((_state, delta) => {
+    const target = effectiveRotation;
+    let diff = target - smoothedRotationRef.current;
+    // Wrap to shortest arc [-PI, PI]
+    diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+    const step = Math.min(delta, MAX_VISUAL_FRAME_DELTA_SECONDS) * 10;
+    const next = smoothedRotationRef.current + diff * Math.min(step, 1);
+    smoothedRotationRef.current = next;
+    if (Math.abs(next - smoothedRotation) > 0.0005) {
+      setSmoothedRotation(next);
+    }
+  });
 
   return (
     <group
       position={position}
-      rotation={[0, effectiveRotation, 0]}
+      rotation={[0, smoothedRotation, 0]}
       scale={[facing === "left" ? -scale : scale, scale, scale]}
       name={`skeletal-player3d-${playerId}`}
     >

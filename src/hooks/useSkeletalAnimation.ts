@@ -209,7 +209,9 @@ export function useSkeletalAnimation(
         getAnimation("stance_change") ?? getAnimation("idle_stance") ?? null;
       playbackSpeed = 1.2; // Slightly faster for responsiveness
     } else if (currentAnimation === "hit") {
-      // Hit reaction - stop animation
+      // Hit reaction - stop animation (freeze on interrupted pose until the
+      // combat state machine transitions out; a dedicated hit flinch clip is
+      // tracked as future work)
       setAnimState((prev) => ({
         ...prev,
         isPlaying: false,
@@ -248,6 +250,17 @@ export function useSkeletalAnimation(
     // "right" = right foot forward (오른발서기) → base animations (default)
     if (selectedAnim) {
       selectedAnim = applyLaterality(selectedAnim, laterality);
+
+      // Walk/run must loop continuously while the movement key is held.
+      // Several stance-specific walk clips are authored as single steps
+      // (loop=false); forcing loop here prevents the fighter gliding in a
+      // frozen mid-stride pose after one step (이동 반복).
+      if (
+        (currentAnimation === "walk" || currentAnimation === "run") &&
+        !selectedAnim.loop
+      ) {
+        selectedAnim = { ...selectedAnim, loop: true };
+      }
     }
 
     // Clear diagonal rotation for non-diagonal animations
