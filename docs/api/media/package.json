@@ -1,6 +1,6 @@
 {
   "name": "blacktrigram",
-  "version": "0.7.125",
+  "version": "0.7.126",
   "description": "Black Trigram (흑괘) - Korean Martial Arts Combat Simulator. Reusable game systems, combat mechanics, animation framework, and Korean martial arts data built with React, Three.js, and TypeScript.",
   "type": "module",
   "main": "./lib/index.js",
@@ -189,12 +189,12 @@
     "three": "0.186.0"
   },
   "devDependencies": {
-    "@aws-sdk/client-bedrock-runtime": "3.1131.0",
+    "@aws-sdk/client-bedrock-runtime": "3.1132.0",
     "@eslint/js": "10.0.1",
     "@react-three/drei": "10.7.8",
     "@react-three/fiber": "9.7.0",
     "@react-three/postprocessing": "3.1.1",
-    "@testing-library/dom": "10.4.1",
+    "@testing-library/dom": "10.4.2",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
     "@testing-library/user-event": "14.6.7",
@@ -203,17 +203,17 @@
     "@types/react-dom": "19.2.7",
     "@types/three": "0.186.0",
     "@vitejs/plugin-react": "6.1.1",
-    "@vitest/coverage-v8": "5.0.0",
-    "@vitest/ui": "5.0.0",
+    "@vitest/coverage-v8": "5.0.1",
+    "@vitest/ui": "5.0.1",
     "cypress": "16.0.0",
     "cypress-junit-reporter": "1.3.1",
     "cypress-multi-reporters": "2.0.5",
     "cypress-wait-until": "3.0.2",
-    "dependency-cruiser": "18.2.0",
+    "dependency-cruiser": "18.3.1",
     "dotenv": "17.4.2",
     "eslint": "10.10.0",
     "eslint-plugin-react-hooks": "7.1.1",
-    "eslint-plugin-react-refresh": "0.5.6",
+    "eslint-plugin-react-refresh": "0.5.7",
     "globals": "17.12.0",
     "jest-axe": "11.0.0",
     "jsdom": "29.1.1",
@@ -245,7 +245,7 @@
     "vite": "8.3.0",
     "vite-bundle-analyzer": "1.3.9",
     "vite-tsconfig-paths": "6.1.1",
-    "vitest": "5.0.0"
+    "vitest": "5.0.1"
   },
   "overrides": {
     "eslint-plugin-react-hooks": {
