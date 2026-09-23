@@ -90,7 +90,8 @@ describe("CombatTopHUD", () => {
     render(<CombatTopHUD {...defaultProps} positionScale={1.5} />);
     
     const topHud = screen.getByTestId("combat-top-hud");
-    // Height = getHUDHeight(1080, 0.06) * 1.5 = 97.19999999999999px
-    expect(topHud).toHaveStyle({ height: "97.19999999999999px" });
+    // Height = getHUDHeight(1080, 0.06) * 1.5 = 97.2px
+    // React 19.3 + jsdom 30 normalize 97.19999999999999px to 97.2px
+    expect(topHud).toHaveStyle({ height: "97.2px" });
   });
 });

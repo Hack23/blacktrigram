@@ -117,8 +117,9 @@ describe("TrainingFeedbackOverlayHtml", () => {
       );
 
       const feedback = screen.getByTestId("training-feedback-html");
+      // React 19.3 normalizes computed fontWeight "bold" to "700"
       expect(feedback).toHaveStyle({
-        fontWeight: "bold",
+        fontWeight: "700",
       });
     });
 

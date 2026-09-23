@@ -188,7 +188,8 @@ describe("Base Components Accessibility (WCAG 2.1 AA)", () => {
 
       // Korean typography optimizations
       expect(styles.lineHeight).toBe("1.6");
-      expect(styles.letterSpacing).toBe("-0.01em");
+      // React 19.3 + jsdom 30 normalize -0.01em to a computed px value
+      expect(styles.letterSpacing).toBe("-0.18px");
       expect(styles.wordBreak).toBe("keep-all");
       expect(styles.wordWrap).toBe("break-word");
     });
