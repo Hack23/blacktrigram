@@ -108,23 +108,6 @@ jobs:
   e2e-tests:
     needs: [prepare, build-validation]
     runs-on: ubuntu-26.04
-    # Use Cypress's official browsers image: ships Node + Chrome + Firefox + Edge + Xvfb
-    # + all GTK/NSS/font system libs preinstalled, removing the need for a custom
-    # apt-get + Google Chrome bootstrap step. Node is then normalised to the version
-    # in .nvmrc via actions/setup-node below.
-    container:
-      # Use cypress/browsers:latest — this keeps Chrome/Firefox/Edge/Xvfb on a
-      # rolling release, and `actions/setup-node` below normalises Node to the
-      # major pinned in .nvmrc (currently 26). We deliberately accept the
-      # rolling browser version over digest-pinning because .nvmrc is a Node
-      # major (26), not a patch, so attempting to also pin the container's Node
-      # patch would just be silently overridden by setup-node and create a
-      # misleading impression of full reproducibility.
-      image: cypress/browsers:latest
-      # Run as root so actions/setup-node cache writes and Cypress binary cache
-      # writes work without permission issues. The cypress/browsers image's
-      # default USER is non-root.
-      options: --user root
     # Checkout is the only repository-token operation in this job.
     permissions:
       contents: read # Required to check out code
@@ -135,9 +118,7 @@ jobs:
       XKB_DEFAULT_MODEL: pc105
       XKB_DEFAULT_LAYOUT: us
     steps:
-      # NOTE: step-security/harden-runner does not support container jobs, so it
-      # is intentionally omitted here. Egress hardening for E2E browser traffic
-      # would block legitimate test traffic anyway.
+      # Egress hardening is omitted because E2E browser traffic requires outbound access.
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -176,10 +157,7 @@ jobs:
           echo "  - Target: 10-12 minute execution"
           echo ""
           START_TIME=$(date +%s) || START_TIME=0
-          # cypress/browsers image ships Xvfb but NOT xauth, so the xvfb-run
-          # wrapper fails with "xauth command not found". Cypress's bundled
-          # @cypress/xvfb spawns Xvfb directly (no xauth needed) when DISPLAY
-          # is unset, so we just call npm run test:e2e and let Cypress manage it.
+          # Cypress manages Xvfb directly when DISPLAY is unset.
           NODE_OPTIONS="--max-old-space-size=4096" npm run test:e2e || TEST_EXIT_CODE=$?
           END_TIME=$(date +%s) || END_TIME=$START_TIME
           if [ "$START_TIME" -ne 0 ]; then
