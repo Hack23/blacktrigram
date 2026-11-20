@@ -73,6 +73,12 @@ vi.mock("../../../utils/deviceDetection", () => ({
 }));
 
 // Mock Three.js
+vi.mock("../../shared/three/models/fighterCostume", () => ({
+  createFighterCostume: () => null,
+  getBootSupportHeight: vi.fn(),
+  updateFighterCostume: vi.fn(),
+}));
+
 vi.mock("three", () => ({
   Group: class MockGroup {},
   Mesh: class MockMesh {},

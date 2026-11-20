@@ -5,19 +5,16 @@
  * Includes floor, lighting, and atmospheric effects
  *
  * Enhanced features:
- * - Korean cyberpunk lighting with neon point lights (cyan, gold, blue)
- * - Reflective wet concrete floor with clearcoat and emissive glow
- * - Upgraded shadow quality (2048x2048 shadow maps)
- * - Atmospheric fog with Korean color gradient
+ * - Neutral key and cyan rim lights for readable fighter silhouettes
+ * - Low-gloss dojang floor and a fixed grid
+ * - Capped shadow-map resolution when the host enables shadows
  * - Korean signage with emissive neon glow (전투, 흑괘, 급소격)
  * - Optional atmospheric particles (rain/mist)
  */
 
-import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { ThreeObjectPools } from "../../../../utils/threeObjectPool";
 import AtmosphericParticles3D from "./AtmosphericParticles3D";
 import KoreanSignage3D from "./KoreanSignage3D";
 
@@ -54,14 +51,6 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   worldDepthMeters,
   enableParticles = scale >= 1.0, // Enable particles on desktop by default
 }) => {
-  const gridRef = useRef<THREE.GridHelper>(null);
-
-  useFrame(() => {
-    if (gridRef.current) {
-      gridRef.current.rotation.y += 0.0002;
-    }
-  });
-
   const effectiveDepth = worldDepthMeters ?? worldWidthMeters;
   const floorWidth = worldWidthMeters * FLOOR_SCALE_FACTOR;
   const floorDepth = effectiveDepth * FLOOR_SCALE_FACTOR;
@@ -70,31 +59,11 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   const markerDepth = effectiveDepth * 0.4;
 
   const floorMaterial = useMemo(
-    () => {
-      const pooledBaseColor = ThreeObjectPools.color.acquire();
-      const pooledEmissiveColor = ThreeObjectPools.color.acquire();
-      
-      try {
-        pooledBaseColor.set(0x2a2a2a); // Dark concrete
-        pooledEmissiveColor.set(KOREAN_COLORS.PRIMARY_CYAN);
-        
-        const material = new THREE.MeshPhysicalMaterial({
-          color: pooledBaseColor.clone(), // Material takes ownership of cloned color
-          roughness: 0.3, // Wet/reflective surface
-          metalness: 0.1,
-          clearcoat: 0.3, // Wet sheen
-          clearcoatRoughness: 0.4,
-          envMapIntensity: 1.5, // Enhanced reflections from Environment preset
-          emissive: pooledEmissiveColor.clone(), // Material takes ownership of cloned color
-          emissiveIntensity: 0.05,
-        });
-        
-        return material;
-      } finally {
-        ThreeObjectPools.color.release(pooledBaseColor);
-        ThreeObjectPools.color.release(pooledEmissiveColor);
-      }
-    },
+    () => new THREE.MeshStandardMaterial({
+      color: KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+      roughness: 0.72,
+      metalness: 0.12,
+    }),
     [],
   );
 
@@ -109,14 +78,13 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       {/* Lighting based on theme */}
       {lighting === "cyberpunk" && (
         <>
-          {/* Base ambient light with Korean cyan tint */}
-          <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
+          <hemisphereLight args={[KOREAN_COLORS.TEXT_PRIMARY, KOREAN_COLORS.UI_STEEL_GRAY_DARK, 1.65]} />
 
           {/* Primary directional light (moonlight) with upgraded shadows */}
           <directionalLight
-            position={[15, 20, 10]}
-            intensity={1.5}
-            color={0xffffff}
+            position={[-5, 6, 4]}
+            intensity={2.25}
+            color={KOREAN_COLORS.TEXT_PRIMARY}
             castShadow
             shadow-mapSize={
               scale < 1.0 ? SHADOW_MAP_SIZE_MOBILE : SHADOW_MAP_SIZE_DESKTOP
@@ -129,32 +97,10 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
             shadow-bias={-0.0001}
           />
 
-          {/* Korean neon accent lights */}
-          {/* Cyan neon light (left side) */}
-          <pointLight
-            position={[-10, 3, 0]}
-            intensity={4}
-            distance={25}
-            decay={2}
+          <directionalLight
+            position={[2, 4, -5]}
+            intensity={1.65}
             color={KOREAN_COLORS.PRIMARY_CYAN}
-          />
-
-          {/* Gold neon light (right side) */}
-          <pointLight
-            position={[10, 3, 0]}
-            intensity={4}
-            distance={25}
-            decay={2}
-            color={KOREAN_COLORS.ACCENT_GOLD}
-          />
-
-          {/* Blue accent light (behind) */}
-          <pointLight
-            position={[0, 5, -15]}
-            intensity={3}
-            distance={30}
-            decay={2}
-            color={KOREAN_COLORS.ACCENT_BLUE}
           />
         </>
       )}
@@ -197,12 +143,11 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
 
       {/* Cyberpunk grid overlay (scale-aware) */}
       <gridHelper
-        ref={gridRef}
         args={[
           gridSize,
           20,
-          KOREAN_COLORS.PRIMARY_CYAN,
-          KOREAN_COLORS.UI_BACKGROUND_DARK,
+          KOREAN_COLORS.TRIGRAM_GON_PRIMARY,
+          KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
         ]}
         position={[0, 0.01, 0]}
       />
@@ -233,7 +178,7 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
         <meshBasicMaterial
           color={KOREAN_COLORS.ACCENT_GOLD}
           transparent
-          opacity={0.6}
+          opacity={0.23}
           side={THREE.DoubleSide}
         />
       </mesh>

@@ -37,6 +37,17 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     teardownScreen();
   });
 
+  it("opens and closes target inspection with an accessible button", () => {
+    cy.get('[data-testid="training-toggle-targets"]')
+      .should("have.attr", "aria-pressed", "false")
+      .click()
+      .should("have.attr", "aria-pressed", "true");
+    cy.get('[data-testid="vital-point-overlay-controls"]').should("be.visible");
+    cy.get('[data-testid="training-toggle-targets"]').click()
+      .should("have.attr", "aria-pressed", "false");
+    cy.get('[data-testid="vital-point-overlay-controls"]').should("not.exist");
+  });
+
   it("should render TrainingScreen with training mechanics and vital points", () => {
     cy.annotate("Testing TrainingScreen - Full Training Journey");
 

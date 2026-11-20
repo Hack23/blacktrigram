@@ -204,11 +204,11 @@ describe("TrainingRightHUD", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("should show footwork drills for combo_practice mode", () => {
+    it("does not show unrelated footwork drills in combo practice", () => {
       render(
         <TrainingRightHUD {...defaultProps} trainingMode="combo_practice" />,
       );
-      expect(screen.getByTestId("mock-footwork-drills")).toBeInTheDocument();
+      expect(screen.queryByTestId("mock-footwork-drills")).not.toBeInTheDocument();
     });
   });
 

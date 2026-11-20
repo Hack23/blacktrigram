@@ -90,28 +90,28 @@ describe("FootworkDrillsOverlayHtml", () => {
   it("should display pattern steps for drills with patterns", () => {
     render(<FootworkDrillsOverlayHtml {...defaultProps} currentDrill="circular_left" />);
     
-    expect(screen.getByText("Pattern Steps:")).toBeInTheDocument();
+    expect(screen.getByText("순서 | Waypoints")).toBeInTheDocument();
     // Circular left has 4 steps
-    expect(screen.getByText(/1\. Ctrl\+A/)).toBeInTheDocument();
+    expect(screen.getByText("1", { exact: true })).toBeInTheDocument();
   });
 
   it("should not display pattern steps for free_practice drill", () => {
     render(<FootworkDrillsOverlayHtml {...defaultProps} currentDrill="free_practice" />);
     
-    expect(screen.queryByText("Pattern Steps:")).not.toBeInTheDocument();
+    expect(screen.queryByText("순서 | Waypoints")).not.toBeInTheDocument();
   });
 
   it("should highlight current step when drill is active", () => {
     render(<FootworkDrillsOverlayHtml {...defaultProps} isActive={true} currentStep={1} />);
     
     // Step 2 should be highlighted (currentStep is 0-indexed)
-    expect(screen.getByText(/2\. Ctrl\+A/)).toBeInTheDocument();
+    expect(screen.getByText("2", { exact: true })).toHaveAttribute("aria-current", "step");
   });
 
   it("should display key hints for the current drill", () => {
     render(<FootworkDrillsOverlayHtml {...defaultProps} currentDrill="circular_left" />);
     
-    expect(screen.getByText(/Hold Ctrl\+A to circle left/)).toBeInTheDocument();
+    expect(screen.getByText(/Follow the numbered floor markers/)).toBeInTheDocument();
   });
 
   it("should render correctly in mobile mode", () => {

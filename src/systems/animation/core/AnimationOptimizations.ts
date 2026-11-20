@@ -233,8 +233,8 @@ export const animationCache = new AnimationCacheManager(50);
 /**
  * Batch update multiple bones with dirty flag optimization
  *
- * Only updates bones that have changed rotations/positions.
- * Uses object pooling to avoid allocations.
+ * Applies a complete pose; unkeyed channels go back to their rig rest values.
+ * A dirty set can restrict the bones written but does not change channel semantics.
  *
  * @param rig - Skeletal rig to update
  * @param keyframe - Keyframe with bone transforms
@@ -247,27 +247,13 @@ export function batchUpdateBones(
   keyframe: AnimationKeyframe,
   dirtyBones?: Set<string>,
 ): void {
-  const bonesToUpdate = dirtyBones ?? new Set(keyframe.boneRotations.keys());
-
-  bonesToUpdate.forEach((boneName) => {
-    const bone = rig.bones.get(boneName);
-    if (!bone) {
-      return;
-    }
-
-    // Update rotation
-    const rotation = keyframe.boneRotations.get(boneName);
-    if (rotation) {
-      bone.rotation.copy(rotation);
-    }
-
-    // Update position (if animated) - apply as offset from rest position
+  for (const [boneName, bone] of rig.bones) {
+    if (dirtyBones && !dirtyBones.has(boneName)) continue;
+    bone.rotation.copy(keyframe.boneRotations.get(boneName) ?? bone.restRotation);
+    bone.position.copy(bone.restPosition);
     const position = keyframe.bonePositions?.get(boneName);
-    if (position) {
-      // Position values in animations are offsets from rest position, not absolute values
-      bone.position.copy(bone.restPosition).add(position);
-    }
-  });
+    if (position) bone.position.add(position);
+  }
 }
 
 /**

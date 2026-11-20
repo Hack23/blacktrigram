@@ -98,6 +98,7 @@ describe("TrainingTopHUD", () => {
     selectedArchetype: PlayerArchetype.MUSA,
     onArchetypeSelect: vi.fn(),
     overlayVisible: false,
+    onToggleOverlay: vi.fn(),
     onReturnToMenu: vi.fn(),
     onPlaySFX: vi.fn(),
   };
@@ -149,19 +150,19 @@ describe("TrainingTopHUD", () => {
       expect(screen.getByTestId("mock-return-button")).toBeInTheDocument();
     });
 
-    it("should render vital point hint when overlay not visible", () => {
+    it("should offer a target toggle when the overlay is hidden", () => {
       render(<TrainingTopHUD {...defaultProps} overlayVisible={false} />);
-      expect(screen.getByTestId("vital-point-hint")).toBeInTheDocument();
+      expect(screen.getByTestId("training-toggle-targets")).toHaveAttribute("aria-pressed", "false");
     });
 
-    it("should hide vital point hint when overlay is visible", () => {
+    it("should keep the toggle available when the overlay is visible", () => {
       render(<TrainingTopHUD {...defaultProps} overlayVisible={true} />);
-      expect(screen.queryByTestId("vital-point-hint")).not.toBeInTheDocument();
+      expect(screen.getByTestId("training-toggle-targets")).toHaveAttribute("aria-pressed", "true");
     });
 
     it("should show V key instruction", () => {
       render(<TrainingTopHUD {...defaultProps} overlayVisible={false} />);
-      expect(screen.getByText("V")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Targets \(V\)/ })).toBeInTheDocument();
     });
   });
 

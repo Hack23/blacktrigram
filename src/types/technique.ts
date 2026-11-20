@@ -115,6 +115,9 @@ export interface Technique {
   /** Animation duration in milliseconds */
   readonly animationDuration?: number;
 
+  /** Authored skeletal clip identifier, when different from the technique ID. */
+  readonly animationId?: string;
+
   /** Special effect type (stun, bleed, etc.) */
   readonly specialEffect?: string;
 

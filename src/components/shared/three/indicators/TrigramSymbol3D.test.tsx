@@ -97,7 +97,9 @@ describe("TrigramSymbol3D", () => {
       );
 
       const symbol = screen.getByTestId("trigram-symbol-3d");
-      expect(symbol.style.fontFamily).toBe(FONT_FAMILY.KOREAN);
+      expect(symbol.style.fontFamily.replace(/"/g, "")).toBe(
+        FONT_FAMILY.KOREAN.replace(/"/g, "")
+      );
     });
 
     it("should apply bold font weight", () => {

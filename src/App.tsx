@@ -422,10 +422,12 @@ function App() {
         case GameMode.PRACTICE:
           // Initialize players if not already set
           if (combatPlayers.length === 0) {
-            const player1 = createPlayerFromArchetype(selectedArchetype, 0);
+            // The arena consumes meters; the generic factory defaults to legacy screen pixels.
+            const player1 = createPlayerFromArchetype(selectedArchetype, 0, { x: -1, y: 0 });
             const player2 = createPlayerFromArchetype(
               PlayerArchetype.AMSALJA,
               1,
+              { x: 1, y: 0 },
             );
             // Use setTimeout to defer state update and avoid render-during-render
             setTimeout(() => setCombatPlayers([player1, player2]), 0);

@@ -1,10 +1,6 @@
 import { defineConfig } from "cypress";
-import * as fs from "fs";
-import * as path from "path";
-import { resolve } from "path";
-
-// Use __dirname in a more TypeScript-friendly way
-const __dirname = resolve(process.cwd());
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 // Centralize report directories
 const REPORTS_BASE_DIR = "build/cypress";
@@ -47,6 +43,7 @@ export default defineConfig({
       includePending: true,
     },
     mochawesomeReporterOptions: {
+      consoleReporter: "none", // The spec reporter already prints test results.
       reportDir: REPORTS.mochawesome,
       overwrite: false,
       html: true,
@@ -68,8 +65,6 @@ export default defineConfig({
     requestTimeout: 6000, // Reduced from 8000
     responseTimeout: 6000, // Reduced from 8000
     pageLoadTimeout: 12000, // Reduced from 15000
-    chromeWebSecurity: false,
-    experimentalRunAllSpecs: true,
     // Public configuration values for Black Trigram testing
     expose: {
       GAME_SPEED: getPublicEnvironmentValue("GAME_SPEED", 1.0),
@@ -116,32 +111,9 @@ export default defineConfig({
 
       // Browser launch configuration for Three.js/WebGL optimization
       on("before:browser:launch", (browser, launchOptions) => {
-        if (browser.family === "chromium" && browser.name !== "electron") {
-          // Core WebGL rendering flags (software rendering via SwiftShader)
+        if (browser.family === "chromium" && browser.name !== "electron" && browser.isHeadless) {
+          // Allow a real WebGL2 context on runners without a GPU.
           launchOptions.args.push("--enable-unsafe-swiftshader");
-          launchOptions.args.push("--disable-web-security");
-          launchOptions.args.push("--disable-features=VizDisplayCompositor");
-          launchOptions.args.push("--disable-gpu-sandbox");
-          launchOptions.args.push("--disable-dev-shm-usage");
-          launchOptions.args.push("--no-sandbox");
-
-          // Three.js-specific optimizations
-          launchOptions.args.push("--enable-webgl-draft-extensions"); // Enable draft WebGL features
-          launchOptions.args.push("--max-gum-fps=60"); // Cap frame rate at 60fps for consistency
-          launchOptions.args.push("--disable-gpu-vsync"); // Disable vsync for more predictable frame timing
-          launchOptions.args.push("--enable-webgl2-compute-context"); // Enable WebGL2 compute features
-
-          // Memory optimization for Three.js scenes
-          launchOptions.args.push("--js-flags=--max-old-space-size=4096 --expose-gc"); // 4GB heap + expose gc() for cleanup helpers
-          launchOptions.args.push("--disable-software-rasterizer"); // Use hardware-accelerated rasterization when possible
-
-          // Reduce logging noise
-          launchOptions.args.push("--log-level=3");
-          launchOptions.args.push("--disable-logging");
-          launchOptions.args.push("--silent");
-
-          // Audio/video performance
-          launchOptions.args.push("--autoplay-policy=no-user-gesture-required");
         }
         return launchOptions;
       });
@@ -275,11 +247,7 @@ export default defineConfig({
       framework: "react",
       bundler: "vite",
       viteConfig: {
-        configFile: resolve(__dirname, "./vite.config.ts"),
-        // Added optimizations for PixiJS components
-        optimizeDeps: {
-          include: ["@pixi/react", "pixi.js"],
-        },
+        configFile: path.resolve(import.meta.dirname, "vite.config.ts"),
       },
     },
     viewportWidth: 1280,

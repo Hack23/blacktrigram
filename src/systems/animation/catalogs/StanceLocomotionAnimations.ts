@@ -127,6 +127,10 @@ function getWalkArmSwing(
 // ☰ GEON (건) - HEAVEN: Direct, Powerful Movements
 // ═══════════════════════════════════════════════════════════════════════════
 
+// Widen these poses by rotating the leg chains, not by translating the foot
+// away from the end of the shin by half the full stance width.
+const GEON_HIP_SPREAD = 0.18;
+
 /**
  * Geon Walk - 건보법
  * SINGLE STEP: Powerful authoritative stride, changes foot laterality
@@ -145,9 +149,9 @@ export const GEON_WALK_ANIMATION: SkeletalAnimation = (() => {
       // Start: Left foot forward (standard stance laterality)
       .at(0.0, "ease-out")
       .rotate(BoneName.PELVIS, 0.1, 0.05, 0)
-      .rotate(BoneName.HIP_L, 0.35, 0, 0) // Left forward
+      .rotate(BoneName.HIP_L, 0.35, 0, -GEON_HIP_SPREAD) // Left forward
       .rotate(BoneName.KNEE_L, -0.25, 0, 0)
-      .rotate(BoneName.HIP_R, -0.25, 0, 0) // Right back
+      .rotate(BoneName.HIP_R, -0.25, 0, GEON_HIP_SPREAD) // Right back
       .rotate(BoneName.KNEE_R, -0.15, 0, 0)
       // Arms maintain guard
       .rotate(BoneName.SHOULDER_L, ...arms.leftShoulder)
@@ -157,31 +161,23 @@ export const GEON_WALK_ANIMATION: SkeletalAnimation = (() => {
       .rotate(BoneName.SPINE_UPPER, 0.05, 0, 0)
       .position(BoneName.PELVIS, 0, 0, 0)
       .done<MartialArtsAnimationBuilder>()
-      .withFootWidth(
-        KOREAN_STANCE_BIOMECHANICS.GEON_HEAVEN.stanceWidth,
-        DEFAULT_SHOULDER_WIDTH_CM,
-      )
       // Mid: Passing phase (feet together, weight shifting)
       .at(0.25, "linear")
       .rotate(BoneName.PELVIS, 0, 0, 0)
-      .rotate(BoneName.HIP_L, 0, 0, 0) // Feet passing
+      .rotate(BoneName.HIP_L, 0, 0, -GEON_HIP_SPREAD / 2) // Feet passing
       .rotate(BoneName.KNEE_L, -0.5, 0, 0) // Lift rear foot
-      .rotate(BoneName.HIP_R, 0.2, 0, 0) // Stepping forward
+      .rotate(BoneName.HIP_R, 0.2, 0, GEON_HIP_SPREAD / 2) // Stepping forward
       .rotate(BoneName.KNEE_R, -0.6, 0, 0)
       .rotate(BoneName.SHOULDER_L, ...arms.leftShoulder)
       .rotate(BoneName.SHOULDER_R, ...arms.rightShoulder)
       .position(BoneName.PELVIS, 0, 0.03, 0)
       .done<MartialArtsAnimationBuilder>()
-      .withFootWidth(
-        KOREAN_STANCE_BIOMECHANICS.GEON_HEAVEN.stanceWidth,
-        DEFAULT_SHOULDER_WIDTH_CM,
-      )
       // End: Right foot forward (reversed laterality)
       .at(0.5, "ease-out")
       .rotate(BoneName.PELVIS, 0.1, -0.05, 0)
-      .rotate(BoneName.HIP_R, 0.35, 0, 0) // Right now forward
+      .rotate(BoneName.HIP_R, 0.35, 0, GEON_HIP_SPREAD) // Right now forward
       .rotate(BoneName.KNEE_R, -0.25, 0, 0)
-      .rotate(BoneName.HIP_L, -0.25, 0, 0) // Left now back
+      .rotate(BoneName.HIP_L, -0.25, 0, -GEON_HIP_SPREAD) // Left now back
       .rotate(BoneName.KNEE_L, -0.15, 0, 0)
       // Arms maintain guard
       .rotate(BoneName.SHOULDER_R, ...arms.rightShoulder)
@@ -190,10 +186,6 @@ export const GEON_WALK_ANIMATION: SkeletalAnimation = (() => {
       .rotate(BoneName.ELBOW_L, ...arms.leftElbow)
       .position(BoneName.PELVIS, 0, 0, 0)
       .done<MartialArtsAnimationBuilder>()
-      .withFootWidth(
-        KOREAN_STANCE_BIOMECHANICS.GEON_HEAVEN.stanceWidth,
-        DEFAULT_SHOULDER_WIDTH_CM,
-      )
       .build()
   );
 })();
@@ -214,9 +206,9 @@ export const GEON_RUN_ANIMATION: SkeletalAnimation = (() => {
       .asMovement(0.45, true)
       .at(0.0, "ease-out")
       .rotate(BoneName.PELVIS, 0.2, 0.08, 0)
-      .rotate(BoneName.HIP_L, -0.5, 0, 0)
+      .rotate(BoneName.HIP_L, -0.5, 0, -GEON_HIP_SPREAD)
       .rotate(BoneName.KNEE_L, -0.2, 0, 0)
-      .rotate(BoneName.HIP_R, 0.7, 0, 0)
+      .rotate(BoneName.HIP_R, 0.7, 0, GEON_HIP_SPREAD)
       .rotate(BoneName.KNEE_R, -1.0, 0, 0)
       // Arms maintain guard pose throughout
       .rotate(BoneName.SHOULDER_L, ...arms.leftShoulder)
@@ -226,15 +218,11 @@ export const GEON_RUN_ANIMATION: SkeletalAnimation = (() => {
       .rotate(BoneName.SPINE_UPPER, 0.15, 0, 0)
       .position(BoneName.PELVIS, 0, 0.05, 0.05)
       .done<MartialArtsAnimationBuilder>()
-      .withFootWidth(
-        KOREAN_STANCE_BIOMECHANICS.GEON_HEAVEN.stanceWidth,
-        DEFAULT_SHOULDER_WIDTH_CM,
-      )
       .at(0.225, "linear")
       .rotate(BoneName.PELVIS, 0.15, 0, 0)
-      .rotate(BoneName.HIP_L, 0.2, 0, 0)
+      .rotate(BoneName.HIP_L, 0.2, 0, -GEON_HIP_SPREAD / 2)
       .rotate(BoneName.KNEE_L, -1.2, 0, 0)
-      .rotate(BoneName.HIP_R, -0.3, 0, 0)
+      .rotate(BoneName.HIP_R, -0.3, 0, GEON_HIP_SPREAD / 2)
       .rotate(BoneName.KNEE_R, -0.3, 0, 0)
       .rotate(BoneName.SHOULDER_L, ...arms.leftShoulder)
       .rotate(BoneName.ELBOW_L, ...arms.leftElbow)
@@ -242,15 +230,11 @@ export const GEON_RUN_ANIMATION: SkeletalAnimation = (() => {
       .rotate(BoneName.ELBOW_R, ...arms.rightElbow)
       .position(BoneName.PELVIS, 0, 0.08, 0.05)
       .done<MartialArtsAnimationBuilder>()
-      .withFootWidth(
-        KOREAN_STANCE_BIOMECHANICS.GEON_HEAVEN.stanceWidth,
-        DEFAULT_SHOULDER_WIDTH_CM,
-      )
       .at(0.45, "ease-out")
       .rotate(BoneName.PELVIS, 0.2, -0.08, 0)
-      .rotate(BoneName.HIP_R, -0.5, 0, 0)
+      .rotate(BoneName.HIP_R, -0.5, 0, GEON_HIP_SPREAD)
       .rotate(BoneName.KNEE_R, -0.2, 0, 0)
-      .rotate(BoneName.HIP_L, 0.7, 0, 0)
+      .rotate(BoneName.HIP_L, 0.7, 0, -GEON_HIP_SPREAD)
       .rotate(BoneName.KNEE_L, -1.0, 0, 0)
       // Arms maintain guard pose throughout
       .rotate(BoneName.SHOULDER_L, ...arms.leftShoulder)
@@ -259,10 +243,6 @@ export const GEON_RUN_ANIMATION: SkeletalAnimation = (() => {
       .rotate(BoneName.ELBOW_R, ...arms.rightElbow)
       .position(BoneName.PELVIS, 0, 0.05, 0.05)
       .done<MartialArtsAnimationBuilder>()
-      .withFootWidth(
-        KOREAN_STANCE_BIOMECHANICS.GEON_HEAVEN.stanceWidth,
-        DEFAULT_SHOULDER_WIDTH_CM,
-      )
       .build()
   );
 })();

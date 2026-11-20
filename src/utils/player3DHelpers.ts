@@ -18,30 +18,13 @@ import type {
 } from "../types/player-visual";
 
 /**
- * Static mapping from AnimationState to PlayerAnimation
- *
- * Stance guard animations map to "idle" since SkeletalPlayer3D
- * will handle the stance-specific guard rendering.
- * Tactical steps now use dedicated step animations with guard maintenance.
+ * Only these states use a different name in the visual layer.
  *
  * @korean 애니메이션상태맵
  */
-const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
-  idle: "idle",
-  walk: "walk",
-  run: "run", // Now uses dedicated RUN_ANIMATION from BasicAnimations
-  attack: "attack",
-  defend: "defend",
-  // Defensive animations (방어 애니메이션) - map to defend with variations handled by skeletal system
-  defend_block_success: "defend",
-  defend_parry: "defend",
-  defend_guard_break: "defend",
-  defend_recovery: "defend",
-  hit: "hit",
-  stance_change: "stance_change",
-  stance_side_switch: "stance_change", // Reuse renderable stance-change visuals for foot-forward switch
-  ko: "death", // Map ko to death
-  // Stance guard animations map to stance-specific idle animations with proper biomechanics
+type RenamedState = Extract<AnimationState, `stance_guard_${string}` | "ko">;
+const RENAMED_ANIMATION_STATES: Record<RenamedState, PlayerAnimation> = {
+  ko: "death",
   stance_guard_geon: "stance_geon",
   stance_guard_tae: "stance_tae",
   stance_guard_li: "stance_li",
@@ -50,50 +33,11 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   stance_guard_gam: "stance_gam",
   stance_guard_gan: "stance_gan",
   stance_guard_gon: "stance_gon",
-  // Tactical step animations now map to dedicated step animations
-  step_forward: "step_forward",
-  step_back: "step_back",
-  step_left: "step_left",
-  step_right: "step_right",
-  step_forward_left: "step_forward_left",
-  step_forward_right: "step_forward_right",
-  step_back_left: "step_back_left",
-  step_back_right: "step_back_right",
-  // Fall animations: Now using dedicated FALL_*_ANIMATION from BasicAnimations
-  fall_forward: "fall_forward",
-  fall_backward: "fall_backward",
-  fall_side_left: "fall_side_left",
-  fall_side_right: "fall_side_right",
-  // Ground states map to idle with minimal movement
-  ground_prone: "idle",
-  ground_supine: "idle",
-  ground_side_left: "idle",
-  ground_side_right: "idle",
-  // 180-degree turn animations map to stance_change (body pivot animation)
-  turn_left: "stance_change",
-  turn_right: "stance_change",
-  // Footwork patterns (보법) - Korean martial arts specialized footwork
-  footwork_circular_left: "walk", // Lateral movement
-  footwork_circular_right: "walk",
-  footwork_pivot_left: "walk", // Rotation movement
-  footwork_pivot_right: "walk",
-  footwork_slide_forward: "walk", // Sliding movement
-  footwork_slide_back: "walk",
-  footwork_slide_left: "walk",
-  footwork_slide_right: "walk",
-  footwork_shuffle: "walk", // Quick adjustment
-  // Recovery animations (기상 애니메이션) - Getting up from ground states
-  // Map to idle for now, custom 3D recovery animations will be added in future
-  recovery_prone_standup: "idle",
-  recovery_supine_standup: "idle",
-  recovery_roll: "walk", // Rolling motion approximated by walk
-  recovery_defensive: "defend", // Guarded getup approximated by defend
-  // Grappling animations (잡기 애니메이션) - map to attack/defend based on action
-  grapple_entry: "attack", // Initiating grab uses attack animation
-  grapple_control: "defend", // Maintaining control uses defensive stance
-  grapple_struggle: "hit", // Struggling escape uses hit reaction
-  grapple_escape: "attack", // Successful escape uses attack burst
 };
+
+function isRenamedState(state: AnimationState): state is RenamedState {
+  return Object.hasOwn(RENAMED_ANIMATION_STATES, state);
+}
 
 /**
  * Convert AnimationState to PlayerAnimation
@@ -107,7 +51,7 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
 export function animationStateToPlayerAnimation(
   animState: AnimationState
 ): PlayerAnimation {
-  return ANIMATION_STATE_MAP[animState];
+  return isRenamedState(animState) ? RENAMED_ANIMATION_STATES[animState] : animState;
 }
 
 /**
@@ -136,21 +80,25 @@ export function getBalanceState(balance: number): BalanceState {
  * @korean 애니메이션상태가져오기
  */
 export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
-  if (player.isStunned) return "hit";
-  if (player.isBlocking) return "defend";
-  if (player.isCountering) return "counter";
+  if (player.health <= 0) return "death";
+  if (player.isStunned || player.combatState === "stunned") return "hit";
+  if (player.isCountering || player.combatState === "countering") return "counter";
 
   switch (player.combatState) {
     case "attacking":
       return "attack";
     case "defending":
       return "defend";
-    case "stunned":
-      return "hit";
+    case "transitioning":
+      return "stance_change";
+    case "grappling":
+      return "grapple_control";
+    case "grappled":
+      return "grapple_struggle";
     case "recovering":
     case "idle":
     default:
-      return `stance_${player.currentStance}` as PlayerAnimation;
+      return player.isBlocking ? "defend" : `stance_${player.currentStance}`;
   }
 }
 

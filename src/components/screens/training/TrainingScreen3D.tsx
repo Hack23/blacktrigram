@@ -23,7 +23,7 @@
  * @korean 훈련화면3D - 훈련 상태 훅을 사용한 리팩토링된 3D 훈련 화면
  */
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { AccelerationUpdater } from "../../../systems/movement/helpers/AccelerationUpdater";
 import {
   isRunningSpeed,
@@ -35,7 +35,6 @@ import {
   Noise,
   Vignette,
 } from "@react-three/postprocessing";
-import * as THREE from "three";
 import React, {
   useCallback,
   useEffect,
@@ -45,7 +44,6 @@ import React, {
 } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { useCombatAudio } from "../../screens/combat/hooks/useCombatAudio";
-import { getArchetypePhysicalAttributes } from "../../../data/archetypePhysicalAttributes";
 import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
 import { GestureEvent } from "../../../hooks/useTouchControls";
@@ -54,11 +52,8 @@ import { PlayerState } from "../../../systems";
 import {
   AnimationEvents,
   AnimationState,
-  AnimationType,
-  resolveTechniqueAnimation,
+  TARGET_ANIMATION_FPS,
 } from "../../../systems/animation";
-import { getAnimationForTechniqueOrDefault } from "../../../systems/animation/core/TechniqueAnimationMapping";
-import { physicalReachCalculator } from "../../../systems/physics";
 import {
   MovementType,
   SpeedModifierSystem,
@@ -68,7 +63,6 @@ import {
   CombatState,
   PlayerArchetype,
   Position,
-  Technique,
   TrigramStance,
 } from "../../../types";
 import { getPerformanceSettings } from "../../../types/constants";
@@ -106,8 +100,8 @@ import AnatomyOverlay3D, {
   type AnatomyLayer,
 } from "./components/AnatomyOverlay3D";
 import FootPlacementMarkers3D from "./components/FootPlacementMarkers3D";
+import { getFootworkMarkers } from "./footworkMarkers";
 import HitFeedbackEffect3D from "./components/HitFeedbackEffect3D";
-import type { DifficultyMode } from "./components/TrainingDummy3D";
 import TrainingDummy3D from "./components/TrainingDummy3D";
 import {
   TrainingBottomHUD,
@@ -115,29 +109,11 @@ import {
   TrainingRightHUD,
   TrainingTopHUD,
 } from "./components/hud";
-import { useAttackMovement } from "./hooks/useAttackMovement";
-import useTrainingActions from "./hooks/useTrainingActions";
+import { getTrainingTechnique, useTrainingActions, type TrainingAttack } from "./hooks/useTrainingActions";
 import { useTrainingLayout } from "./hooks/useTrainingLayout";
 import useTrainingState from "./hooks/useTrainingState";
-
-/**
- * AnimationUpdater - Component that updates player animation at 60fps
- *
- * @korean 훈련애니메이션업데이터 - 60fps로 플레이어 애니메이션을 업데이트하는 컴포넌트
- */
-interface TrainingAnimationUpdaterProps {
-  readonly playerAnimation: ReturnType<typeof usePlayerAnimation>;
-}
-
-const TrainingAnimationUpdater: React.FC<TrainingAnimationUpdaterProps> = ({
-  playerAnimation,
-}) => {
-  useFrame((_state, delta) => {
-    playerAnimation.update(delta);
-  });
-
-  return null;
-};
+import { AnimationUpdater } from "../combat/helpers/AnimationUpdater";
+import { CombatFighterCamera } from "../combat/helpers/CombatFighterCamera";
 
 /**
  * Props for the TrainingScreen3D component
@@ -174,8 +150,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   const audio = useAudio();
   
-  const { playBoneImpactSound, playAttackSound, playStanceChangeSound } =
-    useCombatAudio();
+  const sounds = useCombatAudio();
 
   const { trainingAreaBounds, isMobile, isPortrait, screenSize } =
     useTrainingLayout(width, height);
@@ -191,9 +166,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [screenSize, isMobile],
   );
 
-  const difficulty: DifficultyMode = "normal";
-  const vitalPointCount = 70; // Show all 70 vital points
-
   const [selectedArchetype, setSelectedArchetype] =
     React.useState<PlayerArchetype>(initialArchetype);
 
@@ -204,36 +176,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [regionFilter, setRegionFilter] =
     React.useState<BodyRegionFilter>("all");
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [showLabels, setShowLabels] = React.useState(true);
-  const [animated, setAnimated] = React.useState(true);
+  const [showLabels, setShowLabels] = React.useState(false);
+  const [animated, setAnimated] = React.useState(false);
   const [scale, setScale] = React.useState(1.2);
 
 
-  const [attackAnimation, setAttackAnimation] = React.useState<
-    string | undefined
-  >(undefined);
-
-  React.useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "v" || e.key === "V") {
-        setOverlayVisible((prev) => !prev);
-        audio.playSFX("menu_select");
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [audio]);
-
-
-  const contextLossCountRef = useRef(0);
+  const [attack, setAttack] = useState<TrainingAttack | null>(null);
+  const [blocking, setBlocking] = useState(false);
 
   useWebGLContextLossHandler({
     onContextLost: () => {
       console.warn("⚠️ WebGL context lost in TrainingScreen");
-      contextLossCountRef.current += 1;
     },
     onContextRestored: () => {
       console.log("✓ WebGL context restored in TrainingScreen");
@@ -258,10 +211,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   const initialPositionMeters = useMemo<Position>(
     () => ({
-      x: trainingAreaBounds.worldWidthMeters * 0.0, // Centered laterally
-      y: 0, // Centered vertically
+      x: -0.75,
+      y: 0,
     }),
-    [trainingAreaBounds],
+    [],
   );
 
   const handlePositionChange = useCallback(
@@ -290,7 +243,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const isRunning = isRunningSpeed(accelerationBasedSpeed, walkRunSpeeds.runSpeed);
 
   const { playerPosition, isMoving, velocity } = usePlayerMovement({
-    enabled: true, // Always allow movement in training screen
+    enabled: true,
     bounds: movementBounds, // Use memoized bounds object
     onPositionChange: handlePositionChange, // Use memoized callback
     initialPositionMeters,
@@ -305,8 +258,30 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     return [playerPosition.x, 0, playerPosition.y];
   }, [playerPosition]);
 
+  const drillOrigin = useMemo<[number, number, number]>(() => [initialPositionMeters.x, 0, initialPositionMeters.y], [initialPositionMeters]);
+  const drillPattern = trainingState.footworkDrillType === "free_practice" ? "none" : trainingState.footworkDrillType;
+  const drillMarkers = useMemo(() => getFootworkMarkers(drillPattern, drillOrigin), [drillOrigin, drillPattern]);
+  const reachedDrillStep = useRef<number | null>(null);
+  useEffect(() => {
+    if (!trainingState.isTraining || !trainingState.footworkDrillActive || trainingState.trainingMode !== "footwork") {
+      reachedDrillStep.current = null;
+      return;
+    }
+    const step = trainingState.footworkDrillStep;
+    const marker = drillMarkers[step];
+    if (!marker || reachedDrillStep.current === step || calculateDistance3D(player3DPosition, marker.position) > 0.19) return;
+    reachedDrillStep.current = step;
+    if (step + 1 >= drillMarkers.length) {
+      trainingActions.stopFootworkDrill();
+      trainingActions.setFeedback("보법 훈련 완료 | Footwork drill complete");
+    } else {
+      trainingActions.advanceFootworkStep();
+    }
+  }, [trainingState.isTraining, trainingState.footworkDrillActive, trainingState.trainingMode,
+    trainingState.footworkDrillStep, drillMarkers, player3DPosition, trainingActions]);
+
   const dummyPosition = useMemo<[number, number, number]>(
-    () => [trainingAreaBounds.worldWidthMeters * 0.15, 0, 0],
+    () => [trainingAreaBounds.worldWidthMeters * 0.13, 0, 0],
     [trainingAreaBounds.worldWidthMeters],
   );
 
@@ -320,22 +295,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [centerToCenterDistance],
   );
 
-  const lastFacingRotationRef = useRef<number>(0);
-
   const playerRotation = useMemo(() => {
-    if (isMoving && velocity && (velocity.x !== 0 || velocity.y !== 0)) {
+    if (!attack && !blocking && isMoving && velocity && (velocity.x !== 0 || velocity.y !== 0)) {
       return Math.atan2(velocity.x, velocity.y);
     } else {
       const dx = dummyPosition[0] - player3DPosition[0];
       const dz = dummyPosition[2] - player3DPosition[2];
       return Math.atan2(dx, dz);
     }
-  }, [isMoving, velocity, player3DPosition, dummyPosition]);
-
-  useEffect(() => {
-    lastFacingRotationRef.current = playerRotation;
-  }, [playerRotation]);
-
+  }, [attack, blocking, isMoving, velocity, player3DPosition, dummyPosition]);
 
   const [currentLaterality, setCurrentLaterality] = useState<"left" | "right">("right");
   
@@ -370,61 +338,26 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   }, [playerPosition, isMoving, isRunning]);
 
 
-  const pendingAttackRef = useRef<{
-    accuracy: number;
-    vitalPoint: string;
-    animationType?: AnimationType;
-    startTime?: number;
-    techniqueId?: string;
-  } | null>(null);
-
-  const handleDummyHitRef = useRef<
-    (
-      vitalPointId: string,
-      attackContext?: {
-        animationType?: AnimationType;
-        techniqueId?: string;
-      },
-    ) => boolean
-  >(() => false);
-
-  const playerAnimationRef = useRef<ReturnType<
-    typeof usePlayerAnimation
-  > | null>(null);
+  const attackEvents = useRef<{ frame: (frame: number) => void; clear: () => void } | null>(null);
 
   const playerAnimationEvents = useMemo<AnimationEvents>(
     () => ({
       onFrame: (frame, state) => {
-        if (state === "attack" && frame === 6 && pendingAttackRef.current) {
-          const attackData = pendingAttackRef.current;
-          handleDummyHitRef.current(attackData.vitalPoint, {
-            animationType: attackData.animationType,
-            techniqueId: attackData.techniqueId,
-          });
-          pendingAttackRef.current = null;
-        }
+        if (state === AnimationState.ATTACK) attackEvents.current?.frame(frame);
       },
       onAnimationComplete: (state) => {
-        if (state === "stance_change") {
-          playStanceChangeSound();
-          const currentStance =
-            TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex];
-          if (currentStance && playerAnimationRef.current) {
-            playerAnimationRef.current.transitionToStanceGuard(currentStance);
-          }
+        if (state === AnimationState.ATTACK) {
+          attackEvents.current?.clear();
+          setAttack(null);
         }
       },
     }),
-    [playStanceChangeSound, trainingState.currentStanceIndex],
+    [],
   );
 
   const playerAnimation = usePlayerAnimation({
     events: playerAnimationEvents,
   });
-
-  useEffect(() => {
-    playerAnimationRef.current = playerAnimation;
-  }, [playerAnimation]);
 
 
   const currentStance = useMemo(
@@ -433,11 +366,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
   const [previousStanceIndex, setPreviousStanceIndex] = useState<number>(0);
-
-  const currentTechniqueAnimationTypeRef = useRef<AnimationType>(
-    AnimationType.JAB,
-  );
-
 
   const trainingPlayerState = useMemo<PlayerState>(() => {
     return {
@@ -463,7 +391,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
       combatState: CombatState.IDLE,
       position: playerPosition,
-      isBlocking: false,
+      isBlocking: blocking,
       isStunned: false,
       isCountering: false,
       lastActionTime: 0,
@@ -482,10 +410,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       accuracy: trainingState.stats.accuracy,
       comboCount: trainingState.stats.combo,
     };
-  }, [playerPosition, trainingState, selectedArchetype]);
+  }, [playerPosition, trainingState, selectedArchetype, blocking]);
 
   useEffect(() => {
-    const updateSpeedModifiers = () => {
       const walkModifiers = speedModifierSystem.calculateSpeedModifiers(
         trainingPlayerState,
         MovementType.WALKING,
@@ -508,117 +435,38 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         walkSpeed: walkModifiers.finalSpeed,
         runSpeed: runModifiers.finalSpeed,
       });
-    };
-
-    updateSpeedModifiers();
-
-    const intervalId = setInterval(updateSpeedModifiers, 200);
-
-    return () => clearInterval(intervalId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trainingPlayerState]); // speedModifierSystem is memoized and never changes
-
-
-  const isPlayerAttacking = useMemo(
-    () => playerAnimation?.currentState === "attack",
-    [playerAnimation],
-  );
-
-  const attackDirection = useMemo(() => {
-    if (!isPlayerAttacking) {
-      return new THREE.Vector3(0, 0, 1); // Default forward direction
-    }
-    const dx = dummyPosition[0] - player3DPosition[0];
-    const dz = dummyPosition[2] - player3DPosition[2];
-    return new THREE.Vector3(dx, 0, dz).normalize();
-  }, [dummyPosition, player3DPosition, isPlayerAttacking]);
-
-  const {
-    currentPosition: player3DPositionWithAttackMovement,
-  } = useAttackMovement({
-    isAttacking: isPlayerAttacking,
-    // eslint-disable-next-line react-hooks/refs -- ref value is set synchronously before isAttacking becomes true; hook only reads this at attack start
-    animationType: currentTechniqueAnimationTypeRef.current,
-    currentStance: trainingPlayerState.currentStance,
-    basePosition: player3DPosition,
-    attackDirection,
-    animationDuration: 0.4,
-  });
-
-  const finalPlayer3DPosition = isPlayerAttacking
-    ? player3DPositionWithAttackMovement
-    : player3DPosition;
-
-
-  const handleAttackRef = useRef<(() => void) | null>(null);
-
-  const techniqueSelection = useTechniqueSelection({
-    player: trainingPlayerState,
-    enabled: trainingState.isTraining,
-    onTechniqueExecute: useCallback(
-      (technique: Technique) => {
-        trainingActions.setFeedback(
-          `${technique.name.korean} 사용! | Used ${technique.name.english}!`,
-        );
-
-        const animationName = resolveTechniqueAnimation(technique);
-        setAttackAnimation(animationName);
-
-
-        handleAttackRef.current?.();
-      },
-      [trainingActions],
-    ),
-  });
-
-  const selectedTechniqueId = useMemo(() => {
-    const techniques = techniqueSelection.availableTechniques;
-    const selectedIdx = techniqueSelection.selectedIndex;
-    if (techniques.length === 0 || selectedIdx < 0 || selectedIdx >= techniques.length) {
-      return undefined;
-    }
-    return techniques[selectedIdx]?.id;
-  }, [techniqueSelection.availableTechniques, techniqueSelection.selectedIndex]);
+  }, [trainingPlayerState, speedModifierSystem]);
 
   const {
     handleStartTraining,
     handleStopTraining,
-    handleDummyHit,
     handleDummyDefeated,
     handleStanceChange,
-    handleAttack,
+    handleAttack, handleAttackFrame, clearAttack,
   } = useTrainingActions({
     state: trainingState,
     actions: trainingActions,
-    playerPosition,
-    player3DPosition,
-    dummyPosition,
-    playerArchetype: selectedArchetype,
-    playerStance: currentStance,
-    currentTechniqueAnimationTypeRef, // Ref for technique's animation type
+    player: player3DPosition,
+    dummy: dummyPosition,
+    archetype: selectedArchetype,
+    stance: currentStance,
     audio,
-    playBoneImpactSound, // Pass bone impact audio function from useCombatAudio
-    playAttackSound, // Pass attack sound function from useCombatAudio
-    selectedTechniqueId, // Pass selected technique ID for intensity-based attack sounds
-    onPlayerUpdate: (updates) => {
-      onPlayerUpdate(updates);
-    },
-    playerAnimation: {
-      transitionTo: playerAnimation.transitionTo,
-      transitionToAttack: playerAnimation.transitionToAttack,
-      transitionToStanceGuard: playerAnimation.transitionToStanceGuard,
-      currentState: playerAnimation.currentState,
-    },
-    pendingAttackRef, // Share the ref with animation events
+    sounds,
+    onPlayerUpdate,
+    animation: playerAnimation,
+    onStartAttack: setAttack,
   });
 
   useEffect(() => {
-    handleAttackRef.current = handleAttack;
-  }, [handleAttack]);
+    attackEvents.current = { frame: handleAttackFrame, clear: clearAttack };
+  }, [handleAttackFrame, clearAttack]);
 
-  useEffect(() => {
-    handleDummyHitRef.current = handleDummyHit;
-  }, [handleDummyHit]);
+  const techniqueSelection = useTechniqueSelection({
+    player: trainingPlayerState,
+    enabled: trainingState.isTraining,
+    onTechniqueExecute: (technique) => !blocking && handleAttack(technique),
+  });
+  const { executeTechnique } = techniqueSelection;
 
   const handleStanceChangeWithVisualFeedback = useCallback(
     (stanceIndex: number) => {
@@ -671,134 +519,42 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     return map;
   }, [techniqueSelection.activeCooldowns]);
 
-  const { currentTechniqueReach, currentAnimationType } = useMemo(() => {
-    const techniques = techniqueSelection.availableTechniques;
-    const selectedIdx = techniqueSelection.selectedIndex;
-    if (techniques.length === 0) {
-      return {
-        currentTechniqueReach: 0.7,
-        currentAnimationType: AnimationType.JAB,
-      };
+  const selectedTechnique = techniqueSelection.availableTechniques[techniqueSelection.selectedIndex];
+  const currentTechniqueReach = useMemo(() => selectedTechnique
+    ? getTrainingTechnique(selectedTechnique, selectedArchetype, currentStance).reach
+    : 0, [selectedTechnique, selectedArchetype, currentStance]);
+
+
+  const activeMobileKeys = useRef<readonly ("a" | "d" | "s" | "w")[]>([]);
+  const handleMobileMove = useCallback((direction: Direction | null, eventType: DPadEventType) => {
+    const next = eventType === "end" ? [] : direction?.split("-").map((part) =>
+      part === "up" ? "w" : part === "down" ? "s" : part === "left" ? "a" : "d") ?? [];
+    for (const key of activeMobileKeys.current) {
+      if (!next.includes(key)) window.dispatchEvent(new KeyboardEvent("keyup", { key }));
     }
-    const currentTechnique =
-      techniques[Math.min(selectedIdx, techniques.length - 1)];
-    if (!currentTechnique) {
-      return {
-        currentTechniqueReach: 0.7,
-        currentAnimationType: AnimationType.JAB,
-      };
+    for (const key of next) {
+      if (!activeMobileKeys.current.includes(key)) window.dispatchEvent(new KeyboardEvent("keydown", { key }));
     }
-    const animConfig = getAnimationForTechniqueOrDefault(currentTechnique.id);
-    const physicalAttributes =
-      getArchetypePhysicalAttributes(selectedArchetype);
-    const reach = physicalReachCalculator.calculateMaxReach(
-      physicalAttributes,
-      animConfig.type,
-      currentStance,
-    );
-    return {
-      currentTechniqueReach: reach,
-      currentAnimationType: animConfig.type,
-    };
-  }, [
-    techniqueSelection.availableTechniques,
-    techniqueSelection.selectedIndex,
-    selectedArchetype,
-    currentStance,
-  ]);
-
-  useEffect(() => {
-    currentTechniqueAnimationTypeRef.current = currentAnimationType;
-  }, [currentAnimationType]);
-
-
-  const activeMobileKeyRef = useRef<string | null>(null);
-
-  const mobileControlsEnabled = isMobile;
-
-  const handleMobileMove = useCallback(
-    (direction: Direction | null, eventType: DPadEventType) => {
-      const directionMap: Record<Direction, string> = {
-        up: "w",
-        "up-right": "w",
-        right: "d",
-        "down-right": "s",
-        down: "s",
-        "down-left": "s",
-        left: "a",
-        "up-left": "w",
-      };
-
-      if (eventType === "start" && direction) {
-        if (
-          activeMobileKeyRef.current &&
-          activeMobileKeyRef.current !== directionMap[direction]
-        ) {
-          const prevKey = activeMobileKeyRef.current;
-          window.dispatchEvent(
-            new KeyboardEvent("keyup", {
-              key: prevKey,
-              code: `Key${prevKey.toUpperCase()}`,
-              bubbles: true,
-              cancelable: true,
-            }),
-          );
-        }
-
-        const key = directionMap[direction];
-        activeMobileKeyRef.current = key;
-        window.dispatchEvent(
-          new KeyboardEvent("keydown", {
-            key,
-            code: `Key${key.toUpperCase()}`,
-            bubbles: true,
-            cancelable: true,
-          }),
-        );
-      } else if (eventType === "end") {
-        if (activeMobileKeyRef.current) {
-          const key = activeMobileKeyRef.current;
-          window.dispatchEvent(
-            new KeyboardEvent("keyup", {
-              key,
-              code: `Key${key.toUpperCase()}`,
-              bubbles: true,
-              cancelable: true,
-            }),
-          );
-          activeMobileKeyRef.current = null;
-        }
-      }
-    },
-    [],
-  );
+    activeMobileKeys.current = next;
+  }, []);
 
   const handleMobileAttack = useCallback(() => {
-    handleAttack();
-  }, [handleAttack]);
+    executeTechnique();
+  }, [executeTechnique]);
 
   const handleMobileBlock = useCallback(
     (eventType: ButtonEventType) => {
-      if (eventType === "start") {
-        audio.playSFX("block");
-      }
+      setBlocking(eventType === "start" && !attack);
+      if (eventType === "start" && !attack) void audio.playSFX("block");
     },
-    [audio],
+    [audio, attack],
   );
 
   const handleMobileGesture = useCallback(
     (gesture: GestureEvent) => {
       switch (gesture.type) {
-        case "swipe-right":
-          window.dispatchEvent(new KeyboardEvent("keydown", { key: "d" }));
-          break;
-        case "swipe-left":
-          window.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
-          break;
         case "swipe-up":
-          if (trainingState.isTraining) {
-            window.dispatchEvent(new KeyboardEvent("keydown", { key: " " }));
-          }
+          executeTechnique();
           break;
         case "swipe-down":
           trainingActions.resetDummy();
@@ -813,7 +569,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           break;
       }
     },
-    [trainingState, trainingActions, audio],
+    [trainingState.trainingMode, trainingActions, audio, executeTechnique],
   );
 
   const handleMobileStanceChange = useCallback(
@@ -824,14 +580,32 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
 
+  const toggleOverlay = useCallback(() => {
+    setOverlayVisible((visible) => !visible);
+    void audio.playSFX("menu_select");
+  }, [audio]);
+
+  const stopTraining = useCallback(() => {
+    setAttack(null);
+    setBlocking(false);
+    handleStopTraining();
+  }, [handleStopTraining]);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.repeat) return;
       const key = event.key.toLowerCase();
 
       if (key === "escape") {
         onReturnToMenu();
         return;
       }
+
+      const target = event.target;
+      if (target instanceof HTMLElement && (target.isContentEditable ||
+        target.closest("input, textarea, select, button, [role='button']"))) return;
+      if (key === "v") toggleOverlay();
+      if (key === "shift" && !attack) setBlocking(true);
 
       if (key >= "1" && key <= "8") {
         const stanceIndex = parseInt(key) - 1;
@@ -841,15 +615,28 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       }
 
       if (key === " ") {
-        handleAttack();
+        executeTechnique();
         event.preventDefault();
         return;
       }
     };
 
+    const releaseGuard = (event: KeyboardEvent) => {
+      if (event.key === "Shift") setBlocking(false);
+    };
+    const releaseControls = () => {
+      setBlocking(false);
+      handleMobileMove(null, "end");
+    };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onReturnToMenu, handleStanceChangeWithVisualFeedback, handleAttack]);
+    window.addEventListener("keyup", releaseGuard);
+    window.addEventListener("blur", releaseControls);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", releaseGuard);
+      window.removeEventListener("blur", releaseControls);
+    };
+  }, [attack, onReturnToMenu, handleStanceChangeWithVisualFeedback, executeTechnique, toggleOverlay, handleMobileMove]);
 
 
   const hasMountedRef = useRef(false);
@@ -912,64 +699,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     trainingActions,
   ]);
 
-  const prevTrainingModeRef = useRef<typeof trainingState.trainingMode>(
-    trainingState.trainingMode,
-  );
-  const isFirstModeEffectRef = useRef<boolean>(true);
-  const isTrainingRef = useRef<boolean>(trainingState.isTraining);
-  const modeChangeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    isTrainingRef.current = trainingState.isTraining;
-  }, [trainingState.isTraining]);
-
-  const handleStartTrainingRef = useRef(handleStartTraining);
-  const handleStopTrainingRef = useRef(handleStopTraining);
-
-  useEffect(() => {
-    handleStartTrainingRef.current = handleStartTraining;
-    handleStopTrainingRef.current = handleStopTraining;
-  }, [handleStartTraining, handleStopTraining]);
-
-  useEffect(() => {
-    if (isFirstModeEffectRef.current) {
-      isFirstModeEffectRef.current = false;
-      prevTrainingModeRef.current = trainingState.trainingMode;
-      return;
-    }
-
-    const previousMode = prevTrainingModeRef.current;
-    const modeChanged = previousMode !== trainingState.trainingMode;
-
-    if (!modeChanged) {
-      return;
-    }
-
-    prevTrainingModeRef.current = trainingState.trainingMode;
-
-    if (modeChangeTimerRef.current) {
-      clearTimeout(modeChangeTimerRef.current);
-      modeChangeTimerRef.current = null;
-    }
-
-    if (isTrainingRef.current) {
-      handleStopTrainingRef.current();
-    }
-
-    modeChangeTimerRef.current = setTimeout(() => {
-      handleStartTrainingRef.current();
-      modeChangeTimerRef.current = null;
-    }, 100);
-
-    return () => {
-      if (modeChangeTimerRef.current) {
-        clearTimeout(modeChangeTimerRef.current);
-        modeChangeTimerRef.current = null;
-      }
-    };
-  }, [trainingState.trainingMode]); // Only depend on training mode to avoid unnecessary re-runs
-
-
   const handleEffectComplete = useCallback(
     (effectId: number) => {
       trainingActions.removeHitEffect(effectId);
@@ -994,19 +723,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [trainingActions, audio],
   );
 
+  const handleModeChange: typeof trainingActions.setTrainingMode = useCallback((mode) => {
+    trainingActions.setTrainingMode(mode);
+    if (mode === "vital_point" || mode === "advanced") setOverlayVisible(true);
+    else setOverlayVisible(false);
+  }, [trainingActions]);
+
 
   const cameraConfig = useMemo(() => {
     const base = createCameraConfig(isMobile);
-    if (!isPortrait) return base;
-    return {
-      ...base,
-      fov: Math.min(80, base.fov + 15),
-      position: [base.position[0], base.position[1], base.position[2] + 4] as [
-        number,
-        number,
-        number,
-      ],
-    };
+    return { ...base, fov: isPortrait ? 54 : 42 };
   }, [isMobile, isPortrait]);
 
 
@@ -1032,7 +758,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           alpha: false,
           powerPreference: "high-performance",
           failIfMajorPerformanceCaveat: false, // Don't fail in software renderer
-          preserveDrawingBuffer: true, // Help with context stability
+          preserveDrawingBuffer: false,
         }}
         dpr={performanceSettings.dpr}
         shadows={false} // Temporarily disable shadows
@@ -1041,9 +767,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         }}
         camera={cameraConfig}
       >
-        {/* Lighting - base lighting, arena provides additional */}
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[10, 10, 5]} intensity={1.2} />
+        <CombatFighterCamera
+          first={player3DPosition}
+          second={dummyPosition}
+          fov={cameraConfig.fov}
+          worldWidth={trainingAreaBounds.worldWidthMeters}
+          worldDepth={trainingAreaBounds.worldDepthMeters}
+        />
 
         {/* Combat Arena 3D Environment - uses physics-based world dimensions */}
         <CombatArena3D
@@ -1051,10 +781,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           scale={trainingAreaBounds.scale}
           worldWidthMeters={trainingAreaBounds.worldWidthMeters}
           worldDepthMeters={trainingAreaBounds.worldDepthMeters}
+          enableParticles={false}
         />
 
         {/* Animation updater - 60fps updates */}
-        <TrainingAnimationUpdater playerAnimation={playerAnimation} />
+        <AnimationUpdater player1Animation={playerAnimation} />
 
         {/* Acceleration updater - tracks movement time and updates speed */}
         <AccelerationUpdater
@@ -1073,11 +804,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           selectedVitalPoint={trainingState.selectedVitalPoint}
           isTraining={trainingState.isTraining}
           health={trainingState.dummyHealth}
-          onVitalPointHit={handleDummyHit}
           onDefeated={handleDummyDefeated}
-          difficulty={difficulty}
-          vitalPointCount={vitalPointCount}
+          vitalPointCount={0}
           isMobile={isMobile}
+          opponentPosition={player3DPosition}
         />
 
         {/* Anatomy overlay for educational visualization */}
@@ -1110,23 +840,24 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         <Player3DWithTransitions
           {...convertPlayerStateToProps(
             trainingPlayerState,
-            finalPlayer3DPosition,
+            player3DPosition,
             playerRotation,
             {
               isMobile,
               facing: "right",
-              enableFacialExpressions: true,
-              enableEyeTracking: true,
+              showDetails: false,
               opponentPosition: dummyPosition,
             },
           )}
-          currentAnimation={animationStateToPlayerAnimation(
+          currentAnimation={blocking ? "defend" : animationStateToPlayerAnimation(
             playerAnimation.currentState,
           )}
-          attackAnimation={attackAnimation}
+          attackAnimation={attack?.animation}
+          clipTimeSeconds={attack ? playerAnimation.currentFrame / TARGET_ANIMATION_FPS : undefined}
+          playbackKey={attack?.key}
           laterality={currentLaterality}
           enableTransitionEffects={!isMobile}
-          enableStanceSymbol={true}
+          enableStanceSymbol={false}
           enableStanceAudio={true}
         />
 
@@ -1134,12 +865,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         {trainingState.trainingMode === "footwork" &&
           trainingState.footworkDrillActive && (
             <FootPlacementMarkers3D
-              centerPosition={dummyPosition}
-              pattern={
-                trainingState.footworkDrillType === "free_practice"
-                  ? "none"
-                  : trainingState.footworkDrillType
-              }
+              centerPosition={drillOrigin}
+              pattern={drillPattern}
               currentStep={trainingState.footworkDrillStep}
               visible={true}
               scale={1.0}
@@ -1225,10 +952,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           positionScale={positionScale}
           isTraining={trainingState.isTraining}
           onStartTraining={handleStartTraining}
-          onStopTraining={handleStopTraining}
+          onStopTraining={stopTraining}
           selectedArchetype={selectedArchetype}
           onArchetypeSelect={setSelectedArchetype}
           overlayVisible={overlayVisible}
+          onToggleOverlay={toggleOverlay}
           onReturnToMenu={onReturnToMenu}
           onPlaySFX={(sound) => audio.playSFX(sound)}
         />
@@ -1244,7 +972,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             isMobile={isMobile}
             positionScale={positionScale}
             trainingMode={trainingState.trainingMode}
-            onModeChange={trainingActions.setTrainingMode}
+            onModeChange={handleModeChange}
             stats={{
               ...trainingState.stats,
               sessionDuration: trainingState.sessionDuration,
@@ -1254,7 +982,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             distanceToDummy={distanceToDummy}
             effectiveReach={currentTechniqueReach}
             selectedVitalPoint={trainingState.selectedVitalPoint}
-            onVitalPointSelect={trainingActions.setSelectedVitalPoint}
+            onVitalPointSelect={(pointId) => {
+              trainingActions.setSelectedVitalPoint(pointId);
+              if (pointId) setOverlayVisible(true);
+            }}
             footworkDrillType={trainingState.footworkDrillType}
             footworkDrillStep={trainingState.footworkDrillStep}
             footworkDrillActive={trainingState.footworkDrillActive}
@@ -1310,7 +1041,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               onMove={handleMobileMove}
               onAttack={handleMobileAttack}
               onBlock={handleMobileBlock}
-              disabled={!mobileControlsEnabled}
+              disabled={false}
               bottom={getMobileControlsBottom(height)}
               opacity={0.85}
               viewportWidth={width}
@@ -1322,13 +1053,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               onStanceChange={handleMobileStanceChange}
               expanded={trainingState.stanceWheelExpanded}
               onToggle={trainingActions.toggleStanceWheel}
-              disabled={!mobileControlsEnabled}
+              disabled={false}
               opacity={0.8}
             />
 
             <GestureRecognizerPure
               onGesture={handleMobileGesture}
-              enabled={mobileControlsEnabled}
+              enabled
               showFeedback={true}
               minSwipeDistance={50}
             />

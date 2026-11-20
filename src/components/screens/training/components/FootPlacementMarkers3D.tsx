@@ -14,7 +14,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import type { FootworkDrill } from "./FootworkDrillsOverlayHtml";
+import { getFootworkMarkers, type FootworkDrillPattern } from "../footworkMarkers";
 
 /**
  * Footwork drill pattern types for 3D visualization
@@ -22,9 +22,7 @@ import type { FootworkDrill } from "./FootworkDrillsOverlayHtml";
  * Derived from FootworkDrill, excluding "free_practice" (which has no pattern),
  * and adding a "none" sentinel for cases with no active pattern.
  */
-export type FootworkDrillPattern = 
-  | Exclude<FootworkDrill, "free_practice">
-  | "none";
+export type { FootworkDrillPattern } from "../footworkMarkers";
 
 /**
  * Props for FootPlacementMarkers3D component
@@ -45,84 +43,14 @@ export interface FootPlacementMarkers3DProps {
 }
 
 /**
- * Generate footwork pattern positions
- * 
- * @korean 보법패턴위치생성
- */
-function getPatternPositions(
-  pattern: FootworkDrillPattern,
-  center: [number, number, number]
-): Array<{ position: [number, number, number]; label: string }> {
-  const [cx, cy, cz] = center;
-  const radius = 2.0; // 2 meters radius for circular patterns
-  const stepDist = 0.3; // 30cm step distance
-
-  switch (pattern) {
-    case "circular_left":
-      return [
-        { position: [cx + radius, cy, cz], label: "1" },
-        { position: [cx, cy, cz - radius], label: "2" },
-        { position: [cx - radius, cy, cz], label: "3" },
-        { position: [cx, cy, cz + radius], label: "4" },
-      ];
-
-    case "circular_right":
-      return [
-        { position: [cx + radius, cy, cz], label: "1" },
-        { position: [cx, cy, cz + radius], label: "2" },
-        { position: [cx - radius, cy, cz], label: "3" },
-        { position: [cx, cy, cz - radius], label: "4" },
-      ];
-
-    case "pivot_combo":
-      return [
-        { position: [cx, cy, cz], label: "Start" },
-        { position: [cx - 0.5, cy, cz + 0.5], label: "Pivot L" },
-        { position: [cx, cy, cz], label: "Center" },
-        { position: [cx + 0.5, cy, cz + 0.5], label: "Pivot R" },
-      ];
-
-    case "triangle_step":
-      return [
-        { position: [cx, cy, cz], label: "Start" },
-        { position: [cx, cy, cz - stepDist * 2], label: "Forward" },
-        { position: [cx + stepDist * 1.5, cy, cz], label: "Right" },
-        { position: [cx, cy, cz], label: "Back" },
-      ];
-
-    case "slide_drill":
-      return [
-        { position: [cx, cy, cz], label: "Center" },
-        { position: [cx, cy, cz - stepDist], label: "Forward" },
-        { position: [cx + stepDist, cy, cz], label: "Right" },
-        { position: [cx, cy, cz + stepDist], label: "Back" },
-        { position: [cx - stepDist, cy, cz], label: "Left" },
-      ];
-
-    case "shuffle_practice":
-      return [
-        { position: [cx, cy, cz], label: "Start" },
-        { position: [cx, cy, cz - 0.15], label: "Shuffle 1" },
-        { position: [cx, cy, cz - 0.30], label: "Shuffle 2" },
-        { position: [cx, cy, cz - 0.45], label: "Shuffle 3" },
-      ];
-
-    case "none":
-    default:
-      return [];
-  }
-}
-
-/**
  * Single foot placement marker
  */
 const FootMarker: React.FC<{
   position: [number, number, number];
   label: string;
   isActive: boolean;
-  isCompleted: boolean;
   animated: boolean;
-}> = ({ position, label, isActive, isCompleted, animated }) => {
+}> = ({ position, label, isActive, animated }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const ringRef = useRef<THREE.Mesh>(null);
 
@@ -140,9 +68,7 @@ const FootMarker: React.FC<{
     }
   });
 
-  const markerColor = isCompleted
-    ? KOREAN_COLORS.ACCENT_GREEN
-    : isActive
+  const markerColor = isActive
     ? KOREAN_COLORS.PRIMARY_CYAN
     : KOREAN_COLORS.ACCENT_GOLD;
 
@@ -226,7 +152,7 @@ export const FootPlacementMarkers3D: React.FC<FootPlacementMarkers3DProps> = ({
   animated = true,
 }) => {
   const positions = useMemo(
-    () => getPatternPositions(pattern, centerPosition),
+    () => getFootworkMarkers(pattern, centerPosition),
     [pattern, centerPosition]
   );
 
@@ -236,13 +162,12 @@ export const FootPlacementMarkers3D: React.FC<FootPlacementMarkers3DProps> = ({
 
   return (
     <group scale={scale}>
-      {positions.map((marker, index) => (
+      {positions.map((marker, index) => index >= currentStep && (
         <FootMarker
           key={`${pattern}-${index}`}
           position={marker.position}
           label={marker.label}
           isActive={index === currentStep}
-          isCompleted={index < currentStep}
           animated={animated}
         />
       ))}

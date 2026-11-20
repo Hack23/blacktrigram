@@ -133,6 +133,7 @@
   "emmet.triggerExpansionOnTab": true,
 
   // Performance optimizations
+  "npm.exclude": "**/docs/**",
   "search.exclude": {
     "**/node_modules": true,
     "**/dist": true,

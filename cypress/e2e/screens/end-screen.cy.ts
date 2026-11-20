@@ -46,66 +46,6 @@ describe("EndScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     });
   });
 
-  /**
-   * Helper function to simulate a combat match and reach end screen
-   * This accelerates testing by simulating match completion
-   * Currently unused - will be activated when combat completion trigger is implemented
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const reachEndScreen = () => {
-    cy.log("🎮 Simulating combat match to reach EndScreen");
-
-    // Enter combat mode
-    cy.enterCombatMode();
-    cy.wait(1000);
-
-    // Verify combat screen loaded
-    cy.get('[data-testid="combat-screen"]', { timeout: 10000 }).should(
-      "exist",
-    );
-    cy.log("✅ Combat screen loaded");
-
-    // Simulate combat actions to end match quickly
-    // Note: In real gameplay, match would end when health reaches 0
-    // For E2E testing, we trigger game end programmatically via dev tools
-    cy.window().then((win) => {
-      // Access internal game state and force match end
-      // This is acceptable for E2E testing to avoid waiting for full combat
-      const appRoot = win.document.querySelector("#root");
-      if (appRoot) {
-        // Simulate player 1 (user) victory
-        // In production code, this happens via CombatScreen3D's onGameEnd callback
-        cy.log("⚡ Forcing match end for testing purposes");
-
-        // Wait a bit for combat to initialize, then force end
-        cy.wait(2000);
-
-        // Press ESC to pause, then we can manipulate state
-        cy.get("body").type("{esc}");
-        cy.wait(500);
-
-        // For now, we'll rely on natural combat flow or manual trigger
-        // Real implementation would use dev-only game end trigger
-        cy.log("⚠️ Note: Full match simulation skipped for E2E efficiency");
-      }
-    });
-
-    // Alternative: Return to menu and manually set winner state
-    // This is more reliable for testing EndScreen in isolation
-    cy.get('[data-testid="pause-menu-return-button"]', { timeout: 5000 }).then(
-      ($btn) => {
-        if ($btn.length > 0) {
-          cy.wrap($btn).click({ force: true });
-          cy.wait(500);
-        }
-      },
-    );
-
-    cy.log(
-      "⚠️ EndScreen test requires combat match completion - using mock flow",
-    );
-  };
-
   it("should display victory screen with statistics after combat win", () => {
     cy.annotate("Testing EndScreen - Victory Flow with Statistics");
 

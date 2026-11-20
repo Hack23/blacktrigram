@@ -5,7 +5,7 @@
  * Updated to work with BaseButtonOverlayHtml structure
  */
 
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { PlayerArchetype } from "../../../../types/common";
@@ -41,7 +41,7 @@ describe("ReturnToMenuButton", () => {
       <ReturnToMenuButton onClick={onClick} isMobile={false} />,
     );
 
-    await user.click(screen.getByTestId("return-to-menu-button"));
+    await act(() => user.click(screen.getByTestId("return-to-menu-button")));
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
@@ -57,7 +57,7 @@ describe("ReturnToMenuButton", () => {
       />,
     );
 
-    await user.hover(screen.getByTestId("return-to-menu-button"));
+    await act(() => user.hover(screen.getByTestId("return-to-menu-button")));
     expect(onMouseEnter).toHaveBeenCalled();
   });
 

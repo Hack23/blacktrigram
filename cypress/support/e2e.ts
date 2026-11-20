@@ -13,41 +13,14 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import support modules using require() instead of import for Cypress 15 webpack
-// compatibility. ES module imports of side-effect-only modules (like Cypress command
-// registrations) are tree-shaken by the webpack bundler, causing all custom commands
-// to be undefined. Using require() ensures the modules execute and register commands.
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-require("./commands");
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-require("./performance");
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-require("./test-isolation");
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-require("./resource-monitoring");
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-require("./memory-monitor");
+import "./commands";
+import "./performance";
+import "./test-isolation";
+import "./resource-monitoring";
+import "./memory-monitor";
 
-// Import cypress-wait-until for waitUntil command
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-require("cypress-wait-until");
-
-// Task to silence WebGL warnings
-Cypress.on("window:before:load", (win) => {
-  // Silence console errors related to WebGL
-  const originalConsoleError = win.console.error;
-  win.console.error = (...args) => {
-    // Don't log errors about WebGL context to keep test output clean
-    if (
-      args[0]?.includes &&
-      (args[0].includes("WebGL") ||
-        args[0].includes("browser does not support WebGL"))
-    ) {
-      return;
-    }
-    originalConsoleError(...args);
-  };
-});
+let appWindow: (Window & { readonly __blackTrigramMockWebGL?: boolean }) | undefined;
+Cypress.on("window:before:load", (win) => { appWindow = win; });
 
 // Global test isolation and cleanup hooks
 beforeEach(() => {
@@ -81,34 +54,13 @@ beforeEach(() => {
   // Calling cy.mockWebGL() here would only patch the current (blank) window
   // which gets replaced by cy.visit().
 
-  // Start resource monitoring for leak detection (best-effort; command may
-  // not be registered if resource-monitoring.ts fails to load)
-  try { cy.startResourceMonitoring(); } catch { /* command may not be registered */ }
+  if (Cypress.expose("ENABLE_MEMORY_MONITOR") === true) cy.startResourceMonitoring();
 });
 
-afterEach(function () {
-  // All cleanup here is best-effort — failures must not cascade into the
-  // next test.  testIsolation: true already gives each test a clean page.
-  // IMPORTANT: None of these operations use Cypress assertions (.should),
-  // so they cannot trigger the Cypress.on("fail") handler.
-
-  // Detect resource leaks (logs only, no assertions; best-effort)
-  try { cy.detectResourceLeaks(); } catch { /* command may not be registered */ }
-
-  // Log test result for monitoring
-  const testResult = this.currentTest?.state ?? "unknown";
-  const testName = this.currentTest?.title ?? "unknown";
-  const testDuration = this.currentTest?.duration ?? 0;
-
-  cy.task("logTestMetrics", {
-    test: testName,
-    status: testResult,
-    duration: testDuration,
-  });
-
-  // Force cleanup of remaining resources via ResourceMonitor (audio, WebGL, PixiJS,
-  // performance entries, gc). All cleanup is centralized in forceCleanup().
-  try { cy.forceResourceCleanup(); } catch { /* command may not be registered */ }
+afterEach(() => {
+  // Cypress clears the document between tests. A running canvas still belongs
+  // to R3F: forcing context loss here races its own disposal/restore handlers.
+  if (Cypress.expose("ENABLE_MEMORY_MONITOR") === true) cy.detectResourceLeaks();
 });
 
 // Improve visual test feedback
@@ -122,6 +74,9 @@ Cypress.on("test:before:run", () => {
 // Broad patterns like "is not a function" or "Cannot read properties" are NOT
 // included so genuine app regressions still fail the test run.
 Cypress.on("uncaught:exception", (err, _runnable) => {
+  // Only legacy specs that explicitly install the GL stub may encounter its
+  // incomplete API. Never ignore exceptions from the real renderer smoke test.
+  if (!appWindow?.__blackTrigramMockWebGL) return;
   const msg = err.message;
   // Audio loading/playback failures (non-critical in headless)
   if (

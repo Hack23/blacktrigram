@@ -142,27 +142,26 @@ export const Player3DWithTransitions: React.FC<
         {...playerProps}
       />
 
-      {/* Floating stance symbol */}
-      {enableStanceSymbol && (
-        <StanceSymbol3D
-          stance={stance}
-          heightOffset={2.5}
-          animated={true}
-          scale={isMobile ? 0.8 : 1.0} // Smaller on mobile
-          showName={!isMobile} // Hide Korean name on mobile for clarity
-        />
-      )}
-
-      {/* Stance transition effect */}
-      {enableTransitionEffects && isTransitioning && (
-        <StanceTransitionEffect
-          fromStance={fromStance}
-          toStance={stance}
-          onTransitionComplete={handleTransitionComplete}
-          duration={transitionDuration}
-          showNameOverlay={!isMobile} // Hide overlay on mobile
-        />
-      )}
+      <group position={playerProps.position}>
+        {enableStanceSymbol && (
+          <StanceSymbol3D
+            stance={stance}
+            heightOffset={2.5}
+            animated={true}
+            scale={isMobile ? 0.8 : 1.0}
+            showName={!isMobile}
+          />
+        )}
+        {enableTransitionEffects && isTransitioning && (
+          <StanceTransitionEffect
+            fromStance={fromStance}
+            toStance={stance}
+            onTransitionComplete={handleTransitionComplete}
+            duration={transitionDuration}
+            showNameOverlay={!isMobile}
+          />
+        )}
+      </group>
     </group>
   );
 };

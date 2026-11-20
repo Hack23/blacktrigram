@@ -209,8 +209,8 @@ describe('Footwork Skeletal Animation System', () => {
   });
 
   describe('Animation Map Integration', () => {
-    it('should contain all 9 footwork animations', () => {
-      expect(FOOTWORK_ANIMATIONS.size).toBe(9);
+    it('should contain all 10 footwork animations', () => {
+      expect(FOOTWORK_ANIMATIONS.size).toBe(10);
     });
 
     it('should have all expected animation keys', () => {

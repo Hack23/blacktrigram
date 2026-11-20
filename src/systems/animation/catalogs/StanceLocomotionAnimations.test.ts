@@ -10,7 +10,9 @@
 
 import { BoneName } from "@/types/skeletal";
 import { describe, expect, it } from "vitest";
+import { createHumanoidRig, getBoneWorldPosition } from "../builders/SkeletonRig";
 import { ALL_ANIMATIONS, getAnimation } from "../core/AnimationRegistry";
+import { prepareSkeletalPose, SkeletalPosePlayback } from "../core/SkeletalPosePlayback";
 import {
   GAM_RUN_ANIMATION,
   GAM_WALK_ANIMATION,
@@ -36,6 +38,21 @@ import {
 } from "./StanceLocomotionAnimations";
 
 describe("StanceLocomotionAnimations", () => {
+  it.each([GEON_WALK_ANIMATION, GEON_RUN_ANIMATION])("widens $name while keeping feet attached at their bind offsets", (clip) => {
+    const rig = createHumanoidRig();
+    const left = rig.bones.get(BoneName.FOOT_L);
+    const right = rig.bones.get(BoneName.FOOT_R);
+    if (!left || !right) throw new Error("Missing test rig feet");
+    const restWidth = getBoneWorldPosition(right).x - getBoneWorldPosition(left).x;
+    const playback = new SkeletalPosePlayback(rig);
+    const pose = prepareSkeletalPose(clip);
+    for (const keyframe of clip.keyframes) {
+      playback.apply(pose, keyframe.time);
+      expect(left.position.equals(left.restPosition)).toBe(true);
+      expect(right.position.equals(right.restPosition)).toBe(true);
+      expect(getBoneWorldPosition(right).x - getBoneWorldPosition(left).x).toBeGreaterThan(restWidth);
+    }
+  });
   describe("Walk Animations", () => {
     it("should have 8 trigram-specific walk animations", () => {
       expect(STANCE_WALK_ANIMATIONS.size).toBe(8);

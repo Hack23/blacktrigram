@@ -134,7 +134,9 @@ describe("TechniqueCard", () => {
     it("should use Korean font family", () => {
       const { container } = render(<TechniqueCard {...defaultProps} />);
       const card = container.querySelector('[data-testid^="technique-card"]') as HTMLElement;
-      expect(card.style.fontFamily).toBe(FONT_FAMILY.KOREAN);
+      expect(card.style.fontFamily.replace(/"/g, "")).toBe(
+        FONT_FAMILY.KOREAN.replace(/"/g, "")
+      );
     });
   });
 
@@ -162,7 +164,7 @@ describe("TechniqueCard", () => {
           <TechniqueCard {...defaultProps} isSelected={true} isAvailable={true} />
         );
         const card = container.querySelector('[data-testid^="technique-card"]') as HTMLElement;
-        expect(card.style.boxShadow).toContain("0 0 15px");
+        expect(card.style.boxShadow).toMatch(/0(px)? 0(px)? 15px/);
         expect(card.style.boxShadow).toContain("rgba(0, 255, 255");
       });
 
@@ -171,7 +173,9 @@ describe("TechniqueCard", () => {
           <TechniqueCard {...defaultProps} isSelected={true} isAvailable={false} />
         );
         const card = container.querySelector('[data-testid^="technique-card"]') as HTMLElement;
-        expect(card.style.boxShadow).toBe("0 2px 8px rgba(0, 0, 0, 0.5)");
+        expect(card.style.boxShadow).toMatch(/0(px)? 2px 8px/);
+        expect(card.style.boxShadow).toContain("rgba(0, 0, 0, 0.5)");
+        expect(card.style.boxShadow).not.toMatch(/0(px)? 0(px)? 15px/);
       });
     });
 
@@ -771,7 +775,9 @@ describe("TechniqueCard", () => {
     it("should use Korean font family", () => {
       const { container } = render(<TechniqueCard {...defaultProps} />);
       const card = container.querySelector('[data-testid^="technique-card"]') as HTMLElement;
-      expect(card.style.fontFamily).toBe(FONT_FAMILY.KOREAN);
+      expect(card.style.fontFamily.replace(/"/g, "")).toBe(
+        FONT_FAMILY.KOREAN.replace(/"/g, "")
+      );
     });
 
     it("should display Korean characters correctly", () => {

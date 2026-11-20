@@ -49,15 +49,16 @@ const DEFAULT_BODY_PART_MAX_HEALTH: BodyPartMaxHealth = {
 };
 
 /**
- * Create a complete PlayerState from archetype and player index
+ * Create a complete PlayerState, optionally with a position in the caller's coordinate system.
  */
 export function createPlayerFromArchetype(
   archetype: PlayerArchetype,
   playerIndex: number,
+  position?: Position,
 ): PlayerState {
   const archetypeData = PLAYER_ARCHETYPES_DATA[archetype];
 
-  const basePosition: Position = {
+  const basePosition: Position = position ? { ...position } : {
     x: playerIndex === 0 ? 300 : 500,
     y: 400,
   };

@@ -12,6 +12,7 @@
  */
 
 import { BoneName } from "@/types/skeletal";
+import { Vector3 } from "three";
 import { describe, expect, it } from "vitest";
 import {
   BASIC_ANIMATIONS,
@@ -25,6 +26,17 @@ import {
 } from "./BasicAnimations";
 
 describe("BasicAnimations", () => {
+  it.each([
+    [FALL_SIDE_LEFT_ANIMATION, -1],
+    [FALL_SIDE_RIGHT_ANIMATION, 1],
+  ] as const)("lands on the named side without yawing the torso into the depth axis", (clip, direction) => {
+    const rotation = clip.keyframes.at(-1)?.boneRotations.get(BoneName.PELVIS);
+    if (!rotation) throw new Error("Missing terminal pelvis key");
+    const up = new Vector3(0, 1, 0).applyEuler(rotation);
+    expect(up.x).toBeCloseTo(direction);
+    expect(up.y).toBeCloseTo(0);
+    expect(up.z).toBeCloseTo(0);
+  });
   describe("IDLE_ANIMATION (대기)", () => {
     it("should be defined with correct properties", () => {
       expect(IDLE_ANIMATION).toBeDefined();

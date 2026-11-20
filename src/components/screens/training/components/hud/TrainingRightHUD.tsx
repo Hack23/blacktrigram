@@ -168,7 +168,7 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
         }}
         data-testid="training-right-hud-bottom-section"
       >
-        {trainingMode === "footwork" || trainingMode === "combo_practice" ? (
+        {trainingMode === "footwork" ? (
           <FootworkDrillsOverlayHtml
             currentDrill={footworkDrillType}
             onDrillChange={onStartFootworkDrill}

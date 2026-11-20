@@ -11,7 +11,6 @@
  * @korean 훈련인형3D컴포넌트
  */
 
-import { useFrame } from "@react-three/fiber";
 import React, {
   useCallback,
   useEffect,
@@ -61,6 +60,7 @@ export interface TrainingDummy3DProps {
   readonly archetype?: PlayerArchetype;
   /** Current stance for the dummy */
   readonly stance?: TrigramStance;
+  readonly opponentPosition?: readonly [number, number, number];
 }
 
 /**
@@ -230,8 +230,8 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   isMobile = false,
   archetype = PlayerArchetype.MUSA,
   stance = TrigramStance.GEON,
+  opponentPosition,
 }) => {
-  const groupRef = useRef<THREE.Group>(null);
   const [isStunned, setIsStunned] = useState(false);
 
   const vitalPoints = useMemo(
@@ -257,6 +257,7 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   }, [difficulty]);
 
   const prevHealthRef = useRef(health);
+  const [impactKey, setImpactKey] = useState(0);
 
   const onDefeatedRef = useRef(onDefeated);
   useEffect(() => {
@@ -264,29 +265,22 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   }, [onDefeated]);
 
   useEffect(() => {
-    if (prevHealthRef.current > 0 && health <= 0) {
+    const previousHealth = prevHealthRef.current;
+    prevHealthRef.current = health;
+    if (previousHealth > 0 && health <= 0) {
       onDefeatedRef.current?.();
     }
 
-    if (prevHealthRef.current - health > 20) {
+    if (health < previousHealth) {
+      setImpactKey((key) => key + 1);
       setIsStunned(true);
       const timer = setTimeout(() => setIsStunned(false), 500);
       return () => clearTimeout(timer);
     }
 
-    prevHealthRef.current = health;
+    setIsStunned(false);
     return undefined;
   }, [health]);
-
-  useFrame((state) => {
-    if (!groupRef.current) return;
-
-    const time = state.clock.elapsedTime;
-    const breathScale = Math.sin(time * 1.5) * 0.01 + 1;
-    groupRef.current.scale.y = breathScale;
-
-    groupRef.current.rotation.y = Math.sin(time * 0.5) * 0.02;
-  });
 
   const handlePointHit = useCallback(
     (pointId: string) => {
@@ -296,15 +290,14 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   );
 
   return (
-    <group ref={groupRef} position={position} name="training-dummy-3d">
+    <group position={position} name="training-dummy-3d">
       {/* SkeletalPlayer3D as the base character model */}
       <SkeletalPlayer3D
         playerId="training-dummy"
         archetype={archetype}
         stance={stance}
         position={[0, 0, 0]}
-        rotation={Math.PI} // Face the player
-        facing="left"
+        rotation={opponentPosition ? Math.atan2(opponentPosition[0] - position[0], opponentPosition[2] - position[2]) : -Math.PI / 2}
         health={health}
         maxHealth={maxHealth}
         stamina={100}
@@ -313,13 +306,12 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
         pain={0}
         consciousness={100}
         isMobile={isMobile}
-        currentAnimation="idle"
+        currentAnimation={health <= 0 ? "ground_supine" : isStunned ? "hit" : "idle"}
+        playbackKey={impactKey}
         isBlocking={false}
         isStunned={isStunned}
-        showHealthBar={false} // We use custom health bar
+        showDetails={false}
         showStanceIndicator={false}
-        enableFacialExpressions={true}
-        enableEyeTracking={true}
       />
 
       {/* Vital point markers overlaid on the skeletal model */}
@@ -348,16 +340,6 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
         />
       )}
 
-      {/* Training mode indicator glow */}
-      {isTraining && (
-        <pointLight
-          position={[0, 1.2, 0.5]}
-          color={KOREAN_COLORS.PRIMARY_CYAN}
-          intensity={0.3}
-          distance={3}
-          decay={2}
-        />
-      )}
     </group>
   );
 };

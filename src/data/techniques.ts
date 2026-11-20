@@ -647,6 +647,7 @@ function convertKoreanToTechnique(koreanTech: KoreanTechnique): Technique {
     keyboardShortcut: "Q", // Placeholder; immediately overridden by getTechniquesForStanceAndArchetype()
     criticalChance: koreanTech.critChance,
     animationDuration: koreanTech.executionTime,
+    animationId: koreanTech.animationId,
   };
 }
 

@@ -1,9 +1,7 @@
-/// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
 import { readFileSync } from "fs";
 import path from "path";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 // Read version from package.json
 interface PackageJson {
@@ -17,7 +15,10 @@ const packageJson: PackageJson = JSON.parse(
 );
 
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react()],
+  resolve: {
+    tsconfigPaths: true,
+  },
   define: {
     APP_VERSION: JSON.stringify(packageJson.version),
     "import.meta.env.APP_VERSION": JSON.stringify(packageJson.version),
@@ -25,7 +26,7 @@ export default defineConfig({
   build: {
     target: "esnext",
     lib: {
-      entry: path.resolve(__dirname, "src/index.ts"),
+      entry: path.resolve(import.meta.dirname, "src/index.ts"),
       formats: ["es"],
       fileName: "index",
     },
