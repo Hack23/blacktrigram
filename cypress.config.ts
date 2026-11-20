@@ -43,6 +43,7 @@ export default defineConfig({
       includePending: true,
     },
     mochawesomeReporterOptions: {
+      consoleReporter: "none", // The spec reporter already prints test results.
       reportDir: REPORTS.mochawesome,
       overwrite: false,
       html: true,
