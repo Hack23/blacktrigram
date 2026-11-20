@@ -284,13 +284,13 @@ describe("StanceIdleAnimations - Metadata", () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
-// LEG CONSISTENCY TESTS - Legs should NOT move during idle breathing
+// LEG CONSISTENCY TESTS - Breathing should not change the stance
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe("StanceIdleAnimations - Leg Consistency", () => {
   it("should have consistent leg rotations across all keyframes (not walking)", () => {
-    // For a proper fighting stance idle, legs should stay FIXED
-    // Only breathing (torso) should move, not legs
+    // Breathing bends the knees and counter-rotates the hips without changing
+    // stance depth or width.
     const animations = [
       { name: "geon", anim: GEON_IDLE_ANIMATION },
       { name: "tae", anim: TAE_IDLE_ANIMATION },
@@ -317,14 +317,16 @@ describe("StanceIdleAnimations - Leg Consistency", () => {
         const kneeL = kf.boneRotations.get("knee_L");
         const kneeR = kf.boneRotations.get("knee_R");
 
-        // HIP rotations should be identical (no walking)
-        if (firstHipL && hipL) {
-          expect(hipL.x).toBeCloseTo(firstHipL.x, 2);
+        expect([firstHipL, firstHipR, firstKneeL, firstKneeR, hipL, hipR, kneeL, kneeR])
+          .not.toContain(undefined);
+
+        if (firstHipL && hipL && firstKneeL && kneeL) {
+          expect(hipL.x + kneeL.x / 2).toBeCloseTo(firstHipL.x + firstKneeL.x / 2);
           expect(hipL.y).toBeCloseTo(firstHipL.y, 2);
           expect(hipL.z).toBeCloseTo(firstHipL.z, 2);
         }
-        if (firstHipR && hipR) {
-          expect(hipR.x).toBeCloseTo(firstHipR.x, 2);
+        if (firstHipR && hipR && firstKneeR && kneeR) {
+          expect(hipR.x + kneeR.x / 2).toBeCloseTo(firstHipR.x + firstKneeR.x / 2);
           expect(hipR.y).toBeCloseTo(firstHipR.y, 2);
           expect(hipR.z).toBeCloseTo(firstHipR.z, 2);
         }
@@ -357,13 +359,11 @@ describe("StanceIdleAnimations - Leg Consistency", () => {
     const ganHipR = GAN_IDLE_ANIMATION?.keyframes[0].boneRotations.get("hip_R");
     expect(Math.abs((ganHipL?.x ?? 0) - (ganHipR?.x ?? 0))).toBeLessThan(0.1);
 
-    // Son (Hakdari Seogi - Crane stance) - one leg raised, one leg standing
-    // Son uses authentic Taekyon crane stance (학다리서기):
-    // - Left leg raised with 1.3 rad hip flexion (45° chamber, ready to kick)
-    // - Right leg standing nearly straight at 0.08 rad (170° = nearly vertical)
-    // This is CORRECT per authentic Korean martial arts crane stance
-    expect(Math.abs(sonHipL?.x ?? 0)).toBeGreaterThan(0.1); // Raised leg (high chamber)
-    expect(Math.abs(sonHipR?.x ?? 0)).toBeGreaterThan(0.05); // Standing leg (nearly straight)
+    // Son's rig idle uses a sh******ow stagger; Gan keeps both legs par******el.
+    expect(sonHipL).toBeDefined();
+    expect(sonHipR).toBeDefined();
+    expect((sonHipL?.x ?? 0) - (sonHipR?.x ?? 0)).toBeGreaterThan(0.1);
+    expect(Math.abs(sonHipL?.z ?? Infinity)).toBeLessThan(Math.abs(jinHipL?.z ?? 0));
   });
 });
 

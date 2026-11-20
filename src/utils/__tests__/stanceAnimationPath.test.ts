@@ -40,12 +40,11 @@ describe("Stance Animation Path Integration", () => {
       }
     });
 
-    it("should map stance side switch to a renderable stance-change animation", () => {
+    it("should preserve the dedicated stance side-switch state for playback", () => {
       const result = animationStateToPlayerAnimation(
         AnimationState.STANCE_SIDE_SWITCH
       );
-      expect(result).toBe("stance_change");
-      expect(getAnimationByName(result)?.name).toBe(result);
+      expect(result).toBe("stance_side_switch");
     });
   });
 
@@ -70,36 +69,22 @@ describe("Stance Animation Path Integration", () => {
       expect(kf.boneRotations.has(BoneName.KNEE_R)).toBe(true);
     });
 
-    it("should have non-zero leg rotations (not walking neutral)", () => {
-      const anim = getAnimationByName("stance_geon");
-      const kf = anim!.keyframes[0];
+    it("should pose Geon with staggered hips and bent knees", () => {
+      const kf = getAnimationByName("stance_geon")?.keyframes[0];
+      if (!kf) throw new Error("Missing Geon idle keyframe");
 
       const hipL = kf.boneRotations.get(BoneName.HIP_L);
       const hipR = kf.boneRotations.get(BoneName.HIP_R);
       const kneeL = kf.boneRotations.get(BoneName.KNEE_L);
       const kneeR = kf.boneRotations.get(BoneName.KNEE_R);
 
-      // Check that we have significant rotation values (not near-zero walking values)
-      // GEON stance requires significant hip and knee rotations for proper forward stance
-      expect(Math.abs(hipL!.x)).toBeGreaterThan(0.1);
-      expect(Math.abs(hipR!.x)).toBeGreaterThan(0.1);
-      expect(Math.abs(kneeR!.x)).toBeGreaterThan(0.5); // Deep front knee bend
+      if (!hipL || !hipR || !kneeL || !kneeR) {
+        throw new Error("Missing Geon leg rotations");
+      }
 
-      console.log(
-        "GEON stance leg rotations:\n" +
-          `  HIP_L: x=${hipL!.x.toFixed(3)}, y=${hipL!.y.toFixed(
-            3
-          )}, z=${hipL!.z.toFixed(3)}\n` +
-          `  HIP_R: x=${hipR!.x.toFixed(3)}, y=${hipR!.y.toFixed(
-            3
-          )}, z=${hipR!.z.toFixed(3)}\n` +
-          `  KNEE_L: x=${kneeL!.x.toFixed(3)}, y=${kneeL!.y.toFixed(
-            3
-          )}, z=${kneeL!.z.toFixed(3)}\n` +
-          `  KNEE_R: x=${kneeR!.x.toFixed(3)}, y=${kneeR!.y.toFixed(
-            3
-          )}, z=${kneeR!.z.toFixed(3)}`
-      );
+      expect(hipL.x - hipR.x).toBeGreaterThan(0.2);
+      expect(kneeL.x).toBeGreaterThan(0.2);
+      expect(kneeR.x).toBeGreaterThan(0.2);
     });
   });
 

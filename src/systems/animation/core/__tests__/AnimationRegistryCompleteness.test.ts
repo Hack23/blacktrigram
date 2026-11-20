@@ -8,6 +8,7 @@
  * @korean 애니메이션레지스트리완전성테스트
  */
 
+import { Vector3 } from "three";
 import { describe, expect, it } from "vitest";
 import { TrigramStance } from "../../../../types/common";
 import { BoneName } from "../../../../types/skeletal";
@@ -285,10 +286,12 @@ describe("AnimationRegistry - Stance Idle Animations", () => {
   ];
 
   const CRITICAL_ARM_BONES = [
-    BoneName.SHOULDER_L,
-    BoneName.SHOULDER_R,
+    BoneName.UPPER_ARM_L,
+    BoneName.UPPER_ARM_R,
     BoneName.ELBOW_L,
     BoneName.ELBOW_R,
+    BoneName.WRIST_L,
+    BoneName.WRIST_R,
   ];
 
   it("all stance idles should have consistent leg positions across keyframes", () => {
@@ -1231,40 +1234,35 @@ describe("AnimationRegistry - Biomechanical Validation (생체역학)", () => {
   });
 
   describe("Guard Poses - Body Protection (신체 보호)", () => {
-    it("stance guards should have elbows tucked to protect ribs (Z < -1.5 rad)", () => {
-      const stanceAnimations = Array.from(ALL_ANIMATIONS.entries())
-        .filter(([name]) => name.startsWith("stance_"))
-        .map(([name, anim]) => ({ name, anim }));
+    it.each(Object.values(TrigramStance))(
+      "%s idle keeps elbows close and forearms raised in the guard pose",
+      (stance) => {
+        const rotations = getAnimation(`stance_${stance}`)?.keyframes[0]?.boneRotations;
+        const arms = [
+          [-1, BoneName.UPPER_ARM_L, BoneName.ELBOW_L],
+          [1, BoneName.UPPER_ARM_R, BoneName.ELBOW_R],
+        ] as const;
 
-      const exposedRibGuards: string[] = [];
-      const MINIMUM_ELBOW_TUCK = -1.5; // Elbow bent inward to protect ribs
+        for (const [side, upperArm, elbow] of arms) {
+          const upperRotation = rotations?.get(upperArm);
+          const elbowRotation = rotations?.get(elbow);
+          if (!upperRotation || !elbowRotation) {
+            throw new Error(`Missing ${upperArm} or ${elbow} rotation in ${stance}`);
+          }
 
-      for (const { name, anim } of stanceAnimations) {
-        if (anim.keyframes.length === 0) continue;
+          // Both arm segments extend along signed X at rest. Compose the
+          // elbow's local rotation with its parent to compare directions.
+          const bindDirection = new Vector3(side, 0, 0);
+          const upperDirection = bindDirection.clone().applyEuler(upperRotation);
+          const forearmDirection = bindDirection.applyEuler(elbowRotation).applyEuler(upperRotation);
 
-        // Check first keyframe (the guard pose)
-        const firstKf = anim.keyframes[0];
-        const elbowL = firstKf.boneRotations.get(BoneName.ELBOW_L);
-        const elbowR = firstKf.boneRotations.get(BoneName.ELBOW_R);
-
-        // Both elbows should be tucked (Z-rotation more negative than -1.5)
-        const leftTucked = elbowL && elbowL.z <= MINIMUM_ELBOW_TUCK;
-        const rightTucked = elbowR && elbowR.z >= -MINIMUM_ELBOW_TUCK; // Right side mirror
-
-        if (!leftTucked || !rightTucked) {
-          const details = `L:${elbowL?.z.toFixed(2) ?? "?"}, R:${elbowR?.z.toFixed(2) ?? "?"}`;
-          exposedRibGuards.push(`${name} (${details})`);
+          expect(Math.abs(upperDirection.x), upperArm).toBeLessThan(0.5);
+          expect(upperDirection.y, upperArm).toBeLessThan(0);
+          expect(forearmDirection.y, elbow).toBeGreaterThan(0);
+          expect(forearmDirection.z, elbow).toBeGreaterThan(0);
         }
-      }
-
-      if (exposedRibGuards.length > 0) {
-        console.warn("⚠️ Stance guards with exposed ribs:", exposedRibGuards);
-      }
-
-      // At least 75% should have proper elbow tuck
-      const passRate = 1 - exposedRibGuards.length / stanceAnimations.length;
-      expect(passRate).toBeGreaterThan(0.75);
-    });
+      },
+    );
 
     it("attack animations should maintain guard hand protection", () => {
       const attackAnimations = Array.from(ALL_ANIMATIONS.entries())
