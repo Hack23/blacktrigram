@@ -1,0 +1,112 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-11-20T10:33:34.331Z",
+    "end": "2026-11-20T10:33:40.763Z",
+    "duration": 6432,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "996479a5-476f-4d35-be4e-37494f160a27",
+      "title": "",
+      "fullFile": "cypress/e2e/webgl-verification.cy.ts",
+      "file": "cypress/e2e/webgl-verification.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "80edf090-7ef8-47a8-b7bc-8536864e6f8f",
+          "title": "Training WebGL2 smoke",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "renders real WebGL2 frames through a Training round trip",
+              "fullTitle": "Training WebGL2 smoke renders real WebGL2 frames through a Training round trip",
+              "timedOut": null,
+              "duration": 6323,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const draws = { count: 0 };\ncy.visit(\"/\", {\n    onBeforeLoad(win) {\n        const prototype = win.WebGL2RenderingContext.prototype;\n        const drawElements = prototype.drawElements;\n        prototype.drawElements = function (...args) {\n            drawElements.apply(this, args);\n            draws.count += 1;\n        };\n    },\n});\ncy.get('[data-testid=\"splash-start-button\"]', { timeout: 15000 }).click();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 15000 }).should(\"be.visible\");\ncy.get(\"body\").type(\"t\");\ncy.get('[data-testid=\"training-screen-3d\"] canvas', { timeout: 15000 }).should(($canvas) => {\n    const canvas = $canvas[0];\n    const gl = canvas.getContext(\"webgl2\");\n    if (!gl)\n        throw new Error(\"Training did not initialize WebGL2\");\n    expect(gl.isContextLost()).to.equal(false);\n    expect(gl.drawingBufferWidth).to.be.greaterThan(0);\n});\ncy.then(() => {\n    const before = draws.count;\n    cy.wrap(draws).its(\"count\", { timeout: 15000 }).should(\"be.greaterThan\", before);\n});\ncy.get('[data-testid=\"training-toggle-targets\"]').click()\n    .should(\"have.attr\", \"aria-pressed\", \"true\");\ncy.get('[data-testid=\"vital-point-overlay-controls\"]').should(\"be.visible\");\ncy.get('[data-testid=\"training-toggle-targets\"]').click()\n    .should(\"have.attr\", \"aria-pressed\", \"false\");\ncy.get('[data-testid=\"return-to-menu-button\"]').click();\ncy.get('[data-testid=\"intro-screen\"]').should(\"be.visible\");",
+              "err": {},
+              "uuid": "602d2290-bdf5-4c26-a67d-e788ed18f4d6",
+              "parentUUID": "80edf090-7ef8-47a8-b7bc-8536864e6f8f",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "602d2290-bdf5-4c26-a67d-e788ed18f4d6"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 6323,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "none",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "8.1.1"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "consoleReporter": "none",
+        "reportDir": "build/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

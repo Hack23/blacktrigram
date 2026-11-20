@@ -2689,6 +2689,8 @@ Korean martial arts hand formations optimized for different vital point targets:
 
 ### Combat Technique Animation
 
+The [skeletal playback hook](src/hooks/useSkeletalAnimation.ts) resolves named arena clips and blends from the outgoing visual pose. Sparse keyframes are sampled without carrying rotations or translations over from a previous clip. Hit, ground, recovery, and footwork states retain dedicated visual poses instead of freezing or collapsing to an idle/walk approximation. The presentation path does not change hit detection, reach, or damage.
+
 Each technique defines:
 - **Bone Transforms**: Position/rotation/scale for all 28 bones across keyframes
 - **Hand Poses**: Left and right hand formations at each keyframe

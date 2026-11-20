@@ -34,16 +34,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">72.41% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>20/28</span>
+                <span class='fraction'>21/29</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.88% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>64/72</span>
+                <span class='fraction'>72/80</span>
             </div>
         
             
@@ -55,9 +55,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.07% </span>
+                <span class="strong">74.07% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/26</span>
+                <span class='fraction'>20/27</span>
             </div>
         
             
@@ -434,19 +434,7 @@
 <a name='L358'></a><a href='#L358'>358</a>
 <a name='L359'></a><a href='#L359'>359</a>
 <a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a>
-<a name='L362'></a><a href='#L362'>362</a>
-<a name='L363'></a><a href='#L363'>363</a>
-<a name='L364'></a><a href='#L364'>364</a>
-<a name='L365'></a><a href='#L365'>365</a>
-<a name='L366'></a><a href='#L366'>366</a>
-<a name='L367'></a><a href='#L367'>367</a>
-<a name='L368'></a><a href='#L368'>368</a>
-<a name='L369'></a><a href='#L369'>369</a>
-<a name='L370'></a><a href='#L370'>370</a>
-<a name='L371'></a><a href='#L371'>371</a>
-<a name='L372'></a><a href='#L372'>372</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L361'></a><a href='#L361'>361</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -551,20 +539,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -574,6 +548,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -786,6 +761,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -830,6 +808,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
+import { getFootworkMarkers } from "../footworkMarkers";
 &nbsp;
 /**
  * Footwork drill types for training
@@ -854,57 +833,41 @@ const DRILL_INFO: Record&lt;FootworkDrill, {
   korean: string; 
   english: string; 
   description: string;
-  pattern: string[];
-  keyHints: string;
 }&gt; = {
   circular_left: {
     korean: "원형보 좌회전",
     english: "Circular Left",
     description: "원형보 좌측 | Circle stepping left",
-    pattern: ["Ctrl+A", "Ctrl+A", "Ctrl+A", "Ctrl+A"],
-    keyHints: "Hold Ctrl+A to circle left",
   },
   circular_right: {
     korean: "원형보 우회전",
     english: "Circular Right",
     description: "원형보 우측 | Circle stepping right",
-    pattern: ["Ctrl+D", "Ctrl+D", "Ctrl+D", "Ctrl+D"],
-    keyHints: "Hold Ctrl+D to circle right",
   },
   pivot_combo: {
     korean: "축족회전 연속",
     english: "Pivot Combo",
     description: "좌우 연속 회전 | Continuous pivot rotations",
-    pattern: ["Shift+Ctrl+A", "Shift+Ctrl+D", "Shift+Ctrl+A", "Shift+Ctrl+D"],
-    keyHints: "Alternate Shift+Ctrl+A/D",
   },
   triangle_step: {
     korean: "삼각보법",
     english: "Triangle Step",
     description: "삼각형 발놀림 | Triangle footwork pattern",
-    pattern: ["Ctrl+W", "Shift+Ctrl+D", "Ctrl+S", "Shift+Ctrl+A"],
-    keyHints: "Forward → Pivot → Back → Pivot",
   },
   slide_drill: {
     korean: "미끄럼보 사방",
     english: "Slide Drill",
     description: "사방 미끄럼 | Four-direction slides",
-    pattern: ["Ctrl+W", "Alt+D", "Ctrl+S", "Alt+A"],
-    keyHints: "Slide in all four directions",
   },
   shuffle_practice: {
     korean: "섞음보 연습",
     english: "Shuffle Practice",
     description: "빠른 조정 | Quick micro-adjustments",
-    pattern: ["Shift+Ctrl+W", "Shift+Ctrl+W", "Shift+Ctrl+W"],
-    keyHints: "Rapid Shift+Ctrl+W/S",
   },
   free_practice: {
     korean: "자유 연습",
     english: "Free Practice",
     description: "자유 보법 | Free footwork exploration",
-    pattern: [],
-    keyHints: "Use any footwork combination",
   },
 };
 &nbsp;
@@ -946,6 +909,7 @@ export const FootworkDrillsOverlayHtml = React.memo&lt;FootworkDrillsOverlayHtml
     isMobile,
   }) =&gt; {
   const drillInfo = DRILL_INFO[currentDrill];
+  const waypoints = getFootworkMarkers(currentDrill === "free_practice" ? "none" : currentDrill, [0, 0, 0]);
   const [showInstructions, setShowInstructions] = useState(true);
 &nbsp;
   useEffect(() =&gt; {
@@ -1065,7 +1029,7 @@ export const FootworkDrillsOverlayHtml = React.memo&lt;FootworkDrillsOverlayHtml
       &lt;/div&gt;
 &nbsp;
       {/* Pattern Steps (if drill has pattern) */}
-      {drillInfo.pattern.length &gt; 0 &amp;&amp; (
+      {waypoints.length &gt; 0 &amp;&amp; (
         &lt;div style={{ marginBottom: "10px" }}&gt;
           &lt;div
             style={{
@@ -1076,7 +1040,7 @@ export const FootworkDrillsOverlayHtml = React.memo&lt;FootworkDrillsOverlayHtml
               textAlign: "center",
             }}
           &gt;
-            Pattern Steps:
+            순서 | Waypoints
           &lt;/div&gt;
           &lt;div
             style={{
@@ -1086,9 +1050,10 @@ export const FootworkDrillsOverlayHtml = React.memo&lt;FootworkDrillsOverlayHtml
               flexWrap: "wrap",
             }}
           &gt;
-            {drillInfo.pattern.map((step, index) =&gt; (
+            {waypoints.map(({ label }, index) =&gt; (
               &lt;div
-                key={index}
+                key={label}
+                aria-current={isActive &amp;&amp; index === currentStep ? "step" : undefined}
                 style={{
                   padding: "4px 8px",
                   fontSize: isMobile ? "9px" : "10px",
@@ -1113,7 +1078,7 @@ export const FootworkDrillsOverlayHtml = React.memo&lt;FootworkDrillsOverlayHtml
                   fontWeight: isActive &amp;&amp; index === currentStep ? "bold" : "normal",
                 }}
               &gt;
-                {index + 1}. {step}
+                {label}
               &lt;/div&gt;
             ))}
           &lt;/div&gt;
@@ -1134,7 +1099,9 @@ export const FootworkDrillsOverlayHtml = React.memo&lt;FootworkDrillsOverlayHtml
             color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
           }}
         &gt;
-          💡 {drillInfo.keyHints}
+          {waypoints.length &gt; 0
+            ? "번호 순서대로 이동 | Follow the numbered floor markers"
+            : "자유롭게 이동 | Move freely"}
         &lt;/div&gt;
       )}
 &nbsp;
@@ -1194,7 +1161,7 @@ export default FootworkDrillsOverlayHtml;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-06T17:24:36.014Z
+                at 2026-11-20T10:40:51.662Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

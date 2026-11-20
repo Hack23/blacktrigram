@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="../theme.js"></script>
     <style type='text/css'>
         .coverage-summary .sorter {
             background-image: url(../sort-arrow-sprite.png);
@@ -19,6 +20,16 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
+        
+        <label class="theme-select quiet">
+            Theme
+            <select id="themeSelect" autocomplete="off">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="legacy">Legacy</option>
+            </select>
+        </label>
+
         <h1><a href="../index.html">All files</a> / <a href="index.html">types</a> player-visual.ts</h1>
         <div class='clearfix'>
             
@@ -241,39 +252,7 @@
 <a name='L176'></a><a href='#L176'>176</a>
 <a name='L177'></a><a href='#L177'>177</a>
 <a name='L178'></a><a href='#L178'>178</a>
-<a name='L179'></a><a href='#L179'>179</a>
-<a name='L180'></a><a href='#L180'>180</a>
-<a name='L181'></a><a href='#L181'>181</a>
-<a name='L182'></a><a href='#L182'>182</a>
-<a name='L183'></a><a href='#L183'>183</a>
-<a name='L184'></a><a href='#L184'>184</a>
-<a name='L185'></a><a href='#L185'>185</a>
-<a name='L186'></a><a href='#L186'>186</a>
-<a name='L187'></a><a href='#L187'>187</a>
-<a name='L188'></a><a href='#L188'>188</a>
-<a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a>
-<a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a>
-<a name='L194'></a><a href='#L194'>194</a>
-<a name='L195'></a><a href='#L195'>195</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L179'></a><a href='#L179'>179</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -463,7 +442,7 @@
  * @korean 플레이어시각타입
  */
 &nbsp;
-import type { BodyFacing } from "../systems/animation/core/types";
+import type { AnimationState, BodyFacing } from "../systems/animation/core/types";
 import type { PlayerArchetype, TrigramStance } from "./common";
 import type { FacialDamageState, FacialExpression } from "./facial";
 &nbsp;
@@ -483,31 +462,11 @@ export type BalanceState = "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS";
  * @korean 애니메이션상태
  */
 export type PlayerAnimation =
-  | "idle"
-  | "attack"
-  | "defend"
-  | "hit"
-  | "stance_change"
-  | "stance_side_switch"
+  | Exclude&lt;`${AnimationState}`, `stance_guard_${string}` | "ko"&gt;
   | "technique_execute"
-  | "walk"
-  | "run" // Running animation (달리기)
   | "block"
   | "counter"
   | "death"
-  // Fall animations (낙법)
-  | "fall_forward"
-  | "fall_backward"
-  | "fall_side_left"
-  | "fall_side_right"
-  | "step_forward"
-  | "step_back"
-  | "step_left"
-  | "step_right"
-  | "step_forward_left"
-  | "step_forward_right"
-  | "step_back_left"
-  | "step_back_right"
   // Stance-specific idle animations (팔괘 자세 애니메이션)
   | "stance_geon" // ☰ 건 (Heaven) - Forward stance
   | "stance_tae" // ☱ 태 (Lake) - Cat stance
@@ -569,6 +528,10 @@ export interface Player3DUnifiedProps {
   readonly isCountering?: boolean;
   /** Current animation state @korean 현재애니메이션 */
   readonly currentAnimation: PlayerAnimation;
+  /** Optional action-instance token for replaying the same clip without a state change. */
+  readonly playbackKey?: string | number;
+  /** Optional time sampled from a shared game animation clock. */
+  readonly clipTimeSeconds?: number;
   /** Whether rendering for mobile device @korean 모바일여부 */
   readonly isMobile: boolean;
   /** Player display name (Korean and English) @korean 이름 */
@@ -652,7 +615,7 @@ export interface StanceAuraProps {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-09-01T22:26:46.964Z
+                at 2026-11-20T10:40:51.930Z
             </div>
         <script src="../prettify.js"></script>
         <script>

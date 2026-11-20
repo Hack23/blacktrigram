@@ -43,7 +43,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -316,16 +316,8 @@
 <a name='L240'></a><a href='#L240'>240</a>
 <a name='L241'></a><a href='#L241'>241</a>
 <a name='L242'></a><a href='#L242'>242</a>
-<a name='L243'></a><a href='#L243'>243</a>
-<a name='L244'></a><a href='#L244'>244</a>
-<a name='L245'></a><a href='#L245'>245</a>
-<a name='L246'></a><a href='#L246'>246</a>
-<a name='L247'></a><a href='#L247'>247</a>
-<a name='L248'></a><a href='#L248'>248</a>
-<a name='L249'></a><a href='#L249'>249</a>
-<a name='L250'></a><a href='#L250'>250</a>
-<a name='L251'></a><a href='#L251'>251</a>
-<a name='L252'></a><a href='#L252'>252</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L243'></a><a href='#L243'>243</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -402,25 +394,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">94x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">94x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -429,8 +412,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">94x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -627,6 +609,7 @@ export interface TrainingTopHUDProps {
   readonly onArchetypeSelect: (archetype: PlayerArchetype) =&gt; void;
   /** Whether vital point overlay is visible */
   readonly overlayVisible: boolean;
+  readonly onToggleOverlay: () =&gt; void;
   /** Handler for returning to menu */
   readonly onReturnToMenu: () =&gt; void;
   /** Handler for playing sound effects */
@@ -650,6 +633,7 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
   selectedArchetype,
   onArchetypeSelect,
   overlayVisible,
+  onToggleOverlay,
   onReturnToMenu,
   onPlaySFX,
 }) =&gt; {
@@ -723,8 +707,7 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
           data-testid="training-top-hud-center-section"
         &gt;
           {/* Vital Point Hint */}
-          {!overlayVisible &amp;&amp; (
-            &lt;div
+            &lt;button type="button" onClick={onToggleOverlay} aria-pressed={overlayVisible}
               style={{
                 padding: `${SPACING.xxs} ${SPACING_ADJUSTMENTS.xsPlus}`,
                 background: HUD_STYLE.background,
@@ -734,21 +717,13 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
                 fontFamily: TYPOGRAPHY.bodySmall.fontFamily,
                 color: HIERARCHY.accent.color,
                 whiteSpace: "nowrap",
+                pointerEvents: "auto",
+                cursor: "pointer",
               }}
-              data-testid="vital-point-hint"
+              data-testid="training-toggle-targets"
             &gt;
-              💡 Press{" "}
-              &lt;span
-                style={{
-                  color: HIERARCHY.gold.color,
-                  fontWeight: "bold",
-                }}
-              &gt;
-                V
-              &lt;/span&gt;{" "}
-              for vital points
-            &lt;/div&gt;
-          )}
+              급소 보기 | Targets (V)
+            &lt;/button&gt;
 &nbsp;
           {/* Archetype Selector */}
           &lt;div
@@ -786,8 +761,8 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
       )}
 &nbsp;
       {/* Mobile Center - Just vital point hint */}
-      {isMobile &amp;&amp; !overlayVisible &amp;&amp; (
-        &lt;div
+      {isMobile &amp;&amp; (
+        &lt;button type="button" onClick={onToggleOverlay} aria-pressed={overlayVisible}
           style={{
             padding: `${SPACING.xxs} ${SPACING.xs}`,
             background: HUD_STYLE.background,
@@ -796,14 +771,12 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
             fontSize: TYPOGRAPHY.caption.fontSize,
             fontFamily: TYPOGRAPHY.caption.fontFamily,
             color: HIERARCHY.accent.color,
+            pointerEvents: "auto",
           }}
-          data-testid="training-top-hud-center-section"
+          data-testid="training-toggle-targets"
         &gt;
-          &lt;span style={{ color: HIERARCHY.gold.color }}&gt;
-            V
-          &lt;/span&gt;{" "}
-          = 급소
-        &lt;/div&gt;
+          급소 | Targets
+        &lt;/button&gt;
       )}
 &nbsp;
       {/* Right Section - Return to Menu */}
@@ -834,7 +807,7 @@ export default TrainingTopHUD;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-06T17:24:36.327Z
+                at 2026-11-20T10:40:51.930Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

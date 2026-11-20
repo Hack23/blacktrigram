@@ -34,9 +34,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.8% </span>
+                <span class="strong">41.7% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>324/775</span>
+                <span class='fraction'>322/772</span>
             </div>
         
             
@@ -55,9 +55,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.48% </span>
+                <span class="strong">41.46% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>312/752</span>
+                <span class='fraction'>311/750</span>
             </div>
         
             
@@ -2949,15 +2949,7 @@
 <a name='L2873'></a><a href='#L2873'>2873</a>
 <a name='L2874'></a><a href='#L2874'>2874</a>
 <a name='L2875'></a><a href='#L2875'>2875</a>
-<a name='L2876'></a><a href='#L2876'>2876</a>
-<a name='L2877'></a><a href='#L2877'>2877</a>
-<a name='L2878'></a><a href='#L2878'>2878</a>
-<a name='L2879'></a><a href='#L2879'>2879</a>
-<a name='L2880'></a><a href='#L2880'>2880</a>
-<a name='L2881'></a><a href='#L2881'>2881</a>
-<a name='L2882'></a><a href='#L2882'>2882</a>
-<a name='L2883'></a><a href='#L2883'>2883</a>
-<a name='L2884'></a><a href='#L2884'>2884</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L2876'></a><a href='#L2876'>2876</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3268,12 +3260,6 @@
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3786,10 +3772,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -5492,6 +5474,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -5883,10 +5867,8 @@ import {
   AnimationType,
   determineRecoveryType,
   getAnimation,
-  getAnimationDurationOrFallback,
   getRecoveryAnimationState,
   resolveTechniqueAnimation,
-  TARGET_ANIMATION_FPS,
 } from "../../../systems/animation";
 import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import type { BalancePlayerState } from "../../../systems/combat/BalanceSystem";
@@ -5980,6 +5962,8 @@ import {
   STANCE_INDEX_MAP,
 } from "./helpers";
 import { AnimationUpdater } from "./helpers/AnimationUpdater";
+import { getAttackPresentation } from "../../../utils/attackPresentation";
+import { CombatFighterCamera } from "./helpers/CombatFighterCamera";
 import { AccelerationUpdater } from "../../../systems/movement/helpers/AccelerationUpdater";
 import { isRunningSpeed } from "../../../systems/movement/helpers/accelerationUtils";
 import { useAICombat } from "./hooks/useAICombat";
@@ -6150,15 +6134,9 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 &nbsp;
   const cameraConfig = useMemo(() =&gt; {
     const base = createCameraConfig(isMobile);
-    if (!isPortrait) return base;
     return {
       ...base,
-      fov: Math.min(80, base.fov + 15),
-      position: [base.position[0], base.position[1], base.position[2] + 4] as [
-        number,
-        number,
-        number,
-      ],
+      fov: isPortrait ? 54 : 42,
     };
   }, [isMobile, isPortrait]);
 &nbsp;
@@ -6668,12 +6646,8 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
   });
 &nbsp;
   const preparePlayer1AttackTiming = <span class="fstat-no" title="function not covered" >useCallback((a</span>nimationName: string) =&gt; {
-    const attackDuration = <span class="cstat-no" title="statement not covered" >getAnimationDurationOrFallback(animationName);</span>
-    const attackFrames = <span class="cstat-no" title="statement not covered" >Math.max(</span>
-      1,
-      Math.round(attackDuration * TARGET_ANIMATION_FPS),
-    );
-<span class="cstat-no" title="statement not covered" >    player1HitTriggerFrameRef.current = Math.round(attackFrames * 0.4);</span>
+    const { duration: attackDuration, impactFrame } = <span class="cstat-no" title="statement not covered" >getAttackPresentation(animationName);</span>
+<span class="cstat-no" title="statement not covered" >    player1HitTriggerFrameRef.current = impactFrame;</span>
 <span class="cstat-no" title="statement not covered" >    player1AttackHitFiredRef.current = false;</span>
 <span class="cstat-no" title="statement not covered" >    setPlayer1AttackDuration(attackDuration);</span>
 <span class="cstat-no" title="statement not covered" >    return attackDuration;</span>
@@ -8102,14 +8076,18 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
           failIfMajorPerformanceCaveat: false,
         }}
         dpr={renderConfig.dpr}
-        shadows={false} // Temporarily disable shadows
+        shadows={false} // Soft fighter contact shadows also work on mobile.
 <span class="fstat-no" title="function not covered" >        onCreated={({</span> gl }) =&gt; {
 <span class="cstat-no" title="statement not covered" >          gl.setClearColor(theme.colors.UI_BACKGROUND_DARK, 1);</span>
         }}
       &gt;
-        {/* Lighting - CombatArena3D provides ambient, we add directional for shadows */}
-        &lt;ambientLight intensity={0.6} /&gt;
-        &lt;directionalLight position={[10, 10, 5]} intensity={1.2} /&gt;
+        &lt;CombatFighterCamera
+          first={player1Position3D}
+          second={player2Position3D}
+          fov={cameraConfig.fov}
+          worldWidth={arenaBounds.worldWidthMeters}
+          worldDepth={arenaBounds.worldDepthMeters}
+        /&gt;
 &nbsp;
         {/* Adaptive Quality Wrapper monitors FPS and adjusts quality */}
         &lt;AdaptiveQualityWrapper
@@ -8155,9 +8133,8 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
               {
                 isMobile,
                 facing: "right",
-                enableFacialExpressions: true,
-                enableEyeTracking: true,
                 opponentPosition: player2PositionWithAttackMovement,
+                showDetails: false,
               },
             )}
             currentAnimation={animationStateToPlayerAnimation(
@@ -8166,7 +8143,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
             attackAnimation={player1AttackAnimation}
             laterality={combatState.playerLaterality[0]}
             enableTransitionEffects={!isMobile}
-            enableStanceSymbol={!isMobile}
+            enableStanceSymbol={false}
             enableStanceAudio={true}
           /&gt;
 &nbsp;
@@ -8179,9 +8156,8 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
               {
                 isMobile,
                 facing: "right",
-                enableFacialExpressions: true,
-                enableEyeTracking: true,
                 opponentPosition: player1PositionWithAttackMovement,
+                showDetails: false,
               },
             )}
             currentAnimation={animationStateToPlayerAnimation(
@@ -8190,7 +8166,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
             attackAnimation={player2AttackAnimation}
             laterality={combatState.playerLaterality[1]}
             enableTransitionEffects={!isMobile}
-            enableStanceSymbol={!isMobile}
+            enableStanceSymbol={false}
             enableStanceAudio={true}
           /&gt;
 &nbsp;
@@ -8730,7 +8706,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-06T17:24:36.327Z
+                at 2026-11-20T10:40:51.930Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="../../theme.js"></script>
     <style type='text/css'>
         .coverage-summary .sorter {
             background-image: url(../../sort-arrow-sprite.png);
@@ -19,13 +20,23 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
+        
+        <label class="theme-select quiet">
+            Theme
+            <select id="themeSelect" autocomplete="off">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="legacy">Legacy</option>
+            </select>
+        </label>
+
         <h1><a href="../../index.html">All files</a> / <a href="index.html">systems/trigram</a> TrigramCalculator.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.96% </span>
+                <span class="strong">63.46% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>34/54</span>
+                <span class='fraction'>33/52</span>
             </div>
         
             
@@ -44,9 +55,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.15% </span>
+                <span class="strong">64.7% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>34/53</span>
+                <span class='fraction'>33/51</span>
             </div>
         
             
@@ -331,7 +342,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -400,7 +411,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
@@ -424,31 +435,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3001x</span>
+<span class="cline-any cline-yes">2914x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2992x</span>
+<span class="cline-any cline-yes">2905x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2992x</span>
-<span class="cline-any cline-yes">2992x</span>
-<span class="cline-any cline-yes">2992x</span>
+<span class="cline-any cline-yes">2905x</span>
+<span class="cline-any cline-yes">2905x</span>
+<span class="cline-any cline-yes">2905x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2992x</span>
+<span class="cline-any cline-yes">2905x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2992x</span>
+<span class="cline-any cline-yes">2905x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2992x</span>
-<span class="cline-any cline-yes">2992x</span>
+<span class="cline-any cline-yes">2905x</span>
+<span class="cline-any cline-yes">2905x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -553,7 +564,7 @@ export class TrigramCalculator {
    * Get the optimal counter stance for a given stance
    */
 <span class="fstat-no" title="function not covered" >  getCounterStance(t</span>argetStance: TrigramStance): TrigramStance {
-    let bestCounter = <span class="cstat-no" title="statement not covered" >TrigramStance.GEON;</span>
+    let bestCounter = TrigramStance.GEON;
     let bestEffectiveness = <span class="cstat-no" title="statement not covered" >0;</span>
 &nbsp;
     // Find stance with highest effectiveness against target
@@ -736,7 +747,7 @@ export { STANCE_EFFECTIVENESS_MATRIX };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-09-01T22:26:46.635Z
+                at 2026-11-20T10:40:51.662Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -538,6 +538,9 @@ src/components/screens/combat/components/indicators/StaminaWarning.tsx
 src/components/screens/combat/components/indicators/TechniqueNameDisplay.test.tsx
 src/components/screens/combat/components/indicators/TechniqueNameDisplay.tsx
 src/components/screens/combat/helpers/AnimationUpdater.tsx
+src/components/screens/combat/helpers/CombatFighterCamera.tsx
+src/components/screens/combat/helpers/combatCameraFraming.test.ts
+src/components/screens/combat/helpers/combatCameraFraming.ts
 src/components/screens/combat/helpers/combatHelpers.ts
 src/components/screens/combat/helpers/index.ts
 src/components/screens/combat/hooks/useAICombat.rotation.test.ts
@@ -652,10 +655,6 @@ src/components/screens/training/components/FootworkDrillsOverlayHtml.test.tsx
 src/components/screens/training/components/FootworkDrillsOverlayHtml.tsx
 src/components/screens/training/components/HitFeedbackEffect3D.test.tsx
 src/components/screens/training/components/HitFeedbackEffect3D.tsx
-src/components/screens/training/components/TrainingAICharacter3D.test.tsx
-src/components/screens/training/components/TrainingAICharacter3D.tsx
-src/components/screens/training/components/TrainingArena3D.test.tsx
-src/components/screens/training/components/TrainingArena3D.tsx
 src/components/screens/training/components/TrainingButtonsOverlayHtml.test.tsx
 src/components/screens/training/components/TrainingButtonsOverlayHtml.tsx
 src/components/screens/training/components/TrainingControlsOverlayHtml.test.tsx
@@ -664,8 +663,6 @@ src/components/screens/training/components/TrainingDummy3D.test.tsx
 src/components/screens/training/components/TrainingDummy3D.tsx
 src/components/screens/training/components/TrainingFeedbackOverlayHtml.test.tsx
 src/components/screens/training/components/TrainingFeedbackOverlayHtml.tsx
-src/components/screens/training/components/TrainingHitEffects3D.test.tsx
-src/components/screens/training/components/TrainingHitEffects3D.tsx
 src/components/screens/training/components/TrainingModeSelectorOverlayHtml.test.tsx
 src/components/screens/training/components/TrainingModeSelectorOverlayHtml.tsx
 src/components/screens/training/components/TrainingStatsOverlayHtml.test.tsx
@@ -684,8 +681,7 @@ src/components/screens/training/components/hud/TrainingTopHUD.test.tsx
 src/components/screens/training/components/hud/TrainingTopHUD.tsx
 src/components/screens/training/components/hud/index.ts
 src/components/screens/training/components/index.ts
-src/components/screens/training/hooks/useAttackMovement.test.ts
-src/components/screens/training/hooks/useAttackMovement.ts
+src/components/screens/training/footworkMarkers.ts
 src/components/screens/training/hooks/useTrainingActions.test.ts
 src/components/screens/training/hooks/useTrainingActions.ts
 src/components/screens/training/hooks/useTrainingLayout.responsive.test.ts
@@ -789,12 +785,16 @@ src/components/shared/three/indicators/StanceChangeIndicator.test.tsx
 src/components/shared/three/indicators/StanceChangeIndicator.tsx
 src/components/shared/three/indicators/TrigramSymbol3D.test.tsx
 src/components/shared/three/indicators/TrigramSymbol3D.tsx
+src/components/shared/three/models/FighterContactShadow.tsx
 src/components/shared/three/models/Player3DWithTransitions.test.tsx
 src/components/shared/three/models/Player3DWithTransitions.tsx
 src/components/shared/three/models/SkeletalPlayer3D.guard-visual.test.tsx
 src/components/shared/three/models/SkeletalPlayer3D.tsx
 src/components/shared/three/models/__tests__/combat-integration.test.tsx
+src/components/shared/three/models/__tests__/fighterCostume.test.ts
 src/components/shared/three/models/__tests__/skeletal-animation.test.tsx
+src/components/shared/three/models/fighterCostume.ts
+src/components/shared/three/models/fighterMeshGeometry.ts
 src/components/shared/three/optimization/AdaptiveQuality.test.ts
 src/components/shared/three/optimization/AdaptiveQuality.ts
 src/components/shared/three/optimization/InstancedGeometry.test.tsx
@@ -1067,6 +1067,7 @@ src/systems/animation/catalogs/LiTechniqueAnimations.test.ts
 src/systems/animation/catalogs/LiTechniqueAnimations.ts
 src/systems/animation/catalogs/MovementAnimations.test.ts
 src/systems/animation/catalogs/MovementAnimations.ts
+src/systems/animation/catalogs/PlayerPlaybackClips.ts
 src/systems/animation/catalogs/PunchAnimations.test.ts
 src/systems/animation/catalogs/PunchAnimations.ts
 src/systems/animation/catalogs/RecoveryAnimations.test.ts
@@ -1126,6 +1127,7 @@ src/systems/animation/core/LateralityTransform.test.ts
 src/systems/animation/core/LateralityTransform.ts
 src/systems/animation/core/RecoveryPhaseEnhancer.test.ts
 src/systems/animation/core/RecoveryPhaseEnhancer.ts
+src/systems/animation/core/SkeletalPosePlayback.ts
 src/systems/animation/core/TechniqueAnimationMapper.enhanced.test.ts
 src/systems/animation/core/TechniqueAnimationMapper.test.ts
 src/systems/animation/core/TechniqueAnimationMapper.ts
@@ -1138,6 +1140,7 @@ src/systems/animation/core/TrigramStanceTransitions.test.ts
 src/systems/animation/core/TrigramStanceTransitions.ts
 src/systems/animation/core/WeightTransferAnimations.test.ts
 src/systems/animation/core/__tests__/AnimationRegistryCompleteness.test.ts
+src/systems/animation/core/__tests__/SkeletalPosePlayback.test.ts
 src/systems/animation/core/index.ts
 src/systems/animation/core/types.test.ts
 src/systems/animation/core/types.ts
@@ -1354,6 +1357,7 @@ src/utils/archetypeAssets.test.ts
 src/utils/arenaWorldDimensions.ts
 src/utils/assetConfig.test.ts
 src/utils/assetConfig.ts
+src/utils/attackPresentation.ts
 src/utils/cameraShake.ts
 src/utils/characterScaling.ts
 src/utils/clothingColors.test.ts

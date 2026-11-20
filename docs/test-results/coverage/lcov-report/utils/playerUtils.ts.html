@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="../theme.js"></script>
     <style type='text/css'>
         .coverage-summary .sorter {
             background-image: url(../sort-arrow-sprite.png);
@@ -19,20 +20,30 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
+        
+        <label class="theme-select quiet">
+            Theme
+            <select id="themeSelect" autocomplete="off">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="legacy">Legacy</option>
+            </select>
+        </label>
+
         <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> playerUtils.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.13% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>43/53</span>
+                <span class='fraction'>40/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.27% </span>
+                <span class="strong">78.26% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>34/44</span>
+                <span class='fraction'>36/46</span>
             </div>
         
             
@@ -44,9 +55,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">82.22% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>40/48</span>
+                <span class='fraction'>37/45</span>
             </div>
         
             
@@ -482,7 +493,8 @@
 <a name='L417'></a><a href='#L417'>417</a>
 <a name='L418'></a><a href='#L418'>418</a>
 <a name='L419'></a><a href='#L419'>419</a>
-<a name='L420'></a><a href='#L420'>420</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L420'></a><a href='#L420'>420</a>
+<a name='L421'></a><a href='#L421'>421</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -539,14 +551,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">529x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">529x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">530x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">529x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">530x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -739,7 +752,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -805,7 +818,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -952,15 +965,16 @@ const DEFAULT_BODY_PART_MAX_HEALTH: BodyPartMaxHealth = {
 };
 &nbsp;
 /**
- * Create a complete PlayerState from archetype and player index
+ * Create a complete PlayerState, optionally with a position in the caller's coordinate system.
  */
 export function createPlayerFromArchetype(
   archetype: PlayerArchetype,
   playerIndex: number,
+  position?: Position,
 ): PlayerState {
   const archetypeData = PLAYER_ARCHETYPES_DATA[archetype];
 &nbsp;
-  const basePosition: Position = {
+  const basePosition: Position = position ? { ...position } : {
     x: playerIndex === 0 ? 300 : 500,
     y: 400,
   };
@@ -1327,7 +1341,7 @@ export function <span class="fstat-no" title="function not covered" >getPlayerRe
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-09-01T22:26:46.964Z
+                at 2026-11-20T10:40:51.930Z
             </div>
         <script src="../prettify.js"></script>
         <script>

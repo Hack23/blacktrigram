@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="../../../../theme.js"></script>
     <style type='text/css'>
         .coverage-summary .sorter {
             background-image: url(../../../../sort-arrow-sprite.png);
@@ -19,34 +20,44 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
+        
+        <label class="theme-select quiet">
+            Theme
+            <select id="themeSelect" autocomplete="off">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="legacy">Legacy</option>
+            </select>
+        </label>
+
         <h1><a href="../../../../index.html">All files</a> / <a href="index.html">components/shared/three/models</a> SkeletalPlayer3D.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.13% </span>
+                <span class="strong">56.09% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>55/93</span>
+                <span class='fraction'>69/123</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">49.52% </span>
+                <span class="strong">28.9% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>52/105</span>
+                <span class='fraction'>37/128</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.21% </span>
+                <span class="strong">86.95% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>16/19</span>
+                <span class='fraction'>20/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.82% </span>
+                <span class="strong">55.45% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>50/85</span>
+                <span class='fraction'>61/110</span>
             </div>
         
             
@@ -559,7 +570,59 @@
 <a name='L494'></a><a href='#L494'>494</a>
 <a name='L495'></a><a href='#L495'>495</a>
 <a name='L496'></a><a href='#L496'>496</a>
-<a name='L497'></a><a href='#L497'>497</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L497'></a><a href='#L497'>497</a>
+<a name='L498'></a><a href='#L498'>498</a>
+<a name='L499'></a><a href='#L499'>499</a>
+<a name='L500'></a><a href='#L500'>500</a>
+<a name='L501'></a><a href='#L501'>501</a>
+<a name='L502'></a><a href='#L502'>502</a>
+<a name='L503'></a><a href='#L503'>503</a>
+<a name='L504'></a><a href='#L504'>504</a>
+<a name='L505'></a><a href='#L505'>505</a>
+<a name='L506'></a><a href='#L506'>506</a>
+<a name='L507'></a><a href='#L507'>507</a>
+<a name='L508'></a><a href='#L508'>508</a>
+<a name='L509'></a><a href='#L509'>509</a>
+<a name='L510'></a><a href='#L510'>510</a>
+<a name='L511'></a><a href='#L511'>511</a>
+<a name='L512'></a><a href='#L512'>512</a>
+<a name='L513'></a><a href='#L513'>513</a>
+<a name='L514'></a><a href='#L514'>514</a>
+<a name='L515'></a><a href='#L515'>515</a>
+<a name='L516'></a><a href='#L516'>516</a>
+<a name='L517'></a><a href='#L517'>517</a>
+<a name='L518'></a><a href='#L518'>518</a>
+<a name='L519'></a><a href='#L519'>519</a>
+<a name='L520'></a><a href='#L520'>520</a>
+<a name='L521'></a><a href='#L521'>521</a>
+<a name='L522'></a><a href='#L522'>522</a>
+<a name='L523'></a><a href='#L523'>523</a>
+<a name='L524'></a><a href='#L524'>524</a>
+<a name='L525'></a><a href='#L525'>525</a>
+<a name='L526'></a><a href='#L526'>526</a>
+<a name='L527'></a><a href='#L527'>527</a>
+<a name='L528'></a><a href='#L528'>528</a>
+<a name='L529'></a><a href='#L529'>529</a>
+<a name='L530'></a><a href='#L530'>530</a>
+<a name='L531'></a><a href='#L531'>531</a>
+<a name='L532'></a><a href='#L532'>532</a>
+<a name='L533'></a><a href='#L533'>533</a>
+<a name='L534'></a><a href='#L534'>534</a>
+<a name='L535'></a><a href='#L535'>535</a>
+<a name='L536'></a><a href='#L536'>536</a>
+<a name='L537'></a><a href='#L537'>537</a>
+<a name='L538'></a><a href='#L538'>538</a>
+<a name='L539'></a><a href='#L539'>539</a>
+<a name='L540'></a><a href='#L540'>540</a>
+<a name='L541'></a><a href='#L541'>541</a>
+<a name='L542'></a><a href='#L542'>542</a>
+<a name='L543'></a><a href='#L543'>543</a>
+<a name='L544'></a><a href='#L544'>544</a>
+<a name='L545'></a><a href='#L545'>545</a>
+<a name='L546'></a><a href='#L546'>546</a>
+<a name='L547'></a><a href='#L547'>547</a>
+<a name='L548'></a><a href='#L548'>548</a>
+<a name='L549'></a><a href='#L549'>549</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -597,6 +660,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -707,19 +775,38 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">264x</span>
-<span class="cline-any cline-yes">264x</span>
-<span class="cline-any cline-yes">108x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">264x</span>
 <span class="cline-any cline-yes">108x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-yes">108x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-yes">108x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-yes">108x</span>
+<span class="cline-any cline-yes">108x</span>
+<span class="cline-any cline-yes">108x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -798,14 +885,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">264x</span>
 <span class="cline-any cline-yes">108x</span>
+<span class="cline-any cline-yes">108x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">108x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">108x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -911,10 +998,38 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">264x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1093,6 +1208,11 @@ import { toHexColor } from "../../../../utils/colorHelpers";
 import { getArchetypeSkinTone } from "../../../../utils/colorUtils";
 import BoneRenderer from "../anatomy/BoneRenderer";
 import PlayerStateIndicators from "../effects/PlayerStateIndicators";
+import { FighterContactShadow } from "./FighterContactShadow";
+import { createFighterCostume, getBootSupportHeight, updateFighterCostume } from "./fighterCostume";
+&nbsp;
+const TURN_DAMPING = 12;
+const MAX_BOOT_CORRECTION_METERS = 0.24;
 &nbsp;
 /**
  * Get stance-specific color from Korean theming
@@ -1185,6 +1305,8 @@ export const SkeletalPlayer3D: React.FC&lt;
   isStunned = false,
   isCountering = false,
   currentAnimation,
+  playbackKey,
+  clipTimeSeconds,
   isMobile,
   name,
   scale = 1,
@@ -1213,10 +1335,27 @@ export const SkeletalPlayer3D: React.FC&lt;
     () =&gt; createScaledHumanoidRig(physicalAttributes),
     [physicalAttributes],
   );
+  const costume = useMemo(
+    () =&gt; showSkeleton ? <span class="branch-0 cbranch-no" title="branch not covered" >null : c</span>reateFighterCostume(rig, archetype, isMobile),
+    [rig, archetype, isMobile, showSkeleton],
+  );
+  const footBones = useMemo(() =&gt; ({
+    left: costume?.skeleton.getBoneByName("foot_L"),
+    right: costume?.skeleton.getBoneByName("foot_R"),
+  }), [costume]);
+  const soleProbe = useMemo(() =&gt; new THREE.Vector3(), []);
+  const facingGroup = useRef&lt;THREE.Group&gt;(null);
+  const costumeMount = useRef&lt;THREE.Group&gt;(null);
 &nbsp;
+  useEffect(() =&gt; () =&gt; {
+    costume?.geometry.dispose();
+    costume?.material.dispose();
+    costume?.skeleton.dispose();
+  }, [costume]);
 &nbsp;
   const { updateRigAnimation, diagonalRotationY } = useSkeletalAnimation({
     currentAnimation,
+    playbackKey,
     attackAnimation,
     isBlocking,
     stance,
@@ -1293,15 +1432,15 @@ export const SkeletalPlayer3D: React.FC&lt;
   }, [currentAnimation]);
 &nbsp;
   const calculatedExpression = useMemo(() =&gt; {
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!enableFacialExpressions) {
-<span class="cstat-no" title="statement not covered" >      return FacialExpression.NEUTRAL;</span>
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!enableFacialExpressions) {
+      return FacialExpression.NEUTRAL;
     }
 &nbsp;
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (facialExpression) {
+<span class="cstat-no" title="statement not covered" >    if (facialExpression) {</span>
 <span class="cstat-no" title="statement not covered" >      return facialExpression;</span>
     }
 &nbsp;
-    return getExpressionFromCombatState(
+<span class="cstat-no" title="statement not covered" >    return getExpressionFromCombatState(</span>
       health,
       maxHealth,
       stamina,
@@ -1330,7 +1469,7 @@ export const SkeletalPlayer3D: React.FC&lt;
     if (opponentPosition) {
       return new THREE.Vector3(...opponentPosition);
     }
-    return new THREE.Vector3(facing === "right" ? <span class="branch-0 cbranch-no" title="branch not covered" >5 : -</span>5, 2, 0);
+    return new THREE.Vector3(facing === "right" ? 5 : <span class="branch-1 cbranch-no" title="branch not covered" >-5, 2</span>, 0);
   }, [opponentPosition, facing]);
 &nbsp;
 &nbsp;
@@ -1391,36 +1530,67 @@ export const SkeletalPlayer3D: React.FC&lt;
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    frameCounter.current = (frameCounter.current + 1) % 10;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    updateRigAnimation(rig, safeDelta);</span>
+<span class="cstat-no" title="statement not covered" >    updateRigAnimation(rig, safeDelta, clipTimeSeconds);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    updateHandAnimations(safeDelta);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    updateBalanceAnimations(safeDelta, frameCounter.current);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    updateMuscleActivations(safeDelta, frameCounter.current);</span>
+<span class="cstat-no" title="statement not covered" >    if (showSkeleton) <span class="cstat-no" title="statement not covered" >updateMuscleActivations(safeDelta, frameCounter.current);</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (bodyFacing) {</span>
       const head = <span class="cstat-no" title="statement not covered" >rig.bones.get("head");</span>
-<span class="cstat-no" title="statement not covered" >      if (head) {</span>
+<span class="cstat-no" title="statement not covered" >      if (head &amp;&amp; currentAnimation === "idle") {</span>
         const headRotation = <span class="cstat-no" title="statement not covered" >getHeadAngleRadians(bodyFacing);</span>
-<span class="cstat-no" title="statement not covered" >        head.rotation.y = headRotation;</span>
+<span class="cstat-no" title="statement not covered" >        head.rotation.y = THREE.MathUtils.clamp(headRotation, -0.38, 0.38);</span>
       }
     }
-  });
 &nbsp;
-  const effectiveRotation = diagonalRotationY ?? rotation;
+    const mount = <span class="cstat-no" title="statement not covered" >facingGroup.current;</span>
+<span class="cstat-no" title="statement not covered" >    if (!mount) <span class="cstat-no" title="statement not covered" >return;</span></span>
+    const <span class="cstat-no" title="statement not covered" >diff = (diagonalRotationY ?? rotation) - mount.rotation.y;</span>
+<span class="cstat-no" title="statement not covered" >    mount.rotation.y += Math.atan2(Math.sin(diff), Math.cos(diff)) *</span>
+      (1 - Math.exp(-TURN_DAMPING * safeDelta));
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (costume &amp;&amp; costumeMount.current &amp;&amp; footBones.left &amp;&amp; footBones.right) {</span>
+<span class="cstat-no" title="statement not covered" >      updateFighterCostume(costume, rig, leftHandState, rightHandState);</span>
+      const groundMount = <span class="cstat-no" title="statement not covered" >costumeMount.current;</span>
+      const grounded = <span class="cstat-no" title="statement not covered" >currentAnimation === "idle" || currentAnimation === "defend" ||</span>
+        currentAnimation.startsWith("stance_");
+<span class="cstat-no" title="statement not covered" >      costume.updateWorldMatrix(true, true);</span>
+      const lowestSole = <span class="cstat-no" title="statement not covered" >Math.min(</span>
+        getBootSupportHeight(footBones.left, soleProbe),
+        getBootSupportHeight(footBones.right, soleProbe),
+      );
+      const <span class="cstat-no" title="statement not covered" >relativeSole = (lowestSole - mount.matrixWorld.elements[13]) / scale -</span>
+        groundMount.position.y;
+      const correction = <span class="cstat-no" title="statement not covered" >grounded ? -relativeSole : Math.max(0, -relativeSole);</span>
+<span class="cstat-no" title="statement not covered" >      groundMount.position.y = THREE.MathUtils.damp(</span>
+        groundMount.position.y,
+        THREE.MathUtils.clamp(correction, -MAX_BOOT_CORRECTION_METERS, MAX_BOOT_CORRECTION_METERS),
+        24,
+        safeDelta,
+      );
+    }
+  });
+  const [initialRotation] = useState(rotation);
 &nbsp;
   return (
     &lt;group
+      ref={facingGroup}
       position={position}
-      rotation={[0, effectiveRotation, 0]}
-      scale={[facing === "left" ? -scale : scale, scale, scale]}
+      rotation-y={initialRotation}
+      scale={[facing === "left" ? <span class="branch-0 cbranch-no" title="branch not covered" >-scale : s</span>cale, scale, scale]}
       name={`skeletal-player3d-${playerId}`}
     &gt;
+      {costume &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >&lt;FighterContactShadow /&gt;}</span>
       {/* Inner group for sway animation and helpless lean */}
       &lt;group position={swayPosition} rotation={[helplessRotation, 0, 0]}&gt;
-        {/* Skeletal rig rendering with bone-attached muscles */}
-        &lt;BoneRenderer
+        {costume ? (
+<span class="branch-0 cbranch-no" title="branch not covered" >          &lt;group ref={costumeMount}&gt;</span>
+            &lt;primitive object={costume} /&gt;
+          &lt;/group&gt;
+        ) : &lt;BoneRenderer
           rig={rig}
           color={bodyColor}
           showBones={true}
@@ -1444,20 +1614,17 @@ export const SkeletalPlayer3D: React.FC&lt;
           muscleStates={muscleStates}
           isExhausted={stamina &lt; 20}
           archetype={archetype}
-        /&gt;
+        /&gt;}
 &nbsp;
-        {/* Clothing is now rendered via BoneClothing inside BoneRenderer */}
-        {/* This ensures clothing inherits bone transforms automatically */}
-&nbsp;
-        {/* Blocking shield effect */}
+        {/* A floor accent leaves the guard silhouette visible. */}
         {isBlocking &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >          &lt;mesh position={[0, 1.2, 0.3]}&gt;</span>
-            &lt;circleGeometry args={[0.5, 32]} /&gt;
+<span class="branch-1 cbranch-no" title="branch not covered" >          &lt;mesh position={[0, 0.014, 0]} rotation={[-Math.PI / 2, 0, 0]}&gt;</span>
+            &lt;ringGeometry args={[0.44, 0.46, 32]} /&gt;
             &lt;meshBasicMaterial
               color={KOREAN_COLORS.PRIMARY_BLUE}
               transparent
-              opacity={0.5}
-              side={2}
+              opacity={0.8}
+              depthWrite={false}
             /&gt;
           &lt;/mesh&gt;
         )}
@@ -1471,9 +1638,9 @@ export const SkeletalPlayer3D: React.FC&lt;
         )}
 &nbsp;
         {/* Player name overlay */}
-        {showDetails &amp;&amp; name &amp;&amp; (
-          &lt;Html
-            position={[0, 2.8, 0]}
+        {showDetails &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >name &amp;&amp; (</span>
+<span class="branch-2 cbranch-no" title="branch not covered" >          &lt;Html</span>
+            position={[0, 2.13, 0]}
             center
             distanceFactor={isMobile ? 15 : 10}
             occlude={false}
@@ -1483,7 +1650,7 @@ export const SkeletalPlayer3D: React.FC&lt;
               style={{
                 fontFamily: FONT_FAMILY.KOREAN,
                 textAlign: "center",
-                color: "white",
+                color: toHexColor(KOREAN_COLORS.TEXT_PRIMARY),
                 textShadow: "0 0 4px rgba(0,0,0,0.8)",
               }}
             &gt;
@@ -1496,7 +1663,7 @@ export const SkeletalPlayer3D: React.FC&lt;
                 }}
                 data-testid="player-name"
               &gt;
-                {name.korean}
+                {name.korean} | {name.english}
               &lt;/div&gt;
 &nbsp;
               {/* Trigram symbol */}
@@ -1514,16 +1681,16 @@ export const SkeletalPlayer3D: React.FC&lt;
 &nbsp;
               {/* Combat state text */}
               {(isBlocking || isStunned || isCountering) &amp;&amp; (
-<span class="branch-3 cbranch-no" title="branch not covered" >                &lt;div</span>
+                &lt;div
                   style={{
                     fontSize: isMobile ? "10px" : "12px",
                     fontWeight: "bold",
-                    color: "#ffff00",
+                    color: toHexColor(KOREAN_COLORS.WARNING_YELLOW),
                     marginTop: "4px",
                   }}
                   data-testid="combat-state"
                 &gt;
-                  {isBlocking ? "방어" : isStunned ? "기절" : "반격"}
+                  {isBlocking ? "방어 | Guard" : isStunned ? "기절 | Stunned" : "반격 | Counter"}
                 &lt;/div&gt;
               )}
             &lt;/div&gt;
@@ -1532,7 +1699,7 @@ export const SkeletalPlayer3D: React.FC&lt;
 &nbsp;
         {/* State indicators (health, stamina, Ki, balance) */}
         {showDetails &amp;&amp; (
-          &lt;PlayerStateIndicators
+<span class="branch-1 cbranch-no" title="branch not covered" >          &lt;PlayerStateIndicators</span>
             health={health}
             maxHealth={maxHealth}
             stamina={stamina}
@@ -1558,7 +1725,7 @@ export default SkeletalPlayer3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-09-01T22:26:46.964Z
+                at 2026-11-20T10:40:51.930Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
