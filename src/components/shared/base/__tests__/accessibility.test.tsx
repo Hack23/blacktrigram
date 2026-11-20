@@ -183,12 +183,14 @@ describe("Base Components Accessibility (WCAG 2.1 AA)", () => {
         <BaseText korean="한글" english="Korean" />
       );
 
-      const koreanSpan = container.querySelector('span[lang="ko"]');
+      const koreanSpan = container.querySelector<HTMLSpanElement>('span[lang="ko"]');
       const styles = window.getComputedStyle(koreanSpan!);
 
       // Korean typography optimizations
-      expect(styles.lineHeight).toBe("1.6");
-      // React 19.3 + jsdom 30 normalize -0.01em to a computed px value
+      // React 19.3 + jsdom 31 compute unitless line-height 1.6 against 18px font-size to 28.8px
+      expect(koreanSpan!.style.lineHeight).toBe("1.6");
+      expect(styles.lineHeight).toBe("28.8px");
+      // React 19.3 + jsdom 30+ normalize -0.01em to a computed px value
       expect(styles.letterSpacing).toBe("-0.18px");
       expect(styles.wordBreak).toBe("keep-all");
       expect(styles.wordWrap).toBe("break-word");
@@ -353,7 +355,7 @@ describe("Base Components Accessibility (WCAG 2.1 AA)", () => {
       
       // Before focus, outline should be none
       let styles = window.getComputedStyle(button!);
-      expect(styles.outline).toBe("none");
+      expect(styles.outlineStyle).toBe("none");
       
       // After focus, outline should be visible
       button?.focus();

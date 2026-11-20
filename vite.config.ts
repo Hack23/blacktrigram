@@ -1,10 +1,8 @@
-/// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { defineConfig, Plugin } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
-import { glslPlugin } from "./vite-plugins/glsl-plugin";
+import { glslPlugin } from "./vite-plugins/glsl-plugin.ts";
 
 // Read version from package.json
 interface PackageJson {
@@ -55,8 +53,6 @@ export default defineConfig(({ command, mode: _mode }) => ({
   plugins: [
     // Enable React features
     react(),
-    // Support for TypeScript paths
-    tsconfigPaths(),
     // Load GLSL shader files
     glslPlugin(),
     // Inject version into service worker during build
@@ -70,6 +66,8 @@ export default defineConfig(({ command, mode: _mode }) => ({
   // Use relative paths for production builds (GitHub Pages)
   base: command === "build" ? "./" : "/",
   resolve: {
+    // Support for TypeScript paths natively in Vite 8
+    tsconfigPaths: true,
     alias: {
       // Add path aliases for better tree shaking and import convenience
       "@": "/src",
@@ -98,23 +96,19 @@ export default defineConfig(({ command, mode: _mode }) => ({
   build: {
     target: "esnext",
     chunkSizeWarningLimit: 1500,
-    // Force minification
-    minify: "esbuild",
     // Enable CSS minification
     cssMinify: true,
     // Create a single CSS file
     cssCodeSplit: false,
-    // Enable Brotli size reporting
-    brotliSize: true,
     // Inline smaller assets for fewer requests
     assetsInlineLimit: 1024,
     // Disable sourcemaps in production
     sourcemap: false,
 
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         // Inline all dynamic imports to create a single JS file
-        inlineDynamicImports: true,
+        codeSplitting: false,
 
         // Optimize asset naming for better caching
         entryFileNames: "assets/[name]-[hash:6].js",
@@ -133,9 +127,6 @@ export default defineConfig(({ command, mode: _mode }) => ({
           }
           return "assets/[name]-[hash:6][extname]";
         },
-
-        // Three.js tree shaking optimization
-        manualChunks: undefined, // Disable manual chunking for single bundle
       },
 
       // Tree shaking optimization for Three.js
@@ -149,28 +140,12 @@ export default defineConfig(({ command, mode: _mode }) => ({
     reportCompressedSize: false, // Skip for faster builds
   },
 
-  esbuild: {
-    target: "esnext",
-    jsx: "automatic",
-    drop: ["console", "debugger"],
-    // Optimize for smaller bundle
-    legalComments: "none",
-    minifyIdentifiers: true,
-    minifyWhitespace: true,
-    minifySyntax: true,
-    // Remove the minify property - individual minify options are already set
-    // minify: true, // Enable minification in dev for better perf testing
-    // Optimize for Korean text rendering
-    charset: "utf8",
-  },
-
   // Enhanced server configuration for Korean martial arts development
   server: {
     host: true,
     port: 5173,
     hmr: { overlay: false },
     middlewareMode: false,
-    compress: true, // Enable gzip compression in dev
   },
 
   // Preview server optimizations
@@ -180,74 +155,6 @@ export default defineConfig(({ command, mode: _mode }) => ({
     // Production preview optimizations
     headers: {
       "Cache-Control": "public, max-age=31536000, immutable",
-    },
-  },
-
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: ["./src/test/setup.ts"],
-    // Enhanced test reporters for Korean martial arts testing
-    reporters: [
-      [
-        "verbose",
-        {
-          showSummary: true,
-          showSuccesses: true,
-          showSkipped: true,
-          showFailed: true,
-          renderSuccesses: true,
-        },
-      ],
-      "html",
-    ],
-    outputFile: {
-      html: "./build/test-results/index.html",
-    },
-    // Configure types to ensure testing library matchers are recognized
-    typecheck: {
-      include: ["**/*.{test,spec}.{ts,tsx}"],
-      tsconfig: "./tsconfig.json",
-    },
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "json", "html", "lcov"],
-      include: [
-        "src/systems/**/*.ts",
-        "src/components/**/*.{ts,tsx}",
-        "src/audio/**/*.ts",
-        "src/hooks/**/*.ts",
-        "src/utils/**/*.ts",
-        "src/types/**/*.ts",
-      ],
-      exclude: [
-        "node_modules/",
-        "src/test/",
-        "**/*.d.ts",
-        "**/*.config.*",
-        "dist/",
-        "**/docs/**",
-        "coverage/",
-        "cypress/",
-        "**/placeholder-sounds.ts",
-        "**/DefaultSoundGenerator.ts",
-        "**/__tests__/**",
-        "**/mocks/**",
-      ],
-      thresholds: {
-        global: {
-          branches: 85,
-          functions: 85,
-          lines: 85,
-          statements: 85,
-        },
-        "src/systems/": {
-          branches: 90,
-          functions: 92,
-          lines: 90,
-          statements: 90,
-        },
-      },
     },
   },
 }));

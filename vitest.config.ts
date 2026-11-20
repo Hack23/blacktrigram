@@ -1,27 +1,27 @@
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vitest/config";
-import { glslPlugin } from "./vite-plugins/glsl-plugin";
+import { glslPlugin } from "./vite-plugins/glsl-plugin.ts";
 
 export default defineConfig({
   plugins: [react(), glslPlugin()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
       // Alias for Korean text components
       "@/korean-text": path.resolve(
-        __dirname,
+        import.meta.dirname,
         "./src/components/ui/base/korean-text"
       ),
       // Alias for types
-      "@/types": path.resolve(__dirname, "./src/types"),
+      "@/types": path.resolve(import.meta.dirname, "./src/types"),
       // Alias for systems
-      "@/systems": path.resolve(__dirname, "./src/systems"),
+      "@/systems": path.resolve(import.meta.dirname, "./src/systems"),
       // Alias for constants
-      "@/constants": path.resolve(__dirname, "./src/types/constants"),
-      // Fix react-reconciler constants import for Vitest 4.0
+      "@/constants": path.resolve(import.meta.dirname, "./src/types/constants"),
+      // Fix react-reconciler constants import for Vitest 4.0+
       "react-reconciler/constants": path.resolve(
-        __dirname,
+        import.meta.dirname,
         "./node_modules/react-reconciler/constants.js"
       ),
     },
@@ -38,7 +38,7 @@ export default defineConfig({
     reporters: [
       "default", // Console output
       ["junit", { outputFile: "./build/test-results/junit.xml" }],
-      ["html", { outputFile: "./build/test-results/index.html" }],
+      ["html", { outputDir: "./build/test-results" }],
     ],
 
     include: [

@@ -9,6 +9,8 @@ export default tseslint.config(
     ignores: [
       "dist",
       "lib",
+      "build",
+      ".vitest",
       "coverage",
       "docs",
       "cypress/results",
