@@ -200,6 +200,19 @@ describe("useTechniqueSelection", () => {
     expect(onTechniqueExecute).toHaveBeenCalledTimes(1);
   });
 
+  it("does not spend a cooldown when the screen declines an attempt", () => {
+    const onTechniqueExecute = vi.fn(() => false);
+    const { result } = renderHook(() => useTechniqueSelection({
+      player: mockPlayer,
+      onTechniqueExecute,
+    }));
+
+    act(() => result.current.executeTechnique());
+
+    expect(onTechniqueExecute).toHaveBeenCalledWith(result.current.availableTechniques[0]);
+    expect(result.current.activeCooldowns).toEqual([]);
+  });
+
   it("should update cooldown remaining time", async () => {
     const onTechniqueExecute = vi.fn();
     const { result } = renderHook(() =>

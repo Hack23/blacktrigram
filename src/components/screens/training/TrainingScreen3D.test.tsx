@@ -74,6 +74,13 @@ vi.mock("../../../utils/deviceDetection", () => ({
   shouldUseMobileControls: () => false,
 }));
 
+// The costume geometry is tested with real Three.js in fighterCostume.test.ts.
+vi.mock("../../shared/three/models/fighterCostume", () => ({
+  createFighterCostume: () => null,
+  getBootSupportHeight: vi.fn(),
+  updateFighterCostume: vi.fn(),
+}));
+
 // Mock Three.js
 vi.mock("three", () => ({
   Group: class MockGroup {},
@@ -281,12 +288,6 @@ vi.mock("three", () => ({
   Points: class MockPoints {},
   PointsMaterial: class MockPointsMaterial {
     dispose() {}
-  },
-  Clock: class MockClock {
-    elapsedTime = 0;
-    getElapsedTime() {
-      return this.elapsedTime;
-    }
   },
   FrontSide: 0,
   BackSide: 1,

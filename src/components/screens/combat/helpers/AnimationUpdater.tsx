@@ -21,7 +21,7 @@ export interface AnimationUpdaterProps {
   /** Player 1 animation state machine */
   readonly player1Animation: ReturnType<typeof usePlayerAnimation>;
   /** Player 2 animation state machine */
-  readonly player2Animation: ReturnType<typeof usePlayerAnimation>;
+  readonly player2Animation?: ReturnType<typeof usePlayerAnimation>;
 }
 
 /**
@@ -45,7 +45,7 @@ export const AnimationUpdater: React.FC<AnimationUpdaterProps> = ({
   useFrame((_state, delta) => {
     const safeDelta = Math.min(delta, MAX_VISUAL_FRAME_DELTA_SECONDS);
     player1Animation.update(safeDelta);
-    player2Animation.update(safeDelta);
+    player2Animation?.update(safeDelta);
   });
 
   return null; // Component only updates animation state, renders no visual elements

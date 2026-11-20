@@ -157,51 +157,8 @@ function applyGuardPoseToKeyframe(
   breathingOffset: number,
   kneeBounce: number = 0,
 ): void {
-  // === ARM POSITIONS (팔 위치) ===
-  // IMPORTANT: Use SHOULDER_L/R, ELBOW_L/R, WRIST_L/R bone names
-  // NOT UPPER_ARM, FOREARM, HAND - those are different bones in the hierarchy!
-
-  // Left arm - shoulder controls arm lift/rotation
-  kf.rotate(
-    BoneName.SHOULDER_L,
-    pose.leftArm.shoulder.x,
-    pose.leftArm.shoulder.y,
-    pose.leftArm.shoulder.z,
-  );
-  // Elbow controls forearm bend
-  kf.rotate(
-    BoneName.ELBOW_L,
-    pose.leftArm.elbow.x,
-    pose.leftArm.elbow.y,
-    pose.leftArm.elbow.z,
-  );
-  // Wrist controls hand rotation
-  kf.rotate(
-    BoneName.WRIST_L,
-    pose.leftArm.wrist.x,
-    pose.leftArm.wrist.y,
-    pose.leftArm.wrist.z,
-  );
-
-  // Right arm - mirror bone hierarchy
-  kf.rotate(
-    BoneName.SHOULDER_R,
-    pose.rightArm.shoulder.x,
-    pose.rightArm.shoulder.y,
-    pose.rightArm.shoulder.z,
-  );
-  kf.rotate(
-    BoneName.ELBOW_R,
-    pose.rightArm.elbow.x,
-    pose.rightArm.elbow.y,
-    pose.rightArm.elbow.z,
-  );
-  kf.rotate(
-    BoneName.WRIST_R,
-    pose.rightArm.wrist.x,
-    pose.rightArm.wrist.y,
-    pose.rightArm.wrist.z,
-  );
+  applyGuardArm(kf, pose.leftArm, -1);
+  applyGuardArm(kf, pose.rightArm, 1);
 
   // === TORSO (몸통) - Full spine chain for proper rotation ===
   // SPINE_LOWER: Base torso twist (inherits from pelvis)
@@ -226,68 +183,49 @@ function applyGuardPoseToKeyframe(
     pose.torso.z * 0.4,
   );
 
-  // === LEG POSITIONS (다리 위치) ===
-  // IMPORTANT: Use HIP_L/R for hip rotation, not THIGH!
-  // HIP bone controls the leg's root rotation
+  applyGuardLegs(kf, pose, kneeBounce);
+}
 
-  // Left leg - HIP controls leg lift/rotation at socket
-  kf.rotate(
-    BoneName.HIP_L,
-    pose.leftLeg.hip.x,
-    pose.leftLeg.hip.y,
-    pose.leftLeg.hip.z,
+function applyGuardArm(kf: KeyframeConfig, arm: StanceGuardPose["leftArm"], side: -1 | 1): void {
+  // The sleeve chains start along +/-X, not down -Y. Aim each segment from
+  // that bind direction and express the elbow in its parent's local space.
+  const guard = Math.min(1, Math.abs(arm.elbow.z) / 2);
+  const [yaw, roll] = armAim(side,
+    side * (0.19 + Math.abs(arm.shoulder.z) * 0.13), -0.75, 0.46 + arm.shoulder.y * side * 0.35);
+  const reachX = -side * 0.30;
+  const reachY = 0.37 + guard * 0.48;
+  const reachZ = 0.65 - guard * 0.28;
+  const unyawedX = Math.cos(yaw) * reachX - Math.sin(yaw) * reachZ;
+  const [elbowYaw, elbowRoll] = armAim(side,
+    Math.cos(roll) * unyawedX + Math.sin(roll) * reachY,
+    -Math.sin(roll) * unyawedX + Math.cos(roll) * reachY,
+    Math.sin(yaw) * reachX + Math.cos(yaw) * reachZ,
   );
-  // KNEE controls lower leg bend (primarily X axis flex)
-  // Add subtle knee bounce for natural idle movement
-  kf.rotate(
-    BoneName.KNEE_L,
-    pose.leftLeg.knee.x + kneeBounce,
-    pose.leftLeg.knee.y,
-    pose.leftLeg.knee.z,
-  );
-  // FOOT controls ankle rotation
-  kf.rotate(
-    BoneName.FOOT_L,
-    pose.leftLeg.ankle.x,
-    pose.leftLeg.ankle.y,
-    pose.leftLeg.ankle.z,
-  );
+  kf.rotate(side < 0 ? BoneName.UPPER_ARM_L : BoneName.UPPER_ARM_R, 0, yaw, roll)
+    .rotate(side < 0 ? BoneName.ELBOW_L : BoneName.ELBOW_R, 0, elbowYaw, elbowRoll)
+    .rotate(side < 0 ? BoneName.WRIST_L : BoneName.WRIST_R, arm.wrist.x, arm.wrist.y * 0.4, arm.wrist.z * 0.4);
+}
 
-  // Right leg - mirror bone hierarchy
-  kf.rotate(
-    BoneName.HIP_R,
-    pose.rightLeg.hip.x,
-    pose.rightLeg.hip.y,
-    pose.rightLeg.hip.z,
-  );
-  kf.rotate(
-    BoneName.KNEE_R,
-    pose.rightLeg.knee.x + kneeBounce,
-    pose.rightLeg.knee.y,
-    pose.rightLeg.knee.z,
-  );
-  kf.rotate(
-    BoneName.FOOT_R,
-    pose.rightLeg.ankle.x,
-    pose.rightLeg.ankle.y,
-    pose.rightLeg.ankle.z,
-  );
+function armAim(side: -1 | 1, x: number, y: number, z: number): readonly [number, number] {
+  return [Math.atan2(-side * z, side * x), Math.atan2(side * y, Math.hypot(x, z))];
+}
 
-  // === PELVIS (골반) - Root of entire body ===
-  // Controls overall body rotation and position
-  kf.rotate(BoneName.PELVIS, pose.pelvis.x, pose.pelvis.y, pose.pelvis.z);
-  // Pelvis position: ONLY stance height drop (Y)
-  // NO X/Z offset - this prevents "walking in place" appearance
-  const pelvisHeight = pose.pelvisHeight ?? 0;
-  kf.position(BoneName.PELVIS, 0, pelvisHeight, 0);
-
-  // === FOOT POSITIONING (발 위치) ===
-  // Position feet for stance width and depth
-  const stanceDepth = pose.stanceDepth ?? 0;
-  // Left foot: negative X (left side), negative Z (front for forward stances)
-  kf.position(BoneName.FOOT_L, -pose.stanceWidth / 2, 0, -stanceDepth / 2);
-  // Right foot: positive X (right side), positive Z (back for forward stances)
-  kf.position(BoneName.FOOT_R, pose.stanceWidth / 2, 0, stanceDepth / 2);
+function applyGuardLegs(kf: KeyframeConfig, pose: StanceGuardPose, kneeBounce: number): void {
+  // The bind legs extend down -Y. Build the offset with hip angles, not
+  // ankle translations: moving the foot joint alone disconnects the boot.
+  const width = Math.max(0, pose.stanceWidth - 0.30) * 0.65;
+  const stride = Math.min(0.27, (pose.stanceDepth ?? 0) * 0.36);
+  const bend = 0.20 + Math.min(0.36, Math.abs(pose.pelvisHeight ?? 0) * 2) + kneeBounce;
+  const leftPitch = stride - bend * 0.5;
+  const rightPitch = -stride - bend * 0.5;
+  kf.rotate(BoneName.HIP_L, leftPitch, 0, -width)
+    .rotate(BoneName.HIP_R, rightPitch, 0, width)
+    .rotate(BoneName.KNEE_L, bend, 0, 0)
+    .rotate(BoneName.KNEE_R, bend, 0, 0)
+    .rotate(BoneName.FOOT_L, -(leftPitch + bend), pose.leftLeg.ankle.y, width)
+    .rotate(BoneName.FOOT_R, -(rightPitch + bend), pose.rightLeg.ankle.y, -width)
+    .rotate(BoneName.PELVIS, 0, pose.pelvis.y * 0.45, 0)
+    .position(BoneName.PELVIS, 0, Math.max(-0.09, (pose.pelvisHeight ?? 0) * 0.5), 0);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

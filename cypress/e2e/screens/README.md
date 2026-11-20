@@ -26,6 +26,12 @@ Each test file contains **exactly one comprehensive test** that covers the compl
 
 ## 🚀 Running Tests
 
+Run `npm run test:e2e:webgl:ci` for the Training smoke test in headless Chrome.
+It requires real WebGL2 and checks that draw calls continue between assertions.
+The screen journey tests still use the WebGL stub for DOM-oriented checks.
+React Three Fiber 9 constructs a deprecated `THREE.Clock` internally; leave
+that warning visible until a compatible stable Fiber release removes it.
+
 ### Run All Screen Tests
 
 ```bash

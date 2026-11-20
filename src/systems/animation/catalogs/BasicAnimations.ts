@@ -508,7 +508,8 @@ export const FALL_SIDE_LEFT_ANIMATION: SkeletalAnimation =
     .position(BoneName.PELVIS, -0.3, -0.5, 0)
     .done<MartialArtsAnimationBuilder>()
     .at(0.45, "ease-out")
-    .rotate(BoneName.PELVIS, 0, 1.57, 1.57)
+    // Keep the side roll in the frontal plane instead of yawing it into a prone pose.
+    .rotate(BoneName.PELVIS, 0, 0, Math.PI / 2)
     .rotate(BoneName.SPINE_LOWER, 0, 0, 0.2)
     .rotate(BoneName.SPINE_UPPER, 0, 0, 0.3)
     .rotate(BoneName.HEAD, 0, 0, 0.2)
@@ -568,7 +569,7 @@ export const FALL_SIDE_RIGHT_ANIMATION: SkeletalAnimation =
     .position(BoneName.PELVIS, 0.3, -0.5, 0)
     .done<MartialArtsAnimationBuilder>()
     .at(0.45, "ease-out")
-    .rotate(BoneName.PELVIS, 0, -1.57, -1.57)
+    .rotate(BoneName.PELVIS, 0, 0, -Math.PI / 2)
     .rotate(BoneName.SPINE_LOWER, 0, 0, -0.2)
     .rotate(BoneName.SPINE_UPPER, 0, 0, -0.3)
     .rotate(BoneName.HEAD, 0, 0, -0.2)

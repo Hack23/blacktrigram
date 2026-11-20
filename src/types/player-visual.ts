@@ -10,7 +10,7 @@
  * @korean 플레이어시각타입
  */
 
-import type { BodyFacing } from "../systems/animation/core/types";
+import type { AnimationState, BodyFacing } from "../systems/animation/core/types";
 import type { PlayerArchetype, TrigramStance } from "./common";
 import type { FacialDamageState, FacialExpression } from "./facial";
 
@@ -30,31 +30,11 @@ export type BalanceState = "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS";
  * @korean 애니메이션상태
  */
 export type PlayerAnimation =
-  | "idle"
-  | "attack"
-  | "defend"
-  | "hit"
-  | "stance_change"
-  | "stance_side_switch"
+  | Exclude<`${AnimationState}`, `stance_guard_${string}` | "ko">
   | "technique_execute"
-  | "walk"
-  | "run" // Running animation (달리기)
   | "block"
   | "counter"
   | "death"
-  // Fall animations (낙법)
-  | "fall_forward"
-  | "fall_backward"
-  | "fall_side_left"
-  | "fall_side_right"
-  | "step_forward"
-  | "step_back"
-  | "step_left"
-  | "step_right"
-  | "step_forward_left"
-  | "step_forward_right"
-  | "step_back_left"
-  | "step_back_right"
   // Stance-specific idle animations (팔괘 자세 애니메이션)
   | "stance_geon" // ☰ 건 (Heaven) - Forward stance
   | "stance_tae" // ☱ 태 (Lake) - Cat stance
@@ -116,6 +96,10 @@ export interface Player3DUnifiedProps {
   readonly isCountering?: boolean;
   /** Current animation state @korean 현재애니메이션 */
   readonly currentAnimation: PlayerAnimation;
+  /** Optional action-instance token for replaying the same clip without a state change. */
+  readonly playbackKey?: string | number;
+  /** Optional time sampled from a shared game animation clock. */
+  readonly clipTimeSeconds?: number;
   /** Whether rendering for mobile device @korean 모바일여부 */
   readonly isMobile: boolean;
   /** Player display name (Korean and English) @korean 이름 */

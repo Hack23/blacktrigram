@@ -5,6 +5,10 @@ import { glslPlugin } from "./vite-plugins/glsl-plugin.ts";
 
 export default defineConfig({
   plugins: [react(), glslPlugin()],
+  environments: {
+    ssr: { resolve: { mainFields: ["module"] } },
+    client: { resolve: { mainFields: ["module"] } },
+  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
@@ -33,6 +37,12 @@ export default defineConfig({
     css: true,
     // Korean martial arts specific test configuration
     testTimeout: 10000, // Allow longer tests for complex combat calculations
+    // Load ESM entries so the renderer does not pull in Three.js via require().
+    server: {
+      deps: {
+        inline: [/^@react-three\//, /^maath(?:\/|$)/, /^troika-/, "three-stdlib", "stats-gl"],
+      },
+    },
 
     // Test result reporters - output to build/test-results
     reporters: [
@@ -54,12 +64,6 @@ export default defineConfig({
       "**/*.bench.ts", // Exclude benchmark files from regular tests
       "**/*.bench.js",
     ],
-    // Mock specific modules for Korean martial arts testing
-    server: {
-      deps: {
-        inline: [],
-      },
-    },
     coverage: {
       provider: "v8",
       reporter: [

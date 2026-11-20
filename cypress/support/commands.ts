@@ -714,6 +714,10 @@ function createMockWebGLContext(canvas: HTMLCanvasElement): Record<string, unkno
  * requests for "webgl" / "webgl2" return the shared mock context.
  */
 function applyWebGLMock(win: Cypress.AUTWindow): void {
+  Object.defineProperty(win, "__blackTrigramMockWebGL", {
+    value: true,
+    configurable: true,
+  });
   const proto = win.HTMLCanvasElement.prototype;
   const originalGetContext = proto.getContext;
   (proto as any).getContext = function (

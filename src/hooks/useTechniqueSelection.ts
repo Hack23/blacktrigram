@@ -33,8 +33,8 @@ export interface UseTechniqueSelectionConfig {
   /** Callback when technique is selected */
   readonly onTechniqueSelected?: (technique: Technique) => void;
 
-  /** Callback when technique execution is attempted */
-  readonly onTechniqueExecute?: (technique: Technique) => void;
+  /** Return false to decline the attempt without starting a cooldown. */
+  readonly onTechniqueExecute?: (technique: Technique) => void | boolean;
 }
 
 /**
@@ -252,7 +252,7 @@ export function useTechniqueSelection(
     (indexOverride?: number) => {
       if (!enabled) return;
 
-      const index = indexOverride ?? selectedIndex;
+      const index = indexOverride ?? Math.min(selectedIndex, availableTechniques.length - 1);
       const technique = availableTechniques[index];
       if (!technique) return;
 
@@ -263,7 +263,9 @@ export function useTechniqueSelection(
         return;
       }
 
-      // Start cooldown
+      if (onTechniqueExecute?.(technique) === false) return;
+
+      // Start cooldown only after the action was accepted.
       const now = Date.now();
       const cooldown: TechniqueCooldown = {
         techniqueId: technique.id,
@@ -273,8 +275,6 @@ export function useTechniqueSelection(
       };
       setActiveCooldowns((prev) => [...prev, cooldown]);
 
-      // Execute technique
-      onTechniqueExecute?.(technique);
     },
     [
       enabled,
@@ -290,11 +290,13 @@ export function useTechniqueSelection(
     if (!enabled) return;
 
     const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.repeat || e.defaultPrevented) return;
       // Ignore keypresses when typing in input fields
       const target = e.target as HTMLElement;
       if (
         target.tagName === "INPUT" ||
         target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT" ||
         target.isContentEditable
       ) {
         return;
@@ -324,7 +326,7 @@ export function useTechniqueSelection(
 
   return {
     availableTechniques,
-    selectedIndex,
+    selectedIndex: Math.max(0, Math.min(selectedIndex, availableTechniques.length - 1)),
     activeCooldowns,
     selectTechnique,
     executeTechnique,

@@ -829,6 +829,7 @@ export const FOOTWORK_ANIMATIONS = new Map<string, SkeletalAnimation>([
   
   // Shuffle Step (섞음보) - Micro-adjustments
   ["footwork_shuffle", FOOTWORK_SHUFFLE_ANIMATION],
+  ["footwork_switch_step", FOOTWORK_SWITCH_STEP_ANIMATION],
 ]);
 
 /**

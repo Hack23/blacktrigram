@@ -45,6 +45,8 @@ export const TrainingFeedbackOverlayHtml = React.memo<TrainingFeedbackOverlayHtm
         textShadow: `0 2px 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.5)}`,
       }}
       data-testid="training-feedback-html"
+      role="status"
+      aria-atomic="true"
     >
       {message}
     </div>

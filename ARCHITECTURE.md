@@ -372,7 +372,7 @@ graph TD
     
     subgraph "Three.js 3D Scene"
         F[Scene Graph]
-        G[3D Characters]
+        G[Skinned Fighter Costumes]
         H[Vital Point Markers]
         I[Particle Systems]
         J[Korean-Themed Materials]
@@ -409,6 +409,12 @@ graph TD
 ```
 
 ### 📐 Rendering Pipeline
+
+The [combat camera](src/components/screens/combat/helpers/CombatFighterCamera.tsx) frames both fighters from gameplay positions, while the [arena](src/components/shared/three/scene/CombatArena3D.tsx) provides a neutral key light and a cyan rim. Reduced-motion mode uses a fixed arena view.
+
+[SkeletalPlayer3D](src/components/shared/three/models/SkeletalPlayer3D.tsx) builds a [procedural costume](src/components/shared/three/models/fighterCostume.ts) for each of the five Korean cyberpunk archetypes, including Musa's (무사) Hanbok-inspired collar. One vertex-colored skinned mesh per fighter batches the clothing and details, with lower tessellation on mobile and no additional asset downloads. The 28-bone gameplay pose drives the mesh; the eight finger joints and boot height correction are render-only. The previous bone geometry remains available in skeleton debug mode.
+
+[Training](src/components/screens/training/TrainingScreen3D.tsx) shares the Combat camera, arena, costume renderer, and clamped animation updater. [Practice actions](src/components/screens/training/hooks/useTrainingActions.ts) resolve one authored clip and snapshot its timing and reach per accepted attempt. The game animation clock scores the attempt once; the optional target overlay is for inspection and does not score clicks.
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#455A64','secondaryColor':'#4CAF50','tertiaryColor':'#FF9800','actorBkg':'#1565C0','actorTextColor':'#fff','actorLineColor':'#455A64','signalColor':'#455A64','signalTextColor':'#fff','noteBkgColor':'#FFD600','noteTextColor':'#000','noteBorderColor':'#F57F17'}}}%%

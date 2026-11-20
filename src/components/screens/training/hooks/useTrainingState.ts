@@ -136,7 +136,11 @@ function trainingReducer(
 ): TrainingScreenState {
   switch (action.type) {
     case "SET_TRAINING_MODE":
-      return { ...state, trainingMode: action.payload };
+      return {
+        ...state,
+        trainingMode: action.payload,
+        footworkDrillActive: action.payload === "footwork" && state.footworkDrillActive,
+      };
 
     case "START_TRAINING":
       return {

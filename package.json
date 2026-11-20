@@ -7,7 +7,8 @@
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "sideEffects": [
-    "**/*.css"
+    "**/*.css",
+    "./cypress/support/*.ts"
   ],
   "exports": {
     ".": {
@@ -114,6 +115,7 @@
     "prepublishOnly": "npm run lint && npm run check && npm run test && npm run build:lib",
     "check": "npm run tsc7 -- -b",
     "check:test": "npm run tsc7 -- -p tsconfig.test.json --noEmit",
+    "check:cypress": "tsc -p cypress/tsconfig.json --noEmit",
     "test:check": "npm run tsc7 -- -p tsconfig.test.json --noEmit",
     "check:all": "npm run tsc7 -- -b && npm run tsc7 -- -p tsconfig.test.json --noEmit",
     "lint": "eslint .",
@@ -134,8 +136,8 @@
     "test:e2e:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --browser chrome'",
     "test:e2e:screens": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --browser chrome --spec \"cypress/e2e/screens/*.cy.ts\"'",
     "test:e2e:screens:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --browser chrome --spec \"cypress/e2e/screens/*.cy.ts\"'",
-    "test:e2e:smoke": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --browser chrome --spec \"cypress/e2e/app.cy.ts,cypress/e2e/game-journey.cy.ts\"'",
-    "test:e2e:smoke:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --browser chrome --spec \"cypress/e2e/app.cy.ts,cypress/e2e/game-journey.cy.ts\"'",
+    "test:e2e:smoke": "npm run test:e2e:webgl",
+    "test:e2e:smoke:ci": "npm run test:e2e:webgl:ci",
     "test:e2e:webgl": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --browser chrome --spec \"cypress/e2e/webgl-verification.cy.ts\"'",
     "test:e2e:webgl:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --browser chrome --spec \"cypress/e2e/webgl-verification.cy.ts\"'",
     "compress": "gzip -k dist/assets/*.js && gzip -k dist/assets/*.css",

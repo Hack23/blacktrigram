@@ -35,6 +35,9 @@ vi.mock("three", () => ({
   MeshPhysicalMaterial: class MockMeshPhysicalMaterial {
     dispose() {}
   },
+  MeshStandardMaterial: class MockMeshStandardMaterial {
+    dispose() {}
+  },
   MeshBasicMaterial: class MockMeshBasicMaterial {
     dispose() {}
   },

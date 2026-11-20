@@ -150,8 +150,8 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
       {showFeedback && (
         <div
           style={{
-            position: "fixed",
-            top: "50%",
+            position: "absolute",
+            bottom: "100%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             zIndex: Z_INDEX.MODAL,

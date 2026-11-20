@@ -134,7 +134,7 @@ flowchart TD
     ModeSelect -->|Footwork Drill| FootworkDrill["👣 Footwork Drill<br/>발놀림 훈련<br/>Movement & Positioning"]
     ModeSelect -->|Anatomy Study| AnatomyStudy["🔬 Anatomy Study<br/>해부학 학습<br/>Body System Visualization"]
 
-    FreePractice --> SelectArchetype{Select Archetype<br/>for Dummy}
+    FreePractice --> SelectArchetype{Select Trainee Archetype}
     SelectArchetype -->|무사 Musa| ActiveTraining
     SelectArchetype -->|암살자 Amsalja| ActiveTraining
     SelectArchetype -->|해커 Hacker| ActiveTraining
@@ -154,12 +154,12 @@ flowchart TD
     AnatomyView --> ActiveTraining
 
     ActiveTraining --> TrainingLoop{Training Action}
-    TrainingLoop -->|Attack| ExecuteAttack[Execute Technique<br/>28-Bone Animation<br/>Hand Pose Selection]
+    TrainingLoop -->|Space, technique shortcut, or touch| ExecuteAttack[Play selected technique<br/>Shared Combat clip and timing]
     TrainingLoop -->|Stance Change| ChangeStance[Change Trigram Stance<br/>8 Stances Available]
     TrainingLoop -->|Toggle Overlay| ToggleVP[Toggle VP Overlay<br/>V Key Shortcut]
     TrainingLoop -->|Adjust Scale| AdjustScale[Adjust View Scale<br/>Default: 1.2x]
 
-    ExecuteAttack --> Feedback["📊 Feedback Display<br/>Hit Location<br/>Damage Calculation<br/>VP Hit Result"]
+    ExecuteAttack --> Feedback["📊 One result at the active frame<br/>Practice hit or out of range"]
     ChangeStance --> Feedback
     Feedback --> StatsUpdate["📈 Stats Update<br/>Hits Landed<br/>VP Accuracy<br/>Technique Mastery"]
     StatsUpdate --> TrainingLoop

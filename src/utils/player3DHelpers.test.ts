@@ -4,14 +4,24 @@
 
 import { describe, expect, it } from "vitest";
 import type { PlayerState } from "../systems";
+import { AnimationState } from "../systems/animation/core/types";
 import { CombatState, PlayerArchetype, TrigramStance } from "../types/common";
 import {
+  animationStateToPlayerAnimation,
   convertPlayerStateToProps,
   getBalanceState,
   getPlayerAnimation,
 } from "./player3DHelpers";
 
 describe("player3DHelpers", () => {
+  it("preserves authored visual states instead of flattening them to walk, idle or defend", () => {
+    for (const state of Object.values(AnimationState)) {
+      if (state.startsWith("stance_guard_") || state === AnimationState.KO) continue;
+      expect(animationStateToPlayerAnimation(state)).toBe(state);
+    }
+    expect(animationStateToPlayerAnimation(AnimationState.KO)).toBe("death");
+    expect(animationStateToPlayerAnimation(AnimationState.STANCE_GUARD_GAM)).toBe("stance_gam");
+  });
   describe("getBalanceState", () => {
     it("should return READY for balance >= 80", () => {
       expect(getBalanceState(100)).toBe("READY");
@@ -91,8 +101,15 @@ describe("player3DHelpers", () => {
     });
 
     it("should return 'attack' when in attacking state", () => {
-      const player = { ...basePlayer, combatState: CombatState.ATTACKING };
+      const player = { ...basePlayer, combatState: CombatState.ATTACKING, isBlocking: true };
       expect(getPlayerAnimation(player)).toBe("attack");
+    });
+
+    it("uses explicit downed, transition and grapple visuals despite the block flag", () => {
+      expect(getPlayerAnimation({ ...basePlayer, health: 0, isStunned: true })).toBe("death");
+      expect(getPlayerAnimation({ ...basePlayer, combatState: CombatState.TRANSITIONING, isBlocking: true })).toBe("stance_change");
+      expect(getPlayerAnimation({ ...basePlayer, combatState: CombatState.GRAPPLING, isBlocking: true })).toBe("grapple_control");
+      expect(getPlayerAnimation({ ...basePlayer, combatState: CombatState.GRAPPLED })).toBe("grapple_struggle");
     });
 
     it("should return 'defend' when in defending state", () => {

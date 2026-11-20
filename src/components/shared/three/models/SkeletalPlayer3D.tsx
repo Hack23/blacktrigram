@@ -36,6 +36,11 @@ import { toHexColor } from "../../../../utils/colorHelpers";
 import { getArchetypeSkinTone } from "../../../../utils/colorUtils";
 import BoneRenderer from "../anatomy/BoneRenderer";
 import PlayerStateIndicators from "../effects/PlayerStateIndicators";
+import { FighterContactShadow } from "./FighterContactShadow";
+import { createFighterCostume, getBootSupportHeight, updateFighterCostume } from "./fighterCostume";
+
+const TURN_DAMPING = 12;
+const MAX_BOOT_CORRECTION_METERS = 0.24;
 
 /**
  * Get stance-specific color from Korean theming
@@ -128,6 +133,8 @@ export const SkeletalPlayer3D: React.FC<
   isStunned = false,
   isCountering = false,
   currentAnimation,
+  playbackKey,
+  clipTimeSeconds,
   isMobile,
   name,
   scale = 1,
@@ -156,10 +163,27 @@ export const SkeletalPlayer3D: React.FC<
     () => createScaledHumanoidRig(physicalAttributes),
     [physicalAttributes],
   );
+  const costume = useMemo(
+    () => showSkeleton ? null : createFighterCostume(rig, archetype, isMobile),
+    [rig, archetype, isMobile, showSkeleton],
+  );
+  const footBones = useMemo(() => ({
+    left: costume?.skeleton.getBoneByName("foot_L"),
+    right: costume?.skeleton.getBoneByName("foot_R"),
+  }), [costume]);
+  const soleProbe = useMemo(() => new THREE.Vector3(), []);
+  const facingGroup = useRef<THREE.Group>(null);
+  const costumeMount = useRef<THREE.Group>(null);
 
+  useEffect(() => () => {
+    costume?.geometry.dispose();
+    costume?.material.dispose();
+    costume?.skeleton.dispose();
+  }, [costume]);
 
   const { updateRigAnimation, diagonalRotationY } = useSkeletalAnimation({
     currentAnimation,
+    playbackKey,
     attackAnimation,
     isBlocking,
     stance,
@@ -334,54 +358,67 @@ export const SkeletalPlayer3D: React.FC<
 
     frameCounter.current = (frameCounter.current + 1) % 10;
 
-    updateRigAnimation(rig, safeDelta);
+    updateRigAnimation(rig, safeDelta, clipTimeSeconds);
 
     updateHandAnimations(safeDelta);
 
     updateBalanceAnimations(safeDelta, frameCounter.current);
 
-    updateMuscleActivations(safeDelta, frameCounter.current);
+    if (showSkeleton) updateMuscleActivations(safeDelta, frameCounter.current);
 
     if (bodyFacing) {
       const head = rig.bones.get("head");
-      if (head) {
+      if (head && currentAnimation === "idle") {
         const headRotation = getHeadAngleRadians(bodyFacing);
-        head.rotation.y = headRotation;
+        head.rotation.y = THREE.MathUtils.clamp(headRotation, -0.38, 0.38);
       }
     }
-  });
 
-  // Smooth body Y-rotation toward the target instead of snapping instantly
-  // when switching between "face movement direction" and "face opponent".
-  // Shortest-arc lerp at ~10/s matches the head-facing smoothing so the body
-  // and head rotate on the same clock (부드러운 회전).
-  const effectiveRotation = diagonalRotationY ?? rotation;
-  const [smoothedRotation, setSmoothedRotation] = useState(effectiveRotation);
-  const smoothedRotationRef = useRef(effectiveRotation);
-  useFrame((_state, delta) => {
-    const target = effectiveRotation;
-    let diff = target - smoothedRotationRef.current;
-    // Wrap to shortest arc [-PI, PI]
-    diff = Math.atan2(Math.sin(diff), Math.cos(diff));
-    const step = Math.min(delta, MAX_VISUAL_FRAME_DELTA_SECONDS) * 10;
-    const next = smoothedRotationRef.current + diff * Math.min(step, 1);
-    smoothedRotationRef.current = next;
-    if (Math.abs(next - smoothedRotation) > 0.0005) {
-      setSmoothedRotation(next);
+    const mount = facingGroup.current;
+    if (!mount) return;
+    const diff = (diagonalRotationY ?? rotation) - mount.rotation.y;
+    mount.rotation.y += Math.atan2(Math.sin(diff), Math.cos(diff)) *
+      (1 - Math.exp(-TURN_DAMPING * safeDelta));
+
+    if (costume && costumeMount.current && footBones.left && footBones.right) {
+      updateFighterCostume(costume, rig, leftHandState, rightHandState);
+      const groundMount = costumeMount.current;
+      const grounded = currentAnimation === "idle" || currentAnimation === "defend" ||
+        currentAnimation.startsWith("stance_");
+      costume.updateWorldMatrix(true, true);
+      const lowestSole = Math.min(
+        getBootSupportHeight(footBones.left, soleProbe),
+        getBootSupportHeight(footBones.right, soleProbe),
+      );
+      const relativeSole = (lowestSole - mount.matrixWorld.elements[13]) / scale -
+        groundMount.position.y;
+      const correction = grounded ? -relativeSole : Math.max(0, -relativeSole);
+      groundMount.position.y = THREE.MathUtils.damp(
+        groundMount.position.y,
+        THREE.MathUtils.clamp(correction, -MAX_BOOT_CORRECTION_METERS, MAX_BOOT_CORRECTION_METERS),
+        24,
+        safeDelta,
+      );
     }
   });
+  const [initialRotation] = useState(rotation);
 
   return (
     <group
+      ref={facingGroup}
       position={position}
-      rotation={[0, smoothedRotation, 0]}
+      rotation-y={initialRotation}
       scale={[facing === "left" ? -scale : scale, scale, scale]}
       name={`skeletal-player3d-${playerId}`}
     >
+      {costume && <FighterContactShadow />}
       {/* Inner group for sway animation and helpless lean */}
       <group position={swayPosition} rotation={[helplessRotation, 0, 0]}>
-        {/* Skeletal rig rendering with bone-attached muscles */}
-        <BoneRenderer
+        {costume ? (
+          <group ref={costumeMount}>
+            <primitive object={costume} />
+          </group>
+        ) : <BoneRenderer
           rig={rig}
           color={bodyColor}
           showBones={true}
@@ -405,20 +442,17 @@ export const SkeletalPlayer3D: React.FC<
           muscleStates={muscleStates}
           isExhausted={stamina < 20}
           archetype={archetype}
-        />
+        />}
 
-        {/* Clothing is now rendered via BoneClothing inside BoneRenderer */}
-        {/* This ensures clothing inherits bone transforms automatically */}
-
-        {/* Blocking shield effect */}
+        {/* A floor accent leaves the guard silhouette visible. */}
         {isBlocking && (
-          <mesh position={[0, 1.2, 0.3]}>
-            <circleGeometry args={[0.5, 32]} />
+          <mesh position={[0, 0.014, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.44, 0.46, 32]} />
             <meshBasicMaterial
               color={KOREAN_COLORS.PRIMARY_BLUE}
               transparent
-              opacity={0.5}
-              side={2}
+              opacity={0.8}
+              depthWrite={false}
             />
           </mesh>
         )}
@@ -434,7 +468,7 @@ export const SkeletalPlayer3D: React.FC<
         {/* Player name overlay */}
         {showDetails && name && (
           <Html
-            position={[0, 2.8, 0]}
+            position={[0, 2.13, 0]}
             center
             distanceFactor={isMobile ? 15 : 10}
             occlude={false}
@@ -444,7 +478,7 @@ export const SkeletalPlayer3D: React.FC<
               style={{
                 fontFamily: FONT_FAMILY.KOREAN,
                 textAlign: "center",
-                color: "white",
+                color: toHexColor(KOREAN_COLORS.TEXT_PRIMARY),
                 textShadow: "0 0 4px rgba(0,0,0,0.8)",
               }}
             >
@@ -457,7 +491,7 @@ export const SkeletalPlayer3D: React.FC<
                 }}
                 data-testid="player-name"
               >
-                {name.korean}
+                {name.korean} | {name.english}
               </div>
 
               {/* Trigram symbol */}
@@ -479,12 +513,12 @@ export const SkeletalPlayer3D: React.FC<
                   style={{
                     fontSize: isMobile ? "10px" : "12px",
                     fontWeight: "bold",
-                    color: "#ffff00",
+                    color: toHexColor(KOREAN_COLORS.WARNING_YELLOW),
                     marginTop: "4px",
                   }}
                   data-testid="combat-state"
                 >
-                  {isBlocking ? "방어" : isStunned ? "기절" : "반격"}
+                  {isBlocking ? "방어 | Guard" : isStunned ? "기절 | Stunned" : "반격 | Counter"}
                 </div>
               )}
             </div>

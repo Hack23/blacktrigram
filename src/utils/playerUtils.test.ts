@@ -78,6 +78,13 @@ describe("playerUtils", () => {
       expect(player2.position.y).toBe(400);
     });
 
+    it("uses the supplied arena coordinates without mutating the caller's position", () => {
+      const spawn = { x: 1, y: 0 };
+      const opponent = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1, spawn);
+      expect(opponent.position).toEqual({ x: 1, y: 0 });
+      expect(opponent.position).not.toBe(spawn);
+    });
+
     it("should initialize combat stats from archetype data", () => {
       const archetype = PlayerArchetype.MUSA;
       const player = createPlayerFromArchetype(archetype, 0);

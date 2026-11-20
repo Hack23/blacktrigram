@@ -30,7 +30,7 @@ import "../training.css";
 export type TrainingMode =
   | "basics" // Basic Training - Simple striking practice
   | "advanced" // Advanced Training - Vital point precision
-  | "free" // Free Practice - Open combat vs AI
+  | "free" // Free Practice - Unstructured dummy practice
   | "stance_training" // Stance Training - Practice 8 trigrams
   | "vital_point" // Vital Point Training - Precision targeting
   | "combo_practice" // Combo Practice - Multi-hit techniques
@@ -68,7 +68,7 @@ const MODE_INFO: Record<
   free: {
     korean: "자유 훈련",
     english: "Free Practice",
-    description: "AI 대련 | Combat vs AI opponent",
+    description: "자유 연습 | Open dummy practice",
   },
   stance_training: {
     korean: "팔괘 수련",

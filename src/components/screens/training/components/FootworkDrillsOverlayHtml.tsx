@@ -12,6 +12,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
+import { getFootworkMarkers } from "../footworkMarkers";
 
 /**
  * Footwork drill types for training
@@ -36,57 +37,41 @@ const DRILL_INFO: Record<FootworkDrill, {
   korean: string; 
   english: string; 
   description: string;
-  pattern: string[];
-  keyHints: string;
 }> = {
   circular_left: {
     korean: "원형보 좌회전",
     english: "Circular Left",
     description: "원형보 좌측 | Circle stepping left",
-    pattern: ["Ctrl+A", "Ctrl+A", "Ctrl+A", "Ctrl+A"],
-    keyHints: "Hold Ctrl+A to circle left",
   },
   circular_right: {
     korean: "원형보 우회전",
     english: "Circular Right",
     description: "원형보 우측 | Circle stepping right",
-    pattern: ["Ctrl+D", "Ctrl+D", "Ctrl+D", "Ctrl+D"],
-    keyHints: "Hold Ctrl+D to circle right",
   },
   pivot_combo: {
     korean: "축족회전 연속",
     english: "Pivot Combo",
     description: "좌우 연속 회전 | Continuous pivot rotations",
-    pattern: ["Shift+Ctrl+A", "Shift+Ctrl+D", "Shift+Ctrl+A", "Shift+Ctrl+D"],
-    keyHints: "Alternate Shift+Ctrl+A/D",
   },
   triangle_step: {
     korean: "삼각보법",
     english: "Triangle Step",
     description: "삼각형 발놀림 | Triangle footwork pattern",
-    pattern: ["Ctrl+W", "Shift+Ctrl+D", "Ctrl+S", "Shift+Ctrl+A"],
-    keyHints: "Forward → Pivot → Back → Pivot",
   },
   slide_drill: {
     korean: "미끄럼보 사방",
     english: "Slide Drill",
     description: "사방 미끄럼 | Four-direction slides",
-    pattern: ["Ctrl+W", "Alt+D", "Ctrl+S", "Alt+A"],
-    keyHints: "Slide in all four directions",
   },
   shuffle_practice: {
     korean: "섞음보 연습",
     english: "Shuffle Practice",
     description: "빠른 조정 | Quick micro-adjustments",
-    pattern: ["Shift+Ctrl+W", "Shift+Ctrl+W", "Shift+Ctrl+W"],
-    keyHints: "Rapid Shift+Ctrl+W/S",
   },
   free_practice: {
     korean: "자유 연습",
     english: "Free Practice",
     description: "자유 보법 | Free footwork exploration",
-    pattern: [],
-    keyHints: "Use any footwork combination",
   },
 };
 
@@ -128,6 +113,7 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
     isMobile,
   }) => {
   const drillInfo = DRILL_INFO[currentDrill];
+  const waypoints = getFootworkMarkers(currentDrill === "free_practice" ? "none" : currentDrill, [0, 0, 0]);
   const [showInstructions, setShowInstructions] = useState(true);
 
   useEffect(() => {
@@ -247,7 +233,7 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
       </div>
 
       {/* Pattern Steps (if drill has pattern) */}
-      {drillInfo.pattern.length > 0 && (
+      {waypoints.length > 0 && (
         <div style={{ marginBottom: "10px" }}>
           <div
             style={{
@@ -258,7 +244,7 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
               textAlign: "center",
             }}
           >
-            Pattern Steps:
+            순서 | Waypoints
           </div>
           <div
             style={{
@@ -268,9 +254,10 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
               flexWrap: "wrap",
             }}
           >
-            {drillInfo.pattern.map((step, index) => (
+            {waypoints.map(({ label }, index) => (
               <div
-                key={index}
+                key={label}
+                aria-current={isActive && index === currentStep ? "step" : undefined}
                 style={{
                   padding: "4px 8px",
                   fontSize: isMobile ? "9px" : "10px",
@@ -295,7 +282,7 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
                   fontWeight: isActive && index === currentStep ? "bold" : "normal",
                 }}
               >
-                {index + 1}. {step}
+                {label}
               </div>
             ))}
           </div>
@@ -316,7 +303,9 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
             color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
           }}
         >
-          💡 {drillInfo.keyHints}
+          {waypoints.length > 0
+            ? "번호 순서대로 이동 | Follow the numbered floor markers"
+            : "자유롭게 이동 | Move freely"}
         </div>
       )}
 

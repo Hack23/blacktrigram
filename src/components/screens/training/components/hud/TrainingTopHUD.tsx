@@ -49,6 +49,7 @@ export interface TrainingTopHUDProps {
   readonly onArchetypeSelect: (archetype: PlayerArchetype) => void;
   /** Whether vital point overlay is visible */
   readonly overlayVisible: boolean;
+  readonly onToggleOverlay: () => void;
   /** Handler for returning to menu */
   readonly onReturnToMenu: () => void;
   /** Handler for playing sound effects */
@@ -72,6 +73,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
   selectedArchetype,
   onArchetypeSelect,
   overlayVisible,
+  onToggleOverlay,
   onReturnToMenu,
   onPlaySFX,
 }) => {
@@ -145,8 +147,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
           data-testid="training-top-hud-center-section"
         >
           {/* Vital Point Hint */}
-          {!overlayVisible && (
-            <div
+            <button type="button" onClick={onToggleOverlay} aria-pressed={overlayVisible}
               style={{
                 padding: `${SPACING.xxs} ${SPACING_ADJUSTMENTS.xsPlus}`,
                 background: HUD_STYLE.background,
@@ -156,21 +157,13 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
                 fontFamily: TYPOGRAPHY.bodySmall.fontFamily,
                 color: HIERARCHY.accent.color,
                 whiteSpace: "nowrap",
+                pointerEvents: "auto",
+                cursor: "pointer",
               }}
-              data-testid="vital-point-hint"
+              data-testid="training-toggle-targets"
             >
-              💡 Press{" "}
-              <span
-                style={{
-                  color: HIERARCHY.gold.color,
-                  fontWeight: "bold",
-                }}
-              >
-                V
-              </span>{" "}
-              for vital points
-            </div>
-          )}
+              급소 보기 | Targets (V)
+            </button>
 
           {/* Archetype Selector */}
           <div
@@ -208,8 +201,8 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
       )}
 
       {/* Mobile Center - Just vital point hint */}
-      {isMobile && !overlayVisible && (
-        <div
+      {isMobile && (
+        <button type="button" onClick={onToggleOverlay} aria-pressed={overlayVisible}
           style={{
             padding: `${SPACING.xxs} ${SPACING.xs}`,
             background: HUD_STYLE.background,
@@ -218,14 +211,12 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
             fontSize: TYPOGRAPHY.caption.fontSize,
             fontFamily: TYPOGRAPHY.caption.fontFamily,
             color: HIERARCHY.accent.color,
+            pointerEvents: "auto",
           }}
-          data-testid="training-top-hud-center-section"
+          data-testid="training-toggle-targets"
         >
-          <span style={{ color: HIERARCHY.gold.color }}>
-            V
-          </span>{" "}
-          = 급소
-        </div>
+          급소 | Targets
+        </button>
       )}
 
       {/* Right Section - Return to Menu */}

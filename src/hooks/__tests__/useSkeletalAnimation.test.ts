@@ -7,10 +7,10 @@
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getArchetypePhysicalAttributes } from "../../data/archetypePhysicalAttributes";
-import { createScaledHumanoidRig } from "../../systems/animation";
-import { PlayerArchetype } from "../../types/common";
+import { createScaledHumanoidRig, getAnimation } from "../../systems/animation";
+import { PlayerArchetype, TrigramStance } from "../../types/common";
 import type { PlayerAnimation } from "../../types/player-visual";
-import { useSkeletalAnimation } from "../useSkeletalAnimation";
+import { useSkeletalAnimation, type UseSkeletalAnimationOptions } from "../useSkeletalAnimation";
 
 describe("useSkeletalAnimation", () => {
   let testRig: ReturnType<typeof createScaledHumanoidRig>;
@@ -216,7 +216,8 @@ describe("useSkeletalAnimation", () => {
 
       // Animation should complete and callback should be called
       expect(result.current.animState.isPlaying).toBe(false);
-      expect(onComplete).toHaveBeenCalled();
+      expect(onComplete).toHaveBeenCalledTimes(1);
+      expect(result.current.animTimeRef.current).toBe(result.current.animState.currentAnimation?.duration);
     });
 
     it("should apply keyframes to rig", () => {
@@ -240,15 +241,82 @@ describe("useSkeletalAnimation", () => {
   });
 
   describe("special animations", () => {
-    it("should handle hit animation (stops playing)", () => {
-      const { result } = renderHook(() =>
-        useSkeletalAnimation({
-          currentAnimation: "hit",
-        }),
-      );
+    it("plays a hit reaction while blocking instead of freezing the prior pose", () => {
+      const { result, rerender } = renderHook(useSkeletalAnimation, {
+        initialProps: { currentAnimation: "attack", attackAnimation: "jab" } as UseSkeletalAnimationOptions,
+      });
+      act(() => result.current.updateRigAnimation(testRig, 0, 0.1));
+      const interrupted = testRig.root.rotation.clone();
+      rerender({ currentAnimation: "hit", isBlocking: true });
+      expect(result.current.animState.currentAnimation?.name).toBe("hit");
+      act(() => result.current.updateRigAnimation(testRig, 0, 0));
+      expect(testRig.root.rotation.x).toBeCloseTo(interrupted.x);
+      act(() => result.current.updateRigAnimation(testRig, 1 / 30));
+      expect(testRig.root.rotation.x).toBeCloseTo(-0.15);
+      expect(result.current.animState.isPlaying).toBe(true);
+    });
 
-      expect(result.current.animState.isPlaying).toBe(false);
-      expect(result.current.animState.currentTime).toBe(0);
+    describe("playback selection and time", () => {
+      it.each([
+        ["attack", "jab"],
+        ["counter", "counter_strike"],
+        ["technique_execute", "jab"],
+        ["death", "death"],
+        ["ground_side_right", "ground_side_right"],
+        ["recovery_roll", "recovery_roll"],
+        ["recovery_defensive", "recovery_defensive"],
+        ["stance_side_switch", "footwork_switch_step"],
+        ["footwork_slide_forward", "footwork_slide_forward"],
+        ["footwork_pivot_right", "footwork_pivot_right"],
+        ["step_forward_right", "footwork_circular_right"],
+        ["turn_left", "movement_pivot_left"],
+        ["defend_parry", "gam_flowing_block"],
+        ["defend_block_success", "block_high"],
+        ["defend_recovery", "block_low"],
+        ["grapple_entry", "grapple"],
+        ["grapple_escape", "backward_retreat"],
+      ] satisfies [PlayerAnimation, string][])("selects %s without a blocking override", (state, clip) => {
+        const { result } = renderHook(() => useSkeletalAnimation({ currentAnimation: state, isBlocking: true }));
+        expect(result.current.animState.currentAnimation?.name).toBe(clip);
+      });
+
+      it("keeps a resolved named clip and clock when unrelated flags change", () => {
+        const attackAnimation = "musa_dragon_fist";
+        const { result, rerender } = renderHook(useSkeletalAnimation, {
+          initialProps: { currentAnimation: "attack", attackAnimation } as UseSkeletalAnimationOptions,
+        });
+        expect(result.current.animState.currentAnimation).toBe(getAnimation(attackAnimation));
+        act(() => result.current.updateRigAnimation(testRig, 2));
+        expect(result.current.animTimeRef.current).toBeCloseTo(1 / 30);
+        rerender({ currentAnimation: "attack", attackAnimation, isBlocking: true, stance: TrigramStance.GAN });
+        expect(result.current.animTimeRef.current).toBeCloseTo(1 / 30);
+      });
+
+      it("replays the same one-shot with a new action token and accepts authored clip time", () => {
+        const onAnimationComplete = vi.fn();
+        const { result, rerender } = renderHook(useSkeletalAnimation, {
+          initialProps: { currentAnimation: "hit", playbackKey: 1, onAnimationComplete } as UseSkeletalAnimationOptions,
+        });
+        act(() => result.current.updateRigAnimation(testRig, 0, 1));
+        expect(result.current.animState.isPlaying).toBe(false);
+        rerender({ currentAnimation: "hit", playbackKey: 2, onAnimationComplete });
+        expect(result.current.animTimeRef.current).toBe(0);
+        expect(result.current.animState.isPlaying).toBe(true);
+        act(() => result.current.updateRigAnimation(testRig, 0, 1));
+        expect(onAnimationComplete).toHaveBeenCalledTimes(2);
+      });
+
+      it("stitches two stance-walk leads with a continuous wrap", () => {
+        const { result } = renderHook(() => useSkeletalAnimation({ currentAnimation: "walk", stance: TrigramStance.GEON }));
+        const cycle = result.current.animState.currentAnimation;
+        if (!cycle) throw new Error("Missing walk cycle");
+        expect(cycle.loop).toBe(true);
+        expect(cycle.name).toBe("walk_geon");
+        act(() => result.current.updateRigAnimation(testRig, 0, cycle.duration - 0.001));
+        const endYaw = testRig.root.rotation.y;
+        act(() => result.current.updateRigAnimation(testRig, 0, cycle.duration + 0.001));
+        expect(Math.abs(testRig.root.rotation.y - endYaw)).toBeLessThan(0.01);
+      });
     });
 
     it("should handle stance change animation", () => {

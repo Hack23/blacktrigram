@@ -41,10 +41,8 @@ import {
   AnimationType,
   determineRecoveryType,
   getAnimation,
-  getAnimationDurationOrFallback,
   getRecoveryAnimationState,
   resolveTechniqueAnimation,
-  TARGET_ANIMATION_FPS,
 } from "../../../systems/animation";
 import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import type { BalancePlayerState } from "../../../systems/combat/BalanceSystem";
@@ -138,6 +136,8 @@ import {
   STANCE_INDEX_MAP,
 } from "./helpers";
 import { AnimationUpdater } from "./helpers/AnimationUpdater";
+import { getAttackPresentation } from "../../../utils/attackPresentation";
+import { CombatFighterCamera } from "./helpers/CombatFighterCamera";
 import { AccelerationUpdater } from "../../../systems/movement/helpers/AccelerationUpdater";
 import { isRunningSpeed } from "../../../systems/movement/helpers/accelerationUtils";
 import { useAICombat } from "./hooks/useAICombat";
@@ -308,15 +308,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   const cameraConfig = useMemo(() => {
     const base = createCameraConfig(isMobile);
-    if (!isPortrait) return base;
     return {
       ...base,
-      fov: Math.min(80, base.fov + 15),
-      position: [base.position[0], base.position[1], base.position[2] + 4] as [
-        number,
-        number,
-        number,
-      ],
+      fov: isPortrait ? 54 : 42,
     };
   }, [isMobile, isPortrait]);
 
@@ -826,12 +820,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   });
 
   const preparePlayer1AttackTiming = useCallback((animationName: string) => {
-    const attackDuration = getAnimationDurationOrFallback(animationName);
-    const attackFrames = Math.max(
-      1,
-      Math.round(attackDuration * TARGET_ANIMATION_FPS),
-    );
-    player1HitTriggerFrameRef.current = Math.round(attackFrames * 0.4);
+    const { duration: attackDuration, impactFrame } = getAttackPresentation(animationName);
+    player1HitTriggerFrameRef.current = impactFrame;
     player1AttackHitFiredRef.current = false;
     setPlayer1AttackDuration(attackDuration);
     return attackDuration;
@@ -2260,14 +2250,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           failIfMajorPerformanceCaveat: false,
         }}
         dpr={renderConfig.dpr}
-        shadows={false} // Temporarily disable shadows
+        shadows={false} // Soft fighter contact shadows also work on mobile.
         onCreated={({ gl }) => {
           gl.setClearColor(theme.colors.UI_BACKGROUND_DARK, 1);
         }}
       >
-        {/* Lighting - CombatArena3D provides ambient, we add directional for shadows */}
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[10, 10, 5]} intensity={1.2} />
+        <CombatFighterCamera
+          first={player1Position3D}
+          second={player2Position3D}
+          fov={cameraConfig.fov}
+          worldWidth={arenaBounds.worldWidthMeters}
+          worldDepth={arenaBounds.worldDepthMeters}
+        />
 
         {/* Adaptive Quality Wrapper monitors FPS and adjusts quality */}
         <AdaptiveQualityWrapper
@@ -2313,9 +2307,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               {
                 isMobile,
                 facing: "right",
-                enableFacialExpressions: true,
-                enableEyeTracking: true,
                 opponentPosition: player2PositionWithAttackMovement,
+                showDetails: false,
               },
             )}
             currentAnimation={animationStateToPlayerAnimation(
@@ -2324,7 +2317,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             attackAnimation={player1AttackAnimation}
             laterality={combatState.playerLaterality[0]}
             enableTransitionEffects={!isMobile}
-            enableStanceSymbol={!isMobile}
+            enableStanceSymbol={false}
             enableStanceAudio={true}
           />
 
@@ -2337,9 +2330,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               {
                 isMobile,
                 facing: "right",
-                enableFacialExpressions: true,
-                enableEyeTracking: true,
                 opponentPosition: player1PositionWithAttackMovement,
+                showDetails: false,
               },
             )}
             currentAnimation={animationStateToPlayerAnimation(
@@ -2348,7 +2340,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             attackAnimation={player2AttackAnimation}
             laterality={combatState.playerLaterality[1]}
             enableTransitionEffects={!isMobile}
-            enableStanceSymbol={!isMobile}
+            enableStanceSymbol={false}
             enableStanceAudio={true}
           />
 
